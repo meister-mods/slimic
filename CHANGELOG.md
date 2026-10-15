@@ -4,6 +4,18 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-10-15
+
+### Added
+
+- Shared Health, Attack, Defense, Movement Speed, Work Speed, Capacity, Stamina, Reach, and Detection Range stats with activity-earned upgrades.
+- An owner management screen for naming, visible nameplates, stat upgrades, orders, pickaxe equipment, and bag access.
+- Mining slimes crafted from a Friendly Slime and any pickaxe, preserving both companion traits and tool data.
+- Chunk-bound mining with tool-tier checks, break progress, enchantment-aware drops, durability, stamina, and bag-full pausing.
+- A mining helmet, lamp, and equipped-pickaxe rendering.
+- Optional JEI recipes and information pages.
+- Persistent stats, progression, equipment, and bag contents across saves and recovery.
+
 ## [0.1.2] - 2026-10-15
 
 ### Added

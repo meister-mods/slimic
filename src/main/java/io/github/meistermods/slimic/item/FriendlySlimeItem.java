@@ -1,6 +1,7 @@
 package io.github.meistermods.slimic.item;
 
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.List;
@@ -16,6 +17,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -30,7 +32,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public final class FriendlySlimeItem extends Item {
+public class FriendlySlimeItem extends Item {
   private static final String SLIME_DATA = "SlimeData";
 
   public FriendlySlimeItem(Properties properties) {
@@ -38,7 +40,11 @@ public final class FriendlySlimeItem extends Item {
   }
 
   public static ItemStack fromSlime(FriendlySlime slime) {
-    ItemStack stack = new ItemStack(ModItems.FRIENDLY_SLIME.get());
+    ItemStack stack =
+        new ItemStack(
+            slime instanceof MiningSlime
+                ? ModItems.MINING_SLIME.get()
+                : ModItems.FRIENDLY_SLIME.get());
     CompoundTag data = slime.saveWithoutId(new CompoundTag());
     // Passengers and tethers remain in the world; preserve the slime's own saved state.
     data.remove("Passengers");
@@ -53,6 +59,12 @@ public final class FriendlySlimeItem extends Item {
   private static boolean hasStoredSlime(ItemStack stack) {
     return stack.hasTag() && stack.getTag().contains(SLIME_DATA);
   }
+
+  protected EntityType<? extends FriendlySlime> entityType() {
+    return ModEntities.FRIENDLY_SLIME.get();
+  }
+
+  protected void initializeSlime(FriendlySlime slime, ItemStack stack) {}
 
   @Override
   public int getMaxStackSize(ItemStack stack) {
@@ -140,8 +152,7 @@ public final class FriendlySlimeItem extends Item {
       }
     }
     FriendlySlime slime =
-        ModEntities.FRIENDLY_SLIME
-            .get()
+        entityType()
             .create(
                 level,
                 null,
@@ -168,6 +179,7 @@ public final class FriendlySlimeItem extends Item {
                   if (stack.hasCustomHoverName()) {
                     entity.setCustomName(stack.getHoverName());
                   }
+                  initializeSlime(entity, stack);
                 },
                 position,
                 MobSpawnType.SPAWN_EGG,
@@ -179,6 +191,7 @@ public final class FriendlySlimeItem extends Item {
         || !level.addFreshEntity(slime)) {
       return false;
     }
+    slime.onReleased();
     if (!restoring) {
       slime.tame(player);
       level.broadcastEntityEvent(slime, (byte) 7);
@@ -201,6 +214,9 @@ public final class FriendlySlimeItem extends Item {
             .withStyle(ChatFormatting.GRAY));
     tooltip.add(
         Component.translatable("item.slimic.friendly_slime.capture_tooltip")
+            .withStyle(ChatFormatting.GRAY));
+    tooltip.add(
+        Component.translatable("item.slimic.friendly_slime.manage_tooltip")
             .withStyle(ChatFormatting.GRAY));
   }
 }

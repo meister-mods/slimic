@@ -58,3 +58,11 @@ Format all Java sources with Google Java Format before completing a change.
 Run `build` and `runGameTestServer` after gameplay changes. Coverage includes crafting, normal spawning, recovery and release, health and other traits, ownership, full inventories, blocked placement, Creative use, persistence, following, and death behavior.
 
 Tests use a structure loaded one block above its marker, so the fixture floor is at relative Y=1. Keep world fixtures separate from production assets.
+
+## Stats, mining, and integrations
+
+Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
+
+Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe uses the native main-hand equipment slot, keeping client rendering and item damage synchronized. Mining progress is bounded by one completed block per tick, searches process a limited number of nearby positions, and no neighbouring chunk is loaded for target discovery.
+
+The crafting serializer copies the Friendly Slime's stored traits and the exact pickaxe stack into the result. JEI is a compile-only API dependency with optional development runtime support. Use `./gradlew runClient -PenableJei=false` or `./gradlew runGameTestServer -PenableJei=false` to validate operation without JEI. Common game logic does not reference JEI or client classes.

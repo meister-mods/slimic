@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.MiningSlime;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -25,10 +26,20 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":friendly_slime"));
 
+  public static final RegistryObject<EntityType<MiningSlime>> MINING_SLIME =
+      ENTITY_TYPES.register(
+          "mining_slime",
+          () ->
+              EntityType.Builder.of(MiningSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":mining_slime"));
+
   private ModEntities() {}
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
     event.put(FRIENDLY_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(MINING_SLIME.get(), FriendlySlime.createAttributes().build());
   }
 }

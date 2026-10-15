@@ -1,15 +1,24 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.ModItems;
 import javax.annotation.Nullable;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
@@ -27,8 +36,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.network.NetworkHooks;
 
-public final class FriendlySlime extends TamableAnimal {
+public class FriendlySlime extends TamableAnimal {
+  private static final EntityDataAccessor<CompoundTag> STAT_LEVELS =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private int statPoints;
+  private int activityProgress;
+  private int earnedPoints;
+  private float stamina = 100.0F;
   public float squish;
   public float oldSquish;
   private float targetSquish;
@@ -43,8 +59,129 @@ public final class FriendlySlime extends TamableAnimal {
   public static AttributeSupplier.Builder createAttributes() {
     return createMobAttributes()
         .add(Attributes.MAX_HEALTH, 16.0D)
+        .add(Attributes.ATTACK_DAMAGE, 2.0D)
+        .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.3D)
-        .add(Attributes.FOLLOW_RANGE, 32.0D);
+        .add(Attributes.FOLLOW_RANGE, 8.0D);
+  }
+
+  @Override
+  protected void defineSynchedData() {
+    super.defineSynchedData();
+    entityData.define(STAT_LEVELS, new CompoundTag());
+  }
+
+  public int getStatLevel(SlimeStat stat) {
+    return entityData.get(STAT_LEVELS).getInt(stat.key());
+  }
+
+  public int getStatPoints() {
+    return statPoints;
+  }
+
+  public int getActivityProgress() {
+    return activityProgress;
+  }
+
+  public int getNextPointCost() {
+    return (int) Math.min(4096L, 256L + earnedPoints * 64L);
+  }
+
+  public float getStamina() {
+    return stamina;
+  }
+
+  public float getMaxStamina() {
+    return (float) SlimeStat.STAMINA.value(this);
+  }
+
+  public int getCapacity() {
+    return (int) SlimeStat.CAPACITY.value(this);
+  }
+
+  public boolean isWorking() {
+    return false;
+  }
+
+  protected void recoverStamina(float amount) {
+    stamina = Math.min(getMaxStamina(), stamina + amount);
+  }
+
+  public void onReleased() {}
+
+  public boolean upgradeStat(SlimeStat stat) {
+    if (level().isClientSide || statPoints <= 0 || getStatLevel(stat) >= stat.maxLevel())
+      return false;
+    CompoundTag levels = entityData.get(STAT_LEVELS).copy();
+    levels.putInt(stat.key(), getStatLevel(stat) + 1);
+    entityData.set(STAT_LEVELS, levels);
+    stat.applyUpgrade(this);
+    statPoints--;
+    return true;
+  }
+
+  protected void recordCompletedWork() {
+    if (level().isClientSide) return;
+    activityProgress++;
+    if (activityProgress >= getNextPointCost()) {
+      activityProgress -= getNextPointCost();
+      earnedPoints = Math.min(1_000_000, earnedPoints + 1);
+      statPoints = Math.min(32767, statPoints + 1);
+    }
+  }
+
+  protected boolean spendStamina(float amount) {
+    if (stamina < amount) return false;
+    stamina -= amount;
+    return true;
+  }
+
+  public void setWaiting(boolean waiting) {
+    setOrderedToSit(waiting);
+    setInSittingPose(waiting);
+    getNavigation().stop();
+  }
+
+  public boolean rename(Player player, String name) {
+    if (!player.getUUID().equals(getOwnerUUID())
+        || !isAlive()
+        || player.distanceToSqr(this) > 64.0D) return false;
+    String clean = SharedConstants.filterText(name).strip();
+    if (clean.codePointCount(0, clean.length()) > 32) {
+      clean = clean.substring(0, clean.offsetByCodePoints(0, 32));
+    }
+    setCustomName(clean.isEmpty() ? null : Component.literal(clean));
+    setCustomNameVisible(!clean.isEmpty());
+    return true;
+  }
+
+  @Override
+  public void addAdditionalSaveData(CompoundTag tag) {
+    super.addAdditionalSaveData(tag);
+    tag.put("SlimeStats", entityData.get(STAT_LEVELS).copy());
+    tag.putInt("StatPoints", statPoints);
+    tag.putInt("ActivityProgress", activityProgress);
+    tag.putInt("EarnedPoints", earnedPoints);
+    tag.putFloat("Stamina", stamina);
+  }
+
+  @Override
+  public void readAdditionalSaveData(CompoundTag tag) {
+    super.readAdditionalSaveData(tag);
+    CompoundTag levels = new CompoundTag();
+    for (SlimeStat stat : SlimeStat.values()) {
+      levels.putInt(
+          stat.key(),
+          Mth.clamp(tag.getCompound("SlimeStats").getInt(stat.key()), 0, stat.maxLevel()));
+    }
+    entityData.set(STAT_LEVELS, levels);
+    statPoints = Mth.clamp(tag.getInt("StatPoints"), 0, 32767);
+    earnedPoints = Mth.clamp(tag.getInt("EarnedPoints"), 0, 1_000_000);
+    activityProgress = Mth.clamp(tag.getInt("ActivityProgress"), 0, getNextPointCost() - 1);
+    stamina =
+        tag.contains("Stamina") && Float.isFinite(tag.getFloat("Stamina"))
+            ? Mth.clamp(tag.getFloat("Stamina"), 0.0F, getMaxStamina())
+            : getMaxStamina();
   }
 
   @Override
@@ -62,6 +199,9 @@ public final class FriendlySlime extends TamableAnimal {
     oldSquish = squish;
     squish += (targetSquish - squish) * 0.5F;
     super.tick();
+    if (!level().isClientSide && tickCount % 20 == 0 && !isWorking()) {
+      stamina = Math.min(getMaxStamina(), stamina + 2.0F);
+    }
     if (onGround() && !wasOnGround) {
       targetSquish = -0.5F;
       playSound(SoundEvents.SLIME_SQUISH, 0.6F, 1.0F);
@@ -96,17 +236,13 @@ public final class FriendlySlime extends TamableAnimal {
     if (player.isShiftKeyDown()) {
       return capture(player);
     }
-    if (player.getUUID().equals(getOwnerUUID()) && player.getItemInHand(hand).isEmpty()) {
-      if (!level().isClientSide) {
-        setOrderedToSit(!isOrderedToSit());
-        setInSittingPose(isOrderedToSit());
-        getNavigation().stop();
-        player.displayClientMessage(
-            Component.translatable(
-                isOrderedToSit()
-                    ? "message.slimic.friendly_slime.waiting"
-                    : "message.slimic.friendly_slime.following"),
-            true);
+    if (player.getUUID().equals(getOwnerUUID())) {
+      if (player instanceof ServerPlayer serverPlayer) {
+        NetworkHooks.openScreen(
+            serverPlayer,
+            new SimpleMenuProvider(
+                (id, inventory, viewer) -> new SlimeMenu(id, inventory, this), getDisplayName()),
+            buffer -> buffer.writeVarInt(getId()));
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
     }

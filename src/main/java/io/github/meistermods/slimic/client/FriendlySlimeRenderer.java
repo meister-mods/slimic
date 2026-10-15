@@ -3,11 +3,14 @@ package io.github.meistermods.slimic.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.MiningSlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.SlimeOuterLayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -19,6 +22,7 @@ public final class FriendlySlimeRenderer
   public FriendlySlimeRenderer(EntityRendererProvider.Context context) {
     super(context, new SlimeModel<>(context.bakeLayer(ModelLayers.SLIME)), 0.5F);
     addLayer(new SlimeOuterLayer<>(this, context.getModelSet()));
+    addLayer(new MiningSlimeLayer(this, context));
   }
 
   @Override
@@ -33,5 +37,14 @@ public final class FriendlySlimeRenderer
   @Override
   public ResourceLocation getTextureLocation(FriendlySlime slime) {
     return TEXTURE;
+  }
+
+  @Override
+  protected void renderNameTag(
+      FriendlySlime slime, Component name, PoseStack pose, MultiBufferSource buffers, int light) {
+    pose.pushPose();
+    if (slime instanceof MiningSlime) pose.translate(0.0, 0.4, 0.0);
+    super.renderNameTag(slime, name, pose, buffers, light);
+    pose.popPose();
   }
 }

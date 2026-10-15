@@ -94,6 +94,12 @@ minecraft {
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
+            if (providers.gradleProperty('clientSmoke').map { it.toBoolean() }.getOrElse(false)) {
+                workingDirectory project.file('.agent/client-smoke')
+                property 'slimic.clientSmoke', 'true'
+                args '--quickPlaySingleplayer', 'slimic-smoke', '--width', '1280', '--height', '900'
+                mods { "${mod_id}_tests" { source sourceSets.gameTest } }
+            }
         }
 
         server {
@@ -128,6 +134,11 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com/'
+        content { includeGroup 'mezz.jei'; includeGroup 'net.mezzdev.config' }
+    }
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -145,6 +156,11 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    if (providers.gradleProperty('enableJei').map { it.toBoolean() }.getOrElse(true)) {
+        runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    }
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

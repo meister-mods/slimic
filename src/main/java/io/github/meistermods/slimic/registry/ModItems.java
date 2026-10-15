@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.item.MiningSlimeItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -13,6 +14,9 @@ public final class ModItems {
 
   public static final RegistryObject<Item> FRIENDLY_SLIME =
       ITEMS.register("friendly_slime", () -> new FriendlySlimeItem(new Item.Properties()));
+
+  public static final RegistryObject<Item> MINING_SLIME =
+      ITEMS.register("mining_slime", () -> new MiningSlimeItem(new Item.Properties()));
 
   private ModItems() {}
 }

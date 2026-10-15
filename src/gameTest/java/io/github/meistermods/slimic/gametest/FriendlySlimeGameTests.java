@@ -3,6 +3,7 @@ package io.github.meistermods.slimic.gametest;
 import com.mojang.authlib.GameProfile;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.UUID;
@@ -164,7 +165,8 @@ public final class FriendlySlimeGameTests {
     Player owner = helper.makeMockSurvivalPlayer();
     FriendlySlime slime = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), SPAWN_FLOOR.above());
     slime.tame(owner);
-    slime.mobInteract(owner, InteractionHand.MAIN_HAND);
+    owner.moveTo(slime.getX() + 2.0, slime.getY(), slime.getZ());
+    new SlimeMenu(1, owner.getInventory(), slime).clickMenuButton(owner, SlimeMenu.WAIT);
     helper.assertTrue(slime.isOrderedToSit(), "An owner must be able to order waiting");
     slime.mobInteract(helper.makeMockSurvivalPlayer(), InteractionHand.MAIN_HAND);
     helper.assertTrue(slime.isOrderedToSit(), "Another player must not change its order");
@@ -178,7 +180,7 @@ public final class FriendlySlimeGameTests {
     helper.assertTrue(
         restored.isPersistenceRequired() && restored.isOrderedToSit(),
         "Persistence and the wait order must survive loading");
-    restored.mobInteract(owner, InteractionHand.MAIN_HAND);
+    new SlimeMenu(2, owner.getInventory(), restored).clickMenuButton(owner, SlimeMenu.FOLLOW);
     helper.assertTrue(!restored.isOrderedToSit(), "The owner must be able to resume following");
     helper.succeed();
   }
