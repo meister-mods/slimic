@@ -99,6 +99,10 @@ public class FriendlySlime extends TamableAnimal {
     return (int) SlimeStat.CAPACITY.value(this);
   }
 
+  public int capacityMultiplier() {
+    return 1;
+  }
+
   public boolean isWorking() {
     return false;
   }

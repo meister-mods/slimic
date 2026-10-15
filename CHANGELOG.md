@@ -4,6 +4,22 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-10-15
+
+### Added
+
+- Transport slimes crafted from a Friendly Slime and a regular chest, preserving saved companion traits.
+- A transport bag with exactly twice the capacity at every shared Capacity level, supporting 18–54 slots without an equipment slot.
+- Slime Chests crafted from eight wooden planks and a slime ball, with 27 persistent slots, standard inventory access, and automation support.
+- Automatic unloading of same-owner workers stopped by full bags and delivery to nearby Slime Chests.
+- Replacement-tool delivery from Slime Chests to workers stopped by missing or broken tools.
+- Cargo retention when destinations are full or unavailable, stamina-based work, and activity earned on completed deliveries.
+- A transport backpack, paged bag controls, and JEI crafting and information support.
+
+### Changed
+
+- Shared bag persistence and recovery across worker specializations while preserving existing mining-slime saves.
+
 ## [0.1.3] - 2026-10-15
 
 ### Added

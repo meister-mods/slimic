@@ -21,11 +21,13 @@ public final class SlimicClient {
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
     event.registerEntityRenderer(ModEntities.FRIENDLY_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.MINING_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.TRANSPORT_SLIME.get(), FriendlySlimeRenderer::new);
   }
 
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
     event.registerLayerDefinition(MiningSlimeLayer.HELMET, MiningSlimeLayer::createLayer);
+    event.registerLayerDefinition(TransportSlimeLayer.PACK, TransportSlimeLayer::createLayer);
   }
 
   @SubscribeEvent

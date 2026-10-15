@@ -66,3 +66,13 @@ Shared stat levels are synchronized as entity data. Server-side menu checks enfo
 Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe uses the native main-hand equipment slot, keeping client rendering and item damage synchronized. Mining progress is bounded by one completed block per tick, searches process a limited number of nearby positions, and no neighbouring chunk is loaded for target discovery.
 
 The crafting serializer copies the Friendly Slime's stored traits and the exact pickaxe stack into the result. JEI is a compile-only API dependency with optional development runtime support. Use `./gradlew runClient -PenableJei=false` or `./gradlew runGameTestServer -PenableJei=false` to validate operation without JEI. Common game logic does not reference JEI or client classes.
+
+## Transport and storage
+
+`BagSlime` shares capacity-aware storage, death drops, save/load, and recovery between worker types. Mining retains the `MiningBag` NBT key for existing saves; transport uses `TransportBag` with up to 54 slots. Transport capacity multiplies the common base and every upgrade by two. Its menu has no equipment slot and checks the active page on the server.
+
+Transport tasks query loaded chunks for Slime Chest block entities and same-owner workers inside the release-centered detection area. Transfers simulate available capacity before moving items on the server thread. Work requests are revalidated before transfer so concurrent carriers cannot duplicate tools or replace a tool already supplied. Travel targets are transient; cargo and orders are persistent, so interrupted jobs can be selected again after load or release.
+
+Slime Chests use a standard 27-slot container menu and Forge item capability, with normal inventory persistence, locks, comparator updates, and separate block/content drops. Regular chests are excluded from logistics.
+
+Validation covers all Capacity levels, both bag pages, ownership, full and partial destinations, concurrent tool supply, tool data and breakage, mining resumption, chest persistence/automation/drops, and transport recovery. Client checks cover both specializations, page synchronization, chest menus, model resources, and optional JEI recipes.

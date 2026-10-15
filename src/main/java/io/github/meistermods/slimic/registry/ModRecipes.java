@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
+import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,6 +16,12 @@ public final class ModRecipes {
       MINING_SLIME =
           SERIALIZERS.register(
               "mining_slime", () -> new SimpleCraftingRecipeSerializer<>(MiningSlimeRecipe::new));
+
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<TransportSlimeRecipe>>
+      TRANSPORT_SLIME =
+          SERIALIZERS.register(
+              "transport_slime",
+              () -> new SimpleCraftingRecipeSerializer<>(TransportSlimeRecipe::new));
 
   private ModRecipes() {}
 }

@@ -8,7 +8,7 @@ Slimic is a Minecraft Forge mod about raising friendly slimes and directing them
 
 ## Overview
 
-Slime companions grow through shared stats and activity-based upgrades. They can be named, managed, and carried as items while retaining their traits. Mining slimes use equipped pickaxes to gather resources into their bags. JEI provides crafting guidance.
+Slime companions grow through shared stats and activity-based upgrades. They can be named, managed, and carried as items while retaining their traits. Mining slimes gather resources, while transport slimes move cargo to Slime Chests and keep workers supplied with tools. JEI provides crafting guidance.
 
 Slimic is in early development within the `0.1.x` series.
 

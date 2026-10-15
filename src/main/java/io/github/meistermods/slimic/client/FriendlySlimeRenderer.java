@@ -23,6 +23,7 @@ public final class FriendlySlimeRenderer
     super(context, new SlimeModel<>(context.bakeLayer(ModelLayers.SLIME)), 0.5F);
     addLayer(new SlimeOuterLayer<>(this, context.getModelSet()));
     addLayer(new MiningSlimeLayer(this, context));
+    addLayer(new TransportSlimeLayer(this, context));
   }
 
   @Override

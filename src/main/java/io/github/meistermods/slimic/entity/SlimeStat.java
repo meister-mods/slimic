@@ -48,7 +48,7 @@ public enum SlimeStat {
     int level = slime.getStatLevel(this);
     return switch (this) {
       case WORK_SPEED -> 1.0 + increment * level;
-      case CAPACITY -> 9.0 + increment * level;
+      case CAPACITY -> (9.0 + increment * level) * slime.capacityMultiplier();
       case STAMINA -> 100.0 + increment * level;
       case REACH -> 3.0 + increment * level;
       default -> throw new IllegalStateException("Missing stat value: " + this);

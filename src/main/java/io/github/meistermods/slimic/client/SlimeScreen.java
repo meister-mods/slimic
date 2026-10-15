@@ -1,7 +1,9 @@
 package io.github.meistermods.slimic.client;
 
+import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
+import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.network.ModNetwork;
 import java.util.EnumMap;
@@ -20,6 +22,8 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   private EditBox name;
   private final Map<SlimeStat, Button> upgrades = new EnumMap<>(SlimeStat.class);
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
+  private Button previousPage;
+  private Button nextPage;
 
   public SlimeScreen(SlimeMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
@@ -56,6 +60,21 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     addOrder(SlimeMenu.FOLLOW, "follow", 194);
     addOrder(SlimeMenu.WAIT, "wait", 250);
     if (menu.slime() instanceof MiningSlime) addOrder(SlimeMenu.WORK, "mine", 306);
+    if (menu.slime() instanceof TransportSlime) addOrder(SlimeMenu.WORK, "transport", 306);
+    if (menu.slime() instanceof TransportSlime) {
+      previousPage =
+          addRenderableWidget(
+              Button.builder(Component.literal("<"), button -> sendButton(SlimeMenu.PREVIOUS_PAGE))
+                  .bounds(leftPos + 286, topPos + 74, 12, 12)
+                  .tooltip(Tooltip.create(Component.translatable("screen.slimic.previous_page")))
+                  .build());
+      nextPage =
+          addRenderableWidget(
+              Button.builder(Component.literal(">"), button -> sendButton(SlimeMenu.NEXT_PAGE))
+                  .bounds(leftPos + 344, topPos + 74, 12, 12)
+                  .tooltip(Tooltip.create(Component.translatable("screen.slimic.next_page")))
+                  .build());
+    }
   }
 
   private void addOrder(int id, String key, int x) {
@@ -86,6 +105,10 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                 menu.data(SlimeMenu.POINTS) > 0
                     && menu.slime().getStatLevel(stat) < stat.maxLevel());
     orders.forEach((id, button) -> button.active = menu.data(SlimeMenu.MODE) != id);
+    if (previousPage != null) {
+      previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;
+      nextPage.active = menu.data(SlimeMenu.BAG_PAGE) + 1 < menu.bagPages();
+    }
   }
 
   @Override
@@ -153,7 +176,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.health",
             menu.data(SlimeMenu.HEALTH) / 10.0F,
             (int) menu.value(SlimeStat.HEALTH)),
-        216,
+        menu.slime() instanceof MiningSlime ? 216 : 194,
         49,
         0xffe5e9e9,
         false);
@@ -163,11 +186,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.stamina",
             menu.data(SlimeMenu.STAMINA) / 10,
             (int) menu.value(SlimeStat.STAMINA)),
-        216,
+        menu.slime() instanceof MiningSlime ? 216 : 194,
         62,
         0xffe5e9e9,
         false);
-    if (menu.slime() instanceof MiningSlime) {
+    if (menu.slime() instanceof BagSlime) {
       graphics.drawString(
           font,
           Component.translatable("screen.slimic.bag", (int) menu.value(SlimeStat.CAPACITY)),
@@ -175,14 +198,31 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           77,
           0xffe5e9e9,
           false);
+      Enum<?>[] statuses =
+          menu.slime() instanceof TransportSlime
+              ? TransportSlime.Status.values()
+              : MiningSlime.Status.values();
       String key =
-          MiningSlime.Status.values()[
-              Math.min(
-                  MiningSlime.Status.values().length - 1, Math.max(0, menu.data(SlimeMenu.STATUS)))]
+          statuses[Math.min(statuses.length - 1, Math.max(0, menu.data(SlimeMenu.STATUS)))]
               .name()
               .toLowerCase(Locale.ROOT);
       graphics.drawWordWrap(
-          font, Component.translatable("status.slimic." + key), 10, 216, 174, 0xffb4c9d1);
+          font,
+          Component.translatable(
+              "status.slimic."
+                  + (menu.slime() instanceof TransportSlime ? "transport." : "")
+                  + key),
+          10,
+          216,
+          174,
+          0xffb4c9d1);
+      if (menu.slime() instanceof TransportSlime)
+        graphics.drawCenteredString(
+            font,
+            Component.literal((menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages()),
+            321,
+            77,
+            0xffe5e9e9);
     } else {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.specialize"), 194, 88, 162, 0xffb4c9d1);

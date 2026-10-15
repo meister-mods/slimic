@@ -21,6 +21,18 @@ public final class JeiClientSmoke implements IModPlugin {
   }
 
   public static long miningRecipes() {
+    return recipes("mining_slime/");
+  }
+
+  public static long transportRecipes() {
+    return recipes("transport_slime/");
+  }
+
+  public static long chestRecipes() {
+    return recipes("slime_chest");
+  }
+
+  private static long recipes(String path) {
     if (runtime == null) return 0;
     return runtime
         .getRecipeManager()
@@ -29,7 +41,7 @@ public final class JeiClientSmoke implements IModPlugin {
         .filter(
             recipe ->
                 recipe.getId().getNamespace().equals("slimic")
-                    && recipe.getId().getPath().startsWith("mining_slime/"))
+                    && recipe.getId().getPath().startsWith(path))
         .count();
   }
 }

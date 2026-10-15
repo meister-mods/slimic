@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -35,7 +34,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public final class MiningSlime extends FriendlySlime {
+public final class MiningSlime extends BagSlime {
   public enum Status {
     IDLE,
     MOVING,
@@ -48,24 +47,6 @@ public final class MiningSlime extends FriendlySlime {
     DISABLED
   }
 
-  private final ItemStackHandler bag =
-      new ItemStackHandler(27) {
-        @Override
-        public int getSlotLimit(int slot) {
-          return slot < getCapacity() ? 64 : 0;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-          return slot < getCapacity();
-        }
-
-        @Override
-        protected void onContentsChanged(int slot) {
-          bagRevision++;
-        }
-      };
-  private int bagRevision;
   private int fullRevision = -1;
   private boolean working = true;
   private boolean resting;
@@ -81,7 +62,7 @@ public final class MiningSlime extends FriendlySlime {
   private final Map<Long, Long> skipped = new HashMap<>();
 
   public MiningSlime(EntityType<? extends MiningSlime> type, Level level) {
-    super(type, level);
+    super(type, level, 27);
     setDropChance(EquipmentSlot.MAINHAND, 2.0F);
   }
 
@@ -95,8 +76,32 @@ public final class MiningSlime extends FriendlySlime {
     return !stack.isEmpty() && stack.canPerformAction(ToolActions.PICKAXE_DIG);
   }
 
-  public ItemStackHandler getBag() {
-    return bag;
+  @Override
+  protected String bagTagName() {
+    return "MiningBag";
+  }
+
+  @Override
+  public boolean needsUnloading() {
+    return isWorking() && status == Status.FULL;
+  }
+
+  @Override
+  public boolean needsReplacementTool() {
+    return isWorking() && status == Status.NO_TOOL && getPickaxe().isEmpty();
+  }
+
+  @Override
+  public boolean acceptsWorkTool(ItemStack stack) {
+    return isPickaxe(stack)
+        && (!stack.isDamageableItem() || stack.getDamageValue() < stack.getMaxDamage());
+  }
+
+  @Override
+  public boolean receiveWorkTool(ItemStack stack) {
+    if (!needsReplacementTool() || !acceptsWorkTool(stack)) return false;
+    setItemSlot(EquipmentSlot.MAINHAND, stack.copyWithCount(1));
+    return true;
   }
 
   public ItemStack getPickaxe() {
@@ -122,13 +127,6 @@ public final class MiningSlime extends FriendlySlime {
     setWaiting(false);
     clearTarget();
     status = Status.IDLE;
-  }
-
-  @Override
-  public boolean upgradeStat(SlimeStat stat) {
-    boolean upgraded = super.upgradeStat(stat);
-    if (upgraded && stat == SlimeStat.CAPACITY) bagRevision++;
-    return upgraded;
   }
 
   @Override
@@ -205,7 +203,7 @@ public final class MiningSlime extends FriendlySlime {
   private boolean canStore(List<ItemStack> drops) {
     ItemStackHandler simulation = new ItemStackHandler(getCapacity());
     for (int slot = 0; slot < simulation.getSlots(); slot++)
-      simulation.setStackInSlot(slot, bag.getStackInSlot(slot).copy());
+      simulation.setStackInSlot(slot, getBag().getStackInSlot(slot).copy());
     for (ItemStack drop : drops) {
       if (!ItemHandlerHelper.insertItemStacked(simulation, drop.copy(), false).isEmpty())
         return false;
@@ -275,7 +273,7 @@ public final class MiningSlime extends FriendlySlime {
         return;
       }
       state.getBlock().destroy(server, mined, state);
-      for (ItemStack drop : drops) ItemHandlerHelper.insertItemStacked(bag, drop, false);
+      for (ItemStack drop : drops) ItemHandlerHelper.insertItemStacked(getBag(), drop, false);
       getPickaxe().mineBlock(server, state, mined, worker);
       spendStamina(1.0F);
       recordCompletedWork();
@@ -293,7 +291,6 @@ public final class MiningSlime extends FriendlySlime {
   @Override
   public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
-    tag.put("MiningBag", bag.serializeNBT());
     tag.putBoolean("MiningWorking", working);
     tag.putBoolean("MiningResting", resting);
     tag.putBoolean("MiningHasAnchor", hasAnchor);
@@ -304,24 +301,12 @@ public final class MiningSlime extends FriendlySlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    CompoundTag inventory = tag.getCompound("MiningBag").copy();
-    inventory.putInt("Size", 27);
-    bag.deserializeNBT(inventory);
     working = !tag.contains("MiningWorking") || tag.getBoolean("MiningWorking");
     resting = tag.getBoolean("MiningResting");
     hasAnchor = tag.getBoolean("MiningHasAnchor");
     chunkX = tag.getInt("MiningChunkX");
     chunkZ = tag.getInt("MiningChunkZ");
     clearTarget();
-  }
-
-  @Override
-  protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHit) {
-    super.dropCustomDeathLoot(source, looting, recentlyHit);
-    for (int slot = 0; slot < bag.getSlots(); slot++) {
-      if (!bag.getStackInSlot(slot).isEmpty()) spawnAtLocation(bag.getStackInSlot(slot).copy());
-      bag.setStackInSlot(slot, ItemStack.EMPTY);
-    }
   }
 
   @Override

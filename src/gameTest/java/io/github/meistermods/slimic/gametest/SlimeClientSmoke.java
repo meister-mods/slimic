@@ -1,9 +1,12 @@
 package io.github.meistermods.slimic.gametest;
 
+import io.github.meistermods.slimic.block.SlimeChestBlockEntity;
 import io.github.meistermods.slimic.client.SlimeScreen;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
+import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.menu.SlimeMenu;
+import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModEntities;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -44,6 +48,10 @@ public final class SlimeClientSmoke {
     if (++ticks > 2400) throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (phase >= 4) {
+      transportSmoke(client);
+      return;
+    }
     if (phase == 0) {
       phase = 1;
       client
@@ -161,11 +169,132 @@ public final class SlimeClientSmoke {
       if (jei && JeiClientSmoke.miningRecipes() < 6) return;
       if (++phaseTicks < 20) return;
       screenshot(client, jei ? "jei-menu" : "no-jei-menu");
-      System.out.println(
-          "SLIMIC CLIENT SMOKE PASSED: rename, upgrade, synchronized menu, rendering; JEI="
-              + jei
-              + (jei ? ", mining recipes=" + JeiClientSmoke.miningRecipes() : ""));
       phase = 4;
+      phaseTicks = 0;
+      client.player.closeContainer();
+      int minerId = miner.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var server = client.getSingleplayerServer();
+                var owner = server.getPlayerList().getPlayer(client.player.getUUID());
+                var level = owner.serverLevel();
+                if (level.getEntity(minerId) != null) level.getEntity(minerId).discard();
+                TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(level);
+                carrier.moveTo(10.5, 101, 8.5, 90, 0);
+                carrier.setYBodyRot(90);
+                carrier.setYHeadRot(90);
+                carrier.setNoAi(true);
+                carrier.tame(owner);
+                carrier.setWorking(false);
+                carrier.setCustomName(Component.literal("Porter"));
+                carrier.setCustomNameVisible(true);
+                CompoundTag state = carrier.saveWithoutId(new CompoundTag());
+                state.putInt("StatPoints", 6);
+                carrier.load(state);
+                for (int index = 0; index < 6; index++) carrier.upgradeStat(SlimeStat.CAPACITY);
+                carrier.getBag().setStackInSlot(0, new ItemStack(Items.COBBLESTONE, 64));
+                carrier.getBag().setStackInSlot(27, new ItemStack(Items.IRON_PICKAXE));
+                carrier.getBag().setStackInSlot(53, new ItemStack(Items.EMERALD, 17));
+                level.addFreshEntity(carrier);
+                carrier.onReleased();
+                BlockPos chestPos = new BlockPos(11, 101, 10);
+                level.setBlockAndUpdate(chestPos, ModBlocks.SLIME_CHEST.get().defaultBlockState());
+                SlimeChestBlockEntity chest =
+                    (SlimeChestBlockEntity) level.getBlockEntity(chestPos);
+                chest.setItem(0, new ItemStack(Items.DIAMOND, 12));
+                chest.setItem(1, new ItemStack(Items.DIAMOND_PICKAXE));
+              });
+    }
+  }
+
+  private static void transportSmoke(Minecraft client) {
+    boolean jei = ModList.get().isLoaded("jei");
+    String prefix = jei ? "jei-" : "no-jei-";
+    var carriers =
+        client.level.getEntitiesOfClass(
+            TransportSlime.class, client.player.getBoundingBox().inflate(12));
+    if (carriers.isEmpty()) return;
+    TransportSlime carrier = carriers.get(0);
+    if (phase == 4) {
+      if (++phaseTicks < 50 || carrier.getCapacity() != 54) return;
+      screenshot(client, prefix + "transport-world");
+      int entityId = carrier.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                if (owner.serverLevel().getEntity(entityId) instanceof TransportSlime companion)
+                  companion.mobInteract(owner, InteractionHand.MAIN_HAND);
+              });
+      phase = 5;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 5 && client.screen instanceof SlimeScreen screen) {
+      SlimeMenu menu = screen.getMenu();
+      if (menu.value(SlimeStat.CAPACITY) != 54 || ++phaseTicks < 20) return;
+      if (menu.slots.size() != 90 || !carrier.getMainHandItem().isEmpty())
+        throw new IllegalStateException("Transport has an unexpected equipment slot");
+      screen.children().stream()
+          .filter(Button.class::isInstance)
+          .map(Button.class::cast)
+          .filter(button -> button.getMessage().getString().equals(">"))
+          .findFirst()
+          .orElseThrow()
+          .onPress();
+      phase = 6;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 6 && client.screen instanceof SlimeScreen screen) {
+      SlimeMenu menu = screen.getMenu();
+      if (menu.data(SlimeMenu.BAG_PAGE) != 1
+          || !menu.getSlot(53).getItem().is(Items.EMERALD)
+          || ++phaseTicks < 20) return;
+      if (jei && (JeiClientSmoke.transportRecipes() != 1 || JeiClientSmoke.chestRecipes() != 1))
+        return;
+      screenshot(client, prefix + "transport-menu");
+      client.player.closeContainer();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                owner.openMenu(
+                    (SlimeChestBlockEntity)
+                        owner.serverLevel().getBlockEntity(new BlockPos(11, 101, 10)));
+              });
+      phase = 7;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 7 && client.player.containerMenu instanceof ChestMenu menu) {
+      if (!menu.getSlot(0).getItem().is(Items.DIAMOND) || ++phaseTicks < 20) return;
+      screenshot(client, prefix + "chest-menu");
+      System.out.println(
+          "SLIMIC CLIENT SMOKE PASSED: rename, upgrades, mining, transport, 54-slot paging, chest"
+              + " menu, rendering; JEI="
+              + jei
+              + (jei
+                  ? ", mining recipes="
+                      + JeiClientSmoke.miningRecipes()
+                      + ", transport recipes="
+                      + JeiClientSmoke.transportRecipes()
+                      + ", chest recipes="
+                      + JeiClientSmoke.chestRecipes()
+                  : ""));
+      phase = 8;
       client.stop();
     }
   }
@@ -175,7 +304,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.3-" + suffix + ".png")
+            .resolve("../verification/0.1.4-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());
