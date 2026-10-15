@@ -272,11 +272,12 @@ public final class MiningSlimeGameTests {
   public static void staminaExhaustionRestsThenResumes(GameTestHelper helper) {
     MiningSlime miner = miner(helper, new ItemStack(Items.IRON_PICKAXE));
     seed(miner, 0, 0, 0);
-    helper.setBlock(ORE, Blocks.STONE);
+    BlockPos restingOre = ORE.above();
+    helper.setBlock(restingOre, Blocks.STONE);
     helper.runAfterDelay(
         40,
         () -> {
-          helper.assertBlockPresent(Blocks.STONE, ORE);
+          helper.assertBlockPresent(Blocks.STONE, restingOre);
           helper.assertTrue(
               miner.getMiningStatus() == MiningSlime.Status.RESTING
                   && miner.getStamina() > 0
@@ -285,7 +286,7 @@ public final class MiningSlimeGameTests {
         });
     helper.succeedWhen(
         () -> {
-          helper.assertBlockPresent(Blocks.AIR, ORE);
+          helper.assertBlockPresent(Blocks.AIR, restingOre);
           helper.assertTrue(
               miner.getActivityProgress() == 1, "Recovered stamina must allow work to resume");
           miner.setWorking(false);
@@ -366,10 +367,10 @@ public final class MiningSlimeGameTests {
         !menu.getSlot(0).mayPlace(new ItemStack(Items.IRON_AXE)),
         "The equipment slot must reject non-pickaxes");
     helper.assertTrue(
-        !menu.quickMoveStack(owner, 55).isEmpty() && miner.getPickaxe().is(Items.IRON_PICKAXE),
+        !menu.quickMoveStack(owner, 56).isEmpty() && miner.getPickaxe().is(Items.IRON_PICKAXE),
         "Shift-click must equip the pickaxe");
     helper.assertTrue(
-        !menu.quickMoveStack(owner, 1).isEmpty() && miner.getBag().getStackInSlot(0).isEmpty(),
+        !menu.quickMoveStack(owner, 2).isEmpty() && miner.getBag().getStackInSlot(0).isEmpty(),
         "Shift-click must withdraw bag contents");
     Player stranger = helper.makeMockSurvivalPlayer();
     stranger.moveTo(owner.position());

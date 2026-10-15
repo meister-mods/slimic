@@ -1,7 +1,9 @@
 package io.github.meistermods.slimic.compat.jei;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
 import io.github.meistermods.slimic.registry.ModItems;
@@ -57,6 +59,17 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 Ingredient.EMPTY,
                 Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
                 Ingredient.of(Items.CHEST))));
+    recipes.add(
+        new ShapelessRecipe(
+            ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "herald_slime/firework"),
+            "slimic:herald_slime",
+            CraftingBookCategory.MISC,
+            HeraldSlimeRecipe.specialize(
+                new ItemStack(ModItems.FRIENDLY_SLIME.get()), HeraldSlime.defaultFirework()),
+            NonNullList.of(
+                Ingredient.EMPTY,
+                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                Ingredient.of(Items.FIREWORK_ROCKET))));
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
     registration.addIngredientInfo(
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),
@@ -74,5 +87,13 @@ public final class SlimicJeiPlugin implements IModPlugin {
         new ItemStack(ModItems.SLIME_CHEST.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.slime_chest"));
+    registration.addIngredientInfo(
+        new ItemStack(ModItems.HERALD_SLIME.get()),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.herald_slime"));
+    registration.addIngredientInfo(
+        new ItemStack(ModItems.SLIME_TUNER.get()),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.slime_tuner"));
   }
 }

@@ -2,12 +2,18 @@ package io.github.meistermods.slimic.gametest;
 
 import io.github.meistermods.slimic.block.SlimeChestBlockEntity;
 import io.github.meistermods.slimic.client.SlimeScreen;
+import io.github.meistermods.slimic.client.TunerScreen;
+import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.menu.SlimeMenu;
+import io.github.meistermods.slimic.menu.TunerMenu;
 import io.github.meistermods.slimic.registry.ModBlocks;
+import io.github.meistermods.slimic.registry.ModCreativeTabs;
 import io.github.meistermods.slimic.registry.ModEntities;
+import io.github.meistermods.slimic.registry.ModItems;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +27,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -48,6 +56,10 @@ public final class SlimeClientSmoke {
     if (++ticks > 2400) throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (phase >= 8) {
+      toolsSmoke(client);
+      return;
+    }
     if (phase >= 4) {
       transportSmoke(client);
       return;
@@ -80,6 +92,8 @@ public final class SlimeClientSmoke {
                 miner.setYHeadRot(90);
                 miner.setNoAi(true);
                 miner.tame(owner);
+                miner.dye(owner, new ItemStack(Items.RED_DYE));
+                miner.setTool(1, new ItemStack(Items.IRON_SHOVEL));
                 miner.setWorking(false);
                 miner.setCustomName(Component.literal("Quartz"));
                 miner.setCustomNameVisible(true);
@@ -187,6 +201,7 @@ public final class SlimeClientSmoke {
                 carrier.setYHeadRot(90);
                 carrier.setNoAi(true);
                 carrier.tame(owner);
+                carrier.dye(owner, new ItemStack(Items.BLUE_DYE));
                 carrier.setWorking(false);
                 carrier.setCustomName(Component.literal("Porter"));
                 carrier.setCustomNameVisible(true);
@@ -282,19 +297,160 @@ public final class SlimeClientSmoke {
     if (phase == 7 && client.player.containerMenu instanceof ChestMenu menu) {
       if (!menu.getSlot(0).getItem().is(Items.DIAMOND) || ++phaseTicks < 20) return;
       screenshot(client, prefix + "chest-menu");
+      client.player.closeContainer();
+      int carrierId = carrier.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                var level = owner.serverLevel();
+                if (level.getEntity(carrierId) != null) level.getEntity(carrierId).discard();
+                HeraldSlime herald = ModEntities.HERALD_SLIME.get().create(level);
+                herald.moveTo(10.5, 101, 8.5, 90, 0);
+                herald.setNoAi(true);
+                herald.tame(owner);
+                herald.dye(owner, new ItemStack(Items.WHITE_DYE));
+                herald.setCustomName(Component.literal("Beacon"));
+                herald.setCustomNameVisible(true);
+                herald.setDelayMinutes(3);
+                level.addFreshEntity(herald);
+              });
+      phase = 8;
+      phaseTicks = 0;
+    }
+  }
+
+  private static void toolsSmoke(Minecraft client) {
+    boolean jei = ModList.get().isLoaded("jei");
+    String prefix = jei ? "jei-" : "no-jei-";
+    var heralds =
+        client.level.getEntitiesOfClass(
+            HeraldSlime.class, client.player.getBoundingBox().inflate(12));
+    if (heralds.isEmpty()) return;
+    HeraldSlime herald = heralds.get(0);
+    if (phase == 8) {
+      if (herald.getDyeColorId() != DyeColor.WHITE.getId() || ++phaseTicks < 40) return;
+      screenshot(client, prefix + "herald-world");
+      int id = herald.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                ((HeraldSlime) owner.serverLevel().getEntity(id))
+                    .mobInteract(owner, InteractionHand.MAIN_HAND);
+              });
+      phase = 9;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 9 && client.screen instanceof SlimeScreen screen) {
+      if (screen.getMenu().data(SlimeMenu.ALERT_MINUTES) != 3 || ++phaseTicks < 20) return;
+      client.gameMode.handleInventoryButtonClick(screen.getMenu().containerId, SlimeMenu.DELAY_UP);
+      phase = 10;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 10 && client.screen instanceof SlimeScreen screen) {
+      if (screen.getMenu().data(SlimeMenu.ALERT_MINUTES) != 4 || ++phaseTicks < 20) return;
+      screenshot(client, prefix + "herald-menu");
+      client.player.closeContainer();
+      int id = herald.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+                owner.inventoryMenu.broadcastChanges();
+                SlimeTunerItem.open(owner, (HeraldSlime) owner.serverLevel().getEntity(id));
+              });
+      phase = 11;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 11 && client.screen instanceof TunerScreen screen) {
+      if (screen.getMenu().value(SlimeStat.HEALTH) != 16 || ++phaseTicks < 20) return;
+      var fields =
+          screen.children().stream()
+              .filter(EditBox.class::isInstance)
+              .map(EditBox.class::cast)
+              .toList();
+      if (fields.size() != 12) throw new IllegalStateException("Tuner field count");
+      fields.get(0).setValue("48");
+      fields.get(2).setValue("12");
+      fields.get(4).setValue("2.5");
+      fields.get(5).setValue("12");
+      fields.get(6).setValue("200");
+      fields.get(9).setValue("35");
+      fields.get(10).setValue("150");
+      fields.get(11).setValue("12");
+      screen.children().stream()
+          .filter(Button.class::isInstance)
+          .map(Button.class::cast)
+          .filter(
+              button ->
+                  button
+                      .getMessage()
+                      .getString()
+                      .equals(Component.translatable("screen.slimic.apply").getString()))
+          .findFirst()
+          .orElseThrow()
+          .onPress();
+      phase = 12;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 12 && client.screen instanceof TunerScreen screen) {
+      TunerMenu menu = screen.getMenu();
+      if (menu.result() != 1
+          || menu.health() != 35
+          || menu.value(SlimeStat.WORK_SPEED) != 2.5
+          || ++phaseTicks < 20) return;
+      CreativeModeTabs.tryRebuildTabContents(
+          client.level.enabledFeatures(), true, client.level.registryAccess());
+      var items = ModCreativeTabs.SLIMIC.get().getDisplayItems();
+      if (items.size() != 6
+          || items.stream().noneMatch(stack -> stack.is(ModItems.SLIME_TUNER.get())))
+        throw new IllegalStateException("Creative tab entries");
+      ItemStack miner =
+          items.stream()
+              .filter(stack -> stack.is(ModItems.MINING_SLIME.get()))
+              .findFirst()
+              .orElseThrow();
+      if (miner.hasTag()) throw new IllegalStateException("Creative miner has initial equipment");
+      if (jei && JeiClientSmoke.heraldRecipes() != 1) return;
+      screenshot(client, prefix + "tuner");
       System.out.println(
-          "SLIMIC CLIENT SMOKE PASSED: rename, upgrades, mining, transport, 54-slot paging, chest"
-              + " menu, rendering; JEI="
+          "SLIMIC CLIENT SMOKE PASSED: rename, upgrades, mining, transport, 54-slot paging, chest,"
+              + " red/blue/white dye rendering, Herald delay, tuner packet and UI, six creative"
+              + " entries; JEI="
               + jei
               + (jei
-                  ? ", mining recipes="
+                  ? ", mining="
                       + JeiClientSmoke.miningRecipes()
-                      + ", transport recipes="
+                      + ", transport="
                       + JeiClientSmoke.transportRecipes()
-                      + ", chest recipes="
+                      + ", herald="
+                      + JeiClientSmoke.heraldRecipes()
+                      + ", chest="
                       + JeiClientSmoke.chestRecipes()
                   : ""));
-      phase = 8;
+      phase = 13;
       client.stop();
     }
   }
@@ -304,7 +460,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.4-" + suffix + ".png")
+            .resolve("../verification/0.1.5-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

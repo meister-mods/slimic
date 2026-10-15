@@ -504,7 +504,7 @@ public final class TransportSlimeGameTests {
     MiningSlime miner = miner(helper, carrier, new ItemStack(Items.IRON_PICKAXE));
     for (int slot = 0; slot < 9; slot++)
       miner.getBag().setStackInSlot(slot, new ItemStack(Items.DIAMOND, 64));
-    helper.setBlock(ore(helper, miner), Blocks.STONE);
+    helper.setBlock(ore(helper, miner).above(), Blocks.STONE);
     helper.runAfterDelay(
         100,
         () -> {

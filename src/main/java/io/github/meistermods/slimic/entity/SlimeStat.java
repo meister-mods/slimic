@@ -45,6 +45,8 @@ public enum SlimeStat {
 
   public double value(FriendlySlime slime) {
     if (attribute != null) return slime.getAttributeValue(attribute);
+    if (slime.hasTunedStat(this))
+      return slime.tunedStat(this) * (this == CAPACITY ? slime.capacityMultiplier() : 1);
     int level = slime.getStatLevel(this);
     return switch (this) {
       case WORK_SPEED -> 1.0 + increment * level;
@@ -59,6 +61,44 @@ public enum SlimeStat {
     if (attribute != null) {
       var instance = slime.getAttribute(attribute);
       instance.setBaseValue(instance.getBaseValue() + increment);
+    } else if (slime.hasTunedStat(this)) {
+      slime.setTunedStat(this, Math.min(maxTunedValue(), slime.tunedStat(this) + increment));
     }
+  }
+
+  public double minTunedValue() {
+    return this == HEALTH || this == CAPACITY || this == STAMINA ? 1 : this == WORK_SPEED ? 0.1 : 0;
+  }
+
+  public double maxTunedValue() {
+    return switch (this) {
+      case HEALTH -> 1024;
+      case ATTACK -> 2048;
+      case DEFENSE -> 30;
+      case MOVEMENT_SPEED -> 10;
+      case WORK_SPEED, REACH -> 32;
+      case CAPACITY -> 27;
+      case STAMINA -> 2000;
+      case DETECTION_RANGE -> 64;
+    };
+  }
+
+  public boolean acceptsTunedValue(double value) {
+    return Double.isFinite(value)
+        && value >= minTunedValue()
+        && value <= maxTunedValue()
+        && (this != CAPACITY || value == Math.rint(value));
+  }
+
+  public void tune(FriendlySlime slime, double value) {
+    if (!acceptsTunedValue(value)) throw new IllegalArgumentException("Invalid stat value");
+    if (attribute != null) slime.getAttribute(attribute).setBaseValue(value);
+    else slime.setTunedStat(this, value);
+  }
+
+  public double tunerValue(FriendlySlime slime) {
+    return attribute != null
+        ? slime.getAttributeBaseValue(attribute)
+        : value(slime) / (this == CAPACITY ? slime.capacityMultiplier() : 1);
   }
 }

@@ -7,9 +7,9 @@ import io.github.meistermods.slimic.entity.MiningSlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.SlimeOuterLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -20,8 +20,8 @@ public final class FriendlySlimeRenderer
       ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "textures/entity/friendly_slime.png");
 
   public FriendlySlimeRenderer(EntityRendererProvider.Context context) {
-    super(context, new SlimeModel<>(context.bakeLayer(ModelLayers.SLIME)), 0.5F);
-    addLayer(new SlimeOuterLayer<>(this, context.getModelSet()));
+    super(context, new TintedSlimeModel(context.bakeLayer(ModelLayers.SLIME)), 0.5F);
+    addLayer(new TintedSlimeOuterLayer(this, context));
     addLayer(new MiningSlimeLayer(this, context));
     addLayer(new TransportSlimeLayer(this, context));
   }
@@ -38,6 +38,14 @@ public final class FriendlySlimeRenderer
   @Override
   public ResourceLocation getTextureLocation(FriendlySlime slime) {
     return TEXTURE;
+  }
+
+  @Override
+  protected RenderType getRenderType(
+      FriendlySlime slime, boolean visible, boolean translucent, boolean glowing) {
+    if (slime.getDyeColorId() >= 0 && (visible || translucent))
+      return DyedSlimeRenderType.forTexture(TEXTURE);
+    return super.getRenderType(slime, visible, translucent, glowing);
   }
 
   @Override

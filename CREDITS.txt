@@ -67,6 +67,7 @@ Forge Mod Loader downloads components from the Minecraft Coder Pack
 
 Slimic base assets
 
-The friendly slime and item textures use Minecraft's slime and slime-ball artwork
-by Mojang Studios.
+The companion entity texture uses Minecraft's slime artwork by Mojang Studios.
+Slimic item icons adapt the Minecraft slime-ball silhouette with specialization
+colors and symbols. Minecraft artwork belongs to Mojang Studios.
 

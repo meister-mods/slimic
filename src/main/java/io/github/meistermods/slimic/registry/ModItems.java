@@ -2,7 +2,9 @@ package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.item.HeraldSlimeItem;
 import io.github.meistermods.slimic.item.MiningSlimeItem;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.item.TransportSlimeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -27,4 +29,9 @@ public final class ModItems {
           "slime_chest", () -> new BlockItem(ModBlocks.SLIME_CHEST.get(), new Item.Properties()));
 
   private ModItems() {}
+
+  public static final RegistryObject<Item> HERALD_SLIME =
+      ITEMS.register("herald_slime", () -> new HeraldSlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> SLIME_TUNER =
+      ITEMS.register("slime_tuner", () -> new SlimeTunerItem(new Item.Properties().stacksTo(1)));
 }

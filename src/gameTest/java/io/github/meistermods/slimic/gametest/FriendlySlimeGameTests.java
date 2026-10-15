@@ -70,7 +70,7 @@ public final class FriendlySlimeGameTests {
             .getRecipeFor(RecipeType.CRAFTING, grid, helper.getLevel())
             .isEmpty(),
         "Seven slime blocks must not match");
-    grid.setItem(0, new ItemStack(Items.SLIME_BLOCK));
+    grid.setItem(0, new ItemStack(Items.SLIME_BALL));
     grid.setItem(4, new ItemStack(Items.DIRT));
     helper.assertTrue(
         helper
@@ -292,7 +292,7 @@ public final class FriendlySlimeGameTests {
             3,
             3);
     for (int slot = 0; slot < 9; slot++) {
-      grid.setItem(slot, new ItemStack(slot == 4 ? core : Items.SLIME_BLOCK));
+      grid.setItem(slot, new ItemStack(slot == 4 ? core : Items.SLIME_BALL));
     }
     return grid;
   }

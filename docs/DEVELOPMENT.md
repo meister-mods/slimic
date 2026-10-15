@@ -63,7 +63,7 @@ Tests use a structure loaded one block above its marker, so the fixture floor is
 
 Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
 
-Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe uses the native main-hand equipment slot, keeping client rendering and item damage synchronized. Mining progress is bounded by one completed block per tick, searches process a limited number of nearby positions, and no neighbouring chunk is loaded for target discovery.
+Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe and shovel use the native main-hand and off-hand equipment slots, keeping client rendering and item damage synchronized. Mining progress is bounded by one completed block per tick, searches process a limited number of chunk positions, and no neighbouring chunk is loaded for target discovery.
 
 The crafting serializer copies the Friendly Slime's stored traits and the exact pickaxe stack into the result. JEI is a compile-only API dependency with optional development runtime support. Use `./gradlew runClient -PenableJei=false` or `./gradlew runGameTestServer -PenableJei=false` to validate operation without JEI. Common game logic does not reference JEI or client classes.
 
@@ -76,3 +76,13 @@ Transport tasks query loaded chunks for Slime Chest block entities and same-owne
 Slime Chests use a standard 27-slot container menu and Forge item capability, with normal inventory persistence, locks, comparator updates, and separate block/content drops. Regular chests are excluded from logistics.
 
 Validation covers all Capacity levels, both bag pages, ownership, full and partial destinations, concurrent tool supply, tool data and breakage, mining resumption, chest persistence/automation/drops, and transport recovery. Client checks cover both specializations, page synchronization, chest menus, model resources, and optional JEI recipes.
+
+## Quarry, tuning, and herald persistence
+
+Mining uses native main-hand pickaxe and off-hand shovel equipment. `MiningQuarry` retains the chunk's entry elevation and current layer; same-chunk release resumes it, while another chunk creates a new plan and resumes work. The perimeter plan reserves two-wide full-block treads with flat corners. Repair consumes items from `slimic:quarry_supports` and honors placement events. Target scans are bounded to 256 positions per layer and a limited number of empty layers per update.
+
+Dye IDs and custom work stats use synchronized entity data. Native attribute tuning edits base values and preserves modifiers. The creative-only tuner validates the active menu, held tool, dimension, distance, finite values, ranges, and occupied bag slots on the server before applying any changes.
+
+Herald recipes store the exact rocket stack. Signals are vanilla firework entities marked for damage suppression. Workers save their continuous blocked duration and episode identifier; heralds save warning history and cooldowns so recovery cannot repeat an existing warning. Server configuration supplies the default delay.
+
+Client rendering applies a brightness-preserving dye shader to the original slime texture while leaving equipment unchanged. Optional JEI previews include every specialization. Validate client shader loading, translated screens, tuner packets, creative defaults, two tool slots, and JEI enabled/disabled alongside dedicated-server tests.

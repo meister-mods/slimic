@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import net.minecraft.world.entity.EntityType;
@@ -47,10 +48,20 @@ public final class ModEntities {
 
   private ModEntities() {}
 
+  public static final RegistryObject<EntityType<HeraldSlime>> HERALD_SLIME =
+      ENTITY_TYPES.register(
+          "herald_slime",
+          () ->
+              EntityType.Builder.of(HeraldSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":herald_slime"));
+
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
     event.put(FRIENDLY_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(MINING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(TRANSPORT_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(HERALD_SLIME.get(), FriendlySlime.createAttributes().build());
   }
 }

@@ -63,6 +63,11 @@ public abstract class BagSlime extends FriendlySlime {
   protected abstract String bagTagName();
 
   @Override
+  protected void onStatsTuned() {
+    bagRevision++;
+  }
+
+  @Override
   public boolean upgradeStat(SlimeStat stat) {
     boolean upgraded = super.upgradeStat(stat);
     if (upgraded && stat == SlimeStat.CAPACITY) bagRevision++;

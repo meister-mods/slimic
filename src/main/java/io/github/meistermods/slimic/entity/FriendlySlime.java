@@ -1,6 +1,7 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.ModItems;
 import javax.annotation.Nullable;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -41,6 +43,12 @@ import net.minecraftforge.network.NetworkHooks;
 public class FriendlySlime extends TamableAnimal {
   private static final EntityDataAccessor<CompoundTag> STAT_LEVELS =
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private static final EntityDataAccessor<CompoundTag> TUNED_STATS =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private static final EntityDataAccessor<Integer> DYE_COLOR =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.INT);
+  private int blockedWorkTicks;
+  private long blockedEpisode;
   private int statPoints;
   private int activityProgress;
   private int earnedPoints;
@@ -69,6 +77,59 @@ public class FriendlySlime extends TamableAnimal {
   protected void defineSynchedData() {
     super.defineSynchedData();
     entityData.define(STAT_LEVELS, new CompoundTag());
+    entityData.define(TUNED_STATS, new CompoundTag());
+    entityData.define(DYE_COLOR, -1);
+  }
+
+  public int getDyeColorId() {
+    return entityData.get(DYE_COLOR);
+  }
+
+  public boolean dye(Player player, ItemStack stack) {
+    if (!player.getUUID().equals(getOwnerUUID())
+        || !(stack.getItem() instanceof DyeItem dye)
+        || !isAlive()) return false;
+    if (!level().isClientSide) {
+      entityData.set(DYE_COLOR, dye.getDyeColor().getId());
+      if (!player.getAbilities().instabuild) stack.shrink(1);
+    }
+    return true;
+  }
+
+  public boolean hasTunedStat(SlimeStat stat) {
+    return entityData.get(TUNED_STATS).contains(stat.key());
+  }
+
+  public double tunedStat(SlimeStat stat) {
+    return entityData.get(TUNED_STATS).getDouble(stat.key());
+  }
+
+  public void setTunedStat(SlimeStat stat, double value) {
+    CompoundTag tuned = entityData.get(TUNED_STATS).copy();
+    tuned.putDouble(stat.key(), value);
+    entityData.set(TUNED_STATS, tuned);
+    stamina = Math.min(stamina, getMaxStamina());
+    onStatsTuned();
+  }
+
+  protected void onStatsTuned() {}
+
+  public void setTunedVitals(float health, float energy, int points) {
+    setHealth(Mth.clamp(health, 0, getMaxHealth()));
+    stamina = Mth.clamp(energy, 0, getMaxStamina());
+    statPoints = Mth.clamp(points, 0, 32767);
+  }
+
+  public boolean isWorkBlocked() {
+    return false;
+  }
+
+  public int getBlockedWorkTicks() {
+    return blockedWorkTicks;
+  }
+
+  public long getBlockedEpisode() {
+    return blockedEpisode;
   }
 
   public int getStatLevel(SlimeStat stat) {
@@ -167,6 +228,10 @@ public class FriendlySlime extends TamableAnimal {
     tag.putInt("ActivityProgress", activityProgress);
     tag.putInt("EarnedPoints", earnedPoints);
     tag.putFloat("Stamina", stamina);
+    tag.put("TunedStats", entityData.get(TUNED_STATS).copy());
+    tag.putInt("SlimeDyeColor", getDyeColorId());
+    tag.putInt("BlockedWorkTicks", blockedWorkTicks);
+    tag.putLong("BlockedEpisode", blockedEpisode);
   }
 
   @Override
@@ -179,6 +244,19 @@ public class FriendlySlime extends TamableAnimal {
           Mth.clamp(tag.getCompound("SlimeStats").getInt(stat.key()), 0, stat.maxLevel()));
     }
     entityData.set(STAT_LEVELS, levels);
+    CompoundTag tuned = new CompoundTag();
+    for (SlimeStat stat : SlimeStat.values()) {
+      if (tag.getCompound("TunedStats").contains(stat.key())) {
+        double value = tag.getCompound("TunedStats").getDouble(stat.key());
+        if (stat.acceptsTunedValue(value)) tuned.putDouble(stat.key(), value);
+      }
+    }
+    entityData.set(TUNED_STATS, tuned);
+    entityData.set(
+        DYE_COLOR,
+        tag.contains("SlimeDyeColor") ? Mth.clamp(tag.getInt("SlimeDyeColor"), -1, 15) : -1);
+    blockedWorkTicks = Mth.clamp(tag.getInt("BlockedWorkTicks"), 0, Integer.MAX_VALUE);
+    blockedEpisode = Math.max(0, tag.getLong("BlockedEpisode"));
     statPoints = Mth.clamp(tag.getInt("StatPoints"), 0, 32767);
     earnedPoints = Mth.clamp(tag.getInt("EarnedPoints"), 0, 1_000_000);
     activityProgress = Mth.clamp(tag.getInt("ActivityProgress"), 0, getNextPointCost() - 1);
@@ -203,6 +281,12 @@ public class FriendlySlime extends TamableAnimal {
     oldSquish = squish;
     squish += (targetSquish - squish) * 0.5F;
     super.tick();
+    if (!level().isClientSide) {
+      if (isWorking() && isWorkBlocked()) {
+        if (blockedWorkTicks == 0) blockedEpisode++;
+        if (blockedWorkTicks < Integer.MAX_VALUE) blockedWorkTicks++;
+      } else blockedWorkTicks = 0;
+    }
     if (!level().isClientSide && tickCount % 20 == 0 && !isWorking()) {
       stamina = Math.min(getMaxStamina(), stamina + 2.0F);
     }
@@ -237,9 +321,15 @@ public class FriendlySlime extends TamableAnimal {
 
   @Override
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
+    ItemStack held = player.getItemInHand(hand);
     if (player.isShiftKeyDown()) {
       return capture(player);
     }
+    if (held.getItem() instanceof SlimeTunerItem) return SlimeTunerItem.open(player, this);
+    if (held.getItem() instanceof DyeItem)
+      return dye(player, held)
+          ? InteractionResult.sidedSuccess(level().isClientSide)
+          : InteractionResult.FAIL;
     if (player.getUUID().equals(getOwnerUUID())) {
       if (player instanceof ServerPlayer serverPlayer) {
         NetworkHooks.openScreen(

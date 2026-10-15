@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-10-15
+
+### Added
+
+- A Creative-only Slime Tuner with a separate screen for base stats, current health, stamina, and unused points.
+- Herald slimes crafted with a Friendly Slime and any firework rocket, preserving its design and signaling stalled same-owner workers without consuming more rockets or dealing damage.
+- Configurable herald delays, persistent warning state, and a white small-ball firework for Creative defaults.
+- A dedicated Slimic creative tab, six distinct item textures, and dye colors for every companion type.
+- Whole-chunk excavation with a persistent, two-block-wide perimeter staircase and repair using common building blocks from the bag.
+- Separate pickaxe and shovel equipment slots, automatic bag-spare replacement, and native held-tool orientation.
+
+### Changed
+
+- Friendly Slime crafting now uses eight slime balls around soul sand or soul soil.
+- Releasing a miner in another chunk starts a fresh quarry automatically; releasing in the same chunk preserves its progress and order.
+- Mining recipe results equip the exact input pickaxe; Creative default items have empty equipment.
+- Recovery preserves dye, tuning, firework designs, alert settings, blocked-work timers, tools, cargo, and quarry progress.
+
 ## [0.1.4] - 2026-10-15
 
 ### Added

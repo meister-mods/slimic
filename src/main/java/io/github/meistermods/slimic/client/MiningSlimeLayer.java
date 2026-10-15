@@ -85,17 +85,17 @@ public final class MiningSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
         buffers.getBuffer(RenderType.entityCutoutNoCull(LAMP_TEXTURE)),
         15728880,
         OverlayTexture.NO_OVERLAY);
-    if (!miner.getPickaxe().isEmpty()) {
+    if (!miner.getRenderedTool().isEmpty()) {
       pose.pushPose();
-      pose.translate(0.54, 1.14, -0.26);
-      pose.mulPose(Axis.ZP.rotationDegrees(150.0F));
-      pose.mulPose(Axis.YP.rotationDegrees(90.0F));
+      pose.translate(0.44, 1.26, -0.10);
+      pose.mulPose(Axis.XP.rotationDegrees(90.0F));
+      pose.mulPose(Axis.YP.rotationDegrees(180.0F));
       pose.scale(0.55F, 0.55F, 0.55F);
       context
           .getItemRenderer()
           .renderStatic(
               slime,
-              miner.getPickaxe(),
+              miner.getRenderedTool(),
               ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
               false,
               pose,

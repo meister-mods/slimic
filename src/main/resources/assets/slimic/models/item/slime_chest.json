@@ -1,3 +1,6 @@
 {
-  "parent": "slimic:block/slime_chest"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "slimic:item/slime_chest"
+  }
 }

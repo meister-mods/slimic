@@ -1,6 +1,7 @@
 package io.github.meistermods.slimic.client;
 
 import io.github.meistermods.slimic.entity.BagSlime;
+import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
@@ -60,6 +61,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     addOrder(SlimeMenu.FOLLOW, "follow", 194);
     addOrder(SlimeMenu.WAIT, "wait", 250);
     if (menu.slime() instanceof MiningSlime) addOrder(SlimeMenu.WORK, "mine", 306);
+    if (menu.slime() instanceof HeraldSlime) {
+      addOrder(SlimeMenu.WORK, "monitor", 306);
+      addRenderableWidget(
+          Button.builder(Component.literal("-"), button -> sendButton(SlimeMenu.DELAY_DOWN))
+              .bounds(leftPos + 194, topPos + 112, 24, 18)
+              .build());
+      addRenderableWidget(
+          Button.builder(Component.literal("+"), button -> sendButton(SlimeMenu.DELAY_UP))
+              .bounds(leftPos + 332, topPos + 112, 24, 18)
+              .build());
+    }
     if (menu.slime() instanceof TransportSlime) addOrder(SlimeMenu.WORK, "transport", 306);
     if (menu.slime() instanceof TransportSlime) {
       previousPage =
@@ -176,7 +188,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.health",
             menu.data(SlimeMenu.HEALTH) / 10.0F,
             (int) menu.value(SlimeStat.HEALTH)),
-        menu.slime() instanceof MiningSlime ? 216 : 194,
+        menu.slime() instanceof MiningSlime ? 234 : 194,
         49,
         0xffe5e9e9,
         false);
@@ -186,7 +198,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.stamina",
             menu.data(SlimeMenu.STAMINA) / 10,
             (int) menu.value(SlimeStat.STAMINA)),
-        menu.slime() instanceof MiningSlime ? 216 : 194,
+        menu.slime() instanceof MiningSlime ? 234 : 194,
         62,
         0xffe5e9e9,
         false);
@@ -223,6 +235,15 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
+    } else if (menu.slime() instanceof HeraldSlime) {
+      graphics.drawWordWrap(
+          font, Component.translatable("screen.slimic.herald_help"), 194, 84, 162, 0xffb4c9d1);
+      graphics.drawCenteredString(
+          font,
+          Component.translatable("screen.slimic.alert_minutes", menu.data(SlimeMenu.ALERT_MINUTES)),
+          275,
+          117,
+          0xffe5e9e9);
     } else {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.specialize"), 194, 88, 162, 0xffb4c9d1);

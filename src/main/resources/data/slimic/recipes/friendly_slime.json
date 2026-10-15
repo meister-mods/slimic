@@ -8,11 +8,15 @@
   ],
   "key": {
     "S": {
-      "item": "minecraft:slime_block"
+      "item": "minecraft:slime_ball"
     },
     "C": [
-      { "item": "minecraft:soul_sand" },
-      { "item": "minecraft:soul_soil" }
+      {
+        "item": "minecraft:soul_sand"
+      },
+      {
+        "item": "minecraft:soul_soil"
+      }
     ]
   },
   "result": {

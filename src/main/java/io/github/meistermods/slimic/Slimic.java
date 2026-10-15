@@ -1,14 +1,15 @@
 package io.github.meistermods.slimic;
 
+import io.github.meistermods.slimic.config.SlimicConfig;
 import io.github.meistermods.slimic.network.ModNetwork;
 import io.github.meistermods.slimic.registry.ModBlocks;
+import io.github.meistermods.slimic.registry.ModCreativeTabs;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
 import io.github.meistermods.slimic.registry.ModMenus;
 import io.github.meistermods.slimic.registry.ModRecipes;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Slimic.MOD_ID)
@@ -23,16 +24,8 @@ public final class Slimic {
     ModItems.ITEMS.register(bus);
     ModMenus.MENUS.register(bus);
     ModRecipes.SERIALIZERS.register(bus);
+    ModCreativeTabs.TABS.register(bus);
+    context.registerConfig(ModConfig.Type.SERVER, SlimicConfig.SPEC);
     ModNetwork.register();
-    bus.addListener(this::addCreativeItems);
-  }
-
-  private void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-    if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
-      event.accept(ModItems.FRIENDLY_SLIME);
-      event.accept(ModItems.MINING_SLIME);
-      event.accept(ModItems.TRANSPORT_SLIME);
-    }
-    if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) event.accept(ModItems.SLIME_CHEST);
   }
 }

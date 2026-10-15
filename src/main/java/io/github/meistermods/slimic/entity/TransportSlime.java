@@ -49,6 +49,7 @@ public final class TransportSlime extends BagSlime {
 
   private boolean working = true;
   private boolean resting;
+  private boolean travelBlocked;
   private BlockPos home;
   private Status status = Status.IDLE;
   private Job job;
@@ -82,6 +83,7 @@ public final class TransportSlime extends BagSlime {
   @Override
   public void setWorking(boolean value) {
     working = value;
+    if (!value) travelBlocked = false;
     setWaiting(false);
     clearJob();
     status = Status.IDLE;
@@ -90,6 +92,16 @@ public final class TransportSlime extends BagSlime {
   public Status getTransportStatus() {
     if (isOrderedToSit()) return Status.WAITING;
     return working ? status : Status.FOLLOWING;
+  }
+
+  @Override
+  public boolean isWorkBlocked() {
+    return isWorking()
+        && (travelBlocked
+            || status == Status.NO_CHEST
+            || status == Status.CHESTS_FULL
+            || status == Status.UNREACHABLE
+            || status == Status.RESTING);
   }
 
   public BlockPos getWorkOrigin() {
@@ -270,6 +282,7 @@ public final class TransportSlime extends BagSlime {
       }
     }
     status = chests.isEmpty() ? Status.NO_CHEST : fullWorker ? Status.CHESTS_FULL : Status.IDLE;
+    if (status == Status.IDLE) travelBlocked = false;
   }
 
   private boolean validJob() {
@@ -333,6 +346,7 @@ public final class TransportSlime extends BagSlime {
     cooldown = Math.max(1, (int) Math.ceil(20.0 / SlimeStat.WORK_SPEED.value(this)));
     nextSearchTick = 0;
     status = actions > 0 ? Status.IDLE : Status.UNREACHABLE;
+    if (actions > 0) travelBlocked = false;
   }
 
   private boolean inReach(Vec3 destination) {
@@ -356,6 +370,8 @@ public final class TransportSlime extends BagSlime {
     super.addAdditionalSaveData(tag);
     tag.putBoolean("TransportWorking", working);
     tag.putBoolean("TransportResting", resting);
+    tag.putBoolean("TransportTravelBlocked", travelBlocked);
+    tag.putInt("TransportStatus", status.ordinal());
     if (home != null) tag.putLong("TransportHome", home.asLong());
   }
 
@@ -364,6 +380,12 @@ public final class TransportSlime extends BagSlime {
     super.readAdditionalSaveData(tag);
     working = !tag.contains("TransportWorking") || tag.getBoolean("TransportWorking");
     resting = tag.getBoolean("TransportResting");
+    travelBlocked = tag.getBoolean("TransportTravelBlocked");
+    int savedStatus = tag.getInt("TransportStatus");
+    status =
+        savedStatus >= 0 && savedStatus < Status.values().length
+            ? Status.values()[savedStatus]
+            : Status.IDLE;
     home = tag.contains("TransportHome") ? BlockPos.of(tag.getLong("TransportHome")) : null;
     clearJob();
   }
@@ -429,6 +451,7 @@ public final class TransportSlime extends BagSlime {
       if (tickCount % 10 == 0)
         getNavigation().moveTo(destination.x, destination.y, destination.z, 1.0);
       if (++travelTicks > 400) {
+        travelBlocked = true;
         if (job == Job.DEPOSIT || job == Job.FETCH_TOOL)
           blockedChests.put(chestTarget, server.getGameTime() + 200);
         else blockedWorkers.put(workerTarget.getUUID(), server.getGameTime() + 200);

@@ -32,6 +32,10 @@ public final class JeiClientSmoke implements IModPlugin {
     return recipes("slime_chest");
   }
 
+  public static long heraldRecipes() {
+    return recipes("herald_slime/");
+  }
+
   private static long recipes(String path) {
     if (runtime == null) return 0;
     return runtime
