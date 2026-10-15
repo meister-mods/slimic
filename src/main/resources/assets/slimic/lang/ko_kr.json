@@ -1,0 +1,11 @@
+{
+  "item.slimic.friendly_slime": "친근한 슬라임",
+  "item.slimic.friendly_slime.tooltip": "블록이나 물에 사용하면 자신에게 길들여진 슬라임을 소환합니다.",
+  "item.slimic.friendly_slime.stored_tooltip": "생명력과 다른 특성을 유지한 채 이 슬라임을 다시 소환합니다.",
+  "item.slimic.friendly_slime.capture_tooltip": "자신의 슬라임을 Shift+우클릭하면 인벤토리로 회수합니다.",
+  "entity.slimic.friendly_slime": "친근한 슬라임",
+  "message.slimic.friendly_slime.waiting": "슬라임이 이곳에서 기다립니다.",
+  "message.slimic.friendly_slime.following": "슬라임이 주인을 따라옵니다.",
+  "message.slimic.friendly_slime.captured": "슬라임을 인벤토리로 회수했습니다.",
+  "message.slimic.friendly_slime.inventory_full": "슬라임을 회수하려면 인벤토리에 빈 공간이 필요합니다."
+}

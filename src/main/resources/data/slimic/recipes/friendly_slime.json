@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SCS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:slime_block"
+    },
+    "C": [
+      { "item": "minecraft:soul_sand" },
+      { "item": "minecraft:soul_soil" }
+    ]
+  },
+  "result": {
+    "item": "slimic:friendly_slime",
+    "count": 1
+  }
+}

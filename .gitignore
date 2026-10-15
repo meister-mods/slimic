@@ -1,0 +1,39 @@
+# Eclipse
+/bin/
+/eclipse/
+*.launch
+/.settings/
+/.metadata/
+.classpath
+.project
+.factorypath
+
+# IntelliJ IDEA
+/out/
+*.ipr
+*.iws
+*.iml
+/.idea/
+
+# Gradle and compiled output
+/build/
+/.gradle/
+*.class
+
+# Minecraft development runtime and generated working data
+/run/
+/run-data/
+/logs/
+/crash-reports/
+*.log
+
+# Local editor and developer settings
+/.vscode/
+.DS_Store
+Thumbs.db
+
+# Files from Forge MDK
+forge*changelog.txt
+
+# Agent-related files
+.agent/

@@ -1,0 +1,11 @@
+{
+  "item.slimic.friendly_slime": "Friendly Slime",
+  "item.slimic.friendly_slime.tooltip": "Use on a block or water to summon your own friendly slime.",
+  "item.slimic.friendly_slime.stored_tooltip": "Release this slime with its health and other traits preserved.",
+  "item.slimic.friendly_slime.capture_tooltip": "Shift-right-click your slime to return it to your inventory.",
+  "entity.slimic.friendly_slime": "Friendly Slime",
+  "message.slimic.friendly_slime.waiting": "Your slime will wait here.",
+  "message.slimic.friendly_slime.following": "Your slime will follow you.",
+  "message.slimic.friendly_slime.captured": "Your slime has returned to your inventory.",
+  "message.slimic.friendly_slime.inventory_full": "You need an empty inventory slot to recover your slime."
+}

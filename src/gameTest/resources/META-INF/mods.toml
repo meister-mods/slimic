@@ -1,0 +1,8 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+
+[[mods]]
+modId="slimic_tests"
+version="0.1.2"
+displayName="Slimic GameTests"
