@@ -504,6 +504,7 @@ public class FriendlySlime extends TamableAnimal {
 
     @Override
     public void tick() {
+      if (slime.getControllingPassenger() instanceof Player) return;
       boolean moving = hasWanted();
       super.tick();
       if (slime.isOrderedToSit()) {

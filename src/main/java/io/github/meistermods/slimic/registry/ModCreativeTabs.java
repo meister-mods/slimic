@@ -30,6 +30,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SLIME_TUNER.get());
                         output.accept(ModItems.COMBAT_SLIME.get());
                         output.accept(ModItems.CLEANING_SLIME.get());
+                        output.accept(ModItems.SADDLE_SLIME.get());
                         for (var chestplate :
                             new net.minecraft.world.item.Item[] {
                               Items.LEATHER_CHESTPLATE,

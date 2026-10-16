@@ -318,7 +318,9 @@ public final class CombatCleaningGameTests {
           new ItemStack(
               kind == CompanionRecipe.Kind.COMBAT
                   ? Items.IRON_SWORD
-                  : kind == CompanionRecipe.Kind.CLEANING ? Items.ROTTEN_FLESH : Items.SLIME_BALL);
+                  : kind == CompanionRecipe.Kind.CLEANING
+                      ? Items.ROTTEN_FLESH
+                      : kind == CompanionRecipe.Kind.SADDLE ? Items.SADDLE : Items.SLIME_BALL);
       grid.setItem(3, first);
       grid.setItem(0, second);
       h.assertTrue(

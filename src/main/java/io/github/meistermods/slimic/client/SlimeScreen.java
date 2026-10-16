@@ -6,6 +6,7 @@ import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.menu.SlimeMenu;
@@ -97,6 +98,12 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
         filters.add(addRenderableWidget(button));
       }
     }
+    if (menu.slime() instanceof SaddleSlime)
+      addRenderableWidget(
+          Button.builder(
+                  Component.translatable("screen.slimic.ride"), b -> sendButton(SlimeMenu.RIDE))
+              .bounds(leftPos + 306, topPos + 25, 50, 18)
+              .build());
     if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 306);
     if (menu.slime() instanceof MiningSlime) addOrder(SlimeMenu.WORK, "mine", 306);
     if (menu.slime() instanceof HeraldSlime) {
@@ -244,7 +251,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.health",
             menu.data(SlimeMenu.HEALTH) / 10.0F,
             (int) menu.value(SlimeStat.HEALTH)),
-        menu.slime() instanceof CombatSlime ? 252 : menu.slime() instanceof MiningSlime ? 234 : 194,
+        menu.slime() instanceof CombatSlime
+            ? 252
+            : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
+                ? 234
+                : 194,
         49,
         0xffe5e9e9,
         false);
@@ -254,7 +265,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.stamina",
             menu.data(SlimeMenu.STAMINA) / 10,
             (int) menu.value(SlimeStat.STAMINA)),
-        menu.slime() instanceof CombatSlime ? 252 : menu.slime() instanceof MiningSlime ? 234 : 194,
+        menu.slime() instanceof CombatSlime
+            ? 252
+            : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
+                ? 234
+                : 194,
         62,
         0xffe5e9e9,
         false);
@@ -299,6 +314,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
+    } else if (menu.slime() instanceof SaddleSlime) {
+      graphics.drawWordWrap(
+          font, Component.translatable("screen.slimic.saddle_help"), 194, 84, 162, 0xffb4c9d1);
     } else if (menu.slime() instanceof HeraldSlime) {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.herald_help"), 194, 84, 162, 0xffb4c9d1);

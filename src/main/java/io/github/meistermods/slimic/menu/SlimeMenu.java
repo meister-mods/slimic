@@ -7,6 +7,7 @@ import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.registry.ModMenus;
@@ -28,7 +29,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   public static final int FILTERS = 18, TARGET_PAGE = 19;
   public static final int FOLLOW = 20, WAIT = 21, WORK = 22;
   public static final int PREVIOUS_PAGE = 23, NEXT_PAGE = 24;
-  public static final int DELAY_DOWN = 25, DELAY_UP = 26;
+  public static final int DELAY_DOWN = 25, DELAY_UP = 26, RIDE = 27;
   public static final int POINTS = 9,
       ACTIVITY = 10,
       NEXT_POINT = 11,
@@ -122,16 +123,14 @@ public final class SlimeMenu extends AbstractContainerMenu {
             };
     wireData = new IntContainerData(data, inventory.player.level().isClientSide);
     addDataSlots(wireData);
-    int toolSlots = slime instanceof MiningSlime ? 2 : slime instanceof CombatSlime ? 3 : 0;
+    int toolSlots = equipmentSlots(slime);
     for (int tool = 0; tool < toolSlots; tool++) {
       final int equipment = tool;
       addSlot(
           new Slot(new ToolContainer(slime), tool, 194 + tool * 18, 49) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-              return slime instanceof MiningSlime
-                  ? MiningSlime.matchesToolSlot(equipment, stack)
-                  : CombatSlime.matchesEquipment(equipment, stack);
+              return matchesEquipment(slime, equipment, stack);
             }
 
             @Override
@@ -171,13 +170,27 @@ public final class SlimeMenu extends AbstractContainerMenu {
             });
       }
       petSlots = toolSlots + carrier.getBag().getSlots();
-    } else petSlots = 0;
+    } else petSlots = toolSlots;
     for (int row = 0; row < 3; row++) {
       for (int column = 0; column < 9; column++)
         addSlot(new Slot(inventory, 9 + row * 9 + column, 194 + column * 18, 157 + row * 18));
     }
     for (int column = 0; column < 9; column++)
       addSlot(new Slot(inventory, column, 194 + column * 18, 215));
+  }
+
+  private static int equipmentSlots(FriendlySlime slime) {
+    return slime instanceof MiningSlime || slime instanceof SaddleSlime
+        ? 2
+        : slime instanceof CombatSlime ? 3 : 0;
+  }
+
+  private static boolean matchesEquipment(FriendlySlime slime, int slot, ItemStack stack) {
+    return slime instanceof MiningSlime
+        ? MiningSlime.matchesToolSlot(slot, stack)
+        : slime instanceof SaddleSlime
+            ? SaddleSlime.matchesEquipment(slot, stack)
+            : slime instanceof CombatSlime && CombatSlime.matchesEquipment(slot, stack);
   }
 
   public FriendlySlime slime() {
@@ -219,6 +232,11 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (button == RIDE && slime instanceof SaddleSlime mount) {
+      if (!mount.mount(player)) return false;
+      player.closeContainer();
+      return true;
+    }
     if (slime instanceof CombatSlime fighter) {
       if (button == TARGET_PAGE_BUTTON) {
         targetPage = 1 - targetPage;
@@ -266,20 +284,18 @@ public final class SlimeMenu extends AbstractContainerMenu {
     ItemStack copy = original.copy();
     if (index < petSlots) {
       if (!moveItemStackTo(original, petSlots, slots.size(), true)) return ItemStack.EMPTY;
-    } else if (slime instanceof BagSlime) {
+    } else if (petSlots > 0) {
       boolean equipped = false;
-      int equipmentSlots = slime instanceof MiningSlime ? 2 : slime instanceof CombatSlime ? 3 : 0;
+      int equipmentSlots = equipmentSlots(slime);
       for (int equipment = 0; equipment < equipmentSlots; equipment++) {
-        boolean matches =
-            slime instanceof MiningSlime
-                ? MiningSlime.matchesToolSlot(equipment, original)
-                : CombatSlime.matchesEquipment(equipment, original);
+        boolean matches = matchesEquipment(slime, equipment, original);
         if (matches && moveItemStackTo(original, equipment, equipment + 1, false)) {
           equipped = true;
           break;
         }
       }
       if (!equipped) {
+        if (!(slime instanceof BagSlime)) return ItemStack.EMPTY;
         if (slime instanceof CombatSlime && data(TARGET_PAGE) == 1) return ItemStack.EMPTY;
         int start = equipmentSlots + data(BAG_PAGE) * 27;
         int end =
@@ -304,7 +320,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public int getContainerSize() {
-      return slime instanceof CombatSlime ? 3 : 2;
+      return equipmentSlots(slime);
     }
 
     @Override
@@ -318,7 +334,9 @@ public final class SlimeMenu extends AbstractContainerMenu {
     public ItemStack getItem(int slot) {
       return slime instanceof MiningSlime miner
           ? miner.getTool(slot)
-          : ((CombatSlime) slime).getEquipment(slot);
+          : slime instanceof SaddleSlime mount
+              ? mount.getEquipment(slot)
+              : ((CombatSlime) slime).getEquipment(slot);
     }
 
     @Override
@@ -338,6 +356,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     @Override
     public void setItem(int slot, ItemStack stack) {
       if (slime instanceof MiningSlime miner) miner.setTool(slot, stack);
+      else if (slime instanceof SaddleSlime mount) mount.setEquipment(slot, stack);
       else ((CombatSlime) slime).setEquipment(slot, stack);
     }
 

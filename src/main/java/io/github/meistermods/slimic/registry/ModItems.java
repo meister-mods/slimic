@@ -6,6 +6,7 @@ import io.github.meistermods.slimic.item.CombatSlimeItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.HeraldSlimeItem;
 import io.github.meistermods.slimic.item.MiningSlimeItem;
+import io.github.meistermods.slimic.item.SaddleSlimeItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.item.TransportSlimeItem;
@@ -84,6 +85,9 @@ public final class ModItems {
                   net.minecraft.world.item.ArmorMaterials.NETHERITE,
                   net.minecraft.world.item.Items.NETHERITE_CHESTPLATE,
                   new Item.Properties().fireResistant()));
+
+  public static final RegistryObject<Item> SADDLE_SLIME =
+      ITEMS.register("saddle_slime", () -> new SaddleSlimeItem(new Item.Properties()));
 
   private ModItems() {}
 

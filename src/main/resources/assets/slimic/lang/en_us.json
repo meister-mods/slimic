@@ -24,7 +24,7 @@
   "screen.slimic.health": "HP %s / %s",
   "screen.slimic.stamina": "Stamina %s / %s",
   "screen.slimic.bag": "Bag (%s slots)",
-  "screen.slimic.specialize": "Craft a Friendly Slime with a pickaxe, chest, firework, sword, or rotten flesh.",
+  "screen.slimic.specialize": "Craft a Friendly Slime with a pickaxe, chest, firework, sword, rotten flesh, or saddle.",
   "stat.slimic.health": "Health",
   "stat.slimic.attack": "Attack",
   "stat.slimic.defense": "Defense",
@@ -124,5 +124,12 @@
   "status.slimic.cleaning.unreachable": "Pickup blocked; retrying or finding another item",
   "status.slimic.cleaning.waiting": "Waiting",
   "status.slimic.cleaning.following": "Following owner",
-  "screen.slimic.specialization_stat": "Used by another specialization; upgrades remain stored."
+  "screen.slimic.specialization_stat": "Used by another specialization; upgrades remain stored.",
+  "item.slimic.saddle_slime": "Saddle Slime",
+  "entity.slimic.saddle_slime": "Saddle Slime",
+  "screen.slimic.ride": "Ride",
+  "screen.slimic.saddle_help": "Slots: saddle, elytra.\nEmpty hand: ride; item: manage.\nWASD + view; Space up, Ctrl down.\nShift: dismount.",
+  "key.slimic.descend": "Descend on Saddle Slime",
+  "key.categories.slimic": "Slimic",
+  "jei.slimic.saddle_slime": "Craft a Friendly Slime with a saddle. Equip elytra in the second slot to fly freely without rockets. Empty-hand use rides; hold another item to open management. Only the owner can ride or equip it. Equipment, stats and current health survive recovery."
 }

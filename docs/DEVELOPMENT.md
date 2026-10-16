@@ -63,7 +63,7 @@ Tests use a structure loaded one block above its marker, so the fixture floor is
 
 Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
 
-Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 5 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
+Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 6 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
 
 Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe and shovel use the native main-hand and off-hand equipment slots, keeping client rendering and item damage synchronized. Mining progress is bounded by one completed block per tick, searches process a limited number of chunk positions, and no neighbouring chunk is loaded for target discovery.
 
@@ -133,4 +133,14 @@ Herald warning history keeps the latest signaled episode for each worker UUID wi
 
 Player target selection checks the server PVP flag and the loaded owner's player-damage permissions before both target acquisition and melee damage. Native team/alliance exclusions remain in effect. Tests restore server PVP and scoreboard fixtures after checking each rule.
 
-Native container-data packets carry signed 16-bit values. `IntContainerData` encodes each logical integer as two halves and appends an initial-snapshot marker. Management and tuner menus share this transport, retaining large effective attributes and clearing old high bits after a smaller update. Editors wait for the marker before loading initial values. Protocol 5 identifies the new layout. Validation covers real native packet serialization, both menus, large cleaning range modifiers, value reductions, and native clients with and without JEI.
+Native container-data packets carry signed 16-bit values. `IntContainerData` encodes each logical integer as two halves and appends an initial-snapshot marker. Management and tuner menus share this transport, retaining large effective attributes and clearing old high bits after a smaller update. Editors wait for the marker before loading initial values. Protocol 6 includes this layout and riding controls. Validation covers real native packet serialization, both menus, large cleaning range modifiers, value reductions, and native clients with and without JEI.
+
+## Saddle equipment and riding
+
+`SaddleSlime` uses native main-hand saddle and chest-slot elytra stacks for equipment synchronization, saving, recovery, and death drops. The equipment-only menu contributes two companion slots before the player's inventory. Native crafting copies stored Friendly Slime data and the exact initial saddle; recovery emits the specialized item without reapplying initial equipment.
+
+Only the owning player can occupy and control the single seat. A priority movement goal suspends companion AI during a ride. Native ridden-input/speed hooks provide steering and ground jumps. Winged travel uses collision-aware entity movement and the rider's view, with normalized combined directional input, hover, and Movement Speed scaling. Flight is available to Survival riders and uses normal vehicle movement packets. The client sends only vertical intent; the server requires the sender to be the current owner rider of that exact entity. Input expires after 30 ticks without refresh and clears on dismount.
+
+Winged riding supplies transient no-gravity for movement and native vehicle validation. Saving removes that computed flag while preserving explicit native gravity overrides, so recovered mounts do not hover unattended. The saddle has a dedicated model and leather atlas; elytra reuse the vanilla wing model/texture and show an open pose while mounted.
+
+Protocol 6 adds the riding input message. Validation includes crafting and actual release, owner checks, equipment Shift transfers, mounted recovery, unusable wings, explicit versus transient gravity, and native Survival client steering, jumping, ascent, hover, descent, pitch, server vehicle synchronization, and Shift dismount with and without JEI.

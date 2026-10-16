@@ -6,6 +6,7 @@ import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -65,6 +66,15 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":cleaning_slime"));
 
+  public static final RegistryObject<EntityType<SaddleSlime>> SADDLE_SLIME =
+      ENTITY_TYPES.register(
+          "saddle_slime",
+          () ->
+              EntityType.Builder.of(SaddleSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":saddle_slime"));
+
   private ModEntities() {}
 
   public static final RegistryObject<EntityType<HeraldSlime>> HERALD_SLIME =
@@ -78,6 +88,7 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(SADDLE_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(FRIENDLY_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(MINING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(TRANSPORT_SLIME.get(), FriendlySlime.createAttributes().build());

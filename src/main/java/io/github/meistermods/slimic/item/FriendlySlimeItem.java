@@ -5,6 +5,7 @@ import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeData;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.registry.ModEntities;
@@ -47,17 +48,19 @@ public class FriendlySlimeItem extends Item {
   public static ItemStack fromSlime(FriendlySlime slime) {
     ItemStack stack =
         new ItemStack(
-            slime instanceof CombatSlime
-                ? ModItems.COMBAT_SLIME.get()
-                : slime instanceof CleaningSlime
-                    ? ModItems.CLEANING_SLIME.get()
-                    : slime instanceof HeraldSlime
-                        ? ModItems.HERALD_SLIME.get()
-                        : slime instanceof TransportSlime
-                            ? ModItems.TRANSPORT_SLIME.get()
-                            : slime instanceof MiningSlime
-                                ? ModItems.MINING_SLIME.get()
-                                : ModItems.FRIENDLY_SLIME.get());
+            slime instanceof SaddleSlime
+                ? ModItems.SADDLE_SLIME.get()
+                : slime instanceof CombatSlime
+                    ? ModItems.COMBAT_SLIME.get()
+                    : slime instanceof CleaningSlime
+                        ? ModItems.CLEANING_SLIME.get()
+                        : slime instanceof HeraldSlime
+                            ? ModItems.HERALD_SLIME.get()
+                            : slime instanceof TransportSlime
+                                ? ModItems.TRANSPORT_SLIME.get()
+                                : slime instanceof MiningSlime
+                                    ? ModItems.MINING_SLIME.get()
+                                    : ModItems.FRIENDLY_SLIME.get());
     CompoundTag data = slime.saveWithoutId(new CompoundTag());
     // Passengers and tethers remain in the world; preserve the slime's own saved state.
     data.remove("Passengers");

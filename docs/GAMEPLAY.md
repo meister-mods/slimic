@@ -2,7 +2,7 @@
 
 English | [한국어](GAMEPLAY.kr.md) · [Project overview](../README.md)
 
-Slimic provides friendly companions with upgradeable stats, mining, transport, herald, combat, and cleaning specializations.
+Slimic provides friendly companions with upgradeable stats, mining, transport, herald, combat, cleaning, and riding specializations.
 
 ## Installation
 
@@ -30,6 +30,8 @@ An anvil name on the item becomes the slime's custom name.
 | Owner right-clicks | Open the management screen for stats, upgrades, naming, equipment, inventory, and orders. |
 | Owner Shift-right-clicks | Recover the slime into an inventory item, even while holding another item. |
 | Use a recovered item on a block or water source | Release the same companion with its saved traits. |
+
+Empty-hand use of a saddled Saddle Slime mounts it; hold another item to open management.
 
 Only the owner can recover the slime or change its follow/wait order. Releasing a recovered item preserves the original owner, even if someone else uses the item.
 
@@ -139,7 +141,7 @@ Transport travel failures are based on stalled movement. A delivery that keeps a
 
 ## JEI
 
-JEI is optional. When installed, it shows the Friendly Slime and Slime Chest recipes, Mining Slime combinations for registered pickaxes, the Transport Slime, Herald Slime, Combat Slime, Cleaning Slime, and Slime Armor combinations, and companion information pages. Mining and combat recipe previews retain the corresponding tool. Armor previews show each registered chestplate conversion. Slimic also runs without JEI.
+JEI is optional. When installed, it shows the Friendly Slime and Slime Chest recipes, Mining Slime combinations for registered pickaxes, the Transport Slime, Herald Slime, Combat Slime, Cleaning Slime, Saddle Slime, and Slime Armor combinations, and companion information pages. Mining and combat recipe previews retain the corresponding tool. Armor previews show each registered chestplate conversion. Slimic also runs without JEI.
 
 ## Dye colors
 
@@ -223,3 +225,21 @@ Returns also measure stalled movement rather than total travel time. A cleaner t
 Pickup respects item pickup delays, reserved ownership, Forge pickup cancellation, stack limits, and available bag space. Partial pickups leave the remainder in the world. A full bag pauses collection, and a transport slime can unload it into a nearby Slime Chest. Removing cargo also resumes work. Each successful pickup action costs one stamina and earns one work unit; Work Speed shortens the search interval. Exhaustion pauses collection until 25% stamina, with 2% of maximum restored per second.
 
 After **three minutes** of attempting to acquire the same item without success, the cleaner searches for another eligible item with available bag space. If one exists, it changes target and temporarily avoids the failed item. Otherwise it resets the attempt timer and retries the same item. A removed or unavailable target is replaced promptly. The retry timer advances during active collection and pauses while following, waiting, or stored as an item. Retry state, cargo, dye, stats, current health, and stamina survive saves and recovery.
+
+## Saddle slimes
+
+Craft a Friendly Slime item with **one saddle**, without a fixed shape, to make a **Saddle Slime**. Stored companion traits and the exact input saddle are retained; the saddle is equipped on release. The Creative entry starts with empty equipment. The management screen has two equipment slots: saddle and elytra, with no cargo bag. Equipment also accepts Shift-click transfers.
+
+The owner can apply a saddle or elytra directly by right-clicking with it when the corresponding slot is empty. Survival consumes the applied item. An equipped saddle appears as a leather seat with side straps and stirrups. Equipped elytra show the vanilla wing texture independently of the slime's dye color.
+
+Empty-hand right-click rides a saddled companion. Hold another item to open management, or use its **Ride** button. Only the owner may equip, manage, or ride it, and it carries one player. Riding takes priority over Follow/Wait and releases a waiting order. Without a rider, it follows its normal companion order.
+
+| Control | Ground | With usable elytra |
+| --- | --- | --- |
+| WASD | Steer relative to the rider's view | Fly forward/backward and strafe; forward flight follows view pitch |
+| Space | Jump | Ascend |
+| Left Ctrl | — | Descend; rebind **Descend on Saddle Slime** in Minecraft's controls |
+| No movement input | Stop | Hover |
+| Shift | Dismount | Dismount |
+
+Movement Speed affects ground and flight speed. Flight requires an equipped saddle, usable elytra, and the owner as rider; rockets and Creative flight are unnecessary. Removing the saddle dismounts the rider. Removing the wings, wearing unusable wings, or dismounting restores normal gravity. Equipment, current health, stats, dye, and ownership survive saves and Shift-right-click recovery. Passengers and transient flight controls are not stored.

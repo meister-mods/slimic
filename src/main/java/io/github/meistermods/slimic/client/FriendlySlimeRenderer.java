@@ -25,6 +25,7 @@ public final class FriendlySlimeRenderer
     addLayer(new TintedSlimeOuterLayer(this, context));
     addLayer(new MiningSlimeLayer(this, context));
     addLayer(new CombatSlimeLayer(this, context));
+    addLayer(new SaddleSlimeLayer(this, context));
     addLayer(new TransportSlimeLayer(this, context));
     addLayer(new HeraldSlimeLayer(this));
   }

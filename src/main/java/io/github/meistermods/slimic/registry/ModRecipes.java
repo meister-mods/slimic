@@ -47,6 +47,14 @@ public final class ModRecipes {
               new SimpleCraftingRecipeSerializer<>(
                   (id, category) -> new CompanionRecipe(id, category, CompanionRecipe.Kind.ARMOR)));
 
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> SADDLE_SLIME =
+      SERIALIZERS.register(
+          "saddle_slime",
+          () ->
+              new SimpleCraftingRecipeSerializer<>(
+                  (id, category) ->
+                      new CompanionRecipe(id, category, CompanionRecipe.Kind.SADDLE)));
+
   private ModRecipes() {}
 
   public static final RegistryObject<SimpleCraftingRecipeSerializer<HeraldSlimeRecipe>>

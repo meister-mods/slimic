@@ -118,6 +118,21 @@ public final class SlimicJeiPlugin implements IModPlugin {
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
+    recipes.add(
+        new ShapelessRecipe(
+            ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "saddle_slime/saddle"),
+            "slimic:saddle_slime",
+            CraftingBookCategory.MISC,
+            CompanionRecipe.saddle(
+                new ItemStack(ModItems.FRIENDLY_SLIME.get()), new ItemStack(Items.SADDLE)),
+            NonNullList.of(
+                Ingredient.EMPTY,
+                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                Ingredient.of(Items.SADDLE))));
+    registration.addIngredientInfo(
+        new ItemStack(ModItems.SADDLE_SLIME.get()),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.saddle_slime"));
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
     registration.addIngredientInfo(
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),

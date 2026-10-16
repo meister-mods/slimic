@@ -60,9 +60,13 @@ public final class SlimeClientSmoke {
   public static void tick(TickEvent.ClientTickEvent event) {
     if (!Boolean.getBoolean("slimic.clientSmoke") || event.phase != TickEvent.Phase.END) return;
     Minecraft client = Minecraft.getInstance();
-    if (++ticks > 2400) throw new IllegalStateException("Client smoke timed out in phase " + phase);
+    if (++ticks > 3600) throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.saddleOnly")) {
+      SaddleClientSmoke.tick(client);
+      return;
+    }
     if (phase >= 13) {
       newCompanions(client);
       return;
@@ -462,7 +466,7 @@ public final class SlimeClientSmoke {
       CreativeModeTabs.tryRebuildTabContents(
           client.level.enabledFeatures(), true, client.level.registryAccess());
       var items = ModCreativeTabs.SLIMIC.get().getDisplayItems();
-      if (items.size() != 14
+      if (items.size() != 15
           || items.stream().noneMatch(stack -> stack.is(ModItems.SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =
@@ -512,6 +516,10 @@ public final class SlimeClientSmoke {
   }
 
   private static void newCompanions(Minecraft client) {
+    if (phase >= 21) {
+      SaddleClientSmoke.tick(client);
+      return;
+    }
     boolean jei = ModList.get().isLoaded("jei");
     String prefix = jei ? "jei-" : "no-jei-";
     if (phase == 19) {
@@ -547,7 +555,6 @@ public final class SlimeClientSmoke {
               + " and armor textures, four chest facings and native block item, herald hat; JEI="
               + jei);
       phase = 21;
-      client.stop();
       return;
     }
     if (phase <= 16) {
@@ -766,7 +773,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.12-" + suffix + ".png")
+            .resolve("../verification/0.1.13-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

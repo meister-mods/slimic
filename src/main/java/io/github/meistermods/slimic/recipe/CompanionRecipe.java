@@ -21,7 +21,8 @@ public final class CompanionRecipe extends CustomRecipe {
   public enum Kind {
     COMBAT,
     CLEANING,
-    ARMOR
+    ARMOR,
+    SADDLE
   }
 
   private final Kind kind;
@@ -42,6 +43,7 @@ public final class CompanionRecipe extends CustomRecipe {
       case COMBAT -> CombatSlime.isSword(stack);
       case CLEANING -> stack.is(Items.ROTTEN_FLESH);
       case ARMOR -> stack.is(Items.SLIME_BALL);
+      case SADDLE -> stack.is(Items.SADDLE);
     };
   }
 
@@ -73,6 +75,13 @@ public final class CompanionRecipe extends CustomRecipe {
     return result;
   }
 
+  public static ItemStack saddle(ItemStack friendly, ItemStack saddle) {
+    ItemStack result = new ItemStack(ModItems.SADDLE_SLIME.get());
+    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    result.getOrCreateTag().put("InitialSaddle", saddle.copyWithCount(1).save(new CompoundTag()));
+    return result;
+  }
+
   @Override
   public ItemStack assemble(CraftingContainer grid, RegistryAccess registry) {
     ItemStack first = ItemStack.EMPTY, second = ItemStack.EMPTY;
@@ -86,6 +95,7 @@ public final class CompanionRecipe extends CustomRecipe {
       case COMBAT -> combat(first, second);
       case CLEANING -> cleaning(first);
       case ARMOR -> SlimeArmorItem.fromChestplate(first);
+      case SADDLE -> saddle(first, second);
     };
   }
 
@@ -105,6 +115,7 @@ public final class CompanionRecipe extends CustomRecipe {
       case COMBAT -> ModRecipes.COMBAT_SLIME.get();
       case CLEANING -> ModRecipes.CLEANING_SLIME.get();
       case ARMOR -> ModRecipes.SLIME_ARMOR.get();
+      case SADDLE -> ModRecipes.SADDLE_SLIME.get();
     };
   }
 }

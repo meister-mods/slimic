@@ -16,13 +16,20 @@ public final class ModNetwork {
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "main"),
-          () -> "5",
-          "5"::equals,
-          "5"::equals);
+          () -> "6",
+          "6"::equals,
+          "6"::equals);
 
   private ModNetwork() {}
 
   public static void register() {
+    CHANNEL.registerMessage(
+        2,
+        RideSlime.class,
+        RideSlime::encode,
+        RideSlime::decode,
+        RideSlime::handle,
+        Optional.of(NetworkDirection.PLAY_TO_SERVER));
     CHANNEL.registerMessage(
         0,
         RenameSlime.class,
@@ -37,6 +44,32 @@ public final class ModNetwork {
         TuneSlime::decode,
         TuneSlime::handle,
         Optional.of(NetworkDirection.PLAY_TO_SERVER));
+  }
+
+  public record RideSlime(int entityId, boolean up, boolean down) {
+    private void encode(FriendlyByteBuf buffer) {
+      buffer.writeVarInt(entityId);
+      buffer.writeBoolean(up);
+      buffer.writeBoolean(down);
+    }
+
+    private static RideSlime decode(FriendlyByteBuf buffer) {
+      return new RideSlime(buffer.readVarInt(), buffer.readBoolean(), buffer.readBoolean());
+    }
+
+    private static void handle(RideSlime packet, Supplier<NetworkEvent.Context> supplier) {
+      var context = supplier.get();
+      context.enqueueWork(
+          () -> {
+            var player = context.getSender();
+            if (player != null
+                && player.getVehicle()
+                    instanceof io.github.meistermods.slimic.entity.SaddleSlime slime
+                && slime.getId() == packet.entityId)
+              slime.setRiderInput(player, packet.up, packet.down);
+          });
+      context.setPacketHandled(true);
+    }
   }
 
   public record TuneSlime(int menuId, double[] values, float health, float stamina, int points) {

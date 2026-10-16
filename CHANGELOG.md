@@ -4,6 +4,23 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-10-16
+
+### Added
+
+- Saddle Slimes crafted from a Friendly Slime and saddle, preserving companion traits and the exact saddle.
+- Owner-only riding, view-relative ground steering and jumping, and saddle/elytra equipment slots with direct application and Shift transfers.
+- Free flight with usable elytra: view-directed steering, ascent, configurable descent, hovering, and native dismounting for Survival riders without rockets.
+- Visible leather saddle, straps, stirrups, and vanilla-textured elytra wings with a mounted pose; dedicated 16px summon artwork, translations, Creative entry, and optional JEI guidance.
+
+### Compatibility
+
+- Network protocol 6 adds riding controls. Use compatible client and server builds. Existing companion save fields remain compatible; equipment and current vitals survive recovery without retaining transient flight gravity.
+
+### Validation
+
+- Added server coverage for specialization and release, ownership, equipment transfers, flight prerequisites, and mounted recovery, plus native client riding/flight checks with and without JEI.
+
 ## [0.1.12] - 2026-10-16
 
 ### Fixed
