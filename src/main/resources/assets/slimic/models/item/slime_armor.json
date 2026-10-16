@@ -1,0 +1,41 @@
+{
+  "parent": "slimic:item/slime_armor_iron",
+  "overrides": [
+    {
+      "predicate": {
+        "slimic:armor_material": 0
+      },
+      "model": "slimic:item/slime_armor_leather"
+    },
+    {
+      "predicate": {
+        "slimic:armor_material": 1
+      },
+      "model": "slimic:item/slime_armor_chainmail"
+    },
+    {
+      "predicate": {
+        "slimic:armor_material": 2
+      },
+      "model": "slimic:item/slime_armor_iron"
+    },
+    {
+      "predicate": {
+        "slimic:armor_material": 3
+      },
+      "model": "slimic:item/slime_armor_golden"
+    },
+    {
+      "predicate": {
+        "slimic:armor_material": 4
+      },
+      "model": "slimic:item/slime_armor_diamond"
+    },
+    {
+      "predicate": {
+        "slimic:armor_material": 5
+      },
+      "model": "slimic:item/slime_armor_netherite"
+    }
+  ]
+}

@@ -1,0 +1,534 @@
+package io.github.meistermods.slimic.entity;
+
+import io.github.meistermods.slimic.config.SlimicConfig;
+import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
+import io.github.meistermods.slimic.menu.SlimeMenu;
+import io.github.meistermods.slimic.registry.ModItems;
+import javax.annotation.Nullable;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.ITeleporter;
+import net.minecraftforge.network.NetworkHooks;
+
+public class FriendlySlime extends TamableAnimal {
+  private static final int MAX_POINT_COST = 4096;
+  private static final EntityDataAccessor<CompoundTag> STAT_LEVELS =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private static final EntityDataAccessor<CompoundTag> TUNED_STATS =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private static final EntityDataAccessor<Integer> DYE_COLOR =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.INT);
+  private int blockedWorkTicks;
+  private long blockedEpisode;
+  private int statPoints;
+  private int activityProgress;
+  private int earnedPoints;
+  private float stamina = 100.0F;
+  public float squish;
+  public float oldSquish;
+  private float targetSquish;
+  private boolean wasOnGround;
+  private ResourceLocation workDimension;
+  private int followingActivityTicks;
+  private Vec3 lastFollowingPosition;
+
+  public FriendlySlime(EntityType<? extends FriendlySlime> type, Level level) {
+    super(type, level);
+    moveControl = new HopMoveControl(this);
+    setPersistenceRequired();
+  }
+
+  public static AttributeSupplier.Builder createAttributes() {
+    return createMobAttributes()
+        .add(Attributes.MAX_HEALTH, 16.0D)
+        .add(Attributes.ATTACK_DAMAGE, 2.0D)
+        .add(Attributes.ARMOR, 0.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.3D)
+        .add(Attributes.FOLLOW_RANGE, 8.0D);
+  }
+
+  @Override
+  protected void defineSynchedData() {
+    super.defineSynchedData();
+    entityData.define(STAT_LEVELS, new CompoundTag());
+    entityData.define(TUNED_STATS, new CompoundTag());
+    entityData.define(DYE_COLOR, -1);
+  }
+
+  public int getDyeColorId() {
+    return entityData.get(DYE_COLOR);
+  }
+
+  public boolean dye(Player player, ItemStack stack) {
+    if (!player.getUUID().equals(getOwnerUUID())
+        || !(stack.getItem() instanceof DyeItem dye)
+        || !isAlive()) return false;
+    if (!level().isClientSide) {
+      entityData.set(DYE_COLOR, dye.getDyeColor().getId());
+      if (!player.getAbilities().instabuild) stack.shrink(1);
+    }
+    return true;
+  }
+
+  public boolean hasTunedStat(SlimeStat stat) {
+    return entityData.get(TUNED_STATS).contains(stat.key());
+  }
+
+  public double tunedStat(SlimeStat stat) {
+    return entityData.get(TUNED_STATS).getDouble(stat.key());
+  }
+
+  public void setTunedStat(SlimeStat stat, double value) {
+    CompoundTag tuned = entityData.get(TUNED_STATS).copy();
+    tuned.putDouble(stat.key(), value);
+    entityData.set(TUNED_STATS, tuned);
+    stamina = Math.min(stamina, getMaxStamina());
+    onStatsTuned();
+  }
+
+  protected void onStatsTuned() {}
+
+  public void setTunedVitals(float health, float energy, int points) {
+    setHealth(Mth.clamp(health, 0, getMaxHealth()));
+    stamina = Mth.clamp(energy, 0, getMaxStamina());
+    statPoints = Mth.clamp(points, 0, 32767);
+  }
+
+  public boolean isWorkBlocked() {
+    return getWorkStatus().state() == WorkStatus.State.BLOCKED;
+  }
+
+  public final WorkStatus getWorkStatus() {
+    if (isOrderedToSit()) return WorkStatus.of(WorkStatus.Order.WAIT, WorkStatus.State.IDLE);
+    return isWorking()
+        ? describeWork()
+        : WorkStatus.of(WorkStatus.Order.FOLLOW, WorkStatus.State.IDLE);
+  }
+
+  protected WorkStatus describeWork() {
+    return WorkStatus.of(WorkStatus.Order.FOLLOW, WorkStatus.State.IDLE);
+  }
+
+  public int getBlockedWorkTicks() {
+    return blockedWorkTicks;
+  }
+
+  public long getBlockedEpisode() {
+    return blockedEpisode;
+  }
+
+  public int getStatLevel(SlimeStat stat) {
+    return entityData.get(STAT_LEVELS).getInt(stat.key());
+  }
+
+  public int getStatPoints() {
+    return statPoints;
+  }
+
+  public int getActivityProgress() {
+    return activityProgress;
+  }
+
+  public int getNextPointCost() {
+    return (int) Math.min(MAX_POINT_COST, 32L + earnedPoints * 64L);
+  }
+
+  public float getStamina() {
+    return stamina;
+  }
+
+  public float getMaxStamina() {
+    return (float) SlimeStat.STAMINA.value(this);
+  }
+
+  public int getCapacity() {
+    return (int) SlimeStat.CAPACITY.value(this);
+  }
+
+  public int detectionMultiplier() {
+    return 1;
+  }
+
+  public int capacityMultiplier() {
+    return 1;
+  }
+
+  public boolean isWorking() {
+    return false;
+  }
+
+  protected void recoverStamina(float amount) {
+    stamina = Math.min(getMaxStamina(), stamina + amount);
+  }
+
+  public final float getStaminaRecoveryPerSecond() {
+    return getMaxStamina() * .02F;
+  }
+
+  public void onReleased() {
+    workDimension = level().dimension().location();
+  }
+
+  protected final boolean hasChangedWorkDimension() {
+    return workDimension != null && !workDimension.equals(level().dimension().location());
+  }
+
+  @Nullable
+  @Override
+  public Entity changeDimension(ServerLevel destination, ITeleporter teleporter) {
+    var origin = level().dimension();
+    Entity moved = super.changeDimension(destination, teleporter);
+    if (moved instanceof FriendlySlime companion && !origin.equals(companion.level().dimension()))
+      companion.onReleased();
+    return moved;
+  }
+
+  public boolean upgradeStat(SlimeStat stat) {
+    if (level().isClientSide || statPoints <= 0 || getStatLevel(stat) >= stat.maxLevel())
+      return false;
+    CompoundTag levels = entityData.get(STAT_LEVELS).copy();
+    levels.putInt(stat.key(), getStatLevel(stat) + 1);
+    entityData.set(STAT_LEVELS, levels);
+    stat.applyUpgrade(this);
+    statPoints--;
+    return true;
+  }
+
+  protected void recordCompletedWork() {
+    recordCompletedWork(1);
+  }
+
+  protected void recordCompletedWork(int units) {
+    if (level().isClientSide) return;
+    activityProgress += Mth.clamp(units, 0, 64);
+    settleActivity();
+  }
+
+  private void settleActivity() {
+    while (activityProgress >= getNextPointCost()) {
+      activityProgress -= getNextPointCost();
+      earnedPoints = Math.min(1_000_000, earnedPoints + 1);
+      statPoints = Math.min(32767, statPoints + 1);
+    }
+  }
+
+  protected boolean spendStamina(float amount) {
+    if (stamina < amount) return false;
+    stamina -= amount;
+    return true;
+  }
+
+  public void setWaiting(boolean waiting) {
+    setOrderedToSit(waiting);
+    setInSittingPose(waiting);
+    getNavigation().stop();
+  }
+
+  public boolean rename(Player player, String name) {
+    if (!player.getUUID().equals(getOwnerUUID())
+        || !isAlive()
+        || player.distanceToSqr(this) > 64.0D) return false;
+    String clean = SharedConstants.filterText(name).strip();
+    if (clean.codePointCount(0, clean.length()) > 32) {
+      clean = clean.substring(0, clean.offsetByCodePoints(0, 32));
+    }
+    setCustomName(clean.isEmpty() ? null : Component.literal(clean));
+    setCustomNameVisible(!clean.isEmpty());
+    return true;
+  }
+
+  @Override
+  public void addAdditionalSaveData(CompoundTag tag) {
+    super.addAdditionalSaveData(tag);
+    tag.putInt(SlimeData.VERSION_KEY, SlimeData.VERSION);
+    tag.putInt("FollowingActivityTicks", followingActivityTicks);
+    tag.put("SlimeStats", entityData.get(STAT_LEVELS).copy());
+    tag.putInt("StatPoints", statPoints);
+    tag.putInt("ActivityProgress", activityProgress);
+    tag.putInt("EarnedPoints", earnedPoints);
+    tag.putFloat("Stamina", stamina);
+    tag.put("TunedStats", entityData.get(TUNED_STATS).copy());
+    tag.putInt("SlimeDyeColor", getDyeColorId());
+    tag.putInt("BlockedWorkTicks", blockedWorkTicks);
+    tag.putLong("BlockedEpisode", blockedEpisode);
+    tag.putString(
+        "WorkDimension",
+        (workDimension == null ? level().dimension().location() : workDimension).toString());
+  }
+
+  @Override
+  public void readAdditionalSaveData(CompoundTag saved) {
+    CompoundTag tag = SlimeData.migrate(saved);
+    super.readAdditionalSaveData(tag);
+    followingActivityTicks =
+        Mth.clamp(
+            tag.getInt("FollowingActivityTicks"),
+            0,
+            SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get() - 1);
+    lastFollowingPosition = null;
+    String savedDimension = tag.getString("WorkDimension");
+    workDimension = savedDimension.isBlank() ? null : ResourceLocation.tryParse(savedDimension);
+    if (workDimension == null || workDimension.getPath().isEmpty())
+      workDimension = level().dimension().location();
+    CompoundTag levels = new CompoundTag();
+    for (SlimeStat stat : SlimeStat.values()) {
+      levels.putInt(
+          stat.key(),
+          Mth.clamp(tag.getCompound("SlimeStats").getInt(stat.key()), 0, stat.maxLevel()));
+    }
+    entityData.set(STAT_LEVELS, levels);
+    CompoundTag tuned = new CompoundTag();
+    for (SlimeStat stat : SlimeStat.values()) {
+      if (tag.getCompound("TunedStats").contains(stat.key())) {
+        double value = tag.getCompound("TunedStats").getDouble(stat.key());
+        if (stat.acceptsTunedValue(value)) tuned.putDouble(stat.key(), value);
+      }
+    }
+    entityData.set(TUNED_STATS, tuned);
+    entityData.set(
+        DYE_COLOR,
+        tag.contains("SlimeDyeColor") ? Mth.clamp(tag.getInt("SlimeDyeColor"), -1, 15) : -1);
+    blockedWorkTicks = Mth.clamp(tag.getInt("BlockedWorkTicks"), 0, Integer.MAX_VALUE);
+    blockedEpisode = Math.max(0, tag.getLong("BlockedEpisode"));
+    statPoints = Mth.clamp(tag.getInt("StatPoints"), 0, 32767);
+    earnedPoints = Mth.clamp(tag.getInt("EarnedPoints"), 0, 1_000_000);
+    // Older saves can contain more activity than the reduced threshold. Pay the
+    // earned points before retaining the remainder rather than truncating it.
+    activityProgress = Mth.clamp(tag.getInt("ActivityProgress"), 0, MAX_POINT_COST - 1);
+    settleActivity();
+    stamina =
+        tag.contains("Stamina") && Float.isFinite(tag.getFloat("Stamina"))
+            ? Mth.clamp(tag.getFloat("Stamina"), 0.0F, getMaxStamina())
+            : getMaxStamina();
+  }
+
+  @Override
+  protected void registerGoals() {
+    goalSelector.addGoal(0, new FloatGoal(this));
+    goalSelector.addGoal(
+        1,
+        new SitWhenOrderedToGoal(this) {
+          @Override
+          public boolean canUse() {
+            // The native goal also sits for an unavailable owner, even with a work order.
+            return !FriendlySlime.this.isWorking() && super.canUse();
+          }
+        });
+    goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.2D, 4.0F, 2.0F, false));
+    goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+    goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
+    goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+  }
+
+  @Override
+  public void tick() {
+    // Native command teleports can restore a copy without calling changeDimension.
+    // Rebase its work area before any AI goal can use the old world's coordinates.
+    if (!level().isClientSide && (workDimension == null || hasChangedWorkDimension())) onReleased();
+    oldSquish = squish;
+    squish += (targetSquish - squish) * 0.5F;
+    super.tick();
+    if (!level().isClientSide) {
+      if (isWorking() && isWorkBlocked()) {
+        if (blockedWorkTicks == 0) blockedEpisode++;
+        if (blockedWorkTicks < Integer.MAX_VALUE) blockedWorkTicks++;
+      } else blockedWorkTicks = 0;
+    }
+    if (!level().isClientSide && tickCount % 20 == 0 && !isWorking()) {
+      recoverStamina(getStaminaRecoveryPerSecond());
+    }
+    if (!level().isClientSide) {
+      var owner = getOwner();
+      double movement =
+          lastFollowingPosition == null
+              ? 0
+              : position().subtract(lastFollowingPosition).horizontalDistanceSqr();
+      if (!isWorking()
+          && !isOrderedToSit()
+          && owner != null
+          && !owner.isSpectator()
+          && distanceToSqr(owner) >= 4
+          && distanceToSqr(owner) <= 256
+          && getNavigation().isInProgress()
+          && movement > .0001
+          && movement < 4) {
+        if (++followingActivityTicks >= SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get()) {
+          followingActivityTicks = 0;
+          recordCompletedWork();
+        }
+      }
+      lastFollowingPosition = position();
+    }
+    if (onGround() && !wasOnGround) {
+      targetSquish = -0.5F;
+      playSound(SoundEvents.SLIME_SQUISH, 0.6F, 1.0F);
+      if (level().isClientSide) {
+        for (int i = 0; i < 8; i++) {
+          level()
+              .addParticle(
+                  ParticleTypes.ITEM_SLIME,
+                  getRandomX(0.6D),
+                  getY(),
+                  getRandomZ(0.6D),
+                  0.0D,
+                  0.0D,
+                  0.0D);
+        }
+      }
+    } else if (!onGround() && wasOnGround) {
+      targetSquish = 1.0F;
+    }
+    wasOnGround = onGround();
+    targetSquish *= 0.6F;
+  }
+
+  @Override
+  protected void jumpFromGround() {
+    super.jumpFromGround();
+    playSound(SoundEvents.SLIME_JUMP, 0.6F, 1.0F);
+  }
+
+  @Override
+  public InteractionResult mobInteract(Player player, InteractionHand hand) {
+    ItemStack held = player.getItemInHand(hand);
+    if (player.isShiftKeyDown()) {
+      return capture(player);
+    }
+    if (held.getItem() instanceof SlimeTunerItem) return SlimeTunerItem.open(player, this);
+    if (held.getItem() instanceof DyeItem)
+      return dye(player, held)
+          ? InteractionResult.sidedSuccess(level().isClientSide)
+          : InteractionResult.FAIL;
+    if (player.getUUID().equals(getOwnerUUID())) {
+      if (player instanceof ServerPlayer serverPlayer) {
+        NetworkHooks.openScreen(
+            serverPlayer,
+            new SimpleMenuProvider(
+                (id, inventory, viewer) -> new SlimeMenu(id, inventory, this), getDisplayName()),
+            buffer -> SlimeMenu.writeOpeningData(buffer, this));
+      }
+      return InteractionResult.sidedSuccess(level().isClientSide);
+    }
+    return super.mobInteract(player, hand);
+  }
+
+  public InteractionResult capture(Player player) {
+    if (!isAlive()
+        || isRemoved()
+        || player.isSpectator()
+        || !player.getUUID().equals(getOwnerUUID())) {
+      return InteractionResult.FAIL;
+    }
+    if (level().isClientSide) {
+      return InteractionResult.SUCCESS;
+    }
+    int slot = player.getInventory().getFreeSlot();
+    if (slot < 0) {
+      player.displayClientMessage(
+          Component.translatable("message.slimic.friendly_slime.inventory_full"), true);
+      return InteractionResult.FAIL;
+    }
+    ItemStack captured = FriendlySlimeItem.fromSlime(this);
+    // Inventory.add can discard items when a Creative inventory is full.
+    player.getInventory().setItem(slot, captured);
+    player.getInventory().setChanged();
+    dropLeash(true, true);
+    gameEvent(GameEvent.ENTITY_INTERACT, player);
+    discard();
+    player.displayClientMessage(
+        Component.translatable("message.slimic.friendly_slime.captured"), true);
+    return InteractionResult.CONSUME;
+  }
+
+  @Override
+  public boolean isFood(ItemStack stack) {
+    return false;
+  }
+
+  @Nullable
+  @Override
+  public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+    return null;
+  }
+
+  @Override
+  protected SoundEvent getHurtSound(DamageSource source) {
+    return SoundEvents.SLIME_HURT;
+  }
+
+  @Override
+  protected SoundEvent getDeathSound() {
+    return SoundEvents.SLIME_DEATH;
+  }
+
+  @Override
+  public ItemStack getPickResult() {
+    return new ItemStack(ModItems.FRIENDLY_SLIME.get());
+  }
+
+  private static final class HopMoveControl extends MoveControl {
+    private final FriendlySlime slime;
+    private int jumpDelay;
+
+    private HopMoveControl(FriendlySlime slime) {
+      super(slime);
+      this.slime = slime;
+    }
+
+    @Override
+    public void tick() {
+      if (slime.getControllingPassenger() instanceof Player) return;
+      boolean moving = hasWanted();
+      super.tick();
+      if (slime.isOrderedToSit()) {
+        slime.setSpeed(0.0F);
+        slime.setZza(0.0F);
+        return;
+      }
+      if (moving && slime.onGround()) {
+        if (--jumpDelay <= 0) {
+          jumpDelay = 10 + slime.getRandom().nextInt(10);
+          slime.getJumpControl().jump();
+        } else {
+          slime.setSpeed(0.0F);
+          slime.setZza(0.0F);
+        }
+      }
+    }
+  }
+}
