@@ -1,14 +1,16 @@
 # Slimic
 
-English | [Korean](README.kr.md)
+English | [한국어](README.kr.md)
 
-> Raise slimes and put them to work as your companions.
+> Raise slime companions and give them jobs.
 
 Slimic is a Minecraft Forge mod about raising friendly slimes and directing them as assistants.
 
 ## Overview
 
-Slime companions grow through shared stats and activity-based upgrades. They can be named, managed, and carried as items while retaining their traits. Mining slimes excavate terrain, transport slimes move cargo and supply tools, herald slimes signal stalled work, combat slimes engage selected enemies, cleaning slimes collect dropped items, farming slimes tend crops, lumberjack slimes maintain trees, and saddle slimes carry their owners on land and through the air. Guardian Angel Slimes fly beside their owners, retaliate against attackers, and protect them with stored totems. A Slime Tuner manages companions, and a Creative Slime Tuner supports custom stats. JEI provides crafting guidance.
+Build a team of companions to gather resources, move supplies, care for crops and trees, fight, and travel. Different slime types support one another: carriers collect a worker's cargo and bring supplies, while heralds signal when work cannot continue.
+
+Companions grow through activity and stat upgrades. Name and manage them with a Slime Tuner, then recover them as items with their saved traits. A Creative Slime Tuner allows direct stat editing. Optional JEI integration provides recipes and companion information.
 
 Slimic is in early development within the `0.1.x` series.
 
@@ -22,7 +24,7 @@ Minecraft **1.20.1**, Minecraft Forge **47.x**, and Java **17**.
 - [Development guide](docs/DEVELOPMENT.md) · [한국어](docs/DEVELOPMENT.kr.md)
 - [Changelog](CHANGELOG.md)
 
-Bug reports and suggestions are welcome through [GitHub Issues](https://github.com/meister-mods/slimic/issues).
+Report bugs and suggest improvements through [GitHub Issues](https://github.com/meister-mods/slimic/issues).
 
 ## License
 

@@ -417,6 +417,8 @@ public final class BroadAuditGameTests {
   public static void removedTreeClearsStaleSaplingRequirements(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var pet = logger(h, a);
+    // Keep other naturally generated trees outside this fixture's work radius.
+    SlimeStat.DETECTION_RANGE.tune(pet, 2);
     var root = tree(h, a);
     h.startSequence()
         .thenWaitUntil(
@@ -426,14 +428,15 @@ public final class BroadAuditGameTests {
               h.getLevel().setBlockAndUpdate(root, Blocks.AIR.defaultBlockState());
               h.getLevel().setBlockAndUpdate(root.above(), Blocks.AIR.defaultBlockState());
             })
-        .thenIdle(5)
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    pet.getRequiredSapling().isEmpty()
+                        && pet.getRequiredSaplingCount() == 0
+                        && pet.getFieldStatus() != FieldSlime.Status.NO_SEEDS,
+                    "Removed tree cannot keep requesting saplings"))
         .thenExecute(
             () -> {
-              h.assertTrue(
-                  pet.getRequiredSapling().isEmpty()
-                      && pet.getRequiredSaplingCount() == 0
-                      && pet.getFieldStatus() != FieldSlime.Status.NO_SEEDS,
-                  "Removed tree cannot keep requesting saplings");
               pet.discard();
               a.close();
             })

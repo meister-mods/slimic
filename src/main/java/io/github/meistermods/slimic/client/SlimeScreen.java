@@ -188,8 +188,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
         button.visible = open;
         boolean on = (menu.data(SlimeMenu.FILTERS) & (1 << kind.ordinal())) != 0;
         button.setMessage(
-            Component.translatable("target.slimic." + kind.key())
-                .append(Component.literal(on ? " [ON]" : " [OFF]")));
+            Component.translatable(
+                on ? "screen.slimic.target_enabled" : "screen.slimic.target_disabled",
+                Component.translatable("target.slimic." + kind.key())));
       }
     }
     if (previousPage != null) {

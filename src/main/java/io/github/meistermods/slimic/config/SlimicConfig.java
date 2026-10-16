@@ -13,19 +13,25 @@ public final class SlimicConfig {
     ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
     HERALD_DELAY_MINUTES =
         builder
-            .comment("Default minutes of continuous work blockage before a Herald Slime signals.")
+            .comment("Minutes a worker must remain blocked before a Herald Slime sends a signal.")
             .defineInRange("heraldDelayMinutes", 5, 1, 60);
     TRANSPORT_ACTIVITY =
         builder
-            .comment("Activity units per completed cargo-stack delivery or supplied tool.")
+            .comment(
+                "Activity units per cargo stack delivered to a Slime Chest or item supplied to a"
+                    + " worker.")
             .defineInRange("transportActivityPerDelivery", 4, 1, 64);
     FOLLOW_ACTIVITY_INTERVAL =
         builder
-            .comment("Ticks of actual following, ridden or escape movement per activity unit.")
+            .comment(
+                "Ticks of movement while following an owner, carrying a rider, or fleeing per"
+                    + " activity unit.")
             .defineInRange("followingActivityIntervalTicks", 100, 20, 1200);
     MONITOR_ACTIVITY_INTERVAL =
         builder
-            .comment("Ticks monitoring an active same-owner worker per activity unit.")
+            .comment(
+                "Ticks monitoring an active or blocked worker with the same owner per activity"
+                    + " unit.")
             .defineInRange("monitoringActivityIntervalTicks", 100, 20, 1200);
     SPEC = builder.build();
   }

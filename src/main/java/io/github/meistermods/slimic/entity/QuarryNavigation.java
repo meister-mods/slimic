@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.entity;
 
 import java.util.Set;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.BlockGetter;
@@ -73,9 +74,13 @@ public final class QuarryNavigation extends GroundPathNavigation {
     maxDistanceToWaypoint = 0.2F;
     var position = getTempMobPos();
     var next = path.getNextEntityPos(mob);
+    // Floating navigation reports the water surface, one block above a
+    // submerged node. Accept that height so the route can advance past it.
+    double heightTolerance =
+        level.getFluidState(path.getNextNodePos()).is(FluidTags.WATER) ? 1.5 : 1;
     if (Math.abs(position.x - next.x) < maxDistanceToWaypoint
         && Math.abs(position.z - next.z) < maxDistanceToWaypoint
-        && Math.abs(position.y - next.y) < 1) path.advance();
+        && Math.abs(position.y - next.y) < heightTolerance) path.advance();
     doStuckDetection(position);
   }
 

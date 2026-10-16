@@ -657,8 +657,17 @@ public class FriendlySlime extends TamableAnimal {
     }
 
     @Override
+    public void setWantedPosition(double x, double y, double z, double speed) {
+      // Ground jumps end on entering water. Otherwise native control retains the
+      // old heading until ground contact and ignores new swimming destinations.
+      if (slime.isInWater() && operation == Operation.JUMPING) operation = Operation.WAIT;
+      super.setWantedPosition(x, y, z, speed);
+    }
+
+    @Override
     public void tick() {
       if (slime.getControllingPassenger() instanceof Player) return;
+      if (slime.isInWater() && operation == Operation.JUMPING) operation = Operation.WAIT;
       boolean moving = hasWanted() || operation == Operation.JUMPING;
       super.tick();
       if ((slime.isOrderedToSit() && !slime.isFleeing())
@@ -678,6 +687,9 @@ public class FriendlySlime extends TamableAnimal {
           slime.setZza(0);
         }
       }
+      // Use full swimming input so flowing water cannot pin a worker to the
+      // basin wall. Ground hop timing and capped propulsion remain separate.
+      if (moving && slime.isInWater()) slime.setZza(1);
     }
   }
 }

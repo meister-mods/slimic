@@ -2,6 +2,8 @@ package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.block.BrokenSlimeBlock;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -15,6 +17,8 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,6 +26,26 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Slimic.MOD_ID)
 public final class FriendlySlimeInteractions {
   private FriendlySlimeInteractions() {}
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void preventQuarryWaterRegeneration(BlockEvent.CreateFluidSourceEvent event) {
+    if (!(event.getLevel() instanceof ServerLevel server)
+        || event.getResult() == Event.Result.DENY
+        || !event.getState().getFluidState().is(FluidTags.WATER)) return;
+    if (MiningSlime.preventsFluidSourceFormation(server, event.getPos()))
+      event.setResult(Event.Result.DENY);
+  }
+
+  @SubscribeEvent
+  public static void trackQuarryDrainage(EntityJoinLevelEvent event) {
+    if (!event.getLevel().isClientSide && event.getEntity() instanceof MiningSlime miner)
+      miner.refreshFluidSourceGuard();
+  }
+
+  @SubscribeEvent
+  public static void clearQuarryDrainage(LevelEvent.Unload event) {
+    if (event.getLevel() instanceof ServerLevel server) MiningSlime.clearFluidSourceGuards(server);
+  }
 
   @SubscribeEvent
   public static void preserveFarmland(BlockEvent.FarmlandTrampleEvent event) {

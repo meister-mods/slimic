@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.20] - 2026-10-16
+
+### Changed
+
+- Standardized Korean stat names, current stamina, activity, equipment, and work-order terminology across screens and guides; aligned vanilla ingredient names with Minecraft translations.
+- Revised English and Korean tooltips, JEI descriptions, status messages, and help text for consistent tone and current behavior. Combat filter states are localized.
+- Simplified the bilingual project overviews, corrected misplaced gameplay explanations, and updated development terminology and protocol references.
+
+### Fixed
+
+- Mining Slimes drain exposed source corners in horizontal patches of up to 3×3 cells. Active quarry layers suppress water-source regeneration, preventing repeated removal of the same infinite-water source. Each cell retains range, permission, bucket, and stamina checks.
+
+- Mining paths accept submerged waypoints at the water surface, and swimming control can change heading and move against currents.
+
+### Validation
+
+- Native fluid regressions cover renewable pools, batch limits and costs, protected cells, recovery, and neighboring chunks. Client checks cover localized screens, help panels, and optional JEI integration.
+
 ## [0.1.19] - 2026-10-16
 
 ### Added

@@ -2,11 +2,16 @@ package io.github.meistermods.slimic.entity;
 
 import com.mojang.authlib.GameProfile;
 import io.github.meistermods.slimic.registry.ModItems;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -96,6 +101,10 @@ public final class MiningSlime extends BagSlime {
   private BlockPos supportTarget;
   private long supportRetryAt;
   private int fluidCooldown;
+  private int drainedWaterLayer = Integer.MIN_VALUE;
+  private static final Map<ServerLevel, Map<Long, Set<MiningSlime>>> WATER_DRAINS =
+      new WeakHashMap<>();
+  private long trackedDrainChunk = Long.MIN_VALUE;
   private final Map<Long, Long> skipped = new HashMap<>();
 
   public MiningSlime(EntityType<? extends MiningSlime> type, Level level) {
@@ -269,6 +278,7 @@ public final class MiningSlime extends BagSlime {
     if (value && hasAnchor && !getMiningChunk().equals(chunkPosition())) onReleased();
     clearTarget();
     status = Status.IDLE;
+    refreshFluidSourceGuard();
   }
 
   @Override
@@ -279,6 +289,7 @@ public final class MiningSlime extends BagSlime {
     super.onReleased();
     if (!hasAnchor || changed || quarry == null) {
       fluidCooldown = 0;
+      drainedWaterLayer = Integer.MIN_VALUE;
       chunkX = chunk.x;
       chunkZ = chunk.z;
       int top =
@@ -297,6 +308,7 @@ public final class MiningSlime extends BagSlime {
     hasAnchor = true;
     skipped.clear();
     clearTarget();
+    refreshFluidSourceGuard();
   }
 
   @Override
@@ -304,6 +316,7 @@ public final class MiningSlime extends BagSlime {
     super.tick();
     if (!level().isClientSide) {
       if (!hasAnchor || quarry == null) onReleased();
+      refreshFluidSourceGuard();
       if (isWorking() && status != Status.MINING && tickCount % 20 == 0)
         recoverStamina(getStaminaRecoveryPerSecond());
     }
@@ -383,7 +396,7 @@ public final class MiningSlime extends BagSlime {
                     eye,
                     Vec3.atCenterOf(pos).add(0, placement ? 0.501 : 0, 0),
                     ClipContext.Block.COLLIDER,
-                    fluid ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE,
+                    ClipContext.Fluid.NONE,
                     this));
     return hit.getType() == HitResult.Type.BLOCK
         ? hit.getBlockPos().equals(pos)
@@ -400,16 +413,38 @@ public final class MiningSlime extends BagSlime {
     return state.getFluidState().is(FluidTags.WATER) || state.getFluidState().is(FluidTags.LAVA);
   }
 
+  private int fluidNeighbours(ServerLevel server, BlockPos pos) {
+    int count = 0;
+    for (var direction : Direction.Plane.HORIZONTAL) {
+      var neighbour = pos.relative(direction);
+      if (server.hasChunkAt(neighbour) && isRemovableFluid(server.getBlockState(neighbour)))
+        count++;
+    }
+    return count;
+  }
+
   private BlockPos findFluid(ServerLevel server) {
     BlockPos best = null;
+    int bestPriority = Integer.MAX_VALUE;
     double nearest = Double.MAX_VALUE;
     for (int x = 0; x < 16; x++)
       for (int z = 0; z < 16; z++) {
         BlockPos pos = new BlockPos(chunkX * 16 + x, quarry.layer(), chunkZ * 16 + z);
-        if (!isRemovableFluid(server.getBlockState(pos))) continue;
-        double distance = pos.distToCenterSqr(position());
-        if (!canSee(pos)) distance += 1024;
-        if (distance < nearest) {
+        var state = server.getBlockState(pos);
+        if (!isRemovableFluid(state)) continue;
+        boolean visible = canSee(pos);
+        double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
+        boolean inReach =
+            visible && getEyePosition().distanceToSqr(Vec3.atCenterOf(pos)) <= reach * reach;
+        // Finish sources before clearing flow that they can replace indefinitely.
+        int priority =
+            (skipped.containsKey(pos.asLong()) ? 1000 : 0)
+                + (state.getFluidState().isSource() ? 0 : 10000)
+                + (inReach ? 0 : 10)
+                + (inReach ? fluidNeighbours(server, pos) : 0);
+        double distance = pos.distToCenterSqr(position()) + (visible ? 0 : 1024);
+        if (priority < bestPriority || (priority == bestPriority && distance < nearest)) {
+          bestPriority = priority;
           nearest = distance;
           best = pos;
         }
@@ -417,7 +452,103 @@ public final class MiningSlime extends BagSlime {
     return best;
   }
 
-  private void drainFluid(ServerLevel server, BlockState state) {
+  public void refreshFluidSourceGuard() {
+    if (!(level() instanceof ServerLevel server)) return;
+    long chunk =
+        isAlive() && isWorking() && quarry != null && drainedWaterLayer == quarry.layer()
+            ? getMiningChunk().toLong()
+            : Long.MIN_VALUE;
+    if (trackedDrainChunk == chunk) return;
+    forgetFluidSourceGuard();
+    if (chunk != Long.MIN_VALUE) {
+      WATER_DRAINS
+          .computeIfAbsent(server, key -> new HashMap<>())
+          .computeIfAbsent(chunk, key -> Collections.newSetFromMap(new WeakHashMap<>()))
+          .add(this);
+      trackedDrainChunk = chunk;
+    }
+  }
+
+  private void forgetFluidSourceGuard() {
+    if (trackedDrainChunk == Long.MIN_VALUE || !(level() instanceof ServerLevel server)) return;
+    var chunks = WATER_DRAINS.get(server);
+    if (chunks != null) {
+      var workers = chunks.get(trackedDrainChunk);
+      if (workers != null) {
+        workers.remove(this);
+        if (workers.isEmpty()) chunks.remove(trackedDrainChunk);
+      }
+      if (chunks.isEmpty()) WATER_DRAINS.remove(server);
+    }
+    trackedDrainChunk = Long.MIN_VALUE;
+  }
+
+  public static void clearFluidSourceGuards(ServerLevel server) {
+    WATER_DRAINS.remove(server);
+  }
+
+  public static boolean preventsFluidSourceFormation(ServerLevel server, BlockPos pos) {
+    var chunks = WATER_DRAINS.get(server);
+    if (chunks == null) return false;
+    var workers = chunks.get(new ChunkPos(pos).toLong());
+    if (workers == null) return false;
+    for (var miner : workers)
+      if (server.getEntity(miner.getUUID()) == miner && miner.preventsFluidSourceFormation(pos))
+        return true;
+    return false;
+  }
+
+  /** Prevent source regeneration only while this quarry layer is being drained. */
+  public boolean preventsFluidSourceFormation(BlockPos pos) {
+    return isAlive()
+        && isTame()
+        && getOwnerUUID() != null
+        && isWorking()
+        && quarry != null
+        && drainedWaterLayer == quarry.layer()
+        && pos.getY() == drainedWaterLayer
+        && getMiningChunk().equals(new ChunkPos(pos))
+        && ForgeEventFactory.getMobGriefingEvent(level(), this);
+  }
+
+  private boolean canDrain(ServerLevel server, BlockPos pos, double reach) {
+    return getMiningChunk().equals(new ChunkPos(pos))
+        && server.hasChunkAt(pos)
+        && !skipped.containsKey(pos.asLong())
+        && isRemovableFluid(server.getBlockState(pos))
+        && getEyePosition().distanceToSqr(Vec3.atCenterOf(pos)) <= reach * reach
+        && canSee(pos);
+  }
+
+  private List<BlockPos> fluidPatch(ServerLevel server, BlockPos origin, double reach) {
+    List<BlockPos> best = new ArrayList<>(List.of(origin));
+    int bestSources = -1;
+    boolean sourcesOnly = server.getFluidState(origin).isSource();
+    for (int x = -2; x <= 0; x++)
+      for (int z = -2; z <= 0; z++) {
+        List<BlockPos> patch = new ArrayList<>();
+        int sources = 0;
+        for (int dx = 0; dx < 3; dx++)
+          for (int dz = 0; dz < 3; dz++) {
+            var pos = origin.offset(x + dx, 0, z + dz);
+            if (!canDrain(server, pos, reach)
+                || (sourcesOnly && !server.getFluidState(pos).isSource())) continue;
+            patch.add(pos);
+            if (server.getFluidState(pos).isSource()) sources++;
+          }
+        if (sources > bestSources || (sources == bestSources && patch.size() > best.size())) {
+          bestSources = sources;
+          best = patch;
+        }
+      }
+    best.sort(
+        Comparator.comparingInt((BlockPos pos) -> server.getFluidState(pos).isSource() ? 0 : 1)
+            .thenComparingInt(pos -> fluidNeighbours(server, pos))
+            .thenComparingDouble(pos -> pos.distToCenterSqr(position())));
+    return best;
+  }
+
+  private void drainFluid(ServerLevel server) {
     if (!hasBucket()) {
       status = Status.NO_BUCKET;
       clearTarget();
@@ -429,6 +560,13 @@ public final class MiningSlime extends BagSlime {
       return;
     }
     double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
+    if (tickCount % 10 == 0) {
+      var nearby = findFluid(server);
+      if (nearby != null && !nearby.equals(target) && canDrain(server, nearby, reach)) {
+        clearTarget();
+        target = nearby;
+      }
+    }
     if (getEyePosition().distanceToSqr(Vec3.atCenterOf(target)) > reach * reach
         || !canSee(target)) {
       status = Status.MOVING;
@@ -443,44 +581,53 @@ public final class MiningSlime extends BagSlime {
       return;
     }
     getNavigation().stop();
-    var player = worker(server);
-    if (!server.getWorldBorder().isWithinBounds(target)
-        || !server.mayInteract(player, target)
-        || ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, player, target) < 0
-        || !server.getBlockState(target).equals(state)
-        || !hasBucket()) {
-      skipped.put(target.asLong(), server.getGameTime() + 200);
+    int removed = 0;
+    var patch = fluidPatch(server, target, reach);
+    for (var pos : patch) {
+      if (getStamina() < 1 || !hasBucket() || !isWorking()) break;
+      if (canDrain(server, pos, reach) && drainFluidCell(server, pos)) removed++;
+    }
+    if (removed > 0) {
+      fluidCooldown = Math.max(1, (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(this)));
+      travelBlocked = false;
+      status = Status.DRAINING;
+    } else {
       status = Status.UNREACHABLE;
       travelBlocked = true;
-      clearTarget();
-      return;
     }
-    var pos = target;
+    clearTarget();
+  }
+
+  private boolean drainFluidCell(ServerLevel server, BlockPos pos) {
+    var state = server.getBlockState(pos);
+    var player = worker(server);
+    if (!server.getWorldBorder().isWithinBounds(pos)
+        || !server.mayInteract(player, pos)
+        || ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, player, pos) < 0
+        || !server.getBlockState(pos).equals(state)
+        || !hasBucket()) {
+      skipped.put(pos.asLong(), server.getGameTime() + 200);
+      return false;
+    }
     var snapshot = BlockSnapshot.create(server.dimension(), server, pos);
     BlockState dry =
         state.hasProperty(BlockStateProperties.WATERLOGGED)
             ? state.setValue(BlockStateProperties.WATERLOGGED, false)
             : Blocks.AIR.defaultBlockState();
-    if (!server.setBlock(pos, dry, 3)) {
-      clearTarget();
-      return;
-    }
+    if (!server.setBlock(pos, dry, 3)) return false;
     if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
       snapshot.restore(true, false);
       skipped.put(pos.asLong(), server.getGameTime() + 200);
-      status = Status.UNREACHABLE;
-      travelBlocked = true;
-      clearTarget();
-      return;
+      return false;
     }
-    if (server.getBlockState(pos).equals(dry)) {
-      spendStamina(1);
-      recordCompletedWork();
-      fluidCooldown = Math.max(1, (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(this)));
-      travelBlocked = false;
-      status = Status.DRAINING;
+    if (!server.getBlockState(pos).equals(dry)) return false;
+    if (state.getFluidState().is(FluidTags.WATER)) {
+      drainedWaterLayer = quarry.layer();
+      refreshFluidSourceGuard();
     }
-    clearTarget();
+    spendStamina(1);
+    recordCompletedWork();
+    return true;
   }
 
   private void approachTarget(BlockPos destination, boolean placement) {
@@ -492,8 +639,10 @@ public final class MiningSlime extends BagSlime {
         && level().noCollision(this, getBoundingBox().move(workStand.subtract(position())))) return;
     double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
     // Navigation accepts a waypoint within roughly half the slime's width.
-    // Keep the requested standing point comfortably inside the tool's reach.
-    double arrivalReach = Math.max(0, reach - 0.15);
+    // Keep the standing point inside tool reach, including the extra height
+    // from floating over a submerged standing point while draining.
+    double arrivalReach =
+        Math.max(0, reach - (isRemovableFluid(level().getBlockState(destination)) ? 0.75 : 0.15));
     int radius = Math.min(3, (int) Math.ceil(reach));
     var positions = new HashSet<BlockPos>();
     double offset = Math.floor(getBbWidth() + 1) * 0.5;
@@ -757,7 +906,7 @@ public final class MiningSlime extends BagSlime {
   private void mine(ServerLevel server) {
     BlockState state = server.getBlockState(target);
     if (isRemovableFluid(state)) {
-      drainFluid(server, state);
+      drainFluid(server);
       return;
     }
     int toolSlot = toolFor(state);
@@ -849,6 +998,8 @@ public final class MiningSlime extends BagSlime {
     tag.putBoolean("MiningTravelBlocked", travelBlocked);
     tag.putInt("MiningStatus", status.ordinal());
     tag.putInt("MiningFluidCooldown", fluidCooldown);
+    if (drainedWaterLayer != Integer.MIN_VALUE)
+      tag.putInt("MiningDrainedWaterLayer", drainedWaterLayer);
     if (quarry != null) tag.put("MiningQuarry", quarry.save());
   }
 
@@ -878,11 +1029,18 @@ public final class MiningSlime extends BagSlime {
                 level().getMinBuildHeight(),
                 level().getMaxBuildHeight())
             : null;
+    drainedWaterLayer =
+        tag.contains("MiningDrainedWaterLayer")
+            ? tag.getInt("MiningDrainedWaterLayer")
+            : Integer.MIN_VALUE;
+    if (quarry == null || drainedWaterLayer != quarry.layer())
+      drainedWaterLayer = Integer.MIN_VALUE;
     clearTarget();
   }
 
   @Override
   public void remove(Entity.RemovalReason reason) {
+    forgetFluidSourceGuard();
     clearTarget();
     super.remove(reason);
   }

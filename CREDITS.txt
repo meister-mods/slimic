@@ -65,13 +65,12 @@ Forge Mod Loader downloads components from the Minecraft Coder Pack
 
 =========================================================================
 
-Slimic base assets
+Slimic artwork
 
-The companion entity texture uses Minecraft's slime artwork by Mojang Studios.
-Slimic item icons adapt the Minecraft slime-ball silhouette with specialization
-colors and symbols. Slimic supplies dedicated 16x16 item, Slime Chest,
-herald-hat, and saddle textures. Equipment rendering also references Minecraft
-materials and a dedicated feathered wing texture. The Survival Slime Tuner
-uses artwork generated for Slimic and exported as a 16x16 item icon.
+The companion texture uses Minecraft slime artwork by Mojang Studios.
+Summoning items share a slime-ball base with framed profession symbols drawn
+from Minecraft item textures. Slimic includes dedicated 16x16 item, Slime Chest,
+herald-hat, saddle, and feathered-wing artwork. Equipment rendering also
+references Minecraft textures. The Survival Slime Tuner and Slime Slag use
+artwork created for Slimic and exported as 16x16 item icons.
 Minecraft artwork belongs to Mojang Studios.
-
