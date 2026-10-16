@@ -42,6 +42,20 @@ public final class SlimicJeiPlugin implements IModPlugin {
   @Override
   public void registerRecipes(IRecipeRegistration registration) {
     List<CraftingRecipe> recipes = new ArrayList<>();
+    recipes.add(
+        new ShapelessRecipe(
+            ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "soggy_slime/slime_ball"),
+            "slimic:soggy_slime",
+            CraftingBookCategory.MISC,
+            CompanionRecipe.soggy(new ItemStack(ModItems.FRIENDLY_SLIME.get())),
+            NonNullList.of(
+                Ingredient.EMPTY,
+                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                Ingredient.of(Items.SLIME_BALL))));
+    registration.addIngredientInfo(
+        new ItemStack(ModItems.SOGGY_SLIME.get()),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.soggy_slime"));
     for (var item : ForgeRegistries.ITEMS.getValues()) {
       ItemStack tool = new ItemStack(item);
       if (!MiningSlime.isPickaxe(tool)) continue;

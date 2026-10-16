@@ -113,6 +113,7 @@ public final class SlimeClientSmoke {
                 owner.setGameMode(GameType.CREATIVE);
                 owner.teleportTo(level, 7.5, 101, 8.5, -90, 15);
                 MiningSlime miner = ModEntities.MINING_SLIME.get().create(level);
+                miner.setWorking(true);
                 miner.moveTo(10.5, 101, 8.5, 90, 0);
                 miner.setYBodyRot(90);
                 miner.setYHeadRot(90);
@@ -243,6 +244,7 @@ public final class SlimeClientSmoke {
                 var level = owner.serverLevel();
                 if (level.getEntity(minerId) != null) level.getEntity(minerId).discard();
                 TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(level);
+                carrier.setWorking(true);
                 carrier.moveTo(10.5, 101, 8.5, 90, 0);
                 carrier.setYBodyRot(90);
                 carrier.setYHeadRot(90);
@@ -383,6 +385,7 @@ public final class SlimeClientSmoke {
                 var level = owner.serverLevel();
                 if (level.getEntity(carrierId) != null) level.getEntity(carrierId).discard();
                 HeraldSlime herald = ModEntities.HERALD_SLIME.get().create(level);
+                herald.setMonitoring(true);
                 herald.moveTo(10.5, 101, 8.5, 90, 0);
                 herald.setNoAi(true);
                 herald.tame(owner);
@@ -509,7 +512,7 @@ public final class SlimeClientSmoke {
                               .getKey(stack.getItem())
                               .toString())
                   .toList());
-      if (items.size() != 20
+      if (items.size() != 23
           || items.stream().noneMatch(stack -> stack.is(ModItems.CREATIVE_SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =
@@ -537,6 +540,7 @@ public final class SlimeClientSmoke {
                 if (level.getEntity(id) != null) level.getEntity(id).discard();
                 owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                 CombatSlime fighter = ModEntities.COMBAT_SLIME.get().create(level);
+                fighter.setWorking(true);
                 fighter.moveTo(10.5, 101, 8.5, 90, 0);
                 fighter.setYBodyRot(90);
                 fighter.setYHeadRot(90);
@@ -562,8 +566,9 @@ public final class SlimeClientSmoke {
 
   private static void newCompanions(Minecraft client) {
     if (phase >= 21) {
-      if (FieldClientSmoke.tick(client) && OrderEightClientSmoke.tick(client))
-        SaddleClientSmoke.tick(client);
+      if (FieldClientSmoke.tick(client)
+          && OrderEightClientSmoke.tick(client)
+          && OrderNineClientSmoke.tick(client)) SaddleClientSmoke.tick(client);
       return;
     }
     boolean jei = ModList.get().isLoaded("jei");
@@ -641,6 +646,7 @@ public final class SlimeClientSmoke {
       }
       screenshot(client, prefix + "chest-models-and-icons");
       var vanished = ModEntities.TRANSPORT_SLIME.get().create(client.level);
+      vanished.setWorking(true);
       FriendlyByteBuf opening = new FriendlyByteBuf(Unpooled.buffer());
       try {
         SlimeMenu.writeOpeningData(opening, vanished);
@@ -771,6 +777,7 @@ public final class SlimeClientSmoke {
                   var level = owner.serverLevel();
                   if (level.getEntity(id) != null) level.getEntity(id).discard();
                   CleaningSlime cleaner = ModEntities.CLEANING_SLIME.get().create(level);
+                  cleaner.setWorking(true);
                   cleaner.moveTo(10.5, 101, 8.5, 90, 0);
                   cleaner.setNoAi(true);
                   cleaner.tame(owner);
@@ -895,7 +902,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.18-" + suffix + ".png")
+            .resolve("../verification/0.1.19-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

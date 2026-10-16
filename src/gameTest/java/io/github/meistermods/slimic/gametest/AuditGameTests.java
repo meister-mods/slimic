@@ -41,12 +41,14 @@ public final class AuditGameTests {
   @GameTest(template = "empty", batch = "audit")
   public static void warningHistoryBeyond128SurvivesRecovery(GameTestHelper h) {
     var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    herald.setMonitoring(true);
     herald.tame(h.makeMockSurvivalPlayer());
     CompoundTag history = warnings(200);
     CompoundTag saved = herald.saveWithoutId(new CompoundTag());
     saved.put("HeraldWarnings", history);
     herald.load(saved);
     var restored = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    restored.setMonitoring(true);
     restored.load(FriendlySlimeItem.fromSlime(herald).getTag().getCompound("SlimeData"));
     h.assertTrue(
         restored.saveWithoutId(new CompoundTag()).getCompound("HeraldWarnings").equals(history),
@@ -59,6 +61,7 @@ public final class AuditGameTests {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    herald.setMonitoring(true);
     herald.tame(owner);
     herald.moveTo(arena.point(8, 101, 8));
     herald.setDelayMinutes(1);
@@ -118,6 +121,7 @@ public final class AuditGameTests {
       UUID identity,
       long episode) {
     MiningSlime worker = ModEntities.MINING_SLIME.get().create(level);
+    worker.setWorking(true);
     worker.tame(owner);
     worker.moveTo(position);
     worker.setNoAi(true);
@@ -153,6 +157,7 @@ public final class AuditGameTests {
     level.addNewPlayer(owner);
     level.addNewPlayer(victim);
     var fighter = ModEntities.COMBAT_SLIME.get().create(level);
+    fighter.setWorking(true);
     fighter.tame(h.makeMockSurvivalPlayer());
     fighter.moveTo(owner.position());
     fighter.setEquipment(0, new ItemStack(Items.IRON_SWORD));
@@ -198,6 +203,7 @@ public final class AuditGameTests {
   public static void menuStatsFitNativeShortPacketsWithoutLosingHighBits(GameTestHelper h) {
     Player owner = h.makeMockSurvivalPlayer();
     var slime = ModEntities.CLEANING_SLIME.get().create(h.getLevel());
+    slime.setWorking(true);
     slime.tame(owner);
     slime
         .getAttribute(Attributes.FOLLOW_RANGE)

@@ -249,6 +249,7 @@ public final class BroadAuditGameTests {
     var owner = h.makeMockSurvivalPlayer();
     owner.getInventory().clearContent();
     var guard = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    guard.setWaiting(false);
     guard.tame(owner);
     owner.moveTo(guard.position());
     var stack = new ItemStack(Items.TOTEM_OF_UNDYING, 64);
@@ -276,8 +277,10 @@ public final class BroadAuditGameTests {
   public static void capacityAndRecoveryScaleAtEveryCommonLevel(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var carrier = ModEntities.TRANSPORT_SLIME.get().create(h.getLevel());
+    carrier.setWorking(true);
     carrier.tame(owner);
     var cleaner = ModEntities.CLEANING_SLIME.get().create(h.getLevel());
+    cleaner.setWorking(true);
     cleaner.tame(owner);
     for (int level = 0; level <= SlimeStat.CAPACITY.maxLevel(); level++) {
       for (var pet : List.of(carrier, cleaner)) {
@@ -387,6 +390,7 @@ public final class BroadAuditGameTests {
 
   private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea a) {
     var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.tame(h.makeMockSurvivalPlayer());
     pet.moveTo(a.point(4, 101, 5));
     pet.setTool(new ItemStack(Items.IRON_AXE));
@@ -530,6 +534,7 @@ public final class BroadAuditGameTests {
   public static void canceledCleaningPickupPreservesItemsUntilPermissionReturns(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var pet = ModEntities.CLEANING_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.tame(h.makeMockSurvivalPlayer());
     pet.moveTo(a.point(6, 101, 6));
     pet.onReleased();
@@ -566,6 +571,7 @@ public final class BroadAuditGameTests {
   @GameTest(template = "empty", batch = "broad_audit")
   public static void canceledSignalSpawnDoesNotConsumeManualCooldown(GameTestHelper h) {
     var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    herald.setMonitoring(true);
     herald.tame(h.makeMockSurvivalPlayer());
     Consumer<EntityJoinLevelEvent> cancel =
         event -> {
@@ -587,6 +593,7 @@ public final class BroadAuditGameTests {
   @GameTest(template = "empty", batch = "broad_audit")
   public static void combatRevalidatesOrdersAndTargetSwitchesBeforeDamage(GameTestHelper h) {
     var fighter = ModEntities.COMBAT_SLIME.get().create(h.getLevel());
+    fighter.setWorking(true);
     fighter.tame(h.makeMockSurvivalPlayer());
     fighter.setEquipment(0, new ItemStack(Items.IRON_SWORD));
     var cow = EntityType.COW.create(h.getLevel());
@@ -612,6 +619,7 @@ public final class BroadAuditGameTests {
   public static void guardianReserveRejectsMismatchedTagsAndSurvivesReloadAtLimit(
       GameTestHelper h) {
     var guard = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    guard.setWaiting(false);
     guard.tame(h.makeMockSurvivalPlayer());
     var stack = new ItemStack(Items.TOTEM_OF_UNDYING, 64);
     stack.getOrCreateTag().putString("Mark", "kept");
@@ -627,6 +635,7 @@ public final class BroadAuditGameTests {
         "Different NBT cannot merge");
     var data = guard.saveWithoutId(new CompoundTag());
     var copy = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    copy.setWaiting(false);
     copy.load(data);
     h.assertTrue(
         ItemStack.matches(copy.getTotems(), guard.getTotems())

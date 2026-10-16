@@ -476,6 +476,7 @@ public final class MiningSlimeGameTests {
     for (int x = 0; x < 12; x++)
       for (int z = 0; z < 12; z++) helper.setBlock(x, 1, z, Blocks.BEDROCK);
     MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), FLOOR.above());
+    miner.setWorking(true);
     miner.tame(helper.makeMockSurvivalPlayer());
     miner.setItemSlot(EquipmentSlot.MAINHAND, tool);
     miner.onReleased();

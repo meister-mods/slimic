@@ -32,7 +32,7 @@ public final class CleaningSlime extends BagSlime {
   }
 
   public static final int RETRY_TICKS = 3600;
-  private boolean working = true;
+  private boolean working;
   private boolean resting;
   private boolean returning;
   private boolean travelBlocked;
@@ -232,7 +232,8 @@ public final class CleaningSlime extends BagSlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    working = !tag.contains("CleaningWorking") || tag.getBoolean("CleaningWorking");
+    working = tag.getBoolean("CleaningWorking");
+    if (!tag.contains("CleaningWorking")) setWaiting(true);
     resting = tag.getBoolean("CleaningResting");
     returning = tag.getBoolean("CleaningReturning");
     travelBlocked = tag.getBoolean("CleaningTravelBlocked");

@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.19] - 2026-10-16
+
+### Added
+
+- All work specializations start in Wait, including Creative defaults and new specializations; saved explicit orders survive recovery.
+- Soggy Slimes specialize from a Friendly Slime and slime ball, spend stamina on thin slime trails, and retain their traits through recovery. Trails break faster with shovels and drop one Slime Slag; four slag craft into a slime ball.
+- Mining Slimes remove water and lava while an empty bucket is present in their own bag. Buckets remain unchanged. Missing buckets pause mining and request transport delivery; full bags can request unloading before supply.
+
+### Fixed
+
+- Guardian Angel Slimes retaliate after taking damage themselves, including absorbed damage and when their owner is unavailable. Untamed guardians safely handle owner-dependent target checks. Environmental lethal damage follows the same nearby guardian-totem protection as attacks.
+- Ground slimes retain bounded hop propulsion throughout the native jumping state, preventing high Movement Speed from launching them across one-block steps.
+
+### Validation
+
+- Native checks cover slime trails, slag drops and recipes, stored identity, ownership and world-edit cancellation, guardian self-defense and environmental totems, jumping-state propulsion, fluid removal, retained buckets, and transport resupply.
+- Client checks cover the new summoning crest, slag sprite, trail model, management text, JEI, equipment and riding.
+
 ## [0.1.18] - 2026-10-16
 
 ### Fixed

@@ -26,7 +26,8 @@ public final class CompanionRecipe extends CustomRecipe {
     ARMOR,
     SADDLE,
     FARMER,
-    LUMBERJACK
+    LUMBERJACK,
+    SOGGY
   }
 
   private final Kind kind;
@@ -50,6 +51,7 @@ public final class CompanionRecipe extends CustomRecipe {
       case SADDLE -> stack.is(Items.SADDLE);
       case FARMER -> FarmerSlime.isHoe(stack);
       case LUMBERJACK -> LumberjackSlime.isAxe(stack);
+      case SOGGY -> stack.is(Items.SLIME_BALL);
     };
   }
 
@@ -77,6 +79,12 @@ public final class CompanionRecipe extends CustomRecipe {
 
   public static ItemStack cleaning(ItemStack friendly) {
     ItemStack result = new ItemStack(ModItems.CLEANING_SLIME.get());
+    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    return result;
+  }
+
+  public static ItemStack soggy(ItemStack friendly) {
+    ItemStack result = new ItemStack(ModItems.SOGGY_SLIME.get());
     if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
     return result;
   }
@@ -112,6 +120,7 @@ public final class CompanionRecipe extends CustomRecipe {
       case SADDLE -> saddle(first, second);
       case FARMER -> field(first, second, true);
       case LUMBERJACK -> field(first, second, false);
+      case SOGGY -> soggy(first);
     };
   }
 
@@ -134,6 +143,7 @@ public final class CompanionRecipe extends CustomRecipe {
       case SADDLE -> ModRecipes.SADDLE_SLIME.get();
       case FARMER -> ModRecipes.FARMER_SLIME.get();
       case LUMBERJACK -> ModRecipes.LUMBERJACK_SLIME.get();
+      case SOGGY -> ModRecipes.SOGGY_SLIME.get();
     };
   }
 }

@@ -463,6 +463,7 @@ public abstract class FieldSlime extends BagSlime {
             ? data.getString("Dimension")
             : level().dimension().location().toString();
     working = data.getBoolean("Working");
+    if (!data.contains("Working")) setWaiting(true);
     resting = data.getBoolean("Resting");
     home = data.contains("Home") ? BlockPos.of(data.getLong("Home")) : null;
     cooldown = Math.max(0, Math.min(200, data.getInt("Cooldown")));

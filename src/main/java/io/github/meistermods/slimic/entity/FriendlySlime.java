@@ -306,6 +306,11 @@ public class FriendlySlime extends TamableAnimal {
   public void readAdditionalSaveData(CompoundTag saved) {
     CompoundTag tag = SlimeData.migrate(saved);
     super.readAdditionalSaveData(tag);
+    if (!tag.contains("Sitting")
+        && (this instanceof BagSlime
+            || this instanceof HeraldSlime
+            || this instanceof SoggySlime
+            || this instanceof GuardianAngelSlime)) setWaiting(true);
     followingActivityTicks =
         Mth.clamp(
             tag.getInt("FollowingActivityTicks"),
@@ -654,7 +659,7 @@ public class FriendlySlime extends TamableAnimal {
     @Override
     public void tick() {
       if (slime.getControllingPassenger() instanceof Player) return;
-      boolean moving = hasWanted();
+      boolean moving = hasWanted() || operation == Operation.JUMPING;
       super.tick();
       if ((slime.isOrderedToSit() && !slime.isFleeing())
           || slime.getAttributeValue(Attributes.MOVEMENT_SPEED) <= 0) {

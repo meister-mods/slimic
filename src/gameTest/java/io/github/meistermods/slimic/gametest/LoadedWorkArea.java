@@ -56,6 +56,7 @@ final class LoadedWorkArea {
 
   TransportSlime carrier(Vec3 offset) {
     TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    carrier.setWorking(true);
     carrier.moveTo(point(offset.x, offset.y, offset.z));
     carrier.tame(helper.makeMockSurvivalPlayer());
     carrier.onReleased();

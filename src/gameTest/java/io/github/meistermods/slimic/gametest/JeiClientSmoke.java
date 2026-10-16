@@ -56,6 +56,14 @@ public final class JeiClientSmoke implements IModPlugin {
     return recipes("saddle_slime/");
   }
 
+  public static long soggyRecipes() {
+    return recipes("soggy_slime/");
+  }
+
+  public static long slagRecipes() {
+    return recipes("slime_ball_from_slag");
+  }
+
   public static long armorRecipes() {
     return recipes("slime_armor/");
   }

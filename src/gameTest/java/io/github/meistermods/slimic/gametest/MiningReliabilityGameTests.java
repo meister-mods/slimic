@@ -136,6 +136,7 @@ public final class MiningReliabilityGameTests {
 
     private MiningSlime miner(int dx, int dz) {
       MiningSlime miner = ModEntities.MINING_SLIME.get().create(level());
+      miner.setWorking(true);
       miner.moveTo(x + dx, top + 1, z + dz);
       miner.tame(helper.makeMockSurvivalPlayer());
       miner.setTool(0, new ItemStack(Items.IRON_PICKAXE));

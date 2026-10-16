@@ -17,6 +17,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -29,14 +30,17 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -63,7 +67,9 @@ public final class MiningSlime extends BagSlime {
     NEEDS_SUPPORT,
     UNREACHABLE,
     COMPLETE,
-    NEEDS_TIER
+    NEEDS_TIER,
+    NO_BUCKET,
+    DRAINING
   }
 
   private static final EntityDataAccessor<Integer> ACTIVE_TOOL =
@@ -72,7 +78,7 @@ public final class MiningSlime extends BagSlime {
       TagKey.create(
           Registries.ITEM, ResourceLocation.fromNamespaceAndPath("slimic", "quarry_supports"));
   private int fullRevision = -1;
-  private boolean working = true;
+  private boolean working;
   private boolean resting;
   private boolean hasAnchor;
   private int chunkX, chunkZ;
@@ -89,6 +95,7 @@ public final class MiningSlime extends BagSlime {
   private double closestTravelDistance = Double.MAX_VALUE;
   private BlockPos supportTarget;
   private long supportRetryAt;
+  private int fluidCooldown;
   private final Map<Long, Long> skipped = new HashMap<>();
 
   public MiningSlime(EntityType<? extends MiningSlime> type, Level level) {
@@ -180,12 +187,23 @@ public final class MiningSlime extends BagSlime {
 
   @Override
   public boolean acceptsWorkTool(ItemStack stack) {
+    if (status == Status.NO_BUCKET && !hasBucket())
+      return stack.is(Items.BUCKET)
+          && ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
     return matchesToolSlot(requiredTool, stack)
         && (!stack.isDamageableItem() || stack.getDamageValue() < stack.getMaxDamage());
   }
 
   @Override
   public boolean receiveWorkTool(ItemStack stack) {
+    if (status == Status.NO_BUCKET && !hasBucket()) {
+      if (!acceptsWorkTool(stack)) return false;
+      if (!ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), false).isEmpty())
+        return false;
+      status = Status.IDLE;
+      fullRevision = -1;
+      return true;
+    }
     if (!needsReplacementTool() || !acceptsWorkTool(stack)) return false;
     setTool(requiredTool, stack.copyWithCount(1));
     return true;
@@ -195,6 +213,18 @@ public final class MiningSlime extends BagSlime {
   protected WorkStatus describeWork() {
     var order = WorkStatus.Order.MINE;
     return switch (status) {
+      case NO_BUCKET ->
+          hasBucket()
+              ? WorkStatus.of(order, WorkStatus.State.ACTIVE)
+              : WorkStatus.blocked(
+                  order,
+                  WorkStatus.Reason.BUCKET_MISSING,
+                  ItemHandlerHelper.insertItemStacked(getBag(), new ItemStack(Items.BUCKET), true)
+                          .isEmpty()
+                      ? new WorkStatus.Request[] {WorkStatus.Request.BUCKET_SUPPLY}
+                      : new WorkStatus.Request[] {
+                        WorkStatus.Request.BUCKET_SUPPLY, WorkStatus.Request.CARGO_PICKUP
+                      });
       case FULL ->
           WorkStatus.blocked(
               order, WorkStatus.Reason.INVENTORY_FULL, WorkStatus.Request.CARGO_PICKUP);
@@ -248,6 +278,7 @@ public final class MiningSlime extends BagSlime {
         hasAnchor && (chunk.x != chunkX || chunk.z != chunkZ || hasChangedWorkDimension());
     super.onReleased();
     if (!hasAnchor || changed || quarry == null) {
+      fluidCooldown = 0;
       chunkX = chunk.x;
       chunkZ = chunk.z;
       int top =
@@ -344,6 +375,7 @@ public final class MiningSlime extends BagSlime {
   }
 
   private boolean canSeeFrom(Vec3 eye, BlockPos pos, boolean placement) {
+    boolean fluid = !placement && isRemovableFluid(level().getBlockState(pos));
     var hit =
         level()
             .clip(
@@ -351,9 +383,104 @@ public final class MiningSlime extends BagSlime {
                     eye,
                     Vec3.atCenterOf(pos).add(0, placement ? 0.501 : 0, 0),
                     ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
+                    fluid ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE,
                     this));
-    return hit.getType() == HitResult.Type.BLOCK ? hit.getBlockPos().equals(pos) : placement;
+    return hit.getType() == HitResult.Type.BLOCK
+        ? hit.getBlockPos().equals(pos)
+        : placement || fluid;
+  }
+
+  public boolean hasBucket() {
+    for (int slot = 0; slot < getCapacity(); slot++)
+      if (getBag().getStackInSlot(slot).is(Items.BUCKET)) return true;
+    return false;
+  }
+
+  private static boolean isRemovableFluid(BlockState state) {
+    return state.getFluidState().is(FluidTags.WATER) || state.getFluidState().is(FluidTags.LAVA);
+  }
+
+  private BlockPos findFluid(ServerLevel server) {
+    BlockPos best = null;
+    double nearest = Double.MAX_VALUE;
+    for (int x = 0; x < 16; x++)
+      for (int z = 0; z < 16; z++) {
+        BlockPos pos = new BlockPos(chunkX * 16 + x, quarry.layer(), chunkZ * 16 + z);
+        if (!isRemovableFluid(server.getBlockState(pos))) continue;
+        double distance = pos.distToCenterSqr(position());
+        if (!canSee(pos)) distance += 1024;
+        if (distance < nearest) {
+          nearest = distance;
+          best = pos;
+        }
+      }
+    return best;
+  }
+
+  private void drainFluid(ServerLevel server, BlockState state) {
+    if (!hasBucket()) {
+      status = Status.NO_BUCKET;
+      clearTarget();
+      return;
+    }
+    if (skipped.containsKey(target.asLong())) {
+      status = Status.UNREACHABLE;
+      clearTarget();
+      return;
+    }
+    double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
+    if (getEyePosition().distanceToSqr(Vec3.atCenterOf(target)) > reach * reach
+        || !canSee(target)) {
+      status = Status.MOVING;
+      if (travelStalled(1)) {
+        skipped.put(target.asLong(), server.getGameTime() + 200);
+        travelBlocked = true;
+        clearTarget();
+      } else {
+        if (tickCount % 10 == 0) approachTarget(target, false);
+        finishApproach();
+      }
+      return;
+    }
+    getNavigation().stop();
+    var player = worker(server);
+    if (!server.getWorldBorder().isWithinBounds(target)
+        || !server.mayInteract(player, target)
+        || ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, player, target) < 0
+        || !server.getBlockState(target).equals(state)
+        || !hasBucket()) {
+      skipped.put(target.asLong(), server.getGameTime() + 200);
+      status = Status.UNREACHABLE;
+      travelBlocked = true;
+      clearTarget();
+      return;
+    }
+    var pos = target;
+    var snapshot = BlockSnapshot.create(server.dimension(), server, pos);
+    BlockState dry =
+        state.hasProperty(BlockStateProperties.WATERLOGGED)
+            ? state.setValue(BlockStateProperties.WATERLOGGED, false)
+            : Blocks.AIR.defaultBlockState();
+    if (!server.setBlock(pos, dry, 3)) {
+      clearTarget();
+      return;
+    }
+    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
+      snapshot.restore(true, false);
+      skipped.put(pos.asLong(), server.getGameTime() + 200);
+      status = Status.UNREACHABLE;
+      travelBlocked = true;
+      clearTarget();
+      return;
+    }
+    if (server.getBlockState(pos).equals(dry)) {
+      spendStamina(1);
+      recordCompletedWork();
+      fluidCooldown = Math.max(1, (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(this)));
+      travelBlocked = false;
+      status = Status.DRAINING;
+    }
+    clearTarget();
   }
 
   private void approachTarget(BlockPos destination, boolean placement) {
@@ -552,6 +679,23 @@ public final class MiningSlime extends BagSlime {
         travelBlocked = false;
         return null;
       }
+      BlockPos fluid = findFluid(server);
+      if (fluid != null) {
+        if (!hasBucket()) {
+          status = Status.NO_BUCKET;
+          getNavigation().stop();
+          return null;
+        }
+        if (skipped.containsKey(fluid.asLong())) {
+          status = Status.UNREACHABLE;
+          return null;
+        }
+        return fluid;
+      }
+      if (getPickaxe().isEmpty() && getShovel().isEmpty()) {
+        status = Status.NO_TOOL;
+        return null;
+      }
       if (!ensureRamp(server)) return null;
       BlockPos best = null;
       double nearest = Double.MAX_VALUE;
@@ -612,6 +756,10 @@ public final class MiningSlime extends BagSlime {
 
   private void mine(ServerLevel server) {
     BlockState state = server.getBlockState(target);
+    if (isRemovableFluid(state)) {
+      drainFluid(server, state);
+      return;
+    }
     int toolSlot = toolFor(state);
     if (!terrain(target, state) || toolSlot < 0) {
       clearTarget();
@@ -700,18 +848,21 @@ public final class MiningSlime extends BagSlime {
     tag.putInt("MiningRequiredTool", requiredTool);
     tag.putBoolean("MiningTravelBlocked", travelBlocked);
     tag.putInt("MiningStatus", status.ordinal());
+    tag.putInt("MiningFluidCooldown", fluidCooldown);
     if (quarry != null) tag.put("MiningQuarry", quarry.save());
   }
 
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    working = !tag.contains("MiningWorking") || tag.getBoolean("MiningWorking");
+    working = tag.getBoolean("MiningWorking");
+    if (!tag.contains("MiningWorking")) setWaiting(true);
     resting = tag.getBoolean("MiningResting");
     hasAnchor = tag.getBoolean("MiningHasAnchor");
     chunkX = tag.getInt("MiningChunkX");
     chunkZ = tag.getInt("MiningChunkZ");
     requiredTool = Math.max(0, Math.min(1, tag.getInt("MiningRequiredTool")));
+    fluidCooldown = Math.max(0, Math.min(200, tag.getInt("MiningFluidCooldown")));
     travelBlocked = tag.getBoolean("MiningTravelBlocked");
     int savedStatus = tag.getInt("MiningStatus");
     status =
@@ -776,11 +927,6 @@ public final class MiningSlime extends BagSlime {
         return;
       }
       restockTools();
-      if (getPickaxe().isEmpty() && getShovel().isEmpty()) {
-        status = Status.NO_TOOL;
-        clearTarget();
-        return;
-      }
       if (status == Status.FULL && fullRevision == bagRevision) return;
       if (getStamina() < 1) resting = true;
       if (resting) {
@@ -790,6 +936,10 @@ public final class MiningSlime extends BagSlime {
           return;
         }
         resting = false;
+      }
+      if (fluidCooldown > 0) {
+        fluidCooldown--;
+        return;
       }
       if (target == null) {
         if (tickCount % 5 != 0) {

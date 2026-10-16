@@ -41,7 +41,7 @@ public final class CombatSlime extends BagSlime {
 
   private static final EntityDataAccessor<Integer> FILTERS =
       SynchedEntityData.defineId(CombatSlime.class, EntityDataSerializers.INT);
-  private boolean working = true;
+  private boolean working;
   private boolean resting;
   private Status status = Status.IDLE;
   private int attackCooldown;
@@ -295,7 +295,8 @@ public final class CombatSlime extends BagSlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    working = !tag.contains("CombatWorking") || tag.getBoolean("CombatWorking");
+    working = tag.getBoolean("CombatWorking");
+    if (!tag.contains("CombatWorking")) setWaiting(true);
     resting = tag.getBoolean("CombatResting");
     entityData.set(FILTERS, tag.contains("CombatFilters") ? tag.getInt("CombatFilters") & 63 : 1);
     attackCooldown = Math.max(0, Math.min(200, tag.getInt("CombatAttackCooldown")));

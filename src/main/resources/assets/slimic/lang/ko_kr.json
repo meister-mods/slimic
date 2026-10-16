@@ -55,8 +55,8 @@
   "status.slimic.transport.idle": "지원할 작업 슬라임을 찾고 있습니다",
   "status.slimic.transport.collecting": "멈춘 작업 슬라임의 화물을 수거합니다",
   "status.slimic.transport.delivering": "슬라임 상자로 화물을 운반합니다",
-  "status.slimic.transport.fetching_tool": "교체할 도구를 가져오고 있습니다",
-  "status.slimic.transport.supplying": "작업 슬라임에게 도구를 보급합니다",
+  "status.slimic.transport.fetching_tool": "작업 물품을 가져오는 중",
+  "status.slimic.transport.supplying": "작업 물품을 보급하는 중",
   "status.slimic.transport.no_chest": "작업 구역에 이용 가능한 슬라임 상자가 없습니다",
   "status.slimic.transport.chests_full": "슬라임 상자가 가득 찼습니다. 화물을 보관합니다",
   "status.slimic.transport.resting": "지구력을 회복하고 있습니다",
@@ -172,5 +172,13 @@
   "status.slimic.lumberjack.waiting": "벌목 대기 중",
   "status.slimic.farmer.following": "소유자 추종 중: 농사 중지",
   "status.slimic.lumberjack.following": "소유자 추종 중: 벌목 중지",
-  "status.slimic.lumberjack.saplings": "필요 묘목: %s × %s (가방에 넣으세요)"
+  "status.slimic.lumberjack.saplings": "필요 묘목: %s × %s (가방에 넣으세요)",
+  "entity.slimic.soggy_slime": "눅눅 슬라임",
+  "item.slimic.soggy_slime": "눅눅 슬라임",
+  "item.slimic.slime_slag": "슬라임 슬래그",
+  "block.slimic.slime_trail": "슬라임 흔적",
+  "status.slimic.no_bucket": "가방에 빈 양동이가 필요합니다. 운반 슬라임의 보급을 기다립니다.",
+  "status.slimic.draining": "물·용암 제거 중",
+  "screen.slimic.soggy_info": "기력이 있으면 단단한 바닥에 슬라임 흔적을 남깁니다. 흔적마다 기력 1을 소비합니다. 흔적은 슬래그 한 개로 부서지며, 슬래그 네 개로 슬라임볼을 만듭니다.",
+  "jei.slimic.soggy_slime": "친근한 슬라임과 슬라임볼을 조합합니다. 기력을 소비해 슬라임 흔적을 남기며, 흔적에서 나온 슬래그 네 개로 슬라임볼을 만듭니다."
 }

@@ -25,7 +25,7 @@ public final class HeraldSlime extends FriendlySlime {
   public static final String SIGNAL_MARKER = "SlimicSignal";
   private ItemStack firework = defaultFirework();
   private int delayMinutes;
-  private boolean monitoring = true;
+  private boolean monitoring;
   private CompoundTag warned = new CompoundTag();
   private CompoundTag warningCooldowns = new CompoundTag();
   private int monitoringActivityTicks;
@@ -33,6 +33,7 @@ public final class HeraldSlime extends FriendlySlime {
 
   public HeraldSlime(EntityType<? extends HeraldSlime> type, Level level) {
     super(type, level);
+    setWaiting(true);
   }
 
   public static ItemStack defaultFirework() {
@@ -186,7 +187,8 @@ public final class HeraldSlime extends FriendlySlime {
         tag.contains("HeraldDelayMinutes")
             ? Math.max(1, Math.min(60, tag.getInt("HeraldDelayMinutes")))
             : 0;
-    monitoring = !tag.contains("HeraldMonitoring") || tag.getBoolean("HeraldMonitoring");
+    monitoring = tag.getBoolean("HeraldMonitoring");
+    if (!tag.contains("HeraldMonitoring")) setWaiting(true);
     warned = new CompoundTag();
     CompoundTag saved = tag.getCompound("HeraldWarnings");
     for (String key : saved.getAllKeys()) {

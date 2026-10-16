@@ -120,6 +120,7 @@ public final class WorkSystemGameTests {
   @GameTest(template = "empty", batch = "work_system")
   public static void commonWorkStatusSeparatesCommandsReasonsAndRequests(GameTestHelper h) {
     var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    miner.setWorking(true);
     CompoundTag saved = miner.saveWithoutId(new CompoundTag());
     saved.putInt("MiningStatus", MiningSlime.Status.FULL.ordinal());
     miner.load(saved);
@@ -160,6 +161,7 @@ public final class WorkSystemGameTests {
         !miner.isWorkBlocked() && miner.getWorkStatus().state() == WorkStatus.State.COMPLETE,
         "Completed work is not a blockage");
     var fighter = ModEntities.COMBAT_SLIME.get().create(h.getLevel());
+    fighter.setWorking(true);
     h.assertTrue(
         fighter.needsReplacementTool()
             && fighter.getWorkStatus().requests(WorkStatus.Request.TOOL_SUPPLY),
@@ -286,6 +288,7 @@ public final class WorkSystemGameTests {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     var owner = h.makeMockSurvivalPlayer();
     var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    miner.setWorking(true);
     miner.moveTo(arena.point(5, 101, 8));
     miner.tame(owner);
     miner.setNoAi(true);
@@ -295,6 +298,7 @@ public final class WorkSystemGameTests {
     miner.onReleased();
     h.getLevel().addFreshEntity(miner);
     var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    herald.setMonitoring(true);
     herald.moveTo(arena.point(8, 101, 8));
     herald.tame(owner);
     CompoundTag saved = herald.saveWithoutId(new CompoundTag());
@@ -302,6 +306,7 @@ public final class WorkSystemGameTests {
         "HeraldMonitoringActivityTicks", SlimicConfig.MONITOR_ACTIVITY_INTERVAL.get() - 20);
     herald.load(saved);
     var restored = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    restored.setMonitoring(true);
     restored.load(FriendlySlimeItem.fromSlime(herald).getTag().getCompound("SlimeData"));
     h.assertTrue(
         restored.saveWithoutId(new CompoundTag()).getInt("HeraldMonitoringActivityTicks")

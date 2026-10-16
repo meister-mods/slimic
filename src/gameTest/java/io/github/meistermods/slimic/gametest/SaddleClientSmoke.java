@@ -342,7 +342,7 @@ public final class SaddleClientSmoke {
             .gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.18-"
+                "../verification/0.1.19-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + suffix
                     + ".png")

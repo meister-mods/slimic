@@ -41,10 +41,12 @@ public final class GuardianAngelSlime extends FriendlySlime {
   private static final EntityDataAccessor<Integer> BEAM =
       SynchedEntityData.defineId(GuardianAngelSlime.class, EntityDataSerializers.INT);
   private LivingEntity retaliation;
+  private boolean defendingSelf;
   private int retaliationTicks, attackCooldown, beamTicks;
 
   public GuardianAngelSlime(EntityType<? extends GuardianAngelSlime> type, Level level) {
     super(type, level);
+    setWaiting(true);
     moveControl = new FlyingMoveControl(this, 20, true);
     setNoGravity(true);
     ensureHealthScale();
@@ -128,15 +130,17 @@ public final class GuardianAngelSlime extends FriendlySlime {
   }
 
   private boolean hostileToOwner(LivingEntity attacker) {
+    if (getOwnerUUID() == null) return false;
     var owner = getOwner();
-    if (owner == null
-        || attacker == this
+    if (attacker == this
         || attacker == owner
+        || attacker.getUUID().equals(getOwnerUUID())
         || !attacker.isAlive()
         || attacker.isSpectator()
         || attacker.level() != level()
         || !canAttack(attacker)
-        || owner.isAlliedTo(attacker)) return false;
+        || isAlliedTo(attacker)
+        || (owner != null && owner.isAlliedTo(attacker))) return false;
     if (attacker instanceof Player player
         && (player.getAbilities().instabuild
             || !level().getServer().isPvpAllowed()
@@ -152,13 +156,32 @@ public final class GuardianAngelSlime extends FriendlySlime {
     if (hostileToOwner(attacker)) {
       retaliation = attacker;
       retaliationTicks = 200;
+      defendingSelf = false;
     }
+  }
+
+  @Override
+  public boolean hurt(DamageSource source, float amount) {
+    float before = getHealth();
+    float absorptionBefore = getAbsorptionAmount();
+    boolean damaged = super.hurt(source, amount);
+    if (!level().isClientSide
+        && isAlive()
+        && (getHealth() < before || getAbsorptionAmount() < absorptionBefore)
+        && source.getEntity() instanceof LivingEntity attacker
+        && hostileToOwner(attacker)) {
+      retaliation = attacker;
+      retaliationTicks = 200;
+      defendingSelf = true;
+    }
+    return damaged;
   }
 
   public boolean protect(Player player, DamageSource source) {
     if (level().isClientSide
         || !isAlive()
         || getTotems().isEmpty()
+        || player.level() != level()
         || !player.getUUID().equals(getOwnerUUID())
         || distanceToSqr(player) > 256
         || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return false;
@@ -209,10 +232,12 @@ public final class GuardianAngelSlime extends FriendlySlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
+    if (!tag.contains("GuardianTotems")) setWaiting(true);
     ensureHealthScale();
     setTotems(ItemStack.of(tag.getCompound("GuardianTotems")));
     attackCooldown = Math.max(0, Math.min(200, tag.getInt("GuardianAttackCooldown")));
     retaliation = null;
+    defendingSelf = false;
     retaliationTicks = 0;
     setNoGravity(true);
   }
@@ -224,7 +249,7 @@ public final class GuardianAngelSlime extends FriendlySlime {
 
     @Override
     public boolean canUse() {
-      return isTame() && getOwner() != null;
+      return isTame() && (getOwner() != null || (defendingSelf && retaliationTicks > 0));
     }
 
     @Override
@@ -241,11 +266,10 @@ public final class GuardianAngelSlime extends FriendlySlime {
     @Override
     public void tick() {
       LivingEntity owner = getOwner();
-      if (owner == null) return;
       if (retaliationTicks > 0
           && retaliation != null
           && hostileToOwner(retaliation)
-          && distanceToSqr(owner) <= 256) {
+          && (defendingSelf || (owner != null && distanceToSqr(owner) <= 256))) {
         double range =
             Math.min(
                 SlimeStat.DETECTION_RANGE.value(GuardianAngelSlime.this),
@@ -267,6 +291,11 @@ public final class GuardianAngelSlime extends FriendlySlime {
             recordCompletedWork();
           }
         }
+      }
+      if (owner == null) {
+        getNavigation().stop();
+        setDeltaMovement(getDeltaMovement().scale(.5));
+        return;
       }
       if (isOrderedToSit()) {
         getNavigation().stop();

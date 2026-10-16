@@ -50,12 +50,17 @@ public enum SlimeStat {
       case STAMINA ->
           slime instanceof BagSlime
               || slime instanceof SaddleSlime
+              || slime instanceof SoggySlime
               || slime instanceof GuardianAngelSlime;
       case DETECTION_RANGE ->
           slime instanceof BagSlime
               || slime instanceof HeraldSlime
               || slime instanceof GuardianAngelSlime;
-      case WORK_SPEED, REACH -> slime instanceof BagSlime || slime instanceof GuardianAngelSlime;
+      case WORK_SPEED ->
+          slime instanceof BagSlime
+              || slime instanceof GuardianAngelSlime
+              || slime instanceof SoggySlime;
+      case REACH -> slime instanceof BagSlime || slime instanceof GuardianAngelSlime;
       default -> slime instanceof BagSlime;
     };
   }

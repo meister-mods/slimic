@@ -55,8 +55,8 @@
   "status.slimic.transport.idle": "Looking for workers to support",
   "status.slimic.transport.collecting": "Collecting a stopped worker's cargo",
   "status.slimic.transport.delivering": "Delivering cargo to a Slime Chest",
-  "status.slimic.transport.fetching_tool": "Collecting a replacement tool",
-  "status.slimic.transport.supplying": "Delivering a replacement tool",
+  "status.slimic.transport.fetching_tool": "Fetching work supplies",
+  "status.slimic.transport.supplying": "Supplying work items",
   "status.slimic.transport.no_chest": "No available Slime Chest in the work area",
   "status.slimic.transport.chests_full": "Slime Chests are full; keeping cargo safe",
   "status.slimic.transport.resting": "Resting to recover stamina",
@@ -172,5 +172,13 @@
   "status.slimic.lumberjack.waiting": "Logging paused",
   "status.slimic.farmer.following": "Following owner; farming paused",
   "status.slimic.lumberjack.following": "Following owner; logging paused",
-  "status.slimic.lumberjack.saplings": "Required: %s × %s (place in bag)"
+  "status.slimic.lumberjack.saplings": "Required: %s × %s (place in bag)",
+  "entity.slimic.soggy_slime": "Soggy Slime",
+  "item.slimic.soggy_slime": "Soggy Slime",
+  "item.slimic.slime_slag": "Slime Slag",
+  "block.slimic.slime_trail": "Slime Trail",
+  "status.slimic.no_bucket": "Needs an empty bucket in its bag. Waiting for transport supply.",
+  "status.slimic.draining": "Removing water or lava",
+  "screen.slimic.soggy_info": "Leaves slime trails on solid ground while it has stamina. Each trail costs 1 stamina. Trails break into one Slime Slag; craft four slag into one slime ball.",
+  "jei.slimic.soggy_slime": "Craft a Friendly Slime with a slime ball. Leaves stamina-powered slime trails that drop Slime Slag. Four slag craft into one slime ball."
 }

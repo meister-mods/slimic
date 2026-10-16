@@ -38,6 +38,7 @@ public final class MovementAuditGameTests {
     carrier.moveTo(arena.point(1, 101, 8));
     var chest = arena.chest(14, 101, 8);
     MiningSlime worker = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    worker.setWorking(true);
     if (tools) {
       worker.moveTo(arena.point(8, 101, 10));
       worker.setOwnerUUID(carrier.getOwnerUUID());
@@ -95,6 +96,7 @@ public final class MovementAuditGameTests {
   private static void cleaningReturn(GameTestHelper h, boolean stalled) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     var cleaner = ModEntities.CLEANING_SLIME.get().create(h.getLevel());
+    cleaner.setWorking(true);
     cleaner.tame(h.makeMockSurvivalPlayer());
     cleaner.moveTo(arena.point(14, 101, 8));
     cleaner.onReleased();
@@ -154,6 +156,7 @@ public final class MovementAuditGameTests {
   public static void fighterRefreshesItsRouteAfterTheTargetMoves(GameTestHelper h) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     var fighter = ModEntities.COMBAT_SLIME.get().create(h.getLevel());
+    fighter.setWorking(true);
     fighter.setNoAi(true);
     fighter.tame(h.makeMockSurvivalPlayer());
     fighter.moveTo(arena.point(1, 101, 8));
@@ -209,6 +212,7 @@ public final class MovementAuditGameTests {
   private static void combatTravel(GameTestHelper h, boolean stalled) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     var fighter = ModEntities.COMBAT_SLIME.get().create(h.getLevel());
+    fighter.setWorking(true);
     fighter.tame(h.makeMockSurvivalPlayer());
     fighter.moveTo(arena.point(1, 101, 8));
     fighter.setAllowed(CombatTarget.PASSIVE, true);

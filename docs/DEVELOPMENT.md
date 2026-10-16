@@ -201,3 +201,17 @@ Lumberjacks defer unreachable or pickup-protected material entities for 200 tick
 Recovery fixtures wait for the destination chunk to become entity-ticking before interaction, observe the restored UUID at the join event, and verify identity, health, order, and schema through the server's entity lookup. Verification and fixture cleanup run in separate sequence steps.
 
 Work arenas clear complete columns above their floor and remove existing non-player entities. This prevents overhanging mountain terrain and falling gravel from changing the test inputs. Asynchronous worker tests wait for the required work state before changing resources or terrain instead of assuming discovery finishes after a fixed delay.
+
+## Fluid work, trails, and step movement
+
+Mining scans the current quarry layer for water or lava before ordinary block work. `BUCKET_MISSING` and `BUCKET_SUPPLY` distinguish the blocked reason and support request. Only an empty bucket in the miner's usable bag enables removal; a full bag also requests cargo pickup. Transport revalidates the request, available capacity, and accepted stack before transferring exactly one original bucket. Removal neither consumes nor fills it. Fluid actions check Forge break and placement permissions, roll back cancelled replacements, preserve waterlogged block entities, and apply stamina/growth only after success. The persisted fluid cooldown bounds action frequency.
+
+`SoggySlime` uses ordinary companion state plus saved trail/recovery timers. Server-side placement requires air, a loaded solid supporting face, and permission; cancelled placements restore the snapshot without charging stamina or growth. `SlimeTrailBlock` uses carpet geometry, a shovel tag, and one-slag loot. The slime-ball recycling recipe consumes four slag. Its summon model uses the shared base with a separate crest; slag has a dedicated transparent 16-pixel texture.
+
+Ground hop control caps propulsion throughout native `JUMPING` as well as movement requests. The Movement Speed attribute adjusts hop timing without reapplying unlimited launch speed while stepping up. Guardian self-defense excludes owners and allies and remains available during Wait or an owner disconnect. Totem protection uses the shared lethal-damage event, including environmental sources subject to native bypass exclusions.
+
+Regression coverage includes all ground roles in the jumping state, actual fall/lava/drowning/fire deaths, offline guardian retaliation, trail costs/loot/cancellation, stored soggy traits, fluid protection rollback, unchanged bucket data, waterlogged inventories, and transport unloading followed by bucket delivery. Native clients verify the new models, trail rendering, management screen, and optional JEI recipes.
+
+All work-specialization constructors start waiting. Missing profession order data also selects Wait, including Friendly Slime specialization, while explicit saved orders remain authoritative. Job tests issue their starting commands explicitly. Native item-use tests cover defaults, specialization, and command-preserving recovery for all nine work roles.
+
+Guardian retaliation also recognizes damage absorbed by temporary absorption health. Untamed guardians safely reject owner-dependent target checks; native regressions cover both boundaries.

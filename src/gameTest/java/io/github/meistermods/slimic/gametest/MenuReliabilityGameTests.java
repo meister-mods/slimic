@@ -32,6 +32,7 @@ public final class MenuReliabilityGameTests {
   public static void hiddenCombatBagRejectsShiftClickMerges(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var fighter = h.spawn(ModEntities.COMBAT_SLIME.get(), new BlockPos(5, 2, 5));
+    fighter.setWorking(true);
     fighter.setNoAi(true);
     fighter.tame(owner);
     owner.moveTo(fighter.position());
@@ -61,6 +62,7 @@ public final class MenuReliabilityGameTests {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    miner.setWorking(true);
     miner.moveTo(arena.point(6, 101, 8));
     miner.tame(owner);
     miner.setTool(0, new ItemStack(Items.IRON_PICKAXE));
@@ -111,6 +113,7 @@ public final class MenuReliabilityGameTests {
   public static void shrinkingCapacityResetsAnOpenTransportPage(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var carrier = h.spawn(ModEntities.TRANSPORT_SLIME.get(), new BlockPos(5, 2, 5));
+    carrier.setWorking(true);
     carrier.setNoAi(true);
     carrier.tame(owner);
     owner.moveTo(carrier.position());
@@ -169,6 +172,7 @@ public final class MenuReliabilityGameTests {
   public static void removedCompanionsRejectStaleMenuChanges(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var miner = h.spawn(ModEntities.MINING_SLIME.get(), new BlockPos(5, 2, 5));
+    miner.setWorking(true);
     miner.setNoAi(true);
     miner.tame(owner);
     owner.moveTo(miner.position());

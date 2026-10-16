@@ -10,6 +10,7 @@ import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
+import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -107,6 +108,15 @@ public final class ModEntities {
 
   private ModEntities() {}
 
+  public static final RegistryObject<EntityType<SoggySlime>> SOGGY_SLIME =
+      ENTITY_TYPES.register(
+          "soggy_slime",
+          () ->
+              EntityType.Builder.of(SoggySlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":soggy_slime"));
+
   public static final RegistryObject<EntityType<HeraldSlime>> HERALD_SLIME =
       ENTITY_TYPES.register(
           "herald_slime",
@@ -118,6 +128,7 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(SOGGY_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(
         GUARDIAN_ANGEL_SLIME.get(),
         FriendlySlime.createAttributes().add(Attributes.FLYING_SPEED, .3).build());

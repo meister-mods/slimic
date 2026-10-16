@@ -106,6 +106,7 @@ public final class OrderEightGameTests {
     var area = new LoadedWorkArea(h);
     var owner = h.makeMockSurvivalPlayer();
     var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    herald.setMonitoring(true);
     herald.tame(owner);
     herald.moveTo(area.point(8, 101, 8));
     h.getLevel().addFreshEntity(herald);
@@ -187,6 +188,7 @@ public final class OrderEightGameTests {
   @GameTest(template = "empty", batch = "order_eight")
   public static void guardianHealthRemainsTenfoldAfterGrowthAndReload(GameTestHelper h) {
     var pet = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    pet.setWaiting(false);
     pet.tame(h.makeMockSurvivalPlayer());
     h.assertTrue(pet.getMaxHealth() == 160, "Fresh health is tenfold");
     pet.setTunedVitals(137, 41, 1);
@@ -194,6 +196,7 @@ public final class OrderEightGameTests {
     pet.setTotems(new ItemStack(Items.TOTEM_OF_UNDYING, 12));
     var saved = pet.saveWithoutId(new CompoundTag());
     var loaded = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    loaded.setWaiting(false);
     loaded.load(saved);
     h.assertTrue(
         loaded.getMaxHealth() == 200
@@ -209,6 +212,7 @@ public final class OrderEightGameTests {
   public static void guardianReserveAcceptsStacksThroughManagement(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var pet = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    pet.setWaiting(false);
     pet.tame(owner);
     owner.moveTo(pet.position());
     owner.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
@@ -232,6 +236,7 @@ public final class OrderEightGameTests {
     var owner = h.makeMockSurvivalPlayer();
     owner.moveTo(area.point(8, 101, 8));
     var guardian = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    guardian.setWaiting(false);
     guardian.tame(owner);
     guardian.moveTo(owner.position().add(2, 0, 0));
     guardian.setTotems(new ItemStack(Items.TOTEM_OF_UNDYING, 2));
@@ -262,6 +267,7 @@ public final class OrderEightGameTests {
   public static void guardianHonorsTotemCancellationOwnerAndBypassDamage(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var guardian = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    guardian.setWaiting(false);
     guardian.tame(owner);
     guardian.setTotems(new ItemStack(Items.TOTEM_OF_UNDYING));
     owner.moveTo(guardian.position());
@@ -284,6 +290,7 @@ public final class OrderEightGameTests {
 
   private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea a) {
     var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.moveTo(a.point(6.5, 101, 5.5));
     pet.tame(h.makeMockSurvivalPlayer());
     pet.setTool(new ItemStack(Items.DIAMOND_AXE));
@@ -366,6 +373,7 @@ public final class OrderEightGameTests {
   public static void minerRoutesAroundWoodWithoutHarvestingIt(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var pet = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.moveTo(a.point(3.5, 101, 3.5));
     pet.tame(h.makeMockSurvivalPlayer());
     pet.setTool(0, new ItemStack(Items.DIAMOND_PICKAXE));
@@ -444,6 +452,7 @@ public final class OrderEightGameTests {
           h.getLevel().getServer().setDifficulty(previousDifficulty, true);
         });
     var guard = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    guard.setWaiting(false);
     guard.tame(owner);
     guard.moveTo(a.point(3, 103, 8));
     h.getLevel().addFreshEntity(guard);
@@ -482,6 +491,7 @@ public final class OrderEightGameTests {
   public static void guardianReserveNativeClicksAndUnloadingConserveTotems(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var guard = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    guard.setWaiting(false);
     guard.tame(owner);
     owner.moveTo(guard.position());
     owner.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
@@ -518,7 +528,9 @@ public final class OrderEightGameTests {
     var owner = h.makeMockSurvivalPlayer();
     owner.moveTo(area.point(8, 101, 8));
     var first = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    first.setWaiting(false);
     var second = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
+    second.setWaiting(false);
     for (var guard : List.of(first, second)) {
       guard.tame(owner);
       guard.moveTo(owner.position().add(2, 0, 0));

@@ -49,7 +49,7 @@ public final class TransportSlime extends BagSlime {
     SUPPLY_TOOL
   }
 
-  private boolean working = true;
+  private boolean working;
   private boolean resting;
   private boolean travelBlocked;
   private BlockPos home;
@@ -264,7 +264,7 @@ public final class TransportSlime extends BagSlime {
     List<SlimeChestBlockEntity> chests = chests(server);
     if (hasCargo()) {
       for (BagSlime worker : workers) {
-        if (worker.needsReplacementTool() && toolSlot(getBag(), worker) >= 0) {
+        if (worker.needsWorkSupply() && toolSlot(getBag(), worker) >= 0) {
           workerTarget = worker;
           job = Job.SUPPLY_TOOL;
           status = Status.SUPPLYING;
@@ -283,7 +283,7 @@ public final class TransportSlime extends BagSlime {
       return;
     }
     for (BagSlime worker : workers) {
-      if (!worker.needsReplacementTool()) continue;
+      if (!worker.needsWorkSupply()) continue;
       for (SlimeChestBlockEntity chest : chests) {
         if (toolSlot(chest.inventory(), worker) >= 0) {
           workerTarget = worker;
@@ -317,12 +317,12 @@ public final class TransportSlime extends BagSlime {
       case SUPPLY_TOOL ->
           workerTarget != null
               && supported(workerTarget)
-              && workerTarget.needsReplacementTool()
+              && workerTarget.needsWorkSupply()
               && toolSlot(getBag(), workerTarget) >= 0;
       case FETCH_TOOL ->
           workerTarget != null
               && supported(workerTarget)
-              && workerTarget.needsReplacementTool()
+              && workerTarget.needsWorkSupply()
               && targetChest() != null
               && toolSlot(targetChest().inventory(), workerTarget) >= 0;
       case DEPOSIT ->
@@ -403,7 +403,8 @@ public final class TransportSlime extends BagSlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    working = !tag.contains("TransportWorking") || tag.getBoolean("TransportWorking");
+    working = tag.getBoolean("TransportWorking");
+    if (!tag.contains("TransportWorking")) setWaiting(true);
     resting = tag.getBoolean("TransportResting");
     cooldown = Math.max(0, Math.min(200, tag.getInt("TransportCooldown")));
     travelBlocked = tag.getBoolean("TransportTravelBlocked");

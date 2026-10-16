@@ -29,6 +29,7 @@ final class OrderEightClientSmoke {
                     .getEntitiesOfClass(FriendlySlime.class, owner.getBoundingBox().inflate(32))
                     .forEach(FriendlySlime::discard);
                 var guard = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(level);
+                guard.setWaiting(false);
                 guard.tame(owner);
                 guard.moveTo(10.5, 103, 8.5);
                 guard.setNoAi(false);
@@ -38,7 +39,7 @@ final class OrderEightClientSmoke {
                 attacker.setNoAi(true);
                 attacker.moveTo(12.5, 101, 8.5);
                 level.addFreshEntity(attacker);
-                guard.defendAgainst(attacker);
+                guard.hurt(level.damageSources().mobAttack(attacker), 2);
                 owner.setItemInHand(
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 owner.teleportTo(level, 7.5, 101, 8.5, -90, -20);
@@ -180,7 +181,7 @@ final class OrderEightClientSmoke {
         c.gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.18-"
+                "../verification/0.1.19-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

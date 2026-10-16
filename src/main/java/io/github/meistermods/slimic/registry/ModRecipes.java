@@ -80,6 +80,13 @@ public final class ModRecipes {
 
   private ModRecipes() {}
 
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> SOGGY_SLIME =
+      SERIALIZERS.register(
+          "soggy_slime",
+          () ->
+              new SimpleCraftingRecipeSerializer<>(
+                  (id, category) -> new CompanionRecipe(id, category, CompanionRecipe.Kind.SOGGY)));
+
   public static final RegistryObject<SimpleCraftingRecipeSerializer<HeraldSlimeRecipe>>
       HERALD_SLIME =
           SERIALIZERS.register(

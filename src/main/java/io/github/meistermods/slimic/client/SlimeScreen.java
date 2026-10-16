@@ -341,6 +341,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
+    } else if (menu.slime() instanceof io.github.meistermods.slimic.entity.SoggySlime) {
+      graphics.drawWordWrap(
+          font, Component.translatable("screen.slimic.soggy_info"), 194, 84, 162, 0xffb4c9d1);
     } else if (menu.slime() instanceof GuardianAngelSlime) {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.guardian_help"), 194, 84, 162, 0xffb4c9d1);

@@ -46,6 +46,7 @@ final class FieldClientSmoke {
                 farmer.getBag().setStackInSlot(0, new ItemStack(Items.WHEAT_SEEDS, 12));
                 level.addFreshEntity(farmer);
                 var logger = ModEntities.LUMBERJACK_SLIME.get().create(level);
+                logger.setWorking(true);
                 logger.moveTo(10.5, 101, 12.5, 90, 0);
                 logger.setNoAi(true);
                 logger.tame(owner);
@@ -131,7 +132,7 @@ final class FieldClientSmoke {
             .gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.18-"
+                "../verification/0.1.19-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

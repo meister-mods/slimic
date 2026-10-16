@@ -55,6 +55,7 @@ public final class OrderSevenGameTests {
 
   private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea area) {
     var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.moveTo(area.point(6.5, 101, 5.5));
     pet.tame(h.makeMockSurvivalPlayer());
     pet.setTool(new ItemStack(Items.DIAMOND_AXE));
@@ -513,6 +514,7 @@ public final class OrderSevenGameTests {
                   1,
                   () -> {
                     var loaded = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+                    loaded.setWorking(true);
                     loaded.load(saved);
                     h.getLevel().addFreshEntity(loaded);
                     current[0] = loaded;
