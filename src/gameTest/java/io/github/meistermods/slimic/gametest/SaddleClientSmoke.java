@@ -146,7 +146,10 @@ public final class SaddleClientSmoke {
                 pet.setDeltaMovement(Vec3.ZERO);
                 pet.setWaiting(true);
                 owner.teleportTo(owner.serverLevel(), 13.5, 101, 8.5, 90, 15);
-                owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STICK));
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND,
+                    new ItemStack(
+                        io.github.meistermods.slimic.registry.ModItems.SLIME_TUNER.get()));
                 owner.getInventory().setItem(9, new ItemStack(Items.ELYTRA));
                 owner.setShiftKeyDown(false);
                 pet.mobInteract(owner, InteractionHand.MAIN_HAND);

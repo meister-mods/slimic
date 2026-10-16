@@ -183,7 +183,7 @@ public final class CombatCleaningGameTests {
   public static void combatMenuOwnsFiltersAndThreeEquipmentSlots(GameTestHelper h) {
     Arena a = arena(h);
     CombatSlime pet = fighter(a);
-    SlimeMenu menu = new SlimeMenu(1, a.owner.getInventory(), pet);
+    SlimeMenu menu = TestMenus.create(1, a.owner.getInventory(), pet);
     h.assertTrue(
         menu.slots.size() == 66
             && menu.getSlot(0).mayPlace(new ItemStack(Items.IRON_SWORD))

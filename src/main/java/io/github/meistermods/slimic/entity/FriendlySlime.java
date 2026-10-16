@@ -1,13 +1,14 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.config.SlimicConfig;
+import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
-import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.EnumSet;
 import javax.annotation.Nullable;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -16,13 +17,11 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
@@ -43,11 +42,12 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
-import net.minecraftforge.network.NetworkHooks;
 
 public class FriendlySlime extends TamableAnimal {
   private static final int MAX_POINT_COST = 4096;
@@ -451,21 +451,35 @@ public class FriendlySlime extends TamableAnimal {
     if (player.isShiftKeyDown()) {
       return capture(player);
     }
+    if (held.getItem() instanceof CreativeSlimeTunerItem)
+      return CreativeSlimeTunerItem.open(player, this);
     if (held.getItem() instanceof SlimeTunerItem) return SlimeTunerItem.open(player, this);
+    if (player.getUUID().equals(getOwnerUUID()) && isAlive() && held.is(Items.SLIME_BALL)) {
+      if (getHealth() >= getMaxHealth())
+        return InteractionResult.sidedSuccess(level().isClientSide);
+      if (!level().isClientSide) {
+        heal(4);
+        if (!player.getAbilities().instabuild) held.shrink(1);
+        playSound(SoundEvents.SLIME_SQUISH, 1, 1);
+        ((ServerLevel) level())
+            .sendParticles(ParticleTypes.HEART, getX(), getEyeY(), getZ(), 4, .3, .2, .3, 0);
+      }
+      return InteractionResult.sidedSuccess(level().isClientSide);
+    }
+    if (player.getUUID().equals(getOwnerUUID()) && isAlive() && held.is(Items.WATER_BUCKET)) {
+      if (getDyeColorId() < 0) return InteractionResult.sidedSuccess(level().isClientSide);
+      if (!level().isClientSide) {
+        entityData.set(DYE_COLOR, -1);
+        player.setItemInHand(
+            hand, ItemUtils.createFilledResult(held, player, new ItemStack(Items.BUCKET)));
+        playSound(SoundEvents.BUCKET_EMPTY, 1, 1);
+      }
+      return InteractionResult.sidedSuccess(level().isClientSide);
+    }
     if (held.getItem() instanceof DyeItem)
       return dye(player, held)
           ? InteractionResult.sidedSuccess(level().isClientSide)
           : InteractionResult.FAIL;
-    if (player.getUUID().equals(getOwnerUUID())) {
-      if (player instanceof ServerPlayer serverPlayer) {
-        NetworkHooks.openScreen(
-            serverPlayer,
-            new SimpleMenuProvider(
-                (id, inventory, viewer) -> new SlimeMenu(id, inventory, this), getDisplayName()),
-            buffer -> SlimeMenu.writeOpeningData(buffer, this));
-      }
-      return InteractionResult.sidedSuccess(level().isClientSide);
-    }
     return super.mobInteract(player, hand);
   }
 
@@ -529,6 +543,7 @@ public class FriendlySlime extends TamableAnimal {
 
   public boolean isFleeing() {
     return !(this instanceof CombatSlime)
+        && !(this instanceof GuardianAngelSlime)
         && !isVehicle()
         && dangerTicks > 0
         && danger != null
@@ -603,11 +618,17 @@ public class FriendlySlime extends TamableAnimal {
     @Override
     public void tick() {
       if (isInWaterOrBubble() || isInLava()) getJumpControl().jump();
-      if (--repathTicks <= 0) {
+      if (--repathTicks <= 0 && (onGround() || isInWater())) {
         repathTicks = 10;
         Vec3 away = DefaultRandomPos.getPosAway(FriendlySlime.this, 12, 4, danger.position());
-        if (away != null && away.distanceToSqr(danger.position()) > distanceToSqr(danger))
-          getNavigation().moveTo(away.x, away.y, away.z, 1.2);
+        if (away != null && away.distanceToSqr(danger.position()) > distanceToSqr(danger)) {
+          var path = getNavigation().createPath(BlockPos.containing(away), 0);
+          if (path != null
+              && path.getNodeCount() > 0
+              && path.getEntityPosAtNode(FriendlySlime.this, path.getNodeCount() - 1)
+                      .distanceToSqr(danger.position())
+                  > distanceToSqr(danger)) getNavigation().moveTo(path, 1.2);
+        }
       }
       if (getNavigation().isInProgress()
           && getDeltaMovement().horizontalDistanceSqr() > .0001

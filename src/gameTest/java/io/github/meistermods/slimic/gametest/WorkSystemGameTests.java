@@ -89,7 +89,7 @@ public final class WorkSystemGameTests {
               MiningSlime miner = miners.get(0);
               owner.moveTo(miner.position());
               h.assertTrue(
-                  new SlimeMenu(1, owner.getInventory(), miner)
+                  TestMenus.create(1, owner.getInventory(), miner)
                       .clickMenuButton(owner, SlimeMenu.WORK),
                   "The owner can explicitly start mining");
             })

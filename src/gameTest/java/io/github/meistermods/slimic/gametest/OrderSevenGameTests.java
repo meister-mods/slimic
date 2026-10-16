@@ -3,7 +3,6 @@ package io.github.meistermods.slimic.gametest;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.*;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
-import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
 import io.github.meistermods.slimic.registry.*;
 import java.util.List;
@@ -266,7 +265,7 @@ public final class OrderSevenGameTests {
             SlimeStat.DETECTION_RANGE.value(pet) == 2 * base,
             "Detection stays exactly double including tuner");
       }
-      var menu = new SlimeMenu(1, owner.getInventory(), pet);
+      var menu = TestMenus.create(1, owner.getInventory(), pet);
       h.assertTrue(
           menu.slots.size() == 64
               && menu.getSlot(0)
@@ -495,21 +494,30 @@ public final class OrderSevenGameTests {
       }
     pet.getBag().setStackInSlot(0, new ItemStack(Items.DARK_OAK_SAPLING, 4));
     final LumberjackSlime[] current = {pet};
-    h.runAfterDelay(
-        35,
-        () -> {
-          h.assertTrue(pet.getPendingPlantings() == 4, "All four saplings reserved before cutting");
-          CompoundTag saved = pet.saveWithoutId(new CompoundTag());
-          pet.discard();
-          h.runAfterDelay(
-              1,
-              () -> {
-                var loaded = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
-                loaded.load(saved);
-                h.getLevel().addFreshEntity(loaded);
-                current[0] = loaded;
-              });
-        });
+    h.startSequence()
+        .thenWaitUntil(
+            () -> h.assertTrue(pet.getPendingPlantings() == 4, "Wait for four reserved saplings"))
+        .thenExecute(
+            () -> {
+              h.assertTrue(
+                  pet.getPendingPlantings() == 4,
+                  "All four saplings reserved before cutting; pending="
+                      + pet.getPendingPlantings()
+                      + " status="
+                      + pet.getFieldStatus()
+                      + " seeds="
+                      + count(pet, Items.DARK_OAK_SAPLING));
+              CompoundTag saved = pet.saveWithoutId(new CompoundTag());
+              pet.discard();
+              h.runAfterDelay(
+                  1,
+                  () -> {
+                    var loaded = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+                    loaded.load(saved);
+                    h.getLevel().addFreshEntity(loaded);
+                    current[0] = loaded;
+                  });
+            });
     h.runAfterDelay(
         410,
         () -> {

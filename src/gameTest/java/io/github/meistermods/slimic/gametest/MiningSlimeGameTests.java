@@ -123,7 +123,7 @@ public final class MiningSlimeGameTests {
     pet.setHealth(8.0F);
     seed(pet, 3, 0, 100);
     owner.moveTo(pet.getX() + 1, pet.getY(), pet.getZ());
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), pet);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), pet);
     helper.assertTrue(
         menu.clickMenuButton(owner, SlimeStat.HEALTH.ordinal()),
         "Available points must upgrade health");
@@ -358,7 +358,7 @@ public final class MiningSlimeGameTests {
     owner.moveTo(miner.getX() + 1, miner.getY(), miner.getZ());
     owner.getInventory().setItem(0, new ItemStack(Items.IRON_PICKAXE));
     miner.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 5));
-    SlimeMenu menu = new SlimeMenu(3, owner.getInventory(), miner);
+    SlimeMenu menu = TestMenus.create(3, owner.getInventory(), miner);
     helper.assertTrue(
         menu.clickMenuButton(owner, SlimeMenu.WORK)
             && miner.isWorking()

@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
+import io.github.meistermods.slimic.recipe.GuardianAngelSlimeRecipe;
 import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
@@ -70,6 +71,12 @@ public final class ModRecipes {
                   new SimpleCraftingRecipeSerializer<>(
                       (id, category) ->
                           new CompanionRecipe(id, category, CompanionRecipe.Kind.LUMBERJACK)));
+
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<GuardianAngelSlimeRecipe>>
+      GUARDIAN_ANGEL_SLIME =
+          SERIALIZERS.register(
+              "guardian_angel_slime",
+              () -> new SimpleCraftingRecipeSerializer<>(GuardianAngelSlimeRecipe::new));
 
   private ModRecipes() {}
 

@@ -2,14 +2,20 @@ package io.github.meistermods.slimic.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.item.SlimeArmorItem;
+import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModEntities;
+import io.github.meistermods.slimic.registry.ModItems;
 import io.github.meistermods.slimic.registry.ModMenus;
 import java.io.IOException;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +30,9 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(
+        ModEntities.GUARDIAN_ANGEL_SLIME.get(), GuardianAngelSlimeRenderer::new);
+    event.registerBlockEntityRenderer(ModBlocks.SLIME_CHEST_ENTITY.get(), SlimeChestRenderer::new);
     event.registerEntityRenderer(ModEntities.LUMBERJACK_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.FARMER_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.SADDLE_SLIME.get(), FriendlySlimeRenderer::new);
@@ -37,6 +46,8 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(
+        GuardianAngelSlimeLayer.HALO, GuardianAngelSlimeLayer::createHalo);
     event.registerLayerDefinition(FieldSlimeLayer.HATS, FieldSlimeLayer::createLayer);
     event.registerLayerDefinition(SaddleSlimeLayer.WING_LAYER, SaddleSlimeLayer::createWings);
     event.registerLayerDefinition(SaddleSlimeLayer.SADDLE, SaddleSlimeLayer::createLayer);
@@ -48,33 +59,31 @@ public final class SlimicClient {
   @SubscribeEvent
   public static void clientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> MenuScreens.register(ModMenus.SLIME.get(), SlimeScreen::new));
-    event.enqueueWork(() -> MenuScreens.register(ModMenus.TUNER.get(), TunerScreen::new));
+    event.enqueueWork(
+        () -> MenuScreens.register(ModMenus.CREATIVE_TUNER.get(), CreativeSlimeTunerScreen::new));
     event.enqueueWork(
         () ->
-            net.minecraft.client.renderer.item.ItemProperties.register(
-                io.github.meistermods.slimic.registry.ModItems.SLIME_ARMOR.get(),
+            ItemProperties.register(
+                ModItems.SLIME_ARMOR.get(),
                 ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "armor_material"),
-                (stack, level, entity, seed) ->
-                    io.github.meistermods.slimic.item.SlimeArmorItem.materialIndex(stack)));
+                (stack, level, entity, seed) -> SlimeArmorItem.materialIndex(stack)));
   }
 
   @SubscribeEvent
-  public static void registerItemColors(
-      net.minecraftforge.client.event.RegisterColorHandlersEvent.Item event) {
+  public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
     event.register(
         (stack, tint) -> {
-          var base = io.github.meistermods.slimic.item.SlimeArmorItem.baseArmor(stack);
-          return tint == 0
-                  && base.getItem() instanceof net.minecraft.world.item.DyeableLeatherItem leather
+          var base = SlimeArmorItem.baseArmor(stack);
+          return tint == 0 && base.getItem() instanceof DyeableLeatherItem leather
               ? leather.getColor(base)
               : -1;
         },
-        io.github.meistermods.slimic.registry.ModItems.SLIME_ARMOR.get(),
-        io.github.meistermods.slimic.registry.ModItems.LEATHER_SLIME_ARMOR.get(),
-        io.github.meistermods.slimic.registry.ModItems.CHAINMAIL_SLIME_ARMOR.get(),
-        io.github.meistermods.slimic.registry.ModItems.GOLDEN_SLIME_ARMOR.get(),
-        io.github.meistermods.slimic.registry.ModItems.DIAMOND_SLIME_ARMOR.get(),
-        io.github.meistermods.slimic.registry.ModItems.NETHERITE_SLIME_ARMOR.get());
+        ModItems.SLIME_ARMOR.get(),
+        ModItems.LEATHER_SLIME_ARMOR.get(),
+        ModItems.CHAINMAIL_SLIME_ARMOR.get(),
+        ModItems.GOLDEN_SLIME_ARMOR.get(),
+        ModItems.DIAMOND_SLIME_ARMOR.get(),
+        ModItems.NETHERITE_SLIME_ARMOR.get());
   }
 
   @SubscribeEvent

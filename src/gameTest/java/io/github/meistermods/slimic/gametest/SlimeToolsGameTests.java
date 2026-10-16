@@ -5,11 +5,11 @@ import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
+import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.HeraldSlimeItem;
-import io.github.meistermods.slimic.item.SlimeTunerItem;
+import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
 import io.github.meistermods.slimic.menu.SlimeMenu;
-import io.github.meistermods.slimic.menu.TunerMenu;
 import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
@@ -93,12 +93,14 @@ public final class SlimeToolsGameTests {
     Player player = helper.makeMockSurvivalPlayer();
     FriendlySlime pet = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), PET);
     player.moveTo(pet.position());
-    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
-    TunerMenu menu = new TunerMenu(1, player.getInventory(), pet);
+    player.setItemInHand(
+        InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
+    CreativeSlimeTunerMenu menu = new CreativeSlimeTunerMenu(1, player.getInventory(), pet);
     double[] values = values(pet);
     helper.assertTrue(
         !menu.apply(player, values, 10, 100, 4)
-            && SlimeTunerItem.open(player, pet) == net.minecraft.world.InteractionResult.FAIL,
+            && CreativeSlimeTunerItem.open(player, pet)
+                == net.minecraft.world.InteractionResult.FAIL,
         "Survival players must not tune slimes");
     player.getAbilities().instabuild = true;
     helper.assertTrue(
@@ -108,7 +110,8 @@ public final class SlimeToolsGameTests {
     helper.assertTrue(
         !menu.apply(player, values, 10, 100, 4),
         "A stale menu cannot edit after the tuner is put away");
-    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+    player.setItemInHand(
+        InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
     player.moveTo(pet.position().add(17, 0, 0));
     helper.assertTrue(!menu.apply(player, values, 10, 100, 4), "Remote tuning must be rejected");
     helper.succeed();
@@ -121,13 +124,14 @@ public final class SlimeToolsGameTests {
     player.getAbilities().instabuild = true;
     var slime = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), PET);
     player.moveTo(slime.position());
-    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+    player.setItemInHand(
+        InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
     slime
         .getAttribute(Attributes.MAX_HEALTH)
         .addPermanentModifier(
             new AttributeModifier(
                 UUID.randomUUID(), "Bonus", 4, AttributeModifier.Operation.ADDITION));
-    TunerMenu menu = new TunerMenu(2, player.getInventory(), slime);
+    CreativeSlimeTunerMenu menu = new CreativeSlimeTunerMenu(2, player.getInventory(), slime);
     double[] values = values(slime);
     values[0] = 40;
     values[4] = 3;
@@ -207,7 +211,7 @@ public final class SlimeToolsGameTests {
     Player owner = helper.makeMockSurvivalPlayer();
     herald.tame(owner);
     owner.moveTo(herald.position());
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), herald);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), herald);
     int previous = herald.getDelayMinutes();
     helper.assertTrue(
         menu.clickMenuButton(owner, SlimeMenu.DELAY_UP) && herald.getDelayMinutes() == previous + 1,
@@ -388,7 +392,8 @@ public final class SlimeToolsGameTests {
     owner.getAbilities().instabuild = true;
     FriendlySlime pet = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), PET);
     pet.tame(owner);
-    owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+    owner.setItemInHand(
+        InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
     owner.setShiftKeyDown(true);
     helper.assertTrue(
         pet.mobInteract(owner, InteractionHand.MAIN_HAND).consumesAction()

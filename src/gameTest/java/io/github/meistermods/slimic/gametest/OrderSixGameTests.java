@@ -42,11 +42,12 @@ public final class OrderSixGameTests {
         ModEntities.CLEANING_SLIME.get(),
         ModEntities.SADDLE_SLIME.get(),
         ModEntities.FARMER_SLIME.get(),
-        ModEntities.LUMBERJACK_SLIME.get());
+        ModEntities.LUMBERJACK_SLIME.get(),
+        ModEntities.GUARDIAN_ANGEL_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "order_six", timeoutTicks = 80)
-  public static void allNineDeathsPreserveAndReviveExactCompanions(GameTestHelper h) {
+  public static void allTenDeathsPreserveAndReviveExactCompanions(GameTestHelper h) {
     LoadedWorkArea area = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SLIME_BALL, 20));
@@ -54,7 +55,7 @@ public final class OrderSixGameTests {
     List<BlockPos> positions = new ArrayList<>();
     for (int i = 0; i < types().size(); i++) {
       FriendlySlime pet = types().get(i).create(h.getLevel());
-      pet.moveTo(area.point(3 + (i % 3) * 4, 101, 3 + (i / 3) * 4));
+      pet.moveTo(area.point(3 + (i % 4) * 3, 101, 3 + (i / 4) * 4));
       pet.tame(owner);
       pet.setNoAi(true);
       pet.setWaiting(true);
@@ -320,6 +321,7 @@ public final class OrderSixGameTests {
     pet.setWaiting(true);
     h.getLevel().addFreshEntity(pet);
     var threat = EntityType.HUSK.create(h.getLevel());
+    threat.setPersistenceRequired();
     threat.moveTo(a.point(8, 101, 10));
     threat.setNoAi(true);
     h.getLevel().addFreshEntity(threat);
@@ -332,7 +334,14 @@ public final class OrderSixGameTests {
         () -> {
           h.assertTrue(
               pet.distanceToSqr(threat) > initial + 9 && pet.isOrderedToSit(),
-              "Escape movement overrides waiting while preserving the saved wait order");
+              "Escape movement overrides waiting while preserving the saved wait order; pet="
+                  + pet.position()
+                  + " threatAlive="
+                  + threat.isAlive()
+                  + " fleeing="
+                  + pet.isFleeing()
+                  + " ticks="
+                  + pet.tickCount);
           pet.discard();
           threat.discard();
           a.close();
@@ -350,6 +359,7 @@ public final class OrderSixGameTests {
     SlimeStat.WORK_SPEED.tune(pet, 10);
     h.getLevel().addFreshEntity(pet);
     var threat = EntityType.HUSK.create(h.getLevel());
+    threat.setPersistenceRequired();
     threat.moveTo(a.point(8, 101, 10));
     threat.setNoAi(true);
     threat.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100);

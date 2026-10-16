@@ -4,6 +4,26 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.17] - 2026-10-16
+
+### Added
+
+- Guardian Angel Slimes fly beside their owners, retaliate with beams, store up to 64 totems and protect against lethal damage. Maximum health stays ten times the common value.
+- A craftable Survival Slime Tuner opens companion management. The former editor is now the Creative Slime Tuner throughout code, registries and UI.
+- Slime balls heal four health; water buckets remove dye. Heralds support manual signals and direct rocket-design replacement.
+- Slime Chests animate their lids with native opening and closing sounds.
+
+### Fixed
+
+- Lumberjacks refresh tree searches when supplied saplings change, skip temporarily unsupplied species, and show the exact sapling type and stump count. Farming and lumberjack status messages are distinct.
+- Surface workers choose reachable standing positions and follow progressive routes across their doubled work range. Miners avoid harvesting wood and revalidate close approach paths. Escape movement retains valid routes through hops and only replaces them with reachable grounded paths.
+- Saddle Slimes accept ordinary mounting interactions while items are held; management uses the Survival tuner.
+
+### Validation
+
+- Native regression coverage includes companion care, management permissions, stored firework designs, guardian crafting and reserve transfers, health scaling, flight, retaliation, lethal protection, sapling resupply, mixed tree species, mining around wood, and chest lids.
+- Client checks cover the guardian halo and wings, reserve synchronization and clicks, animated chests, worker menus and equipment, profession crests, and optional JEI.
+
 ## [0.1.16] - 2026-10-16
 
 ### Added

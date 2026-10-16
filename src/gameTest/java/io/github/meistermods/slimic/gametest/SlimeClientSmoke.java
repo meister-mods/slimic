@@ -2,8 +2,8 @@ package io.github.meistermods.slimic.gametest;
 
 import io.github.meistermods.slimic.block.SlimeChestBlock;
 import io.github.meistermods.slimic.block.SlimeChestBlockEntity;
+import io.github.meistermods.slimic.client.CreativeSlimeTunerScreen;
 import io.github.meistermods.slimic.client.SlimeScreen;
-import io.github.meistermods.slimic.client.TunerScreen;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
@@ -11,10 +11,10 @@ import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
-import io.github.meistermods.slimic.item.SlimeTunerItem;
+import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
 import io.github.meistermods.slimic.menu.SlimeMenu;
-import io.github.meistermods.slimic.menu.TunerMenu;
 import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModCreativeTabs;
 import io.github.meistermods.slimic.registry.ModEntities;
@@ -87,6 +87,8 @@ public final class SlimeClientSmoke {
               () -> {
                 var server = client.getSingleplayerServer();
                 var owner = server.getPlayerList().getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 if (owner == null) throw new IllegalStateException("Missing smoke player");
                 var level = owner.serverLevel();
                 level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, server);
@@ -186,6 +188,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 if (owner.serverLevel().getEntity(entityId) instanceof MiningSlime companion)
                   companion.mobInteract(owner, InteractionHand.MAIN_HAND);
               });
@@ -235,6 +239,8 @@ public final class SlimeClientSmoke {
               () -> {
                 var server = client.getSingleplayerServer();
                 var owner = server.getPlayerList().getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 var level = owner.serverLevel();
                 if (level.getEntity(minerId) != null) level.getEntity(minerId).discard();
                 TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(level);
@@ -306,6 +312,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 if (owner.serverLevel().getEntity(entityId) instanceof TransportSlime companion)
                   companion.mobInteract(owner, InteractionHand.MAIN_HAND);
               });
@@ -347,6 +355,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 owner.openMenu(
                     (SlimeChestBlockEntity)
                         owner.serverLevel().getBlockEntity(new BlockPos(11, 101, 10)));
@@ -369,6 +379,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 var level = owner.serverLevel();
                 if (level.getEntity(carrierId) != null) level.getEntity(carrierId).discard();
                 HeraldSlime herald = ModEntities.HERALD_SLIME.get().create(level);
@@ -407,6 +419,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 ((HeraldSlime) owner.serverLevel().getEntity(id))
                     .mobInteract(owner, InteractionHand.MAIN_HAND);
               });
@@ -437,14 +451,16 @@ public final class SlimeClientSmoke {
                         .getPlayer(client.player.getUUID());
                 owner.setItemInHand(
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
                 owner.inventoryMenu.broadcastChanges();
-                SlimeTunerItem.open(owner, (HeraldSlime) owner.serverLevel().getEntity(id));
+                CreativeSlimeTunerItem.open(owner, (HeraldSlime) owner.serverLevel().getEntity(id));
               });
       phase = 11;
       phaseTicks = 0;
       return;
     }
-    if (phase == 11 && client.screen instanceof TunerScreen screen) {
+    if (phase == 11 && client.screen instanceof CreativeSlimeTunerScreen screen) {
       if (screen.getMenu().value(SlimeStat.HEALTH) != 16 || ++phaseTicks < 20) return;
       var fields =
           screen.children().stream()
@@ -476,8 +492,8 @@ public final class SlimeClientSmoke {
       phaseTicks = 0;
       return;
     }
-    if (phase == 12 && client.screen instanceof TunerScreen screen) {
-      TunerMenu menu = screen.getMenu();
+    if (phase == 12 && client.screen instanceof CreativeSlimeTunerScreen screen) {
+      CreativeSlimeTunerMenu menu = screen.getMenu();
       if (menu.result() != 1
           || menu.health() != 35
           || menu.value(SlimeStat.WORK_SPEED) != 2.5
@@ -494,8 +510,8 @@ public final class SlimeClientSmoke {
                               .getKey(stack.getItem())
                               .toString())
                   .toList());
-      if (items.size() != 18
-          || items.stream().noneMatch(stack -> stack.is(ModItems.SLIME_TUNER.get())))
+      if (items.size() != 20
+          || items.stream().noneMatch(stack -> stack.is(ModItems.CREATIVE_SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =
           items.stream()
@@ -516,6 +532,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 var level = owner.serverLevel();
                 if (level.getEntity(id) != null) level.getEntity(id).discard();
                 owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -545,7 +563,8 @@ public final class SlimeClientSmoke {
 
   private static void newCompanions(Minecraft client) {
     if (phase >= 21) {
-      if (FieldClientSmoke.tick(client)) SaddleClientSmoke.tick(client);
+      if (FieldClientSmoke.tick(client) && OrderEightClientSmoke.tick(client))
+        SaddleClientSmoke.tick(client);
       return;
     }
     boolean jei = ModList.get().isLoaded("jei");
@@ -579,7 +598,8 @@ public final class SlimeClientSmoke {
               ModItems.CLEANING_SLIME.get(),
               ModItems.SADDLE_SLIME.get(),
               ModItems.FARMER_SLIME.get(),
-              ModItems.LUMBERJACK_SLIME.get()))
+              ModItems.LUMBERJACK_SLIME.get(),
+              ModItems.GUARDIAN_ANGEL_SLIME.get()))
         if (!client
             .getItemRenderer()
             .getModel(new ItemStack(item), client.level, client.player, 0)
@@ -625,7 +645,7 @@ public final class SlimeClientSmoke {
       FriendlyByteBuf opening = new FriendlyByteBuf(Unpooled.buffer());
       try {
         SlimeMenu.writeOpeningData(opening, vanished);
-        SlimeMenu stale = new SlimeMenu(123, client.player.getInventory(), opening);
+        SlimeMenu stale = TestMenus.create(123, client.player.getInventory(), opening);
         if (stale.slots.size() != 90 || !stale.slime().isRemoved())
           throw new IllegalStateException("Missing companion must retain the carrier slot layout");
         client.player.containerMenu = stale;
@@ -682,6 +702,8 @@ public final class SlimeClientSmoke {
                           .getSingleplayerServer()
                           .getPlayerList()
                           .getPlayer(client.player.getUUID());
+                  owner.setItemInHand(
+                      InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                   ((CombatSlime) owner.serverLevel().getEntity(id))
                       .mobInteract(owner, InteractionHand.MAIN_HAND);
                 });
@@ -745,6 +767,8 @@ public final class SlimeClientSmoke {
                           .getSingleplayerServer()
                           .getPlayerList()
                           .getPlayer(client.player.getUUID());
+                  owner.setItemInHand(
+                      InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                   var level = owner.serverLevel();
                   if (level.getEntity(id) != null) level.getEntity(id).discard();
                   CleaningSlime cleaner = ModEntities.CLEANING_SLIME.get().create(level);
@@ -797,6 +821,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 ((CleaningSlime) owner.serverLevel().getEntity(id))
                     .mobInteract(owner, InteractionHand.MAIN_HAND);
               });
@@ -819,6 +845,8 @@ public final class SlimeClientSmoke {
                         .getSingleplayerServer()
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 var level = owner.serverLevel();
                 int index = 0;
                 for (var facing : net.minecraft.core.Direction.Plane.HORIZONTAL) {
@@ -857,6 +885,8 @@ public final class SlimeClientSmoke {
             () -> {
               var owner =
                   client.getSingleplayerServer().getPlayerList().getPlayer(client.player.getUUID());
+              owner.setItemInHand(
+                  InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
               owner.teleportTo(owner.serverLevel(), x, 101, z, yaw, 15);
             });
   }
@@ -866,7 +896,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.16-" + suffix + ".png")
+            .resolve("../verification/0.1.17-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

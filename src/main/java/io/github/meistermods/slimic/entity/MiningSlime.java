@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -85,6 +86,7 @@ public final class MiningSlime extends BagSlime {
   private BlockState breakingState;
   private int targetTicks;
   private Vec3 lastTravelPosition;
+  private double closestTravelDistance = Double.MAX_VALUE;
   private BlockPos supportTarget;
   private long supportRetryAt;
   private final Map<Long, Long> skipped = new HashMap<>();
@@ -309,6 +311,10 @@ public final class MiningSlime extends BagSlime {
         && quarry.contains(pos)
         && !quarry.isRampFloor(pos)
         && level().hasChunkAt(pos)
+        && !state.is(BlockTags.LOGS)
+        && !state.is(BlockTags.LEAVES)
+        && !state.is(BlockTags.MINEABLE_WITH_AXE)
+        && !state.is(BlockTags.MINEABLE_WITH_HOE)
         && !state.isAir()
         && state.getFluidState().isEmpty()
         && !state.hasBlockEntity()
@@ -354,7 +360,9 @@ public final class MiningSlime extends BagSlime {
     // Keep following an existing route during a hop. Ground navigation cannot
     // create a replacement in midair, which must not cancel the valid old path.
     if (!onGround() && !isInWater()) return;
-    if (workStand != null && getNavigation().isInProgress()) return;
+    if (workStand != null
+        && getNavigation().isInProgress()
+        && level().noCollision(this, getBoundingBox().move(workStand.subtract(position())))) return;
     double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
     // Navigation accepts a waypoint within roughly half the slime's width.
     // Keep the requested standing point comfortably inside the tool's reach.
@@ -425,10 +433,15 @@ public final class MiningSlime extends BagSlime {
   }
 
   private boolean travelStalled(int elapsed) {
-    if (lastTravelPosition == null
-        || position().subtract(lastTravelPosition).horizontalDistanceSqr() >= 0.0025
-        || (onGround() && Math.abs(getY() - lastTravelPosition.y) >= 0.5)) {
+    Vec3 destination =
+        target != null
+            ? Vec3.atCenterOf(target)
+            : supportTarget != null ? Vec3.atCenterOf(supportTarget) : workStand;
+    double distance =
+        destination == null ? Double.MAX_VALUE : position().distanceToSqr(destination);
+    if (lastTravelPosition == null || distance < closestTravelDistance - .05) {
       lastTravelPosition = position();
+      closestTravelDistance = distance;
       targetTicks = 0;
     } else targetTicks += elapsed;
     return targetTicks > 400;
@@ -630,7 +643,7 @@ public final class MiningSlime extends BagSlime {
     ItemStack tool = getTool(toolSlot);
     FakePlayer worker = worker(server);
     ItemStack previous = worker.getMainHandItem();
-    worker.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, tool);
+    worker.setItemInHand(InteractionHand.MAIN_HAND, tool);
     try {
       status = Status.MINING;
       progress +=
@@ -672,7 +685,7 @@ public final class MiningSlime extends BagSlime {
       clearTarget();
       status = Status.IDLE;
     } finally {
-      worker.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, previous);
+      worker.setItemInHand(InteractionHand.MAIN_HAND, previous);
     }
   }
 

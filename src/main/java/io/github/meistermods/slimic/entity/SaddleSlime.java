@@ -1,8 +1,14 @@
 package io.github.meistermods.slimic.entity;
 
+import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.EnumSet;
 import javax.annotation.Nullable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +21,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,12 +32,10 @@ public final class SaddleSlime extends FriendlySlime {
   private boolean ascending;
   private boolean boostRequested;
   private boolean energyExhausted;
-  private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> EXHAUSTED =
-      net.minecraft.network.syncher.SynchedEntityData.defineId(
-          SaddleSlime.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
-  private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> BOOSTING =
-      net.minecraft.network.syncher.SynchedEntityData.defineId(
-          SaddleSlime.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
+  private static final EntityDataAccessor<Boolean> EXHAUSTED =
+      SynchedEntityData.defineId(SaddleSlime.class, EntityDataSerializers.BOOLEAN);
+  private static final EntityDataAccessor<Boolean> BOOSTING =
+      SynchedEntityData.defineId(SaddleSlime.class, EntityDataSerializers.BOOLEAN);
   private int inputAge;
   private int jumpCooldown;
 
@@ -171,7 +176,12 @@ public final class SaddleSlime extends FriendlySlime {
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
     }
-    if (held.isEmpty() && isSaddled())
+    if (held.getItem() instanceof SlimeTunerItem
+        || held.getItem() instanceof CreativeSlimeTunerItem
+        || held.getItem() instanceof DyeItem
+        || held.is(Items.SLIME_BALL)
+        || held.is(Items.WATER_BUCKET)) return super.mobInteract(player, hand);
+    if (isSaddled())
       return mount(player)
           ? InteractionResult.sidedSuccess(level().isClientSide)
           : InteractionResult.FAIL;
@@ -259,7 +269,7 @@ public final class SaddleSlime extends FriendlySlime {
   }
 
   @Override
-  public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+  public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
     tag.putBoolean("SaddleEnergyExhausted", energyExhausted);
     // Flight is a transient consequence of the rider and wings, not a saved gravity override.
@@ -267,7 +277,7 @@ public final class SaddleSlime extends FriendlySlime {
   }
 
   @Override
-  public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+  public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
     energyExhausted = tag.getBoolean("SaddleEnergyExhausted");
     entityData.set(EXHAUSTED, energyExhausted);

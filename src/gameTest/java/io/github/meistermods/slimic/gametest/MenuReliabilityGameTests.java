@@ -37,7 +37,7 @@ public final class MenuReliabilityGameTests {
     owner.moveTo(fighter.position());
     fighter.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 10));
     owner.getInventory().setItem(9, new ItemStack(Items.DIAMOND, 5));
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), fighter);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), fighter);
     h.assertTrue(menu.clickMenuButton(owner, SlimeMenu.TARGET_PAGE_BUTTON), "Open target settings");
     h.assertTrue(
         menu.quickMoveStack(owner, 30).isEmpty()
@@ -72,9 +72,10 @@ public final class MenuReliabilityGameTests {
     owner.getInventory().setItem(8, new ItemStack(Items.COBBLESTONE, 63));
     owner.moveTo(miner.position());
     h.getLevel().addFreshEntity(miner);
-    BlockPos stone = BlockPos.containing(arena.point(5, 101, 8));
+    BlockPos stone = BlockPos.containing(arena.point(8, 101, 8));
+    h.assertTrue(h.getLevel().noCollision(miner), "Miner starts clear of the work block");
     h.getLevel().setBlockAndUpdate(stone, Blocks.STONE.defaultBlockState());
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), miner);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), miner);
     h.startSequence()
         .thenWaitUntil(() -> h.assertTrue(miner.needsUnloading(), "Wait for the full bag"))
         .thenExecute(
@@ -114,7 +115,7 @@ public final class MenuReliabilityGameTests {
     carrier.tame(owner);
     owner.moveTo(carrier.position());
     SlimeStat.CAPACITY.tune(carrier, 27);
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), carrier);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), carrier);
     h.assertTrue(menu.clickMenuButton(owner, SlimeMenu.NEXT_PAGE), "Open the second bag page");
     SlimeStat.CAPACITY.tune(carrier, 9);
     menu.broadcastChanges();
@@ -140,12 +141,12 @@ public final class MenuReliabilityGameTests {
         }) {
       FriendlySlime slime = (FriendlySlime) type.create(h.getLevel());
       slime.tame(owner);
-      SlimeMenu expected = new SlimeMenu(1, owner.getInventory(), slime);
+      SlimeMenu expected = TestMenus.create(1, owner.getInventory(), slime);
       FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
       try {
         buffer.writeVarInt(slime.getId());
         buffer.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(type));
-        SlimeMenu missing = new SlimeMenu(1, owner.getInventory(), buffer);
+        SlimeMenu missing = TestMenus.create(1, owner.getInventory(), buffer);
         h.assertTrue(
             missing.slots.size() == expected.slots.size()
                 && missing.slime().getType() == type
@@ -172,7 +173,7 @@ public final class MenuReliabilityGameTests {
     miner.tame(owner);
     owner.moveTo(miner.position());
     miner.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 10));
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), miner);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), miner);
     ItemStack stored = FriendlySlimeItem.fromSlime(miner);
     miner.discard();
     h.assertTrue(

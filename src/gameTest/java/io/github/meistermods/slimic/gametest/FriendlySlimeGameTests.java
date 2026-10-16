@@ -166,7 +166,7 @@ public final class FriendlySlimeGameTests {
     FriendlySlime slime = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), SPAWN_FLOOR.above());
     slime.tame(owner);
     owner.moveTo(slime.getX() + 2.0, slime.getY(), slime.getZ());
-    new SlimeMenu(1, owner.getInventory(), slime).clickMenuButton(owner, SlimeMenu.WAIT);
+    TestMenus.create(1, owner.getInventory(), slime).clickMenuButton(owner, SlimeMenu.WAIT);
     helper.assertTrue(slime.isOrderedToSit(), "An owner must be able to order waiting");
     slime.mobInteract(helper.makeMockSurvivalPlayer(), InteractionHand.MAIN_HAND);
     helper.assertTrue(slime.isOrderedToSit(), "Another player must not change its order");
@@ -180,7 +180,7 @@ public final class FriendlySlimeGameTests {
     helper.assertTrue(
         restored.isPersistenceRequired() && restored.isOrderedToSit(),
         "Persistence and the wait order must survive loading");
-    new SlimeMenu(2, owner.getInventory(), restored).clickMenuButton(owner, SlimeMenu.FOLLOW);
+    TestMenus.create(2, owner.getInventory(), restored).clickMenuButton(owner, SlimeMenu.FOLLOW);
     helper.assertTrue(!restored.isOrderedToSit(), "The owner must be able to resume following");
     helper.succeed();
   }

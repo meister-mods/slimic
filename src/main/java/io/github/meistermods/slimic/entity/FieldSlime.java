@@ -3,6 +3,7 @@ package io.github.meistermods.slimic.entity;
 import com.mojang.authlib.GameProfile;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -11,6 +12,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
@@ -18,6 +21,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
@@ -56,10 +60,29 @@ public abstract class FieldSlime extends BagSlime {
   private int travelTicks;
   private Vec3 lastPosition;
   private int retryTicks;
+  private Vec3 workStand;
+  private double closestDistance = Double.MAX_VALUE;
 
   protected FieldSlime(EntityType<? extends FieldSlime> type, Level level) {
     super(type, level, 27);
     setMaxUpStep(1);
+  }
+
+  @Override
+  protected PathNavigation createNavigation(Level level) {
+    return new GroundPathNavigation(this, level) {
+      @Override
+      protected Path createPath(
+          Set<BlockPos> targets, int padding, boolean above, int accuracy, float range) {
+        // A worker can travel between opposite edges of its fixed work area.
+        return super.createPath(
+            targets,
+            padding,
+            above,
+            accuracy,
+            (float) Math.max(range, SlimeStat.DETECTION_RANGE.value(FieldSlime.this) * 2));
+      }
+    };
   }
 
   @Override
@@ -251,20 +274,13 @@ public abstract class FieldSlime extends BagSlime {
     if (!pos.equals(target)) {
       target = pos;
       travelTicks = 0;
-      lastPosition = position();
+      workStand = null;
+      closestDistance = Double.MAX_VALUE;
+      getNavigation().stop();
     }
     double reach = SlimeStat.REACH.value(this);
-    var hit =
-        level()
-            .clip(
-                new ClipContext(
-                    getEyePosition(),
-                    Vec3.atCenterOf(pos),
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    this));
-    if (getEyePosition().distanceToSqr(Vec3.atCenterOf(pos)) <= reach * reach
-        && (hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos))) {
+    if (visibleFrom(getEyePosition(), pos)
+        && getEyePosition().distanceToSqr(Vec3.atCenterOf(pos)) <= reach * reach) {
       getNavigation().stop();
       getLookControl().setLookAt(Vec3.atCenterOf(pos));
       travelTicks = 0;
@@ -272,18 +288,71 @@ public abstract class FieldSlime extends BagSlime {
       return true;
     }
     status = Status.MOVING;
-    if (lastPosition == null
-        || position().subtract(lastPosition).horizontalDistanceSqr() >= .0025
-        || (onGround() && Math.abs(getY() - lastPosition.y) >= .5)) {
+    double distance = position().distanceToSqr(Vec3.atCenterOf(pos));
+    if (distance < closestDistance - .1) {
+      closestDistance = distance;
       travelTicks = 0;
-      lastPosition = position();
-    } else if (++travelTicks > 400) {
+    } else if (++travelTicks > 600) {
       blocked();
+      workStand = null;
       return false;
     }
-    if (tickCount % 10 == 0)
-      getNavigation().moveTo(pos.getX() + .5, pos.getY(), pos.getZ() + .5, 1);
+    if (tickCount % 20 == 0
+        && (onGround() || isInWater())
+        && (getNavigation().isDone() || workStand == null)) {
+      var candidates = new java.util.HashSet<BlockPos>();
+      double offset = Math.floor(getBbWidth() + 1) * .5;
+      int radius = Math.min(4, (int) Math.ceil(reach));
+      for (int x = -radius; x <= radius; x++)
+        for (int z = -radius; z <= radius; z++)
+          for (int y = -2; y <= 1; y++) {
+            BlockPos feet = pos.offset(x, y, z);
+            if (!level().hasChunkAt(feet) || !level().hasChunkAt(feet.offset(1, 0, 1))) continue;
+            Vec3 stand = Vec3.atLowerCornerOf(feet).add(offset, 0, offset);
+            var body = getBoundingBox().move(stand.subtract(position()));
+            Vec3 eye = stand.add(0, getEyeHeight(), 0);
+            if (eye.distanceToSqr(Vec3.atCenterOf(pos))
+                    <= Math.max(0, reach - .65) * Math.max(0, reach - .65)
+                && level().noCollision(this, body)
+                && level().getBlockCollisions(this, body.move(0, -.1, 0)).iterator().hasNext()
+                && visibleFrom(eye, pos)) candidates.add(feet);
+          }
+      var path = getNavigation().createPath(candidates, 0);
+      if (path != null
+          && path.getNodeCount() > 0
+          && (path.canReach()
+              || path.getEntityPosAtNode(this, path.getNodeCount() - 1)
+                      .distanceToSqr(Vec3.atCenterOf(pos))
+                  < distance - .1)) {
+        workStand = path.getEntityPosAtNode(this, path.getNodeCount() - 1);
+        getNavigation().moveTo(path, 1);
+      } else {
+        workStand = null;
+        getNavigation().stop();
+        status = Status.UNREACHABLE;
+      }
+    }
+    if (workStand != null
+        && getNavigation().isDone()
+        && position().distanceToSqr(workStand) < 2.25
+        && Math.abs(getY() - workStand.y) < .15
+        && level()
+            .noCollision(this, getBoundingBox().expandTowards(workStand.subtract(position()))))
+      getMoveControl().setWantedPosition(workStand.x, workStand.y, workStand.z, .5);
     return false;
+  }
+
+  private boolean visibleFrom(Vec3 eye, BlockPos pos) {
+    var hit =
+        level()
+            .clip(
+                new ClipContext(
+                    eye,
+                    Vec3.atCenterOf(pos),
+                    ClipContext.Block.COLLIDER,
+                    ClipContext.Fluid.NONE,
+                    this));
+    return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos);
   }
 
   protected final void blocked() {

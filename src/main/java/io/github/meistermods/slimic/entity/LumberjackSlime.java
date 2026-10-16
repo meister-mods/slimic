@@ -4,6 +4,7 @@ import io.github.meistermods.slimic.registry.ModItems;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,6 +15,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -32,6 +36,27 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class LumberjackSlime extends FieldSlime {
+  private static final EntityDataAccessor<ItemStack> REQUIRED_SAPLING =
+      SynchedEntityData.defineId(LumberjackSlime.class, EntityDataSerializers.ITEM_STACK);
+  private static final EntityDataAccessor<Integer> REQUIRED_COUNT =
+      SynchedEntityData.defineId(LumberjackSlime.class, EntityDataSerializers.INT);
+  private int observedBagRevision = -1;
+
+  @Override
+  protected void defineSynchedData() {
+    super.defineSynchedData();
+    entityData.define(REQUIRED_SAPLING, ItemStack.EMPTY);
+    entityData.define(REQUIRED_COUNT, 0);
+  }
+
+  public ItemStack getRequiredSapling() {
+    return entityData.get(REQUIRED_SAPLING);
+  }
+
+  public int getRequiredSaplingCount() {
+    return entityData.get(REQUIRED_COUNT);
+  }
+
   private static final Map<Block, Block> TREES =
       Map.of(
           Blocks.OAK_LOG,
@@ -65,6 +90,9 @@ public final class LumberjackSlime extends FieldSlime {
   private boolean leafy;
   private int scanDelay;
   private BlockPos skipped;
+  private BlockPos discoveryRoot;
+  private final Map<BlockPos, Long> unavailable = new HashMap<>();
+  private boolean missingSaplings;
   private long skippedUntil;
 
   public LumberjackSlime(EntityType<? extends LumberjackSlime> type, Level level) {
@@ -147,7 +175,8 @@ public final class LumberjackSlime extends FieldSlime {
   }
 
   private void skip(ServerLevel level, BlockPos pos) {
-    skipped = pos;
+    skipped = discoveryRoot == null ? pos : discoveryRoot;
+    unavailable.put(skipped, level.getGameTime() + 200);
     skippedUntil = level.getGameTime() + 200;
     resetDiscovery();
     logs.clear();
@@ -190,7 +219,7 @@ public final class LumberjackSlime extends FieldSlime {
           }
     }
     if (!frontier.isEmpty()) {
-      status = Status.SURVEYING;
+      status = missingSaplings ? Status.NO_SEEDS : Status.SURVEYING;
       return false;
     }
     if (!leafy || roots.isEmpty()) {
@@ -203,6 +232,11 @@ public final class LumberjackSlime extends FieldSlime {
       if (getBag().getStackInSlot(i).is(sapling.asItem()))
         available += getBag().getStackInSlot(i).getCount();
     if (available < roots.size()) {
+      entityData.set(REQUIRED_SAPLING, new ItemStack(sapling));
+      entityData.set(REQUIRED_COUNT, roots.size());
+      missingSaplings = true;
+      if (discoveryRoot != null) unavailable.put(discoveryRoot, level.getGameTime() + 100);
+      resetDiscovery();
       status = Status.NO_SEEDS;
       return false;
     }
@@ -215,6 +249,9 @@ public final class LumberjackSlime extends FieldSlime {
       resetDiscovery();
       return false;
     }
+    missingSaplings = false;
+    entityData.set(REQUIRED_SAPLING, ItemStack.EMPTY);
+    entityData.set(REQUIRED_COUNT, 0);
     plannedLog = treeBlock;
     for (BlockPos root : roots) {
       for (int i = 0; i < getCapacity(); i++)
@@ -313,6 +350,15 @@ public final class LumberjackSlime extends FieldSlime {
 
   @Override
   protected void workTick(ServerLevel level) {
+    if (observedBagRevision != bagRevision) {
+      observedBagRevision = bagRevision;
+      unavailable.clear();
+      missingSaplings = false;
+      survey = null;
+      candidates.clear();
+      scanDelay = 0;
+    }
+
     if (logs.isEmpty()
         && plantings.isEmpty()
         && (treeBlock == null || status == Status.NO_SEEDS)
@@ -344,9 +390,12 @@ public final class LumberjackSlime extends FieldSlime {
     if (candidates.isEmpty()) {
       if (scanDelay > 0) {
         scanDelay--;
-        status = Status.IDLE;
+        status = missingSaplings ? Status.NO_SEEDS : Status.IDLE;
         getNavigation().stop();
         return;
+      }
+      if (survey == null) {
+        unavailable.values().removeIf(until -> until <= level.getGameTime());
       }
       if (survey == null)
         survey =
@@ -361,7 +410,7 @@ public final class LumberjackSlime extends FieldSlime {
         scanDelay = 40;
       }
       if (candidates.isEmpty()) {
-        status = Status.SURVEYING;
+        status = missingSaplings ? Status.NO_SEEDS : Status.SURVEYING;
         return;
       }
     }
@@ -370,12 +419,14 @@ public final class LumberjackSlime extends FieldSlime {
       if (!level.hasChunkAt(pos)
           || !inArea(pos)
           || !root(level, pos)
+          || unavailable.containsKey(pos)
           || (pos.equals(skipped) && level.getGameTime() < skippedUntil)) continue;
       Block block = level.getBlockState(pos).getBlock();
       if (!TREES.containsKey(block)) continue;
       treeBlock = block;
+      discoveryRoot = pos;
       frontier.add(pos);
-      status = Status.SURVEYING;
+      status = missingSaplings ? Status.NO_SEEDS : Status.SURVEYING;
       return;
     }
   }

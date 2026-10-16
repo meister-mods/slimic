@@ -34,11 +34,12 @@ public final class MiningAuditGameTests {
         ModEntities.CLEANING_SLIME.get(),
         ModEntities.SADDLE_SLIME.get(),
         ModEntities.FARMER_SLIME.get(),
-        ModEntities.LUMBERJACK_SLIME.get());
+        ModEntities.LUMBERJACK_SLIME.get(),
+        ModEntities.GUARDIAN_ANGEL_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "mining_audit")
-  public static void allNineCompanionsUseThirtyTwoThenNinetySixActivity(GameTestHelper h) {
+  public static void allTenCompanionsUseThirtyTwoThenNinetySixActivity(GameTestHelper h) {
     for (var type : types()) {
       var pet = type.create(h.getLevel());
       h.assertTrue(pet.getNextPointCost() == 32, "Every specialization must start at32: " + type);

@@ -71,6 +71,7 @@ The companion entity texture uses Minecraft's slime artwork by Mojang Studios.
 Slimic item icons adapt the Minecraft slime-ball silhouette with specialization
 colors and symbols. Slimic supplies dedicated 16x16 item, Slime Chest,
 herald-hat, and saddle textures. Equipment rendering also references Minecraft
-materials and the vanilla elytra model and texture.
+materials and a dedicated feathered wing texture. The Survival Slime Tuner
+uses artwork generated for Slimic and exported as a 16x16 item icon.
 Minecraft artwork belongs to Mojang Studios.
 

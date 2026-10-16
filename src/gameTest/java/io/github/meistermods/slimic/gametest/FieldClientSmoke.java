@@ -56,7 +56,8 @@ final class FieldClientSmoke {
                   pet.setYBodyRot(90);
                   pet.setYHeadRot(90);
                 }
-                owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STICK));
+                owner.setItemInHand(
+                    InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 owner.teleportTo(level, 7.5, 101, 8.5, -90, 15);
                 owner.inventoryMenu.broadcastChanges();
               });
@@ -130,7 +131,7 @@ final class FieldClientSmoke {
             .gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.16-"
+                "../verification/0.1.17-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

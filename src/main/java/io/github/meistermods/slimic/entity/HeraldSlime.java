@@ -1,16 +1,22 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.config.SlimicConfig;
+import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.EnumSet;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -48,6 +54,48 @@ public final class HeraldSlime extends FriendlySlime {
 
   public void setFirework(ItemStack stack) {
     if (stack.is(Items.FIREWORK_ROCKET)) firework = stack.copyWithCount(1);
+  }
+
+  private int manualCooldown;
+
+  public boolean launchSignal() {
+    if (level().isClientSide || !isAlive()) return false;
+    var rocket =
+        new FireworkRocketEntity(level(), this, getX(), getEyeY() + .3, getZ(), firework.copy());
+    rocket.getPersistentData().putBoolean(SIGNAL_MARKER, true);
+    return level().addFreshEntity(rocket);
+  }
+
+  public boolean launchManually() {
+    if (manualCooldown > 0) return false;
+    if (!launchSignal()) return false;
+    manualCooldown = 10;
+    return true;
+  }
+
+  @Override
+  public void tick() {
+    super.tick();
+    if (!level().isClientSide && manualCooldown > 0) manualCooldown--;
+  }
+
+  @Override
+  public InteractionResult mobInteract(Player player, InteractionHand hand) {
+    var held = player.getItemInHand(hand);
+    if (player.isShiftKeyDown()
+        || held.getItem() instanceof SlimeTunerItem
+        || held.getItem() instanceof CreativeSlimeTunerItem
+        || held.getItem() instanceof DyeItem
+        || held.is(Items.SLIME_BALL)
+        || held.is(Items.WATER_BUCKET)) return super.mobInteract(player, hand);
+    if (!player.getUUID().equals(getOwnerUUID())) return InteractionResult.FAIL;
+    if (!level().isClientSide) {
+      if (held.is(Items.FIREWORK_ROCKET)) {
+        setFirework(held);
+        if (!player.getAbilities().instabuild) held.shrink(1);
+      } else launchManually();
+    }
+    return InteractionResult.sidedSuccess(level().isClientSide);
   }
 
   public int getDelayMinutes() {
@@ -103,10 +151,7 @@ public final class HeraldSlime extends FriendlySlime {
       if (warned.contains(key)
           && warned.getLong(key) == worker.getBlockedEpisode()
           && warningCooldowns.getInt(key) > 0) continue;
-      FireworkRocketEntity rocket =
-          new FireworkRocketEntity(level(), this, getX(), getEyeY() + 0.3, getZ(), firework.copy());
-      rocket.getPersistentData().putBoolean(SIGNAL_MARKER, true);
-      if (!level().addFreshEntity(rocket)) continue;
+      if (!launchSignal()) continue;
       warned.putLong(key, worker.getBlockedEpisode());
       warningCooldowns.putInt(key, 200);
     }
@@ -122,6 +167,7 @@ public final class HeraldSlime extends FriendlySlime {
   @Override
   public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
+    tag.putInt("HeraldManualCooldown", manualCooldown);
     tag.put("HeraldFirework", firework.save(new CompoundTag()));
     tag.putInt("HeraldDelayMinutes", getDelayMinutes());
     tag.putBoolean("HeraldMonitoring", monitoring);
@@ -133,6 +179,7 @@ public final class HeraldSlime extends FriendlySlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
+    manualCooldown = Math.max(0, Math.min(10, tag.getInt("HeraldManualCooldown")));
     firework = defaultFirework();
     setFirework(ItemStack.of(tag.getCompound("HeraldFirework")));
     delayMinutes =

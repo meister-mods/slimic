@@ -1,8 +1,8 @@
 package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
 import io.github.meistermods.slimic.menu.SlimeMenu;
-import io.github.meistermods.slimic.menu.TunerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,6 +17,6 @@ public final class ModMenus {
 
   private ModMenus() {}
 
-  public static final RegistryObject<MenuType<TunerMenu>> TUNER =
-      MENUS.register("tuner", () -> IForgeMenuType.create(TunerMenu::new));
+  public static final RegistryObject<MenuType<CreativeSlimeTunerMenu>> CREATIVE_TUNER =
+      MENUS.register("creative_tuner", () -> IForgeMenuType.create(CreativeSlimeTunerMenu::new));
 }

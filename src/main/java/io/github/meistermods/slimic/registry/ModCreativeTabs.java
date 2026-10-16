@@ -5,6 +5,7 @@ import io.github.meistermods.slimic.item.SlimeArmorItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.DeferredRegister;
@@ -31,10 +32,11 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SADDLE_SLIME.get());
                         output.accept(ModItems.FARMER_SLIME.get());
                         output.accept(ModItems.LUMBERJACK_SLIME.get());
+                        output.accept(ModItems.GUARDIAN_ANGEL_SLIME.get());
                         output.accept(ModItems.SLIME_CHEST.get());
                         output.accept(ModItems.BROKEN_SLIME.get());
                         for (var chestplate :
-                            new net.minecraft.world.item.Item[] {
+                            new Item[] {
                               Items.LEATHER_CHESTPLATE,
                               Items.CHAINMAIL_CHESTPLATE,
                               Items.IRON_CHESTPLATE,
@@ -44,6 +46,7 @@ public final class ModCreativeTabs {
                             })
                           output.accept(SlimeArmorItem.fromChestplate(new ItemStack(chestplate)));
                         output.accept(ModItems.SLIME_TUNER.get());
+                        output.accept(ModItems.CREATIVE_SLIME_TUNER.get());
                       })
                   .build());
 

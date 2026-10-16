@@ -6,6 +6,7 @@ import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
+import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
@@ -113,6 +114,12 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     if (menu.slime() instanceof MiningSlime) addOrder(SlimeMenu.WORK, "mine", 306);
     if (menu.slime() instanceof HeraldSlime) {
       addOrder(SlimeMenu.WORK, "monitor", 306);
+      addRenderableWidget(
+          Button.builder(
+                  Component.translatable("screen.slimic.fire_signal"),
+                  b -> sendButton(SlimeMenu.FIRE_SIGNAL))
+              .bounds(leftPos + 222, topPos + 137, 106, 16)
+              .build());
       addRenderableWidget(
           Button.builder(Component.literal("-"), button -> sendButton(SlimeMenu.DELAY_DOWN))
               .bounds(leftPos + 194, topPos + 112, 24, 18)
@@ -260,7 +267,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             ? 252
             : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
                 ? 234
-                : menu.slime() instanceof FieldSlime ? 216 : 194,
+                : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
+                    ? 216
+                    : 194,
         49,
         0xffe5e9e9,
         false);
@@ -274,7 +283,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             ? 252
             : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
                 ? 234
-                : menu.slime() instanceof FieldSlime ? 216 : 194,
+                : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
+                    ? 216
+                    : 194,
         62,
         0xffe5e9e9,
         false);
@@ -302,16 +313,23 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               .toLowerCase(Locale.ROOT);
       graphics.drawWordWrap(
           font,
-          Component.translatable(
-              "status.slimic."
-                  + (menu.slime() instanceof FieldSlime
-                      ? "field."
-                      : menu.slime() instanceof TransportSlime
-                          ? "transport."
-                          : menu.slime() instanceof CombatSlime
-                              ? "combat."
-                              : menu.slime() instanceof CleaningSlime ? "cleaning." : "")
-                  + key),
+          menu.slime() instanceof LumberjackSlime logger
+                  && key.equals("no_seeds")
+                  && !logger.getRequiredSapling().isEmpty()
+              ? Component.translatable(
+                  "status.slimic.lumberjack.saplings",
+                  logger.getRequiredSapling().getHoverName(),
+                  logger.getRequiredSaplingCount())
+              : Component.translatable(
+                  "status.slimic."
+                      + (menu.slime() instanceof FieldSlime
+                          ? (menu.slime() instanceof FarmerSlime ? "farmer." : "lumberjack.")
+                          : menu.slime() instanceof TransportSlime
+                              ? "transport."
+                              : menu.slime() instanceof CombatSlime
+                                  ? "combat."
+                                  : menu.slime() instanceof CleaningSlime ? "cleaning." : "")
+                      + key),
           10,
           216,
           174,
@@ -323,6 +341,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
+    } else if (menu.slime() instanceof GuardianAngelSlime) {
+      graphics.drawWordWrap(
+          font, Component.translatable("screen.slimic.guardian_help"), 194, 84, 162, 0xffb4c9d1);
     } else if (menu.slime() instanceof SaddleSlime) {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.saddle_help"), 194, 84, 162, 0xffb4c9d1);
