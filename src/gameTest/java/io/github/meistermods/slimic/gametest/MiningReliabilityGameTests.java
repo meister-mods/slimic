@@ -11,6 +11,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -88,18 +89,31 @@ public final class MiningReliabilityGameTests {
     arena.wall(true);
     MiningSlime miner = arena.miner(5, 12);
     arena.start(miner);
-    helper.runAfterDelay(
-        450,
-        () -> {
-          helper.assertTrue(
-              miner.getMiningStatus() == MiningSlime.Status.UNREACHABLE
-                  && miner.isWorkBlocked()
-                  && miner.getBag().getStackInSlot(0).getCount() == 3
-                  && arena.level().getBlockState(arena.gap()).isAir(),
-              "Failed support travel must report blocked without placing or consuming a block");
-          arena.wall(false);
-          arena.assertRepairFinishes(helper, miner);
-        });
+    helper
+        .startSequence()
+        .thenWaitUntil(() -> helper.assertTrue(miner.tickCount > 0, "Miner has started ticking"))
+        .thenIdle(450)
+        .thenExecute(
+            () -> {
+              helper.assertTrue(
+                  miner.getMiningStatus() == MiningSlime.Status.UNREACHABLE
+                      && miner.isWorkBlocked()
+                      && miner.getBag().getStackInSlot(0).getCount() == 3
+                      && arena.level().getBlockState(arena.gap()).isAir(),
+                  "Failed support travel must report blocked without placing or consuming a block:"
+                      + " status="
+                      + miner.getMiningStatus()
+                      + " position="
+                      + miner.position()
+                      + " alive="
+                      + miner.isAlive()
+                      + " age="
+                      + miner.tickCount
+                      + " bag="
+                      + miner.getBag().getStackInSlot(0));
+              arena.wall(false);
+              arena.assertRepairFinishes(helper, miner);
+            });
   }
 
   private static final class Arena {
@@ -115,11 +129,14 @@ public final class MiningReliabilityGameTests {
       force(true);
       helper.runAfterDelay(2390, this::close);
       for (int dx = 0; dx < 16; dx++)
-        for (int dz = 0; dz < 16; dz++)
-          for (int y = bottom; y <= 106; y++)
+        for (int dz = 0; dz < 16; dz++) {
+          int ceiling =
+              Math.max(107, level().getHeight(Heightmap.Types.WORLD_SURFACE, x + dx, z + dz));
+          for (int y = bottom; y < ceiling; y++)
             level()
                 .setBlockAndUpdate(
                     pos(dx, y, dz), (y <= top ? Blocks.BEDROCK : Blocks.AIR).defaultBlockState());
+        }
     }
 
     private net.minecraft.server.level.ServerLevel level() {
@@ -136,6 +153,7 @@ public final class MiningReliabilityGameTests {
 
     private MiningSlime miner(int dx, int dz) {
       MiningSlime miner = ModEntities.MINING_SLIME.get().create(level());
+      miner.setWorking(true);
       miner.moveTo(x + dx, top + 1, z + dz);
       miner.tame(helper.makeMockSurvivalPlayer());
       miner.setTool(0, new ItemStack(Items.IRON_PICKAXE));

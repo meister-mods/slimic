@@ -19,6 +19,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public final class CombatSlime extends BagSlime {
 
   private static final EntityDataAccessor<Integer> FILTERS =
       SynchedEntityData.defineId(CombatSlime.class, EntityDataSerializers.INT);
-  private boolean working = true;
+  private boolean working;
   private boolean resting;
   private Status status = Status.IDLE;
   private int attackCooldown;
@@ -123,6 +124,9 @@ public final class CombatSlime extends BagSlime {
     if ((target instanceof TamableAnimal tame && tame.isTame())
         || (target instanceof AbstractHorse horse && horse.isTamed())) return CombatTarget.TAMED;
     if (target instanceof Creeper) return CombatTarget.CREEPERS;
+    if (target instanceof EnderMan enderman
+        && enderman.getTarget() instanceof FriendlySlime companion
+        && companion.isAlive()) return CombatTarget.HOSTILE;
     if (target instanceof NeutralMob) return CombatTarget.NEUTRAL;
     return target instanceof Enemy ? CombatTarget.HOSTILE : CombatTarget.PASSIVE;
   }
@@ -295,7 +299,8 @@ public final class CombatSlime extends BagSlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    working = !tag.contains("CombatWorking") || tag.getBoolean("CombatWorking");
+    working = tag.getBoolean("CombatWorking");
+    if (!tag.contains("CombatWorking")) setWaiting(true);
     resting = tag.getBoolean("CombatResting");
     entityData.set(FILTERS, tag.contains("CombatFilters") ? tag.getInt("CombatFilters") & 63 : 1);
     attackCooldown = Math.max(0, Math.min(200, tag.getInt("CombatAttackCooldown")));

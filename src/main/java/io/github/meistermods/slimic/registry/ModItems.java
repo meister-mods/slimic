@@ -105,6 +105,16 @@ public final class ModItems {
 
   private ModItems() {}
 
+  public static final RegistryObject<Item> SOGGY_SLIME =
+      ITEMS.register(
+          "soggy_slime",
+          () -> new io.github.meistermods.slimic.item.SoggySlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> SLIME_SLAG =
+      ITEMS.register("slime_slag", () -> new Item(new Item.Properties()));
+  public static final RegistryObject<Item> SLIME_TRAIL =
+      ITEMS.register(
+          "slime_trail", () -> new BlockItem(ModBlocks.SLIME_TRAIL.get(), new Item.Properties()));
+
   public static final RegistryObject<Item> HERALD_SLIME =
       ITEMS.register("herald_slime", () -> new HeraldSlimeItem(new Item.Properties()));
   public static final RegistryObject<Item> CREATIVE_SLIME_TUNER =

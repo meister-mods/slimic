@@ -35,11 +35,12 @@ public final class MiningAuditGameTests {
         ModEntities.SADDLE_SLIME.get(),
         ModEntities.FARMER_SLIME.get(),
         ModEntities.LUMBERJACK_SLIME.get(),
-        ModEntities.GUARDIAN_ANGEL_SLIME.get());
+        ModEntities.GUARDIAN_ANGEL_SLIME.get(),
+        ModEntities.SOGGY_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "mining_audit")
-  public static void allTenCompanionsUseThirtyTwoThenNinetySixActivity(GameTestHelper h) {
+  public static void allCompanionCompanionsUseThirtyTwoThenNinetySixActivity(GameTestHelper h) {
     for (var type : types()) {
       var pet = type.create(h.getLevel());
       h.assertTrue(pet.getNextPointCost() == 32, "Every specialization must start at32: " + type);
@@ -91,6 +92,7 @@ public final class MiningAuditGameTests {
 
   private static MiningSlime miner(GameTestHelper h, LoadedWorkArea arena, Vec3 point) {
     var pet = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.moveTo(arena.point(point.x, point.y, point.z));
     pet.tame(h.makeMockSurvivalPlayer());
     pet.setTool(0, new ItemStack(Items.DIAMOND_PICKAXE));

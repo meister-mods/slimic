@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "slimic:slime_slag"
+    },
+    {
+      "item": "slimic:slime_slag"
+    },
+    {
+      "item": "slimic:slime_slag"
+    },
+    {
+      "item": "slimic:slime_slag"
+    }
+  ],
+  "result": {
+    "item": "minecraft:slime_ball",
+    "count": 1
+  }
+}

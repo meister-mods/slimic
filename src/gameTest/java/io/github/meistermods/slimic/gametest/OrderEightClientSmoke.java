@@ -29,6 +29,7 @@ final class OrderEightClientSmoke {
                     .getEntitiesOfClass(FriendlySlime.class, owner.getBoundingBox().inflate(32))
                     .forEach(FriendlySlime::discard);
                 var guard = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(level);
+                guard.setWaiting(false);
                 guard.tame(owner);
                 guard.moveTo(10.5, 103, 8.5);
                 guard.setNoAi(false);
@@ -38,7 +39,7 @@ final class OrderEightClientSmoke {
                 attacker.setNoAi(true);
                 attacker.moveTo(12.5, 101, 8.5);
                 level.addFreshEntity(attacker);
-                guard.defendAgainst(attacker);
+                guard.hurt(level.damageSources().mobAttack(attacker), 2);
                 owner.setItemInHand(
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 owner.teleportTo(level, 7.5, 101, 8.5, -90, -20);
@@ -145,6 +146,7 @@ final class OrderEightClientSmoke {
     if (phase == 5) {
       if (!(c.player.containerMenu instanceof ChestMenu) || ++ticks < 25) return false;
       var chest = (SlimeChestBlockEntity) c.level.getBlockEntity(new BlockPos(10, 101, 11));
+      if (chest.getOpenness(1) < .9 && ticks < 200) return false;
       if (chest.getOpenness(1) < .9)
         throw new IllegalStateException("Chest did not open from native menu event");
       shot(c, "animated-chest-menu");
@@ -163,6 +165,7 @@ final class OrderEightClientSmoke {
     if (phase == 7) {
       if (++ticks < 20) return false;
       var chest = (SlimeChestBlockEntity) c.level.getBlockEntity(new BlockPos(10, 101, 11));
+      if (chest.getOpenness(1) > .01 && ticks < 200) return false;
       if (chest.getOpenness(1) > .01) throw new IllegalStateException("Chest did not close");
       shot(c, "animated-chest-closed");
       System.out.println(
@@ -180,7 +183,7 @@ final class OrderEightClientSmoke {
         c.gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.18-"
+                "../verification/0.1.22-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

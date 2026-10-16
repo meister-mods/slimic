@@ -123,6 +123,7 @@ public final class SlimeToolsGameTests {
     Player player = helper.makeMockSurvivalPlayer();
     player.getAbilities().instabuild = true;
     var slime = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), PET);
+    slime.setWorking(true);
     player.moveTo(slime.position());
     player.setItemInHand(
         InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
@@ -156,6 +157,7 @@ public final class SlimeToolsGameTests {
         !menu.apply(player, values, 20, 600, 8), "Non-finite stat values must be rejected");
     CompoundTag saved = slime.saveWithoutId(new CompoundTag());
     var restored = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    restored.setWorking(true);
     restored.load(saved);
     helper.assertTrue(
         restored.getCapacity() == 54
@@ -202,6 +204,7 @@ public final class SlimeToolsGameTests {
   @GameTest(template = "empty")
   public static void creativeHeraldUsesWhiteRoundFireworkAndOwnDelay(GameTestHelper helper) {
     HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET);
+    herald.setMonitoring(true);
     CompoundTag fireworks = herald.getFirework().getTagElement("Fireworks");
     CompoundTag explosion = fireworks.getList("Explosions", Tag.TAG_COMPOUND).getCompound(0);
     helper.assertTrue(
@@ -218,6 +221,7 @@ public final class SlimeToolsGameTests {
         "Owners must be able to configure alert minutes");
     CompoundTag saved = herald.saveWithoutId(new CompoundTag());
     HeraldSlime restored = ModEntities.HERALD_SLIME.get().create(helper.getLevel());
+    restored.setMonitoring(true);
     restored.load(saved);
     helper.assertTrue(
         restored.getDelayMinutes() == previous + 1
@@ -231,13 +235,16 @@ public final class SlimeToolsGameTests {
       GameTestHelper helper) {
     Player owner = helper.makeMockSurvivalPlayer();
     MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), PET);
+    miner.setWorking(true);
     miner.tame(owner);
     miner.onReleased();
     CompoundTag workerState = miner.saveWithoutId(new CompoundTag());
+    workerState.putInt("MiningStatus", MiningSlime.Status.NO_TOOL.ordinal());
     workerState.putInt("BlockedWorkTicks", 1200);
     workerState.putLong("BlockedEpisode", 5);
     miner.load(workerState);
     HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET.east(2));
+    herald.setMonitoring(true);
     herald.tame(owner);
     herald.setDelayMinutes(1);
     ItemStack design = HeraldSlime.defaultFirework();
@@ -283,12 +290,15 @@ public final class SlimeToolsGameTests {
   public static void heraldDoesNotSignalWaitingOrForeignWorkers(GameTestHelper helper) {
     Player owner = helper.makeMockSurvivalPlayer();
     HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET.east(2));
+    herald.setMonitoring(true);
     herald.tame(owner);
     herald.setDelayMinutes(1);
     MiningSlime waiting = helper.spawn(ModEntities.MINING_SLIME.get(), PET);
+    waiting.setWorking(true);
     waiting.tame(owner);
     waiting.setWaiting(true);
     MiningSlime stranger = helper.spawn(ModEntities.MINING_SLIME.get(), PET.south(2));
+    stranger.setWorking(true);
     stranger.tame(helper.makeMockSurvivalPlayer());
     for (MiningSlime miner : new MiningSlime[] {waiting, stranger}) {
       CompoundTag state = miner.saveWithoutId(new CompoundTag());
@@ -325,6 +335,7 @@ public final class SlimeToolsGameTests {
         helper.setBlock(x, 1, z, net.minecraft.world.level.block.Blocks.BEDROCK);
     Player owner = helper.makeMockSurvivalPlayer();
     HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET);
+    herald.setMonitoring(true);
     herald.tame(owner);
     herald.setNoAi(true);
     herald.dye(owner, new ItemStack(Items.PURPLE_DYE));

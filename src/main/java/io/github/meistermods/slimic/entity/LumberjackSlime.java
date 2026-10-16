@@ -100,7 +100,6 @@ public final class LumberjackSlime extends FieldSlime {
 
   public LumberjackSlime(EntityType<? extends LumberjackSlime> type, Level level) {
     super(type, level);
-    working = true;
   }
 
   public static boolean isAxe(ItemStack stack) {
@@ -488,7 +487,6 @@ public final class LumberjackSlime extends FieldSlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    if (!tag.contains(workTag())) working = true;
     var logKey = ResourceLocation.tryParse(tag.getString("LoggingBlock"));
     plannedLog = logKey == null ? null : BuiltInRegistries.BLOCK.get(logKey);
     logs.clear();

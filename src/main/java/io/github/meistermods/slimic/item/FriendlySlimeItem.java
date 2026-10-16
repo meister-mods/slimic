@@ -10,6 +10,7 @@ import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeData;
+import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
@@ -51,25 +52,27 @@ public class FriendlySlimeItem extends Item {
   public static ItemStack fromSlime(FriendlySlime slime) {
     ItemStack stack =
         new ItemStack(
-            slime instanceof GuardianAngelSlime
-                ? ModItems.GUARDIAN_ANGEL_SLIME.get()
-                : slime instanceof FarmerSlime
-                    ? ModItems.FARMER_SLIME.get()
-                    : slime instanceof LumberjackSlime
-                        ? ModItems.LUMBERJACK_SLIME.get()
-                        : slime instanceof SaddleSlime
-                            ? ModItems.SADDLE_SLIME.get()
-                            : slime instanceof CombatSlime
-                                ? ModItems.COMBAT_SLIME.get()
-                                : slime instanceof CleaningSlime
-                                    ? ModItems.CLEANING_SLIME.get()
-                                    : slime instanceof HeraldSlime
-                                        ? ModItems.HERALD_SLIME.get()
-                                        : slime instanceof TransportSlime
-                                            ? ModItems.TRANSPORT_SLIME.get()
-                                            : slime instanceof MiningSlime
-                                                ? ModItems.MINING_SLIME.get()
-                                                : ModItems.FRIENDLY_SLIME.get());
+            slime instanceof SoggySlime
+                ? ModItems.SOGGY_SLIME.get()
+                : slime instanceof GuardianAngelSlime
+                    ? ModItems.GUARDIAN_ANGEL_SLIME.get()
+                    : slime instanceof FarmerSlime
+                        ? ModItems.FARMER_SLIME.get()
+                        : slime instanceof LumberjackSlime
+                            ? ModItems.LUMBERJACK_SLIME.get()
+                            : slime instanceof SaddleSlime
+                                ? ModItems.SADDLE_SLIME.get()
+                                : slime instanceof CombatSlime
+                                    ? ModItems.COMBAT_SLIME.get()
+                                    : slime instanceof CleaningSlime
+                                        ? ModItems.CLEANING_SLIME.get()
+                                        : slime instanceof HeraldSlime
+                                            ? ModItems.HERALD_SLIME.get()
+                                            : slime instanceof TransportSlime
+                                                ? ModItems.TRANSPORT_SLIME.get()
+                                                : slime instanceof MiningSlime
+                                                    ? ModItems.MINING_SLIME.get()
+                                                    : ModItems.FRIENDLY_SLIME.get());
     CompoundTag data = slime.saveWithoutId(new CompoundTag());
     // Passengers and tethers remain in the world; preserve the slime's own saved state.
     data.remove("Passengers");
@@ -213,7 +216,7 @@ public class FriendlySlimeItem extends Item {
                     saved.remove("Leash");
                     entity.load(saved);
                     if (reviving) {
-                      entity.setHealth(entity.getMaxHealth());
+                      entity.setHealth(1.0F);
                       entity.clearFire();
                       entity.deathTime = entity.hurtTime = 0;
                     }

@@ -98,7 +98,9 @@ public final class TransportSlimeGameTests {
   @GameTest(template = "empty")
   public static void capacityIsExactlyDoubleAtEveryUpgrade(GameTestHelper helper) {
     MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), MINER);
+    miner.setWorking(true);
     TransportSlime carrier = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), CARRIER);
+    carrier.setWorking(true);
     seed(miner, 6, 0, 100);
     seed(carrier, 6, 0, 100);
     for (int level = 0; level <= 6; level++) {
@@ -162,6 +164,7 @@ public final class TransportSlimeGameTests {
     LoadedWorkArea arena = new LoadedWorkArea(helper);
     TransportSlime carrier = arena.carrier(new Vec3(8, 101, 8));
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.setWorking(true);
     miner.moveTo(arena.point(6, 101, 8));
     miner.setOwnerUUID(carrier.getOwnerUUID());
     miner.setTame(true);
@@ -290,6 +293,7 @@ public final class TransportSlimeGameTests {
     ItemStack worn = new ItemStack(Items.IRON_PICKAXE);
     worn.setDamageValue(worn.getMaxDamage() - 1);
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.setWorking(true);
     miner.moveTo(area.point(6, 101, 8));
     miner.setOwnerUUID(carrier.getOwnerUUID());
     miner.setTame(true);
@@ -377,6 +381,7 @@ public final class TransportSlimeGameTests {
   public static void twoCarriersDoNotDuplicateSpareTools(GameTestHelper helper) {
     TransportSlime first = carrier(helper);
     TransportSlime second = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), CARRIER.south(2));
+    second.setWorking(true);
     second.setOwnerUUID(first.getOwnerUUID());
     second.setTame(true);
     second.onReleased();
@@ -584,12 +589,14 @@ public final class TransportSlimeGameTests {
   public static void workSpeedScalesTheIntervalBetweenTransferActions(GameTestHelper helper) {
     TransportSlime slow = carrier(helper);
     TransportSlime fast = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), CARRIER.south(2));
+    fast.setWorking(true);
     fast.tame(helper.makeMockSurvivalPlayer());
     fast.onReleased();
     seed(fast, 20, 0, 100);
     for (int point = 0; point < 20; point++) fast.upgradeStat(SlimeStat.WORK_SPEED);
     MiningSlime slowWorker = miner(helper, slow, ItemStack.EMPTY);
     MiningSlime fastWorker = helper.spawn(ModEntities.MINING_SLIME.get(), MINER.south(2));
+    fastWorker.setWorking(true);
     fastWorker.setOwnerUUID(fast.getOwnerUUID());
     fastWorker.setTame(true);
     fastWorker.onReleased();
@@ -617,6 +624,7 @@ public final class TransportSlimeGameTests {
     for (int x = 0; x < 12; x++)
       for (int z = 0; z < 12; z++) helper.setBlock(x, 1, z, Blocks.BEDROCK);
     TransportSlime carrier = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), CARRIER);
+    carrier.setWorking(true);
     carrier.tame(helper.makeMockSurvivalPlayer());
     carrier.onReleased();
     return carrier;
@@ -624,6 +632,7 @@ public final class TransportSlimeGameTests {
 
   private static MiningSlime miner(GameTestHelper helper, TransportSlime carrier, ItemStack tool) {
     MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), MINER);
+    miner.setWorking(true);
     miner.setOwnerUUID(carrier.getOwnerUUID());
     miner.setTame(true);
     miner.setItemSlot(EquipmentSlot.MAINHAND, tool);

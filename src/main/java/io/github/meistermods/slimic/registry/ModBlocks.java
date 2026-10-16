@@ -5,6 +5,7 @@ import io.github.meistermods.slimic.block.BrokenSlimeBlock;
 import io.github.meistermods.slimic.block.BrokenSlimeBlockEntity;
 import io.github.meistermods.slimic.block.SlimeChestBlock;
 import io.github.meistermods.slimic.block.SlimeChestBlockEntity;
+import io.github.meistermods.slimic.block.SlimeTrailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,6 +38,17 @@ public final class ModBlocks {
                   .build(null));
 
   private ModBlocks() {}
+
+  public static final RegistryObject<Block> SLIME_TRAIL =
+      BLOCKS.register(
+          "slime_trail",
+          () ->
+              new SlimeTrailBlock(
+                  BlockBehaviour.Properties.of()
+                      .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                      .strength(.1F)
+                      .sound(SoundType.SLIME_BLOCK)
+                      .noOcclusion()));
 
   public static final RegistryObject<Block> BROKEN_SLIME =
       BLOCKS.register(

@@ -4,6 +4,72 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.22] - 2026-10-16
+
+### Fixed
+
+- Ineffective mining tools no longer receive the Work Speed breaking bonus. Missing or tier-inadequate tools cannot bypass equipment requirements.
+- Mining and surface workers share native block-breaking progress. Tool changes, enchantment changes, interruptions, and block replacement reset partial damage and crack overlays.
+- Logging respects log hardness and the equipped axe's speed and enchantments before its action cooldown. Farming retains native instant crop harvesting and requires its hoe.
+
+### Validation
+
+- Native regressions measure break-attempt ticks for effective and ineffective tools, maximum Work Speed, tool downgrades, enchantment removal, missing equipment, and logging/farming resumption.
+
+## [0.1.21] - 2026-10-16
+
+### Added
+
+- Mining Slimes reinforce exposed side fluid inlets and large underground openings with their own cobblestone, preserving the quarry staircase and unfinished wall jobs across recovery.
+- Missing wall material pauses mining and requests transport delivery of up to one stack; partial stock and available bag space bound the transfer.
+- Soggy Slimes support an explicit Roam order, independent of the owner's presence, with a saved local origin, loaded-terrain navigation, and normal trail production and stamina recovery.
+
+### Changed
+
+- Revival from a Broken Slime Block starts every specialization at 1 health while preserving stored traits, equipment, cargo, and stamina.
+- Endermen retain native targeting. Combat Slimes classify an Enderman targeting a living companion as Hostile and return it to Neutral when it disengages.
+- Updated bilingual management messages, JEI guidance, and gameplay/development guides for wall reinforcement and free roaming. Network protocol is 10; saved-data schema remains 1.
+
+### Validation
+
+- Native server regressions cover wall geometry, protection and costs, recovery, material delivery, roaming, command permissions, stamina recovery, Enderman target transitions, and all eleven specializations revived at one health.
+
+## [0.1.20] - 2026-10-16
+
+### Changed
+
+- Standardized Korean stat names, current stamina, activity, equipment, and work-order terminology across screens and guides; aligned vanilla ingredient names with Minecraft translations.
+- Revised English and Korean tooltips, JEI descriptions, status messages, and help text for consistent tone and current behavior. Combat filter states are localized.
+- Simplified the bilingual project overviews, corrected misplaced gameplay explanations, and updated development terminology and protocol references.
+
+### Fixed
+
+- Mining Slimes drain exposed source corners in horizontal patches of up to 3×3 cells. Active quarry layers suppress water-source regeneration, preventing repeated removal of the same infinite-water source. Each cell retains range, permission, bucket, and stamina checks.
+
+- Mining paths accept submerged waypoints at the water surface, and swimming control can change heading and move against currents.
+
+### Validation
+
+- Native fluid regressions cover renewable pools, batch limits and costs, protected cells, recovery, and neighboring chunks. Client checks cover localized screens, help panels, and optional JEI integration.
+
+## [0.1.19] - 2026-10-16
+
+### Added
+
+- All work specializations start in Wait, including Creative defaults and new specializations; saved explicit orders survive recovery.
+- Soggy Slimes specialize from a Friendly Slime and slime ball, spend stamina on thin slime trails, and retain their traits through recovery. Trails break faster with shovels and drop one Slime Slag; four slag craft into a slime ball.
+- Mining Slimes remove water and lava while an empty bucket is present in their own bag. Buckets remain unchanged. Missing buckets pause mining and request transport delivery; full bags can request unloading before supply.
+
+### Fixed
+
+- Guardian Angel Slimes retaliate after taking damage themselves, including absorbed damage and when their owner is unavailable. Untamed guardians safely handle owner-dependent target checks. Environmental lethal damage follows the same nearby guardian-totem protection as attacks.
+- Ground slimes retain bounded hop propulsion throughout the native jumping state, preventing high Movement Speed from launching them across one-block steps.
+
+### Validation
+
+- Native checks cover slime trails, slag drops and recipes, stored identity, ownership and world-edit cancellation, guardian self-defense and environmental totems, jumping-state propulsion, fluid removal, retained buckets, and transport resupply.
+- Client checks cover the new summoning crest, slag sprite, trail model, management text, JEI, equipment and riding.
+
 ## [0.1.18] - 2026-10-16
 
 ### Fixed

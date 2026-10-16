@@ -43,11 +43,12 @@ public final class OrderSixGameTests {
         ModEntities.SADDLE_SLIME.get(),
         ModEntities.FARMER_SLIME.get(),
         ModEntities.LUMBERJACK_SLIME.get(),
-        ModEntities.GUARDIAN_ANGEL_SLIME.get());
+        ModEntities.GUARDIAN_ANGEL_SLIME.get(),
+        ModEntities.SOGGY_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "order_six", timeoutTicks = 80)
-  public static void allTenDeathsPreserveAndReviveExactCompanions(GameTestHelper h) {
+  public static void allCompanionDeathsPreserveAndReviveExactCompanions(GameTestHelper h) {
     LoadedWorkArea area = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SLIME_BALL, 20));
@@ -106,14 +107,14 @@ public final class OrderSixGameTests {
                 revived != null
                     && revived.getType() == old.getType()
                     && revived.getOwnerUUID().equals(owner.getUUID())
-                    && revived.getHealth() == revived.getMaxHealth()
+                    && revived.getHealth() == 1.0F
                     && revived.getStamina() == 39
                     && revived.getStatPoints() == 6
                     && revived.getStatLevel(SlimeStat.HEALTH) == 1
                     && revived.getCustomName().equals(old.getCustomName())
                     && revived.isOrderedToSit(),
-                "Identity, specialization, owner, name, stats, points, stamina and order survive"
-                    + " revival");
+                "Revival starts at one health; identity, specialization, owner, name, stats,"
+                    + " points, stamina and order survive revival");
             if (revived instanceof BagSlime bag)
               h.assertTrue(
                   bag.getBag().getStackInSlot(0).getCount() == 13,
@@ -148,6 +149,7 @@ public final class OrderSixGameTests {
     LoadedWorkArea area = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     var pet = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.tame(owner);
     pet.moveTo(area.point(8, 101, 8));
     pet.setNoAi(true);
@@ -315,6 +317,7 @@ public final class OrderSixGameTests {
                   2);
       }
     var pet = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.getRandom().setSeed(1);
     pet.moveTo(a.point(8, 101, 8));
     pet.tame(h.makeMockSurvivalPlayer());
@@ -352,6 +355,7 @@ public final class OrderSixGameTests {
   public static void anAiFighterRaisesItsShieldBetweenFastAttacks(GameTestHelper h) {
     LoadedWorkArea a = new LoadedWorkArea(h);
     var pet = ModEntities.COMBAT_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.tame(h.makeMockSurvivalPlayer());
     pet.moveTo(a.point(8, 101, 8));
     pet.setEquipment(0, new ItemStack(Items.IRON_SWORD));
@@ -425,6 +429,7 @@ public final class OrderSixGameTests {
     LoadedWorkArea a = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     var worker = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    worker.setWorking(true);
     worker.moveTo(a.point(8, 101, 8));
     worker.tame(owner);
     worker.setNoAi(true);
@@ -438,6 +443,7 @@ public final class OrderSixGameTests {
     worker.load(data);
     h.getLevel().addFreshEntity(worker);
     var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    herald.setMonitoring(true);
     herald.moveTo(a.point(10, 101, 8));
     herald.tame(owner);
     herald.setDelayMinutes(1);
@@ -479,6 +485,7 @@ public final class OrderSixGameTests {
     LoadedWorkArea a = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     var pet = ModEntities.TRANSPORT_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.tame(owner);
     pet.moveTo(a.point(8, 101, 8));
     pet.setNoAi(true);
@@ -594,6 +601,7 @@ public final class OrderSixGameTests {
   public static void canceledAttacksCannotGenerateShieldActivity(GameTestHelper h) {
     LoadedWorkArea a = new LoadedWorkArea(h);
     var pet = ModEntities.COMBAT_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.tame(h.makeMockSurvivalPlayer());
     pet.moveTo(a.point(8, 101, 8));
     pet.setNoAi(true);

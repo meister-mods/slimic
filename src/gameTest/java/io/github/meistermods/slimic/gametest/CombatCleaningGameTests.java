@@ -92,6 +92,7 @@ public final class CombatCleaningGameTests {
 
   private static CombatSlime fighter(Arena a) {
     CombatSlime pet = ModEntities.COMBAT_SLIME.get().create(a.helper.getLevel());
+    pet.setWorking(true);
     pet.moveTo(a.home);
     pet.tame(a.owner);
     a.helper.getLevel().addFreshEntity(pet);
@@ -100,6 +101,7 @@ public final class CombatCleaningGameTests {
 
   private static CleaningSlime cleaner(Arena a) {
     CleaningSlime pet = ModEntities.CLEANING_SLIME.get().create(a.helper.getLevel());
+    pet.setWorking(true);
     pet.moveTo(a.home);
     pet.tame(a.owner);
     a.helper.getLevel().addFreshEntity(pet);
@@ -320,7 +322,7 @@ public final class CombatCleaningGameTests {
                 case COMBAT -> Items.IRON_SWORD;
                 case CLEANING -> Items.ROTTEN_FLESH;
                 case SADDLE -> Items.SADDLE;
-                case ARMOR -> Items.SLIME_BALL;
+                case ARMOR, SOGGY -> Items.SLIME_BALL;
                 case FARMER -> Items.IRON_HOE;
                 case LUMBERJACK -> Items.IRON_AXE;
               });
@@ -421,6 +423,7 @@ public final class CombatCleaningGameTests {
     CombatSlime pet = fighter(a);
     pet.setNoAi(true);
     TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(h.getLevel());
+    carrier.setWorking(true);
     carrier.moveTo(a.home.add(1, 0, 0));
     carrier.tame(a.owner);
     h.getLevel().addFreshEntity(carrier);
@@ -621,6 +624,7 @@ public final class CombatCleaningGameTests {
       pet.getBag().setStackInSlot(slot, new ItemStack(Items.COBBLESTONE, 64));
     ItemEntity loot = drop(a, new ItemStack(Items.DIAMOND), a.home.add(1, 0, 0));
     TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(h.getLevel());
+    carrier.setWorking(true);
     carrier.moveTo(a.home.add(2, 0, 0));
     carrier.tame(a.owner);
     h.getLevel().addFreshEntity(carrier);

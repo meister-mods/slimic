@@ -11,6 +11,7 @@ import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
+import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.registry.ModMenus;
@@ -32,7 +33,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public final class SlimeMenu extends AbstractContainerMenu {
   public static final int TARGET_TOGGLE = 40, TARGET_PAGE_BUTTON = 46;
   public static final int FILTERS = 18, TARGET_PAGE = 19;
-  public static final int FIRE_SIGNAL = 28;
+  public static final int FIRE_SIGNAL = 28, ROAM = 29;
   public static final int FOLLOW = 20, WAIT = 21, WORK = 22;
   public static final int PREVIOUS_PAGE = 23, NEXT_PAGE = 24;
   public static final int DELAY_DOWN = 25, DELAY_UP = 26, RIDE = 27;
@@ -93,7 +94,12 @@ public final class SlimeMenu extends AbstractContainerMenu {
                   case NEXT_POINT -> slime.getNextPointCost();
                   case STAMINA -> (int) (slime.getStamina() * 10);
                   case HEALTH -> (int) (slime.getHealth() * 10);
-                  case MODE -> slime.isOrderedToSit() ? WAIT : slime.isWorking() ? WORK : FOLLOW;
+                  case MODE ->
+                      slime.isOrderedToSit()
+                          ? WAIT
+                          : slime instanceof SoggySlime soggy && soggy.isRoaming()
+                              ? ROAM
+                              : slime.isWorking() ? WORK : FOLLOW;
                   case STATUS ->
                       slime instanceof FieldSlime field
                           ? field.getFieldStatus().ordinal()
@@ -251,6 +257,10 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (button == ROAM && slime instanceof SoggySlime soggy) {
+      soggy.setRoaming(true);
+      return true;
+    }
     if (button == FIRE_SIGNAL && slime instanceof HeraldSlime herald)
       return herald.launchManually();
     if (button == RIDE && slime instanceof SaddleSlime mount) {
@@ -286,6 +296,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     if (button != FOLLOW && button != WAIT && button != WORK) return false;
     if (button == WORK && !(slime instanceof BagSlime) && !(slime instanceof HeraldSlime))
       return false;
+    if (slime instanceof SoggySlime soggy) soggy.setRoaming(false);
     if (slime instanceof BagSlime worker) worker.setWorking(button == WORK);
     if (slime instanceof HeraldSlime herald) herald.setMonitoring(button == WORK);
     slime.setWaiting(button == WAIT);

@@ -32,6 +32,7 @@ public final class StabilityGameTests {
   @GameTest(template = "empty", batch = "stability")
   public static void sameCoordinatesInAnotherDimensionStartANewQuarry(GameTestHelper h) {
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    miner.setWorking(true);
     BlockPos origin = h.absolutePos(new BlockPos(5, 2, 5));
     miner.moveTo(Vec3.atBottomCenterOf(origin));
     miner.tame(h.makeMockSurvivalPlayer());
@@ -49,6 +50,7 @@ public final class StabilityGameTests {
     ServerLevel destination = h.getLevel().getServer().getLevel(Level.NETHER);
     h.assertTrue(destination != null, "The Nether must be available for dimension restoration");
     MiningSlime restored = ModEntities.MINING_SLIME.get().create(destination);
+    restored.setWorking(true);
     restored.load(stored.getTag().getCompound("SlimeData"));
     restored.moveTo(origin.getX() + .5, 75, origin.getZ() + .5);
     restored.onReleased();
@@ -73,6 +75,7 @@ public final class StabilityGameTests {
   @GameTest(template = "empty", batch = "stability")
   public static void olderQuarrySavesAdoptTheirExistingDimension(GameTestHelper h) {
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    miner.setWorking(true);
     miner.moveTo(h.absoluteVec(new Vec3(5.5, 2, 5.5)));
     miner.tame(h.makeMockSurvivalPlayer());
     miner.onReleased();
@@ -82,6 +85,7 @@ public final class StabilityGameTests {
     CompoundTag saved = miner.saveWithoutId(new CompoundTag());
     saved.remove("WorkDimension");
     MiningSlime restored = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    restored.setWorking(true);
     restored.load(saved);
     restored.onReleased();
     h.assertTrue(
@@ -98,6 +102,7 @@ public final class StabilityGameTests {
     h.assertTrue(destination != null, "The Nether must be available");
     var carrier = arena.carrier(new Vec3(5, 101, 5));
     var cleaner = ModEntities.CLEANING_SLIME.get().create(h.getLevel());
+    cleaner.setWorking(true);
     cleaner.moveTo(arena.point(8, 101, 5));
     cleaner.setOwnerUUID(carrier.getOwnerUUID());
     cleaner.setTame(true);
@@ -160,6 +165,7 @@ public final class StabilityGameTests {
     carrier.getBag().setStackInSlot(0, new ItemStack(Items.EMERALD, 7));
     TransportSlime restored =
         ModEntities.TRANSPORT_SLIME.get().create(h.getLevel().getServer().getLevel(Level.NETHER));
+    restored.setWorking(true);
     restored.load(carrier.saveWithoutId(new CompoundTag()));
     restored.moveTo(arena.point(12, 80, 12));
     restored.tick();
@@ -181,6 +187,7 @@ public final class StabilityGameTests {
     BlockPos home = carrier.getWorkOrigin();
     carrier.moveTo(arena.point(11, 101, 5));
     TransportSlime restored = ModEntities.TRANSPORT_SLIME.get().create(h.getLevel());
+    restored.setWorking(true);
     restored.load(carrier.saveWithoutId(new CompoundTag()));
     restored.tick();
     h.assertTrue(
@@ -274,6 +281,7 @@ public final class StabilityGameTests {
           ItemStack stored = FriendlySlimeItem.fromSlime(carrier);
           carrier.discard();
           TransportSlime copy = ModEntities.TRANSPORT_SLIME.get().create(h.getLevel());
+          copy.setWorking(true);
           copy.load(stored.getTag().getCompound("SlimeData"));
           copy.onReleased();
           copy.setTunedVitals(16, 100, 0);

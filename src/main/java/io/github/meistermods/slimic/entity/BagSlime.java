@@ -13,6 +13,7 @@ public abstract class BagSlime extends FriendlySlime {
 
   protected BagSlime(EntityType<? extends BagSlime> type, Level level, int slots) {
     super(type, level);
+    setWaiting(true);
     bag =
         new ItemStackHandler(slots) {
           @Override
@@ -52,12 +53,26 @@ public abstract class BagSlime extends FriendlySlime {
     return getWorkStatus().requests(WorkStatus.Request.TOOL_SUPPLY);
   }
 
+  public boolean needsWorkSupply() {
+    return needsReplacementTool()
+        || getWorkStatus().requests(WorkStatus.Request.BUCKET_SUPPLY)
+        || getWorkStatus().requests(WorkStatus.Request.COBBLESTONE_SUPPLY);
+  }
+
   public boolean acceptsWorkTool(ItemStack stack) {
     return false;
   }
 
   public boolean receiveWorkTool(ItemStack stack) {
     return false;
+  }
+
+  public int workSupplyLimit() {
+    return 1;
+  }
+
+  public int receiveWorkSupply(ItemStack stack) {
+    return receiveWorkTool(stack) ? 1 : 0;
   }
 
   protected abstract String bagTagName();

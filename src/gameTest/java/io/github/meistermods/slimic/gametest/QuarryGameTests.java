@@ -75,6 +75,7 @@ public final class QuarryGameTests {
                   .defaultBlockState());
         }
     MiningSlime probe = ModEntities.MINING_SLIME.get().create(level);
+    probe.setWorking(true);
     probe.moveTo(cx * 16 + 8, 97, cz * 16 + 8);
     probe.onReleased();
     probe.setOnGround(true);
@@ -90,6 +91,7 @@ public final class QuarryGameTests {
   public static void brokenPickaxeAndEmptyShovelUseExactBagSpares(GameTestHelper helper) {
     floor(helper);
     MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), PET);
+    miner.setWorking(true);
     miner.tame(helper.makeMockSurvivalPlayer());
     miner.onReleased();
     ItemStack worn = new ItemStack(Items.IRON_PICKAXE);
@@ -152,6 +154,7 @@ public final class QuarryGameTests {
   @GameTest(template = "empty")
   public static void sameChunkKeepsProgressAndNewChunkRestartsWork(GameTestHelper helper) {
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.setWorking(true);
     miner.moveTo(helper.absoluteVec(Vec3.atCenterOf(PET)));
     miner.tame(helper.makeMockSurvivalPlayer());
     miner.onReleased();
@@ -212,7 +215,16 @@ public final class QuarryGameTests {
                           : y == 98 ? Blocks.STONE : y == 99 ? Blocks.DIRT : Blocks.AIR)
                   .defaultBlockState());
       }
+    // This fixture tests excavation and stairs; separate wall fixtures provide cave openings.
+    for (int i = 0; i < 16; i++)
+      for (int y = 96; y <= 101; y++)
+        for (var pos :
+            java.util.List.of(
+                new BlockPos(minX - 1, y, minZ + i), new BlockPos(minX + 16, y, minZ + i),
+                new BlockPos(minX + i, y, minZ - 1), new BlockPos(minX + i, y, minZ + 16)))
+          level.setBlockAndUpdate(pos, Blocks.BEDROCK.defaultBlockState());
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(level);
+    miner.setWorking(true);
     miner.moveTo(minX + 8, 100, minZ + 8);
     miner.tame(helper.makeMockSurvivalPlayer());
     ItemStack pickaxe = new ItemStack(Items.NETHERITE_PICKAXE);

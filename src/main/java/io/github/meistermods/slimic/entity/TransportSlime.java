@@ -49,7 +49,7 @@ public final class TransportSlime extends BagSlime {
     SUPPLY_TOOL
   }
 
-  private boolean working = true;
+  private boolean working;
   private boolean resting;
   private boolean travelBlocked;
   private BlockPos home;
@@ -264,7 +264,7 @@ public final class TransportSlime extends BagSlime {
     List<SlimeChestBlockEntity> chests = chests(server);
     if (hasCargo()) {
       for (BagSlime worker : workers) {
-        if (worker.needsReplacementTool() && toolSlot(getBag(), worker) >= 0) {
+        if (worker.needsWorkSupply() && toolSlot(getBag(), worker) >= 0) {
           workerTarget = worker;
           job = Job.SUPPLY_TOOL;
           status = Status.SUPPLYING;
@@ -283,7 +283,7 @@ public final class TransportSlime extends BagSlime {
       return;
     }
     for (BagSlime worker : workers) {
-      if (!worker.needsReplacementTool()) continue;
+      if (!worker.needsWorkSupply()) continue;
       for (SlimeChestBlockEntity chest : chests) {
         if (toolSlot(chest.inventory(), worker) >= 0) {
           workerTarget = worker;
@@ -317,12 +317,12 @@ public final class TransportSlime extends BagSlime {
       case SUPPLY_TOOL ->
           workerTarget != null
               && supported(workerTarget)
-              && workerTarget.needsReplacementTool()
+              && workerTarget.needsWorkSupply()
               && toolSlot(getBag(), workerTarget) >= 0;
       case FETCH_TOOL ->
           workerTarget != null
               && supported(workerTarget)
-              && workerTarget.needsReplacementTool()
+              && workerTarget.needsWorkSupply()
               && targetChest() != null
               && toolSlot(targetChest().inventory(), workerTarget) >= 0;
       case DEPOSIT ->
@@ -351,15 +351,25 @@ public final class TransportSlime extends BagSlime {
       }
       case FETCH_TOOL -> {
         IItemHandler source = targetChest().inventory();
-        if (transfer(source, toolSlot(source, workerTarget), getBag(), 1) > 0) {
+        if (transfer(
+                source, toolSlot(source, workerTarget), getBag(), workerTarget.workSupplyLimit())
+            > 0) {
           spendStamina(1);
           actions++;
         }
       }
       case SUPPLY_TOOL -> {
         int slot = toolSlot(getBag(), workerTarget);
-        if (workerTarget.receiveWorkTool(getBag().getStackInSlot(slot))) {
-          getBag().extractItem(slot, 1, false);
+        int accepted =
+            workerTarget.receiveWorkSupply(
+                getBag()
+                    .getStackInSlot(slot)
+                    .copyWithCount(
+                        Math.min(
+                            workerTarget.workSupplyLimit(),
+                            getBag().getStackInSlot(slot).getCount())));
+        if (accepted > 0) {
+          getBag().extractItem(slot, accepted, false);
           spendStamina(1);
           recordCompletedWork(SlimicConfig.TRANSPORT_ACTIVITY.get());
           actions++;
@@ -403,7 +413,8 @@ public final class TransportSlime extends BagSlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    working = !tag.contains("TransportWorking") || tag.getBoolean("TransportWorking");
+    working = tag.getBoolean("TransportWorking");
+    if (!tag.contains("TransportWorking")) setWaiting(true);
     resting = tag.getBoolean("TransportResting");
     cooldown = Math.max(0, Math.min(200, tag.getInt("TransportCooldown")));
     travelBlocked = tag.getBoolean("TransportTravelBlocked");

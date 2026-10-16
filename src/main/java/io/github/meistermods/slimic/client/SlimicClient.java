@@ -30,6 +30,7 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(ModEntities.SOGGY_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(
         ModEntities.GUARDIAN_ANGEL_SLIME.get(), GuardianAngelSlimeRenderer::new);
     event.registerBlockEntityRenderer(ModBlocks.SLIME_CHEST_ENTITY.get(), SlimeChestRenderer::new);

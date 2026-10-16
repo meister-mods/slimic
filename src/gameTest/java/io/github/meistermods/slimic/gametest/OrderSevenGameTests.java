@@ -55,6 +55,7 @@ public final class OrderSevenGameTests {
 
   private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea area) {
     var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    pet.setWorking(true);
     pet.moveTo(area.point(6.5, 101, 5.5));
     pet.tame(h.makeMockSurvivalPlayer());
     pet.setTool(new ItemStack(Items.DIAMOND_AXE));
@@ -473,7 +474,7 @@ public final class OrderSevenGameTests {
     h.succeed();
   }
 
-  @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 500)
+  @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 1200)
   public static void fourStumpTreeRetainsReservedSaplingsAcrossReload(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var pet = logger(h, area);
@@ -513,28 +514,41 @@ public final class OrderSevenGameTests {
                   1,
                   () -> {
                     var loaded = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+                    loaded.setWorking(true);
                     loaded.load(saved);
                     h.getLevel().addFreshEntity(loaded);
                     current[0] = loaded;
                   });
             });
-    h.runAfterDelay(
-        410,
-        () -> {
-          var loaded = current[0];
-          for (int x = 0; x < 2; x++)
-            for (int z = 0; z < 2; z++)
+    h.startSequence()
+        .thenWaitUntil(
+            () -> {
+              for (int x = 0; x < 2; x++)
+                for (int z = 0; z < 2; z++)
+                  h.assertTrue(
+                      h.getLevel().getBlockState(base.offset(x, 0, z)).is(Blocks.DARK_OAK_SAPLING),
+                      "Wait for all original stumps to be replanted; status="
+                          + current[0].getFieldStatus()
+                          + " logs="
+                          + count(current[0], Items.DARK_OAK_LOG));
+            })
+        .thenExecute(
+            () -> {
+              var loaded = current[0];
+              for (int x = 0; x < 2; x++)
+                for (int z = 0; z < 2; z++)
+                  h.assertTrue(
+                      h.getLevel().getBlockState(base.offset(x, 0, z)).is(Blocks.DARK_OAK_SAPLING),
+                      "Each original stump replanted after reload");
               h.assertTrue(
-                  h.getLevel().getBlockState(base.offset(x, 0, z)).is(Blocks.DARK_OAK_SAPLING),
-                  "Each original stump replanted after reload");
-          h.assertTrue(
-              count(loaded, Items.DARK_OAK_LOG) == 12
-                  && loaded.getPendingPlantings() == 0
-                  && count(loaded, Items.DARK_OAK_SAPLING) == 0,
-              "No lost logs or duplicated reserved saplings");
-          area.close();
-          h.succeed();
-        });
+                  count(loaded, Items.DARK_OAK_LOG) == 12
+                      && loaded.getPendingPlantings() == 0
+                      && count(loaded, Items.DARK_OAK_SAPLING) == 0,
+                  "No lost logs or duplicated reserved saplings");
+              loaded.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 180)
