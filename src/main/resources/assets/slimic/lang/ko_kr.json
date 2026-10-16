@@ -129,7 +129,8 @@
   "entity.slimic.saddle_slime": "안장 슬라임",
   "screen.slimic.ride": "탑승",
   "screen.slimic.saddle_help": "장비: 안장 / 겉날개\n빈손: 탑승 · 아이템: 관리\nWASD+시선 · Space↑ · Ctrl↓\nShift: 하차",
-  "key.slimic.descend": "안장 슬라임 하강",
   "key.categories.slimic": "Slimic",
-  "jei.slimic.saddle_slime": "친근한 슬라임과 안장을 조합합니다. 두 번째 칸에 겉날개를 장착하면 폭죽 없이 자유비행합니다. 빈손 우클릭은 탑승, 다른 아이템을 든 우클릭은 관리입니다. 소유자만 탑승·장착할 수 있으며 장비·스탯·현재 생명력은 회수 후에도 유지됩니다."
+  "jei.slimic.saddle_slime": "친근한 슬라임과 안장을 조합합니다. 두 번째 칸에 겉날개를 장착하면 폭죽 없이 자유비행합니다. 빈손 우클릭은 탑승, 다른 아이템을 든 우클릭은 관리입니다. 소유자만 탑승·장착할 수 있으며 장비·스탯·현재 생명력은 회수 후에도 유지됩니다.",
+  "key.slimic.boost": "슬라임 고속 이동",
+  "block.slimic.broken_slime": "망가진 슬라임 블록"
 }

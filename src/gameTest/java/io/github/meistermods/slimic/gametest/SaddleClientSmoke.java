@@ -94,10 +94,27 @@ public final class SaddleClientSmoke {
       client.options.keyUp.setDown(true);
       next();
     } else if (phase == 3) {
-      if (++ticks < 20) return;
+      if (++ticks == 20) {
+        normalGroundDistance = Math.sqrt(mount.position().subtract(start).horizontalDistanceSqr());
+        check(normalGroundDistance > .3, "Native ground steering must move the mount");
+        start = mount.position();
+        SaddleSlimeControls.BOOST.setDown(true);
+        return;
+      }
+      if (ticks < 40) return;
       check(
-          mount.position().subtract(start).horizontalDistanceSqr() > .1,
-          "Native ground steering must move the mount");
+          Math.sqrt(mount.position().subtract(start).horizontalDistanceSqr())
+              > normalGroundDistance * 1.2,
+          "Ctrl must increase actual ground travel speed");
+      SaddleSlimeControls.BOOST.setDown(false);
+      int id = mount.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var pet = (SaddleSlime) client.getSingleplayerServer().overworld().getEntity(id);
+                groundBoostConfirmed.set(pet != null && pet.getStamina() < 95);
+              });
       client.options.keyUp.setDown(false);
       start = mount.position();
       client.options.keyJump.setDown(true);
@@ -106,6 +123,8 @@ public final class SaddleClientSmoke {
       jumped |= mount.getY() > start.y + .2;
       if (++ticks < 12) return;
       check(jumped, "Space must jump while riding without wings");
+      check(
+          groundBoostConfirmed.get(), "Ground sprint must spend substantial server-owned stamina");
       client.options.keyJump.setDown(false);
       client.options.keyShift.setDown(true);
       next();
@@ -194,14 +213,15 @@ public final class SaddleClientSmoke {
     } else if (phase == 12) {
       if (++ticks < 10) return;
       check(mount.getZ() > start.z + 1, "W must steer forward while airborne");
-      client.options.keyUp.setDown(false);
-      SaddleSlimeControls.DESCEND.setDown(true);
+      SaddleSlimeControls.BOOST.setDown(true);
       start = mount.position();
       next();
     } else if (phase == 13) {
-      if (++ticks < 5) return;
-      check(mount.getY() < start.y - .5, "The configured descend key must lower the mount");
-      SaddleSlimeControls.DESCEND.setDown(false);
+      if (++ticks < 10) return;
+      check(
+          mount.getZ() > start.z + 6 && Math.abs(mount.getY() - start.y) < .2,
+          "Ctrl must boost forward flight without forcing descent");
+      SaddleSlimeControls.BOOST.setDown(false);
       client.player.setXRot(-30);
       client.options.keyUp.setDown(true);
       start = mount.position();
@@ -238,22 +258,70 @@ public final class SaddleClientSmoke {
           serverConfirmed.get(),
           "Native vehicle packets must keep the server's Survival rider flying");
       screenshot(client, "saddle-flight");
-      client.options.keyShift.setDown(true);
+      int id = mount.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var pet = (SaddleSlime) client.getSingleplayerServer().overworld().getEntity(id);
+                pet.setTunedVitals(pet.getHealth(), 0, pet.getStatPoints());
+                energyDiagnostic.set(
+                    "stamina="
+                        + pet.getStamina()
+                        + " position="
+                        + pet.position()
+                        + " grounded="
+                        + pet.isGroundedMount());
+              });
+      start = mount.position();
+      client.options.keyJump.setDown(true);
       next();
     } else if (phase == 16) {
+      if (!glideStarted) {
+        if (!mount.isGlidingDown()) {
+          if (++ticks > 40)
+            check(false, "Exhaustion state did not synchronize: " + energyDiagnostic.get());
+          return;
+        }
+        glideStarted = true;
+        start = mount.position();
+      }
+      if (++glideTicks < 14) return;
+      check(
+          mount.isGlidingDown() && mount.getY() < start.y - .7 && mount.getY() > start.y - 2.5,
+          "Empty stamina must override ascent and produce a slow controlled descent: start="
+              + start
+              + " now="
+              + mount.position()
+              + " flag="
+              + mount.isGlidingDown()
+              + " server="
+              + energyDiagnostic.get());
+      client.options.keyJump.setDown(false);
+      client.options.keyShift.setDown(true);
+      next();
+    } else if (phase == 17) {
       if (client.player.isPassenger()) return;
       client.options.keyShift.setDown(false);
       check(!mount.isNoGravity(), "Dismount must end transient mount flight");
       client.options.setCameraType(CameraType.FIRST_PERSON);
       System.out.println(
           "SLIMIC SADDLE CLIENT SMOKE PASSED: equipment menu, ground movement/jump, Survival"
-              + " ascent, hover, steering, descent, pitch, server vehicle packets and Shift"
-              + " dismount; JEI="
+              + " ascent, hover, steering, boost, stamina descent, pitch, server vehicle packets"
+              + " and Shift dismount; JEI="
               + ModList.get().isLoaded("jei"));
       client.stop();
       phase++;
     }
   }
+
+  private static boolean glideStarted;
+  private static int glideTicks;
+  private static final java.util.concurrent.atomic.AtomicReference<String> energyDiagnostic =
+      new java.util.concurrent.atomic.AtomicReference<>("waiting");
+  private static double normalGroundDistance;
+  private static final java.util.concurrent.atomic.AtomicBoolean groundBoostConfirmed =
+      new java.util.concurrent.atomic.AtomicBoolean();
 
   private static void next() {
     phase++;
@@ -271,7 +339,7 @@ public final class SaddleClientSmoke {
             .gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.14-"
+                "../verification/0.1.15-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + suffix
                     + ".png")

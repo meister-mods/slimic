@@ -21,7 +21,7 @@ public final class HeraldSlime extends FriendlySlime {
   private int delayMinutes;
   private boolean monitoring = true;
   private CompoundTag warned = new CompoundTag();
-  private int signalCooldown;
+  private CompoundTag warningCooldowns = new CompoundTag();
   private int monitoringActivityTicks;
   private boolean watchingWorkers;
 
@@ -97,17 +97,18 @@ public final class HeraldSlime extends FriendlySlime {
           || state.state() == WorkStatus.State.COMPLETE
           || state.state() == WorkStatus.State.IDLE) continue;
       watchingWorkers = true;
-      if (signalCooldown > 0
-          || state.state() != WorkStatus.State.BLOCKED
+      if (state.state() != WorkStatus.State.BLOCKED
           || worker.getBlockedWorkTicks() < getDelayMinutes() * 1200) continue;
       String key = worker.getUUID().toString();
-      if (warned.contains(key) && warned.getLong(key) == worker.getBlockedEpisode()) continue;
+      if (warned.contains(key)
+          && warned.getLong(key) == worker.getBlockedEpisode()
+          && warningCooldowns.getInt(key) > 0) continue;
       FireworkRocketEntity rocket =
           new FireworkRocketEntity(level(), this, getX(), getEyeY() + 0.3, getZ(), firework.copy());
       rocket.getPersistentData().putBoolean(SIGNAL_MARKER, true);
       if (!level().addFreshEntity(rocket)) continue;
       warned.putLong(key, worker.getBlockedEpisode());
-      signalCooldown = 60;
+      warningCooldowns.putInt(key, 200);
     }
     if (watchingWorkers) {
       monitoringActivityTicks += 20;
@@ -125,7 +126,7 @@ public final class HeraldSlime extends FriendlySlime {
     tag.putInt("HeraldDelayMinutes", getDelayMinutes());
     tag.putBoolean("HeraldMonitoring", monitoring);
     tag.put("HeraldWarnings", warned.copy());
-    tag.putInt("HeraldCooldown", signalCooldown);
+    tag.put("HeraldWarningCooldowns", warningCooldowns.copy());
     tag.putInt("HeraldMonitoringActivityTicks", monitoringActivityTicks);
   }
 
@@ -150,7 +151,17 @@ public final class HeraldSlime extends FriendlySlime {
         // Warning records always identify a worker; ignore malformed legacy keys.
       }
     }
-    signalCooldown = Math.max(0, Math.min(60, tag.getInt("HeraldCooldown")));
+    warningCooldowns = new CompoundTag();
+    for (String key : warned.getAllKeys())
+      warningCooldowns.putInt(
+          key,
+          Math.max(
+              0,
+              Math.min(
+                  200,
+                  tag.getCompound("HeraldWarningCooldowns").contains(key)
+                      ? tag.getCompound("HeraldWarningCooldowns").getInt(key)
+                      : tag.getInt("HeraldCooldown"))));
     monitoringActivityTicks =
         Math.max(
             0,
@@ -187,7 +198,9 @@ public final class HeraldSlime extends FriendlySlime {
 
     @Override
     public void tick() {
-      if (signalCooldown > 0) signalCooldown--;
+      for (String key : warningCooldowns.getAllKeys())
+        if (warningCooldowns.getInt(key) > 0)
+          warningCooldowns.putInt(key, warningCooldowns.getInt(key) - 1);
       if (tickCount % 20 == 0) watchWorkers();
     }
   }

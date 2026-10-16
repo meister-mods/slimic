@@ -89,6 +89,13 @@ public final class ModItems {
   public static final RegistryObject<Item> SADDLE_SLIME =
       ITEMS.register("saddle_slime", () -> new SaddleSlimeItem(new Item.Properties()));
 
+  public static final RegistryObject<Item> BROKEN_SLIME =
+      ITEMS.register(
+          "broken_slime",
+          () ->
+              new BlockItem(
+                  ModBlocks.BROKEN_SLIME.get(), new Item.Properties().stacksTo(1).fireResistant()));
+
   private ModItems() {}
 
   public static final RegistryObject<Item> HERALD_SLIME =

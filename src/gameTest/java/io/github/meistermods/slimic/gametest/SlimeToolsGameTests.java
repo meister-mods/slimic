@@ -376,7 +376,7 @@ public final class SlimeToolsGameTests {
             && !restored.isWorking()
             && ItemStack.matches(restored.getFirework(), design)
             && saved.getCompound("HeraldWarnings").getLong(incident) == 19
-            && saved.getInt("HeraldCooldown") == 31
+            && saved.getCompound("HeraldWarningCooldowns").getInt(incident) == 31
             && reloaded.isEmpty(),
         "Actual capture, item save, and release must retain every herald trait");
     helper.succeed();

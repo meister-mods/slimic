@@ -47,6 +47,7 @@ public enum SlimeStat {
     return switch (this) {
       case HEALTH, DEFENSE, MOVEMENT_SPEED -> true;
       case ATTACK -> slime instanceof CombatSlime;
+      case STAMINA -> slime instanceof BagSlime || slime instanceof SaddleSlime;
       case DETECTION_RANGE -> slime instanceof BagSlime || slime instanceof HeraldSlime;
       default -> slime instanceof BagSlime;
     };

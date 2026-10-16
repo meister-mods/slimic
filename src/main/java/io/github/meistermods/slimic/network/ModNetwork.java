@@ -16,9 +16,9 @@ public final class ModNetwork {
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "main"),
-          () -> "6",
-          "6"::equals,
-          "6"::equals);
+          () -> "7",
+          "7"::equals,
+          "7"::equals);
 
   private ModNetwork() {}
 
@@ -46,11 +46,11 @@ public final class ModNetwork {
         Optional.of(NetworkDirection.PLAY_TO_SERVER));
   }
 
-  public record RideSlime(int entityId, boolean up, boolean down) {
+  public record RideSlime(int entityId, boolean up, boolean boost) {
     private void encode(FriendlyByteBuf buffer) {
       buffer.writeVarInt(entityId);
       buffer.writeBoolean(up);
-      buffer.writeBoolean(down);
+      buffer.writeBoolean(boost);
     }
 
     private static RideSlime decode(FriendlyByteBuf buffer) {
@@ -66,7 +66,7 @@ public final class ModNetwork {
                 && player.getVehicle()
                     instanceof io.github.meistermods.slimic.entity.SaddleSlime slime
                 && slime.getId() == packet.entityId)
-              slime.setRiderInput(player, packet.up, packet.down);
+              slime.setRiderInput(player, packet.up, packet.boost);
           });
       context.setPacketHandled(true);
     }

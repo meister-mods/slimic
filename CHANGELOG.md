@@ -4,6 +4,30 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.15] - 2026-10-16
+
+### Changed
+
+- Herald signals repeat every ten seconds while a worker remains blocked.
+- Activity growth includes defense, escape movement, and ridden travel.
+- Ground movement speed changes hop frequency while hop propulsion stays fixed.
+- Companion summoning items share a Friendly Slime base with distinct framed profession crests.
+- Winged mounts have paired animated side wings and stamina-powered Ctrl ground and flight sprint. Normal flight also consumes stamina; exhaustion produces a slow controlled landing before grounded recovery.
+
+### Added
+
+- Hostile mobs can target companions; ordinary companions flee after attacks. Creepers receive no additional targeting behavior.
+- Fallen companions become Broken Slime Blocks, preserving their identity, stats, equipment, cargo, and orders. Their owner can revive them with a slimeball.
+
+### Fixed
+
+- Combat slimes face threats while shielding and maintain a usable blocking interval between attacks.
+
+### Validation
+
+- Added native regressions for all-specialization revival, payload-preserving mining and placement, blocked/foreign revival, Creative recovery, hostile targeting, escape, shield timing and cancellation, repeated signals, hop distance, and stamina costs.
+- Client coverage includes shared summoning bases and distinct profession crests, the recovery block model, paired wings, ground and air sprint, and controlled descent after stamina depletion.
+
 ## [0.1.14] - 2026-10-16
 
 ### Changed

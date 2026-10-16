@@ -149,6 +149,22 @@ public class FriendlySlimeItem extends Item {
       BlockPos position,
       boolean alignToSurface,
       boolean offsetUp) {
+    return spawn(level, player, stack, position, alignToSurface, offsetUp, false);
+  }
+
+  public boolean revive(ServerLevel level, Player player, ItemStack stored, BlockPos pos) {
+    if (!hasStoredSlime(stored)) return false;
+    return spawn(level, player, stored, pos, false, false, true);
+  }
+
+  private boolean spawn(
+      ServerLevel level,
+      Player player,
+      ItemStack stack,
+      BlockPos position,
+      boolean alignToSurface,
+      boolean offsetUp,
+      boolean reviving) {
     boolean restoring = hasStoredSlime(stack);
     CompoundTag saved =
         restoring ? SlimeData.migrate(stack.getTag().getCompound(SLIME_DATA)) : null;
@@ -159,7 +175,7 @@ public class FriendlySlimeItem extends Item {
           || !saved.hasUUID("Owner")
           || !saved.contains("Health", Tag.TAG_ANY_NUMERIC)
           || !Float.isFinite(saved.getFloat("Health"))
-          || saved.getFloat("Health") <= 0.0F) {
+          || (!reviving && saved.getFloat("Health") <= 0.0F)) {
         return false;
       }
       for (ServerLevel world : level.getServer().getAllLevels()) {
@@ -187,6 +203,11 @@ public class FriendlySlimeItem extends Item {
                     saved.remove("Passengers");
                     saved.remove("Leash");
                     entity.load(saved);
+                    if (reviving) {
+                      entity.setHealth(entity.getMaxHealth());
+                      entity.clearFire();
+                      entity.deathTime = entity.hurtTime = 0;
+                    }
                     entity.moveTo(spawnPosition.x, spawnPosition.y, spawnPosition.z, yaw, 0.0F);
                     entity.setDeltaMovement(Vec3.ZERO);
                     entity.fallDistance = 0.0F;

@@ -494,7 +494,7 @@ public final class SlimeClientSmoke {
                               .getKey(stack.getItem())
                               .toString())
                   .toList());
-      if (items.size() != 15
+      if (items.size() != 16
           || items.stream().noneMatch(stack -> stack.is(ModItems.SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =
@@ -557,6 +557,56 @@ public final class SlimeClientSmoke {
           .getModel(new ItemStack(ModItems.SLIME_CHEST.get()), client.level, client.player, 0)
           .isGui3d())
         throw new IllegalStateException("Slime Chest item must render its block model");
+      if (!client
+          .getItemRenderer()
+          .getModel(new ItemStack(ModItems.BROKEN_SLIME.get()), client.level, client.player, 0)
+          .isGui3d())
+        throw new IllegalStateException("Recovery item must use its textured block model");
+      var common =
+          client
+              .getItemRenderer()
+              .getModel(
+                  new ItemStack(ModItems.FRIENDLY_SLIME.get()), client.level, client.player, 0)
+              .getParticleIcon()
+              .contents()
+              .name();
+      for (var item :
+          java.util.List.of(
+              ModItems.MINING_SLIME.get(),
+              ModItems.TRANSPORT_SLIME.get(),
+              ModItems.HERALD_SLIME.get(),
+              ModItems.COMBAT_SLIME.get(),
+              ModItems.CLEANING_SLIME.get(),
+              ModItems.SADDLE_SLIME.get()))
+        if (!client
+            .getItemRenderer()
+            .getModel(new ItemStack(item), client.level, client.player, 0)
+            .getParticleIcon()
+            .contents()
+            .name()
+            .equals(common))
+          throw new IllegalStateException("All companion models must share their summoning icon");
+      for (var emblem :
+          java.util.Map.of(
+                  ModItems.FRIENDLY_SLIME.get(), "heart_of_the_sea",
+                  ModItems.MINING_SLIME.get(), "iron_pickaxe",
+                  ModItems.TRANSPORT_SLIME.get(), "bundle",
+                  ModItems.HERALD_SLIME.get(), "firework_rocket",
+                  ModItems.COMBAT_SLIME.get(), "iron_sword",
+                  ModItems.CLEANING_SLIME.get(), "brush",
+                  ModItems.SADDLE_SLIME.get(), "saddle")
+              .entrySet()) {
+        var expected =
+            net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                "minecraft", "item/" + emblem.getValue());
+        var model =
+            client
+                .getItemRenderer()
+                .getModel(new ItemStack(emblem.getKey()), client.level, client.player, 0);
+        if (model.getQuads(null, null, net.minecraft.util.RandomSource.create()).stream()
+            .noneMatch(quad -> quad.getSprite().contents().name().equals(expected)))
+          throw new IllegalStateException("Missing profession crest: " + emblem.getValue());
+      }
       screenshot(client, prefix + "chest-models-and-icons");
       var vanished = ModEntities.TRANSPORT_SLIME.get().create(client.level);
       FriendlyByteBuf opening = new FriendlyByteBuf(Unpooled.buffer());
@@ -767,6 +817,8 @@ public final class SlimeClientSmoke {
                           .setValue(SlimeChestBlock.FACING, facing));
                   index++;
                 }
+                level.setBlockAndUpdate(
+                    new BlockPos(10, 101, 9), ModBlocks.BROKEN_SLIME.get().defaultBlockState());
                 int slot = 0;
                 for (var item :
                     new net.minecraft.world.item.Item[] {
@@ -774,8 +826,8 @@ public final class SlimeClientSmoke {
                           ModItems.MINING_SLIME.get(),
                       ModItems.TRANSPORT_SLIME.get(), ModItems.HERALD_SLIME.get(),
                           ModItems.COMBAT_SLIME.get(),
-                      ModItems.CLEANING_SLIME.get(), ModItems.SLIME_TUNER.get(),
-                          ModItems.DIAMOND_SLIME_ARMOR.get()
+                      ModItems.CLEANING_SLIME.get(), ModItems.SADDLE_SLIME.get(),
+                          ModItems.BROKEN_SLIME.get()
                     }) owner.getInventory().setItem(slot++, new ItemStack(item));
                 owner.inventoryMenu.broadcastChanges();
                 owner.teleportTo(level, 7.5, 103, 5.5, -40, 30);
@@ -801,7 +853,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.14-" + suffix + ".png")
+            .resolve("../verification/0.1.15-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

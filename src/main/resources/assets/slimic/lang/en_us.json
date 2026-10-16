@@ -129,7 +129,8 @@
   "entity.slimic.saddle_slime": "Saddle Slime",
   "screen.slimic.ride": "Ride",
   "screen.slimic.saddle_help": "Slots: saddle, elytra.\nEmpty hand: ride; item: manage.\nWASD + view; Space up, Ctrl down.\nShift: dismount.",
-  "key.slimic.descend": "Descend on Saddle Slime",
   "key.categories.slimic": "Slimic",
-  "jei.slimic.saddle_slime": "Craft a Friendly Slime with a saddle. Equip elytra in the second slot to fly freely without rockets. Empty-hand use rides; hold another item to open management. Only the owner can ride or equip it. Equipment, stats and current health survive recovery."
+  "jei.slimic.saddle_slime": "Craft a Friendly Slime with a saddle. Equip elytra in the second slot to fly freely without rockets. Empty-hand use rides; hold another item to open management. Only the owner can ride or equip it. Equipment, stats and current health survive recovery.",
+  "key.slimic.boost": "Slime Sprint",
+  "block.slimic.broken_slime": "Broken Slime Block"
 }

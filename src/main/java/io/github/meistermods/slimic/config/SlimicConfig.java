@@ -21,7 +21,7 @@ public final class SlimicConfig {
             .defineInRange("transportActivityPerDelivery", 4, 1, 64);
     FOLLOW_ACTIVITY_INTERVAL =
         builder
-            .comment("Ticks of actual movement while following the owner per activity unit.")
+            .comment("Ticks of actual following, ridden or escape movement per activity unit.")
             .defineInRange("followingActivityIntervalTicks", 100, 20, 1200);
     MONITOR_ACTIVITY_INTERVAL =
         builder

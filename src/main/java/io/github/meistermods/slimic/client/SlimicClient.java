@@ -35,6 +35,7 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(SaddleSlimeLayer.WING_LAYER, SaddleSlimeLayer::createWings);
     event.registerLayerDefinition(SaddleSlimeLayer.SADDLE, SaddleSlimeLayer::createLayer);
     event.registerLayerDefinition(CombatSlimeLayer.ARMOR, CombatSlimeLayer::createLayer);
     event.registerLayerDefinition(MiningSlimeLayer.HELMET, MiningSlimeLayer::createLayer);

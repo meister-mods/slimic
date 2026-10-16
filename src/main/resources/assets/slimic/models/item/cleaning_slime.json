@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "slimic:item/slime_summon_base",
   "textures": {
-    "layer0": "slimic:item/cleaning_slime"
+    "crest": "minecraft:item/brush"
   }
 }
