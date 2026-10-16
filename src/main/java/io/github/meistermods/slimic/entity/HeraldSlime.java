@@ -135,6 +135,7 @@ public final class HeraldSlime extends FriendlySlime {
     watchingWorkers = false;
     for (FriendlySlime worker :
         level().getEntitiesOfClass(FriendlySlime.class, getBoundingBox().inflate(range))) {
+      if (!isWorking()) break;
       if (worker == this
           || !worker.isAlive()
           || !worker.isWorking()
@@ -156,6 +157,7 @@ public final class HeraldSlime extends FriendlySlime {
       warned.putLong(key, worker.getBlockedEpisode());
       warningCooldowns.putInt(key, 200);
     }
+    watchingWorkers &= isWorking();
     if (watchingWorkers) {
       monitoringActivityTicks += 20;
       if (monitoringActivityTicks >= SlimicConfig.MONITOR_ACTIVITY_INTERVAL.get()) {
@@ -247,6 +249,10 @@ public final class HeraldSlime extends FriendlySlime {
 
     @Override
     public void tick() {
+      if (!canUse()) {
+        stop();
+        return;
+      }
       for (String key : warningCooldowns.getAllKeys())
         if (warningCooldowns.getInt(key) > 0)
           warningCooldowns.putInt(key, warningCooldowns.getInt(key) - 1);

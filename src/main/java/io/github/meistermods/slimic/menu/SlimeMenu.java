@@ -7,6 +7,7 @@ import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
+import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
@@ -101,17 +102,19 @@ public final class SlimeMenu extends AbstractContainerMenu {
                               ? ROAM
                               : slime.isWorking() ? WORK : FOLLOW;
                   case STATUS ->
-                      slime instanceof FieldSlime field
-                          ? field.getFieldStatus().ordinal()
-                          : slime instanceof MiningSlime miner
-                              ? miner.getMiningStatus().ordinal()
-                              : slime instanceof TransportSlime carrier
-                                  ? carrier.getTransportStatus().ordinal()
-                                  : slime instanceof CombatSlime fighter
-                                      ? fighter.getCombatStatus().ordinal()
-                                      : slime instanceof CleaningSlime cleaner
-                                          ? cleaner.getCleaningStatus().ordinal()
-                                          : 0;
+                      slime instanceof HealingSlime healer
+                          ? healer.getHealingStatus().ordinal()
+                          : slime instanceof FieldSlime field
+                              ? field.getFieldStatus().ordinal()
+                              : slime instanceof MiningSlime miner
+                                  ? miner.getMiningStatus().ordinal()
+                                  : slime instanceof TransportSlime carrier
+                                      ? carrier.getTransportStatus().ordinal()
+                                      : slime instanceof CombatSlime fighter
+                                          ? fighter.getCombatStatus().ordinal()
+                                          : slime instanceof CleaningSlime cleaner
+                                              ? cleaner.getCleaningStatus().ordinal()
+                                              : 0;
                   case FILTERS -> {
                     int mask = 0;
                     if (slime instanceof CombatSlime fighter)

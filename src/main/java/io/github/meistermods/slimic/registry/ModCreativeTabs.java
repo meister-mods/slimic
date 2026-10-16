@@ -24,6 +24,8 @@ public final class ModCreativeTabs {
                   .displayItems(
                       (parameters, output) -> {
                         output.accept(ModItems.FRIENDLY_SLIME.get());
+                        output.accept(ModItems.WAREHOUSE_SLIME.get());
+                        output.accept(ModItems.HEALING_SLIME.get());
                         output.accept(ModItems.MINING_SLIME.get());
                         output.accept(ModItems.TRANSPORT_SLIME.get());
                         output.accept(ModItems.HERALD_SLIME.get());

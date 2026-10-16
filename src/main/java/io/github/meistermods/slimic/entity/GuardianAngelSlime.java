@@ -24,7 +24,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +42,7 @@ public final class GuardianAngelSlime extends FriendlySlime {
   private LivingEntity retaliation;
   private boolean defendingSelf;
   private int retaliationTicks, attackCooldown, beamTicks;
+  private boolean protecting;
 
   public GuardianAngelSlime(EntityType<? extends GuardianAngelSlime> type, Level level) {
     super(type, level);
@@ -73,7 +73,7 @@ public final class GuardianAngelSlime extends FriendlySlime {
 
   @Override
   protected PathNavigation createNavigation(Level level) {
-    var nav = new FlyingPathNavigation(this, level);
+    var nav = new LoadedFlyingNavigation(this, level);
     nav.setCanFloat(true);
     nav.setCanPassDoors(true);
     return nav;
@@ -177,31 +177,45 @@ public final class GuardianAngelSlime extends FriendlySlime {
     return damaged;
   }
 
+  private boolean canProtect(Player player, DamageSource source) {
+    return !level().isClientSide
+        && isAlive()
+        && !isRemoved()
+        && isTame()
+        && !getTotems().isEmpty()
+        && player.level() == level()
+        && player.getUUID().equals(getOwnerUUID())
+        && distanceToSqr(player) <= 256
+        && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+  }
+
   public boolean protect(Player player, DamageSource source) {
-    if (level().isClientSide
-        || !isAlive()
-        || getTotems().isEmpty()
-        || player.level() != level()
-        || !player.getUUID().equals(getOwnerUUID())
-        || distanceToSqr(player) > 256
-        || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return false;
+    if (protecting || !canProtect(player, source)) return false;
+    ItemStack reserve = getTotems().copy();
     ItemStack used = getTotems().copyWithCount(1);
-    if (!ForgeHooks.onLivingUseTotem(player, source, used, InteractionHand.OFF_HAND)) return false;
-    ItemStack remaining = getTotems().copy();
-    remaining.shrink(1);
-    setTotems(remaining);
-    player.setHealth(1);
-    player.removeAllEffects();
-    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
-    player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
-    player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
-    level().broadcastEntityEvent(player, (byte) 35);
-    if (player instanceof ServerPlayer server) {
-      server.awardStat(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
-      CriteriaTriggers.USED_TOTEM.trigger(server, used);
+    protecting = true;
+    try {
+      if (!ForgeHooks.onLivingUseTotem(player, source, used, InteractionHand.OFF_HAND)
+          || !canProtect(player, source)
+          || !ItemStack.matches(reserve, getTotems())) return false;
+      ItemStack remaining = getTotems().copy();
+      remaining.shrink(1);
+      setTotems(remaining);
+      player.setHealth(1);
+      player.removeAllEffects();
+      player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
+      player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+      player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+      level().broadcastEntityEvent(player, (byte) 35);
+      if (player instanceof ServerPlayer server) {
+        server.awardStat(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+        CriteriaTriggers.USED_TOTEM.trigger(server, used);
+      }
+      recordCompletedWork(4);
+      return true;
+    } finally {
+      protecting = false;
     }
-    recordCompletedWork(4);
-    return true;
   }
 
   @Override

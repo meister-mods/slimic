@@ -4,6 +4,54 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.24] - 2026-10-17
+
+### Fixed
+
+- Work goals recheck the current order before every action, preventing an already-running goal from collecting cargo, healing, changing terrain, or signaling after Follow or Wait.
+- Work navigation and sight checks stay within loaded terrain while allowing routes around obstacles. Farming and logging use the same boundary checks; ordinary following retains native navigation. Route caches avoid repeated temporary coordinate objects.
+- Adventure-mode revival retains the actual held slimeball's permissions, interaction hand, and clicked face.
+- Stored identities are reserved during restoration, preventing spawn callbacks from releasing the same companion in another dimension before the original spawn finishes. Cancellation releases the reservation for a safe retry.
+- Healing supply accepts at most one stack and clears fulfilled requests immediately. Full bags show a distinct unloading status.
+- Warehouses skip supplies that cannot fit, allowing compatible cargo collection to continue.
+- Cancelled treatment, protected revival, and repeated failed approaches retain continuous blocked time for herald monitoring. Successful treatment or absence of eligible patients clears the obstruction.
+- Command changes inside healing and protection events no longer invalidate an in-progress treatment target. Completed healing is charged once; interrupted revival preserves the block and its supplies.
+- Mining, farming, logging and collection revalidate the current command and owner after protection or pickup callbacks. Interrupted placements restore the original block without consuming materials.
+- Herald scans stop additional signals when a signal callback changes the command. Soggy trails roll back when their placement callback switches to Wait, in both Follow and Roam.
+- Guardian Angel flight routes, direct-flight checks and beam sight treat unavailable chunks as blocked terrain without loading them.
+- Guardian totem protection revalidates ownership, life, distance and the exact reserve after the totem event. Interrupted or recursive protection cannot consume unrelated totems or provide an uncharged rescue.
+- Tuned Saddle Slime flight supplies the native dedicated-server movement validator with the expected velocity, preventing valid fast flight from being rolled back. Prediction is cleared before physics, dismounting and wing removal, and is never saved as momentum.
+- A displaced miner clears its retained route when its original quarry chunk unloads, so old path nodes cannot load that chunk again. Completed quarry progress, equipment, cargo and the work order remain intact.
+- Accepted placement events can adjust crops, soil or sapling growth without bypassing seed, reserved-sapling or tool costs. Converted quarry barriers consume cobblestone when they seal the inlet; ineffective conversions restore the original block without costs.
+- Mangrove logging recognizes raised trunks, central root columns and natural gaps, preserves outer roots, and restores propagules with native age and source-water waterlogging. Saved work distinguishes planned root blocks from logs.
+- Surface workers use actual collision-floor heights, allowing ordinary logging and mangrove work on mud. Stable stat persistence keys are initialized once to reduce repeated string allocation.
+
+### Validation
+
+- Independent native cases cover unloaded destinations and gaps, wide wall detours, revival permissions, cancelled treatment, concurrent healing, final-slot warehouse recovery, and competing logistics.
+- Forty companions preserve all 4,608 cargo items and their source tags; twelve carriers share one supply request without duplicate transfers.
+- All 402 native regressions pass. Separate 90-minute runs complete 1,038 logistics cycles with live save/reload and 480 real-movement logistics cycles; Korean with JEI and English without JEI pass the client checks.
+- Native sapling generation covers all eight supported species, including two-by-two spruce and jungle trees; low-canopy spruce resumes after a Reach increase.
+- Network protocol is 12; saved-data schema remains 1.
+
+## [0.1.23] - 2026-10-16
+
+### Added
+
+- Healing Slimes craft from a Friendly Slime and golden carrot. Explicit Search heals same-owner companions and revives Broken Slime Blocks using bag slimeballs and stamina; transport can replenish their supplies.
+- Warehouse Slimes craft from a Transport Slime and eight chests, preserving companion data and cargo. Their capacity is always four times the equivalent transport capacity; Store collects cargo without automatically emptying into chests.
+- Shared-base summon crests, visible healing bands and larger warehouse packs, bilingual management messages and guides, and JEI recipes for both specializations.
+
+### Changed
+
+- Transport prefers same-owner warehouses over Slime Chests for deposits and supplies, skips full storage, and retries alternative destinations. Full warehouses pause collection without requesting their own unloading.
+- New specializations initially wait. Saved orders and the one-health revival rule remain consistent. Network protocol is 11; saved-data schema remains 1.
+
+### Validation
+
+- Native regressions cover treatment costs, healing cancellation, protected and obstructed revival, duplicate identities, initial orders, capacity scaling, paged recovery, storage ownership changes, partial deposits, alternative destinations, and warehouse supply delivery.
+- Korean and English client checks cover both optional-JEI configurations, shared profession crests, visible equipment, synchronized orders and the final warehouse bag page.
+
 ## [0.1.22] - 2026-10-16
 
 ### Fixed

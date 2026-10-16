@@ -7,6 +7,7 @@ import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
 import io.github.meistermods.slimic.item.FarmerSlimeItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.GuardianAngelSlimeItem;
+import io.github.meistermods.slimic.item.HealingSlimeItem;
 import io.github.meistermods.slimic.item.HeraldSlimeItem;
 import io.github.meistermods.slimic.item.LumberjackSlimeItem;
 import io.github.meistermods.slimic.item.MiningSlimeItem;
@@ -14,6 +15,7 @@ import io.github.meistermods.slimic.item.SaddleSlimeItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.item.TransportSlimeItem;
+import io.github.meistermods.slimic.item.WarehouseSlimeItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -102,6 +104,11 @@ public final class ModItems {
   public static final RegistryObject<Item> GUARDIAN_ANGEL_SLIME =
       ITEMS.register(
           "guardian_angel_slime", () -> new GuardianAngelSlimeItem(new Item.Properties()));
+
+  public static final RegistryObject<Item> HEALING_SLIME =
+      ITEMS.register("healing_slime", () -> new HealingSlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> WAREHOUSE_SLIME =
+      ITEMS.register("warehouse_slime", () -> new WarehouseSlimeItem(new Item.Properties()));
 
   private ModItems() {}
 

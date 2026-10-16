@@ -512,7 +512,7 @@ public final class SlimeClientSmoke {
                               .getKey(stack.getItem())
                               .toString())
                   .toList());
-      if (items.size() != 23
+      if (items.size() != 25
           || items.stream().noneMatch(stack -> stack.is(ModItems.CREATIVE_SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =
@@ -568,7 +568,8 @@ public final class SlimeClientSmoke {
     if (phase >= 21) {
       if (FieldClientSmoke.tick(client)
           && OrderEightClientSmoke.tick(client)
-          && OrderNineClientSmoke.tick(client)) SaddleClientSmoke.tick(client);
+          && OrderNineClientSmoke.tick(client)
+          && OrderTenClientSmoke.tick(client)) SaddleClientSmoke.tick(client);
       return;
     }
     boolean jei = ModList.get().isLoaded("jei");
@@ -596,6 +597,8 @@ public final class SlimeClientSmoke {
       for (var item :
           java.util.List.of(
               ModItems.MINING_SLIME.get(),
+              ModItems.HEALING_SLIME.get(),
+              ModItems.WAREHOUSE_SLIME.get(),
               ModItems.TRANSPORT_SLIME.get(),
               ModItems.HERALD_SLIME.get(),
               ModItems.COMBAT_SLIME.get(),
@@ -902,7 +905,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.22-" + suffix + ".png")
+            .resolve("../verification/0.1.24-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

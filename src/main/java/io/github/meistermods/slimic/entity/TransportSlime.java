@@ -1,7 +1,5 @@
 package io.github.meistermods.slimic.entity;
 
-import com.mojang.authlib.GameProfile;
-import io.github.meistermods.slimic.block.SlimeChestBlockEntity;
 import io.github.meistermods.slimic.config.SlimicConfig;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.ArrayList;
@@ -23,11 +21,10 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public final class TransportSlime extends BagSlime {
+public class TransportSlime extends BagSlime {
   public enum Status {
     IDLE,
     COLLECTING,
@@ -56,18 +53,26 @@ public final class TransportSlime extends BagSlime {
   private Status status = Status.IDLE;
   private Job job;
   private BagSlime workerTarget;
-  private BlockPos chestTarget;
+  private WorkStorage.Target storageTarget;
   private int travelTicks;
   private Vec3 lastTravelPosition;
   private Vec3 pathDestination;
   private int cooldown;
   private int nextSearchTick;
   private boolean searchStarted;
-  private final Map<BlockPos, Long> blockedChests = new HashMap<>();
+  private final Map<WorkStorage.Target, Long> blockedChests = new HashMap<>();
   private final Map<UUID, Long> blockedWorkers = new HashMap<>();
 
   public TransportSlime(EntityType<? extends TransportSlime> type, Level level) {
-    super(type, level, 54);
+    this(type, level, 54);
+  }
+
+  protected TransportSlime(EntityType<? extends TransportSlime> type, Level level, int slots) {
+    super(type, level, slots);
+  }
+
+  protected boolean storesCargo() {
+    return false;
   }
 
   @Override
@@ -102,7 +107,7 @@ public final class TransportSlime extends BagSlime {
 
   @Override
   protected WorkStatus describeWork() {
-    var order = WorkStatus.Order.HAUL;
+    var order = storesCargo() ? WorkStatus.Order.STORE : WorkStatus.Order.HAUL;
     return switch (status) {
       case NO_CHEST -> WorkStatus.blocked(order, WorkStatus.Reason.NO_STORAGE);
       case CHESTS_FULL -> WorkStatus.blocked(order, WorkStatus.Reason.STORAGE_FULL);
@@ -154,7 +159,7 @@ public final class TransportSlime extends BagSlime {
   private void clearJob() {
     job = null;
     workerTarget = null;
-    chestTarget = null;
+    storageTarget = null;
     travelTicks = 0;
     lastTravelPosition = null;
     pathDestination = null;
@@ -183,28 +188,10 @@ public final class TransportSlime extends BagSlime {
         .toList();
   }
 
-  private boolean available(SlimeChestBlockEntity chest) {
-    if (chest.isRemoved() || getOwnerUUID() == null || !(level() instanceof ServerLevel server))
-      return false;
-    return chest.canOpen(
-        FakePlayerFactory.get(server, new GameProfile(getOwnerUUID(), "SlimeWorker")));
-  }
-
-  private List<SlimeChestBlockEntity> chests(ServerLevel server) {
-    List<SlimeChestBlockEntity> result = new ArrayList<>();
-    BlockPos center = getWorkOrigin();
-    double range = SlimeStat.DETECTION_RANGE.value(this);
-    for (var chunk : workChunks())
-      for (var pos : WorkSearch.inChunk(server, chunk).chests()) {
-        if (!server.hasChunkAt(pos)) continue;
-        if (server.getBlockEntity(pos) instanceof SlimeChestBlockEntity chest
-            && center.distSqr(pos) <= range * range
-            && !blockedChests.containsKey(pos)
-            && available(chest)) result.add(chest);
-      }
-    result.sort(
-        Comparator.comparingDouble(chest -> chest.getBlockPos().distToCenterSqr(position())));
-    return result;
+  private List<WorkStorage.Target> storages() {
+    return WorkStorage.find(this, getWorkOrigin()).stream()
+        .filter(target -> !blockedChests.containsKey(target))
+        .toList();
   }
 
   private List<ChunkPos> workChunks() {
@@ -217,20 +204,34 @@ public final class TransportSlime extends BagSlime {
     return chunks;
   }
 
-  private SlimeChestBlockEntity targetChest() {
-    double range = SlimeStat.DETECTION_RANGE.value(this);
-    if (chestTarget == null
-        || getWorkOrigin().distSqr(chestTarget) > range * range
-        || !level().hasChunkAt(chestTarget)) return null;
-    return level().getBlockEntity(chestTarget) instanceof SlimeChestBlockEntity chest
-            && available(chest)
-        ? chest
-        : null;
+  private IItemHandler targetInventory() {
+    return storageTarget == null ? null : storageTarget.inventory(this, getWorkOrigin());
+  }
+
+  private boolean storageFull() {
+    for (int slot = 0; slot < getCapacity(); slot++) {
+      ItemStack stack = getBag().getStackInSlot(slot);
+      if (stack.isEmpty()
+          || stack.getCount() < Math.min(stack.getMaxStackSize(), getBag().getSlotLimit(slot)))
+        return false;
+    }
+    return true;
   }
 
   private static int toolSlot(IItemHandler inventory, BagSlime worker) {
     for (int slot = 0; slot < inventory.getSlots(); slot++)
       if (worker.acceptsWorkTool(inventory.getStackInSlot(slot))) return slot;
+    return -1;
+  }
+
+  private int supplySlot(IItemHandler inventory, BagSlime worker) {
+    for (int slot = 0; slot < inventory.getSlots(); slot++) {
+      ItemStack stack = inventory.getStackInSlot(slot);
+      if (!worker.acceptsWorkTool(stack)) continue;
+      ItemStack offered = stack.copyWithCount(Math.min(worker.workSupplyLimit(), stack.getCount()));
+      if (ItemHandlerHelper.insertItemStacked(getBag(), offered.copy(), true).getCount()
+          < offered.getCount()) return slot;
+    }
     return -1;
   }
 
@@ -261,7 +262,7 @@ public final class TransportSlime extends BagSlime {
     blockedChests.values().removeIf(until -> until <= now);
     blockedWorkers.values().removeIf(until -> until <= now);
     List<BagSlime> workers = workers();
-    List<SlimeChestBlockEntity> chests = chests(server);
+    List<WorkStorage.Target> chests = storesCargo() ? List.of() : storages();
     if (hasCargo()) {
       for (BagSlime worker : workers) {
         if (worker.needsWorkSupply() && toolSlot(getBag(), worker) >= 0) {
@@ -271,23 +272,30 @@ public final class TransportSlime extends BagSlime {
           return;
         }
       }
-      for (SlimeChestBlockEntity chest : chests) {
-        if (canAcceptAny(chest.inventory(), getBag())) {
-          chestTarget = chest.getBlockPos();
+      for (WorkStorage.Target chest : chests) {
+        if (canAcceptAny(chest.inventory(this, getWorkOrigin()), getBag())) {
+          storageTarget = chest;
           job = Job.DEPOSIT;
           status = Status.DELIVERING;
           return;
         }
       }
-      status = chests.isEmpty() ? Status.NO_CHEST : Status.CHESTS_FULL;
+      if (!storesCargo()) {
+        status = chests.isEmpty() ? Status.NO_CHEST : Status.CHESTS_FULL;
+        return;
+      }
+    }
+    if (storesCargo() && storageFull()) {
+      status = Status.CHESTS_FULL;
       return;
     }
+    if (storesCargo() && workers.stream().anyMatch(BagSlime::needsWorkSupply)) chests = storages();
     for (BagSlime worker : workers) {
       if (!worker.needsWorkSupply()) continue;
-      for (SlimeChestBlockEntity chest : chests) {
-        if (toolSlot(chest.inventory(), worker) >= 0) {
+      for (WorkStorage.Target chest : chests) {
+        if (supplySlot(chest.inventory(this, getWorkOrigin()), worker) >= 0) {
           workerTarget = worker;
-          chestTarget = chest.getBlockPos();
+          storageTarget = chest;
           job = Job.FETCH_TOOL;
           status = Status.FETCHING_TOOL;
           return;
@@ -298,14 +306,22 @@ public final class TransportSlime extends BagSlime {
     for (BagSlime worker : workers) {
       if (!worker.needsUnloading()) continue;
       fullWorker = true;
-      if (chests.stream().anyMatch(chest -> canAcceptAny(chest.inventory(), worker.getBag()))) {
+      if (canAcceptAny(getBag(), worker.getBag())
+          && (storesCargo()
+              || chests.stream()
+                  .anyMatch(
+                      chest ->
+                          canAcceptAny(chest.inventory(this, getWorkOrigin()), worker.getBag())))) {
         workerTarget = worker;
         job = Job.COLLECT;
         status = Status.COLLECTING;
         return;
       }
     }
-    status = chests.isEmpty() ? Status.NO_CHEST : fullWorker ? Status.CHESTS_FULL : Status.IDLE;
+    status =
+        storesCargo()
+            ? Status.IDLE
+            : chests.isEmpty() ? Status.NO_CHEST : fullWorker ? Status.CHESTS_FULL : Status.IDLE;
     if (status == Status.IDLE) travelBlocked = false;
   }
 
@@ -313,7 +329,10 @@ public final class TransportSlime extends BagSlime {
     if (job == null) return false;
     return switch (job) {
       case COLLECT ->
-          workerTarget != null && supported(workerTarget) && workerTarget.needsUnloading();
+          workerTarget != null
+              && supported(workerTarget)
+              && workerTarget.needsUnloading()
+              && canAcceptAny(getBag(), workerTarget.getBag());
       case SUPPLY_TOOL ->
           workerTarget != null
               && supported(workerTarget)
@@ -323,10 +342,10 @@ public final class TransportSlime extends BagSlime {
           workerTarget != null
               && supported(workerTarget)
               && workerTarget.needsWorkSupply()
-              && targetChest() != null
-              && toolSlot(targetChest().inventory(), workerTarget) >= 0;
+              && targetInventory() != null
+              && supplySlot(targetInventory(), workerTarget) >= 0;
       case DEPOSIT ->
-          hasCargo() && targetChest() != null && canAcceptAny(targetChest().inventory(), getBag());
+          hasCargo() && targetInventory() != null && canAcceptAny(targetInventory(), getBag());
     };
   }
 
@@ -337,11 +356,12 @@ public final class TransportSlime extends BagSlime {
         for (int slot = 0; slot < workerTarget.getBag().getSlots() && getStamina() >= 1; slot++)
           if (transfer(workerTarget.getBag(), slot, getBag(), 64) > 0) {
             spendStamina(1);
+            if (storesCargo()) recordCompletedWork(SlimicConfig.TRANSPORT_ACTIVITY.get());
             actions++;
           }
       }
       case DEPOSIT -> {
-        IItemHandler destination = targetChest().inventory();
+        IItemHandler destination = targetInventory();
         for (int slot = 0; slot < getBag().getSlots() && getStamina() >= 1; slot++)
           if (transfer(getBag(), slot, destination, 64) > 0) {
             spendStamina(1);
@@ -350,9 +370,9 @@ public final class TransportSlime extends BagSlime {
           }
       }
       case FETCH_TOOL -> {
-        IItemHandler source = targetChest().inventory();
+        IItemHandler source = targetInventory();
         if (transfer(
-                source, toolSlot(source, workerTarget), getBag(), workerTarget.workSupplyLimit())
+                source, supplySlot(source, workerTarget), getBag(), workerTarget.workSupplyLimit())
             > 0) {
           spendStamina(1);
           actions++;
@@ -387,16 +407,18 @@ public final class TransportSlime extends BagSlime {
     double reach = SlimeStat.REACH.value(this);
     if (getEyePosition().distanceToSqr(destination) > reach * reach) return false;
     if (job == Job.COLLECT || job == Job.SUPPLY_TOOL) return hasLineOfSight(workerTarget);
+    if (storageTarget != null && storageTarget.warehouse() != null)
+      return hasLineOfSight(storageTarget.entity((ServerLevel) level()));
     var hit =
-        level()
-            .clip(
-                new ClipContext(
-                    getEyePosition(),
-                    destination,
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    this));
-    return hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(chestTarget);
+        LoadedBlockView.clip(
+            level(),
+            new ClipContext(
+                getEyePosition(),
+                destination,
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                this));
+    return hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(storageTarget.chest());
   }
 
   @Override
@@ -456,6 +478,10 @@ public final class TransportSlime extends BagSlime {
 
     @Override
     public void tick() {
+      if (!canUse()) {
+        stop();
+        return;
+      }
       if (!(level() instanceof ServerLevel server)) return;
       if (getStamina() < 1) resting = true;
       if (resting) {
@@ -483,7 +509,7 @@ public final class TransportSlime extends BagSlime {
       Vec3 destination =
           job == Job.COLLECT || job == Job.SUPPLY_TOOL
               ? workerTarget.getBoundingBox().getCenter()
-              : Vec3.atCenterOf(chestTarget);
+              : storageTarget.position(server);
       if (inReach(destination)) {
         getNavigation().stop();
         performJob();
@@ -509,7 +535,7 @@ public final class TransportSlime extends BagSlime {
       if (travelTicks > 400) {
         travelBlocked = true;
         if (job == Job.DEPOSIT || job == Job.FETCH_TOOL)
-          blockedChests.put(chestTarget, server.getGameTime() + 200);
+          blockedChests.put(storageTarget, server.getGameTime() + 200);
         else blockedWorkers.put(workerTarget.getUUID(), server.getGameTime() + 200);
         clearJob();
         status = Status.UNREACHABLE;

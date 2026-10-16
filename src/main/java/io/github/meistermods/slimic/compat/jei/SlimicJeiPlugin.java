@@ -44,6 +44,31 @@ public final class SlimicJeiPlugin implements IModPlugin {
     List<CraftingRecipe> recipes = new ArrayList<>();
     recipes.add(
         new ShapelessRecipe(
+            ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "healing_slime/golden_carrot"),
+            "slimic:healing_slime",
+            CraftingBookCategory.MISC,
+            CompanionRecipe.healing(new ItemStack(ModItems.FRIENDLY_SLIME.get())),
+            NonNullList.of(
+                Ingredient.EMPTY,
+                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                Ingredient.of(Items.GOLDEN_CARROT))));
+    NonNullList<Ingredient> warehouseIngredients = NonNullList.create();
+    warehouseIngredients.add(Ingredient.of(ModItems.TRANSPORT_SLIME.get()));
+    for (int chest = 0; chest < 8; chest++) warehouseIngredients.add(Ingredient.of(Items.CHEST));
+    recipes.add(
+        new ShapelessRecipe(
+            ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "warehouse_slime/chests"),
+            "slimic:warehouse_slime",
+            CraftingBookCategory.MISC,
+            new ItemStack(ModItems.WAREHOUSE_SLIME.get()),
+            warehouseIngredients));
+    for (var item : new Item[] {ModItems.HEALING_SLIME.get(), ModItems.WAREHOUSE_SLIME.get()})
+      registration.addIngredientInfo(
+          new ItemStack(item),
+          VanillaTypes.ITEM_STACK,
+          Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
+    recipes.add(
+        new ShapelessRecipe(
             ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "soggy_slime/slime_ball"),
             "slimic:soggy_slime",
             CraftingBookCategory.MISC,

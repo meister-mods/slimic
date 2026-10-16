@@ -56,7 +56,7 @@ public final class AuditGameTests {
     h.succeed();
   }
 
-  @GameTest(template = "empty", batch = "audit", timeoutTicks = 400)
+  @GameTest(template = "empty", batch = "audit", timeoutTicks = 700)
   public static void aNewWarningDoesNotEvictAnExistingWorkerEpisode(GameTestHelper h) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
@@ -79,8 +79,19 @@ public final class AuditGameTests {
             history.getLong(first));
     var newWorker =
         blockedWorker(h.getLevel(), owner, arena.point(11, 101, 8), UUID.randomUUID(), 17);
-    h.getLevel().addFreshEntity(herald);
+    int[] initialCooldown = {0};
     h.startSequence()
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    h.getLevel().isPositionEntityTicking(herald.blockPosition()),
+                    "Warning area ticks"))
+        .thenExecute(
+            () -> {
+              h.getLevel().addFreshEntity(oldWorker);
+              h.getLevel().addFreshEntity(newWorker);
+              h.getLevel().addFreshEntity(herald);
+            })
         .thenWaitUntil(
             () ->
                 h.assertTrue(
@@ -90,22 +101,36 @@ public final class AuditGameTests {
                         .contains(newWorker.getUUID().toString()),
                     "A newly blocked worker must be signaled"))
         .thenExecute(
-            () ->
-                h.assertTrue(
-                    herald
-                            .saveWithoutId(new CompoundTag())
-                            .getCompound("HeraldWarnings")
-                            .getLong(first)
-                        == history.getLong(first),
-                    "A new warning must not evict a previously signaled worker"))
+            () -> {
+              h.assertTrue(
+                  herald
+                          .saveWithoutId(new CompoundTag())
+                          .getCompound("HeraldWarnings")
+                          .getLong(first)
+                      == history.getLong(first),
+                  "A new warning must not evict a previously signaled worker");
+              initialCooldown[0] =
+                  herald
+                      .saveWithoutId(new CompoundTag())
+                      .getCompound("HeraldWarningCooldowns")
+                      .getInt(newWorker.getUUID().toString());
+            })
         .thenIdle(100)
         .thenExecute(
             () -> {
               CompoundTag state = herald.saveWithoutId(new CompoundTag());
+              int remaining =
+                  state
+                      .getCompound("HeraldWarningCooldowns")
+                      .getInt(newWorker.getUUID().toString());
               h.assertTrue(
                   state.getCompound("HeraldWarnings").size() == 129
-                      && state.getInt("HeraldCooldown") == 0,
-                  "The same two blocked episodes must not restart warning cooldowns");
+                      && remaining > 0
+                      && remaining <= initialCooldown[0] - 90,
+                  "The same blocked episode must count down its own warning interval: initial="
+                      + initialCooldown[0]
+                      + ", remaining="
+                      + remaining);
               herald.discard();
               oldWorker.discard();
               newWorker.discard();
@@ -132,7 +157,6 @@ public final class AuditGameTests {
     saved.putInt("BlockedWorkTicks", 1300);
     saved.putLong("BlockedEpisode", episode);
     worker.load(saved);
-    level.addFreshEntity(worker);
     return worker;
   }
 

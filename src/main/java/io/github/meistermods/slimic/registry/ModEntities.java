@@ -6,12 +6,14 @@ import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
+import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.entity.WarehouseSlime;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -106,6 +108,24 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":guardian_angel_slime"));
 
+  public static final RegistryObject<EntityType<HealingSlime>> HEALING_SLIME =
+      ENTITY_TYPES.register(
+          "healing_slime",
+          () ->
+              EntityType.Builder.of(HealingSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":healing_slime"));
+
+  public static final RegistryObject<EntityType<WarehouseSlime>> WAREHOUSE_SLIME =
+      ENTITY_TYPES.register(
+          "warehouse_slime",
+          () ->
+              EntityType.Builder.of(WarehouseSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":warehouse_slime"));
+
   private ModEntities() {}
 
   public static final RegistryObject<EntityType<SoggySlime>> SOGGY_SLIME =
@@ -128,6 +148,8 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(WAREHOUSE_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(HEALING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(SOGGY_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(
         GUARDIAN_ANGEL_SLIME.get(),

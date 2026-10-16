@@ -415,7 +415,9 @@ public final class OrderNineGameTests {
             ModEntities.SADDLE_SLIME.get(),
             ModEntities.FARMER_SLIME.get(),
             ModEntities.LUMBERJACK_SLIME.get(),
-            ModEntities.SOGGY_SLIME.get())) {
+            ModEntities.SOGGY_SLIME.get(),
+            ModEntities.HEALING_SLIME.get(),
+            ModEntities.WAREHOUSE_SLIME.get())) {
       var pet = type.create(h.getLevel());
       pet.tame(h.makeMockSurvivalPlayer());
       pet.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(10);

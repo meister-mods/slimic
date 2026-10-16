@@ -6,6 +6,7 @@ import io.github.meistermods.slimic.recipe.GuardianAngelSlimeRecipe;
 import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
+import io.github.meistermods.slimic.recipe.WarehouseSlimeRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraftforge.registries.DeferredRegister;
@@ -77,6 +78,20 @@ public final class ModRecipes {
           SERIALIZERS.register(
               "guardian_angel_slime",
               () -> new SimpleCraftingRecipeSerializer<>(GuardianAngelSlimeRecipe::new));
+
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>>
+      HEALING_SLIME =
+          SERIALIZERS.register(
+              "healing_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new CompanionRecipe(id, category, CompanionRecipe.Kind.HEALING)));
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<WarehouseSlimeRecipe>>
+      WAREHOUSE_SLIME =
+          SERIALIZERS.register(
+              "warehouse_slime",
+              () -> new SimpleCraftingRecipeSerializer<>(WarehouseSlimeRecipe::new));
 
   private ModRecipes() {}
 

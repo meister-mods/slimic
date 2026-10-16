@@ -155,8 +155,8 @@ public final class CleaningSlime extends BagSlime {
   }
 
   private boolean visible(ItemEntity item) {
-    return level()
-            .clip(
+    return LoadedBlockView.clip(
+                level(),
                 new net.minecraft.world.level.ClipContext(
                     getEyePosition(),
                     item.position().add(0, .1, 0),
@@ -170,7 +170,9 @@ public final class CleaningSlime extends BagSlime {
   private boolean collect(ServerLevel level, ItemEntity item) {
     var player = FakePlayerFactory.get(level, new GameProfile(getOwnerUUID(), "SlimeCollector"));
     player.moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
-    if (ForgeEventFactory.onItemPickup(item, player) < 0 || !available(item)) return false;
+    if (ForgeEventFactory.onItemPickup(item, player) < 0
+        || !canContinueWork(player)
+        || !available(item)) return false;
     ItemStack before = item.getItem().copy();
     ItemStack left = ItemHandlerHelper.insertItemStacked(getBag(), before.copy(), false);
     int count = before.getCount() - left.getCount();
@@ -277,6 +279,10 @@ public final class CleaningSlime extends BagSlime {
 
     @Override
     public void tick() {
+      if (!canUse()) {
+        stop();
+        return;
+      }
       if (!(level() instanceof ServerLevel server)) return;
       if (home == null) home = position();
       if (returning || (targetId == null && position().distanceToSqr(home) > .0625)) {
@@ -367,7 +373,12 @@ public final class CleaningSlime extends BagSlime {
       double reach = SlimeStat.REACH.value(CleaningSlime.this);
       if (getEyePosition().distanceToSqr(target.position().add(0, .1, 0)) <= reach * reach
           && visible(target)) {
-        if (collect(server, target)) {
+        boolean collected = collect(server, target);
+        if (!canUse()) {
+          stop();
+          return;
+        }
+        if (collected) {
           targetId = null;
           attemptTicks = 0;
           beginReturn();

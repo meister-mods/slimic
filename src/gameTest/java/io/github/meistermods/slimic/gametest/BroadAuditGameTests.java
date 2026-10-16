@@ -389,6 +389,7 @@ public final class BroadAuditGameTests {
   }
 
   private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea a) {
+    a.clearSurroundingTrees();
     var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
     pet.setWorking(true);
     pet.tame(h.makeMockSurvivalPlayer());

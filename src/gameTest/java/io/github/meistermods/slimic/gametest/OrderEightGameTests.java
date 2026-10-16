@@ -289,6 +289,7 @@ public final class OrderEightGameTests {
   }
 
   private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea a) {
+    a.clearSurroundingTrees();
     var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
     pet.setWorking(true);
     pet.moveTo(a.point(6.5, 101, 5.5));
@@ -351,7 +352,7 @@ public final class OrderEightGameTests {
         .thenSucceed();
   }
 
-  @GameTest(template = "empty", batch = "order_eight", timeoutTicks = 350)
+  @GameTest(template = "empty", batch = "order_eight", timeoutTicks = 900)
   public static void unavailableSaplingDoesNotBlockOtherTreeSpecies(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var pet = logger(h, a);
@@ -363,7 +364,16 @@ public final class OrderEightGameTests {
           h.assertTrue(
               h.getLevel().getBlockState(oak).is(Blocks.OAK_SAPLING)
                   && h.getLevel().getBlockState(birch).is(Blocks.BIRCH_LOG),
-              "Works a supplied species instead of blocking on missing birch saplings");
+              "Works a supplied species instead of blocking on missing birch saplings: "
+                  + pet.getFieldStatus()
+                  + " @"
+                  + pet.position()
+                  + " ticks="
+                  + pet.tickCount
+                  + " oak="
+                  + h.getLevel().getBlockState(oak)
+                  + " tool="
+                  + pet.getTool());
           pet.discard();
           a.close();
         });

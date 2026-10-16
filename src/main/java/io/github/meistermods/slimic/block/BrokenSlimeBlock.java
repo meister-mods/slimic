@@ -5,6 +5,7 @@ import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -94,25 +95,42 @@ public final class BrokenSlimeBlock extends BaseEntityBlock {
         || !player.mayUseItemAt(pos, hit.getDirection(), player.getItemInHand(hand)))
       return InteractionResult.FAIL;
     if (level.isClientSide) return InteractionResult.SUCCESS;
-    if (!(level.getBlockEntity(pos) instanceof BrokenSlimeBlockEntity broken))
+    if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
+    if (!revive(server, pos, player, hit.getDirection(), player.getItemInHand(hand)))
       return InteractionResult.FAIL;
+    if (!player.getAbilities().instabuild) player.getItemInHand(hand).shrink(1);
+    return InteractionResult.CONSUME;
+  }
+
+  /** Restores the stored companion transactionally; the caller supplies and consumes the ball. */
+  public static boolean revive(ServerLevel level, BlockPos pos, Player player) {
+    return revive(level, pos, player, Direction.UP, player.getMainHandItem());
+  }
+
+  public static boolean revive(
+      ServerLevel level, BlockPos pos, Player player, Direction face, ItemStack ball) {
+    if (player.isSpectator()
+        || !level.hasChunkAt(pos)
+        || !level.mayInteract(player, pos)
+        || !ball.is(Items.SLIME_BALL)
+        || !player.mayUseItemAt(pos, face, ball)
+        || !(level.getBlockEntity(pos) instanceof BrokenSlimeBlockEntity broken)) return false;
     ItemStack stored = broken.getSlime();
     if (!(stored.getItem() instanceof FriendlySlimeItem item)
         || !stored.hasTag()
         || !stored.getTag().getCompound("SlimeData").hasUUID("Owner")
         || !player.getUUID().equals(stored.getTag().getCompound("SlimeData").getUUID("Owner")))
-      return InteractionResult.FAIL;
-    if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
+      return false;
+    BlockState state = level.getBlockState(pos);
     CompoundTag backup = broken.saveWithFullMetadata();
-    level.removeBlock(pos, false);
-    if (!item.revive(server, player, stored, pos)) {
+    if (!level.removeBlock(pos, false)) return false;
+    if (!item.revive(level, player, stored, pos)) {
       level.setBlockAndUpdate(pos, state);
       if (level.getBlockEntity(pos) instanceof BrokenSlimeBlockEntity restored)
         restored.load(backup);
-      return InteractionResult.FAIL;
+      return false;
     }
-    if (!player.getAbilities().instabuild) player.getItemInHand(hand).shrink(1);
     level.playSound(null, pos, SoundEvents.SLIME_SQUISH, SoundSource.BLOCKS, 1, 1);
-    return InteractionResult.CONSUME;
+    return true;
   }
 }

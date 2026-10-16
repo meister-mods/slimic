@@ -44,7 +44,9 @@ public final class OrderSixGameTests {
         ModEntities.FARMER_SLIME.get(),
         ModEntities.LUMBERJACK_SLIME.get(),
         ModEntities.GUARDIAN_ANGEL_SLIME.get(),
-        ModEntities.SOGGY_SLIME.get());
+        ModEntities.SOGGY_SLIME.get(),
+        ModEntities.HEALING_SLIME.get(),
+        ModEntities.WAREHOUSE_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "order_six", timeoutTicks = 80)
@@ -56,7 +58,7 @@ public final class OrderSixGameTests {
     List<BlockPos> positions = new ArrayList<>();
     for (int i = 0; i < types().size(); i++) {
       FriendlySlime pet = types().get(i).create(h.getLevel());
-      pet.moveTo(area.point(3 + (i % 4) * 3, 101, 3 + (i / 4) * 4));
+      pet.moveTo(area.point(3 + (i % 4) * 3, 101, 3 + (i / 4) * 3));
       pet.tame(owner);
       pet.setNoAi(true);
       pet.setWaiting(true);
