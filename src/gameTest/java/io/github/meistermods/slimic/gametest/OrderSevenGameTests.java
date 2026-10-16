@@ -575,26 +575,33 @@ public final class OrderSevenGameTests {
     var area = new LoadedWorkArea(h);
     var pet = logger(h, area);
     var base = tree(h, area, Blocks.OAK_LOG, Blocks.OAK_LEAVES, 3);
-    h.runAfterDelay(
-        45,
-        () -> {
-          h.assertTrue(
-              pet.getWorkStatus().reason() == WorkStatus.Reason.SEEDS_MISSING,
-              "Initial tree waits for saplings");
-          h.getLevel().setBlockAndUpdate(base.above(2), Blocks.STONE.defaultBlockState());
-          pet.getBag().setStackInSlot(0, new ItemStack(Items.OAK_SAPLING));
-        });
-    h.runAfterDelay(
-        130,
-        () -> {
-          h.assertTrue(
-              h.getLevel().getBlockState(base).is(Blocks.OAK_LOG)
-                  && h.getLevel().getBlockState(base.above(2)).is(Blocks.STONE)
-                  && count(pet, Items.OAK_LOG) == 0
-                  && count(pet, Items.OAK_SAPLING) == 1,
-              "Stale tree plan is rejected without cutting or reserving saplings");
-          area.close();
-          h.succeed();
-        });
+    h.startSequence()
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    pet.getWorkStatus().reason() == WorkStatus.Reason.SEEDS_MISSING,
+                    "Initial tree waits for saplings; status="
+                        + pet.getFieldStatus()
+                        + " pos="
+                        + pet.position()
+                        + " ticking="
+                        + h.getLevel().isPositionEntityTicking(pet.blockPosition())))
+        .thenExecute(
+            () -> {
+              h.getLevel().setBlockAndUpdate(base.above(2), Blocks.STONE.defaultBlockState());
+              pet.getBag().setStackInSlot(0, new ItemStack(Items.OAK_SAPLING));
+            })
+        .thenIdle(85)
+        .thenExecute(
+            () -> {
+              h.assertTrue(
+                  h.getLevel().getBlockState(base).is(Blocks.OAK_LOG)
+                      && h.getLevel().getBlockState(base.above(2)).is(Blocks.STONE)
+                      && count(pet, Items.OAK_LOG) == 0
+                      && count(pet, Items.OAK_SAPLING) == 1,
+                  "Stale tree plan is rejected without cutting or reserving saplings");
+              area.close();
+            })
+        .thenSucceed();
   }
 }

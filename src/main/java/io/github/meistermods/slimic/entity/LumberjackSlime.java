@@ -77,6 +77,7 @@ public final class LumberjackSlime extends FieldSlime {
           Blocks.CHERRY_SAPLING);
   private BlockSurvey survey;
   private UUID pickupTarget;
+  private final Map<UUID, Long> unavailablePickups = new HashMap<>();
   private final ArrayDeque<BlockPos> candidates = new ArrayDeque<>();
   private final ArrayDeque<BlockPos> logs = new ArrayDeque<>();
   private final Map<BlockPos, ItemStack> plantings = new LinkedHashMap<>();
@@ -93,6 +94,8 @@ public final class LumberjackSlime extends FieldSlime {
   private BlockPos discoveryRoot;
   private final Map<BlockPos, Long> unavailable = new HashMap<>();
   private boolean missingSaplings;
+  private BlockPos missingRoot;
+  private BlockPos missingLeaf;
   private long skippedUntil;
 
   public LumberjackSlime(EntityType<? extends LumberjackSlime> type, Level level) {
@@ -144,6 +147,10 @@ public final class LumberjackSlime extends FieldSlime {
     logs.clear();
     resetDiscovery();
     target = null;
+    unavailable.clear();
+    unavailablePickups.clear();
+    pickupTarget = null;
+    clearSaplingRequirement();
     // Old stumps remain world edits at their original coordinates; return reserved seeds to cargo.
     for (var seed : plantings.values()) {
       var left = ItemHandlerHelper.insertItemStacked(getBag(), seed.copy(), false);
@@ -172,6 +179,15 @@ public final class LumberjackSlime extends FieldSlime {
     treeBlock = null;
     leafy = false;
     leafWitness = null;
+  }
+
+  private void clearSaplingRequirement() {
+    missingSaplings = false;
+    missingRoot = null;
+    missingLeaf = null;
+    entityData.set(REQUIRED_SAPLING, ItemStack.EMPTY);
+    entityData.set(REQUIRED_COUNT, 0);
+    if (status == Status.NO_SEEDS) status = Status.IDLE;
   }
 
   private void skip(ServerLevel level, BlockPos pos) {
@@ -235,6 +251,8 @@ public final class LumberjackSlime extends FieldSlime {
       entityData.set(REQUIRED_SAPLING, new ItemStack(sapling));
       entityData.set(REQUIRED_COUNT, roots.size());
       missingSaplings = true;
+      missingRoot = discoveryRoot;
+      missingLeaf = leafWitness;
       if (discoveryRoot != null) unavailable.put(discoveryRoot, level.getGameTime() + 100);
       resetDiscovery();
       status = Status.NO_SEEDS;
@@ -249,9 +267,7 @@ public final class LumberjackSlime extends FieldSlime {
       resetDiscovery();
       return false;
     }
-    missingSaplings = false;
-    entityData.set(REQUIRED_SAPLING, ItemStack.EMPTY);
-    entityData.set(REQUIRED_COUNT, 0);
+    clearSaplingRequirement();
     plannedLog = treeBlock;
     for (BlockPos root : roots) {
       for (int i = 0; i < getCapacity(); i++)
@@ -297,12 +313,14 @@ public final class LumberjackSlime extends FieldSlime {
 
   private boolean collectMaterial(ServerLevel level) {
     if (tickCount % 20 != 0 && pickupTarget == null) return false;
+    unavailablePickups.values().removeIf(until -> until <= level.getGameTime());
     double r = SlimeStat.DETECTION_RANGE.value(this);
     var items =
         level.getEntitiesOfClass(
             ItemEntity.class, new AABB(getWorkHome()).inflate(r), this::collectible);
     var item =
         items.stream()
+            .filter(e -> !unavailablePickups.containsKey(e.getUUID()))
             .filter(e -> pickupTarget == null || e.getUUID().equals(pickupTarget))
             .min(Comparator.comparingDouble(this::distanceToSqr))
             .orElse(null);
@@ -311,12 +329,22 @@ public final class LumberjackSlime extends FieldSlime {
       return false;
     }
     pickupTarget = item.getUUID();
-    if (!approach(item.blockPosition())) return true;
+    if (!approach(item.blockPosition())) {
+      if (status == Status.UNREACHABLE) {
+        unavailablePickups.put(pickupTarget, level.getGameTime() + 200);
+        pickupTarget = null;
+        target = null;
+        return false;
+      }
+      return true;
+    }
     var player = worker(level);
     if (ForgeEventFactory.onItemPickup(item, player) < 0 || !collectible(item)) {
+      unavailablePickups.put(pickupTarget, level.getGameTime() + 200);
       pickupTarget = null;
-      blocked();
-      return true;
+      target = null;
+      getNavigation().stop();
+      return false;
     }
     var before = item.getItem().copy();
     var left = ItemHandlerHelper.insertItemStacked(getBag(), before.copy(), false);
@@ -353,11 +381,21 @@ public final class LumberjackSlime extends FieldSlime {
     if (observedBagRevision != bagRevision) {
       observedBagRevision = bagRevision;
       unavailable.clear();
-      missingSaplings = false;
+      clearSaplingRequirement();
       survey = null;
       candidates.clear();
       scanDelay = 0;
     }
+
+    if (missingSaplings
+        && (missingRoot == null
+            || missingLeaf == null
+            || !level.hasChunkAt(missingRoot)
+            || !level.hasChunkAt(missingLeaf)
+            || !root(level, missingRoot)
+            || !(getRequiredSapling().getItem() instanceof BlockItem seed)
+            || TREES.get(level.getBlockState(missingRoot).getBlock()) != seed.getBlock()
+            || !naturalLeaf(level.getBlockState(missingLeaf)))) clearSaplingRequirement();
 
     if (logs.isEmpty()
         && plantings.isEmpty()
@@ -468,5 +506,9 @@ public final class LumberjackSlime extends FieldSlime {
     resetDiscovery();
     candidates.clear();
     survey = null;
+    unavailable.clear();
+    unavailablePickups.clear();
+    pickupTarget = null;
+    clearSaplingRequirement();
   }
 }

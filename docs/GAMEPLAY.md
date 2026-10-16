@@ -292,6 +292,8 @@ Successful log harvests and replantings each grant one activity unit and consume
 
 Right-click an injured owned companion with a **slime ball** to restore four health, capped at its maximum. Survival consumes one ball only when health is restored. Right-click with a **water bucket** to remove its dye; Survival returns an empty bucket only when a color was present. Creative preserves the held item. Shift-right-click still recovers the companion first.
 
+If another mod cancels healing or reduces it to zero, the slime ball is retained. Switching to Spectator also ends permission to operate an already open companion management screen.
+
 ## Guardian Angel Slimes
 
 Craft a **Friendly Slime**, **nether star**, and **totem of undying** without a fixed shape. The exact crafting totem becomes the initial reserve, including its custom data. The Creative default has an empty reserve. The summoning item uses the common base with a nether-star crest. A golden halo and feathered wings identify the flying companion.
@@ -309,3 +311,5 @@ Maximum health is always ten times the corresponding common value: initially **1
 Mining skips logs, leaves, and blocks assigned to axe or hoe mining. Wooden structures can remain as obstacles; mining chooses reachable work positions around them instead of clearing them. Surface workers likewise navigate to collision-free standing positions within reach.
 
 Farming and lumberjack status messages are separate. A lumberjack missing replanting stock displays the required sapling type and total stump count. Supply that type in its bag; a bag change immediately refreshes the tree search. Trees missing their matching saplings are skipped temporarily so another supplied tree species can be worked. Slime Chests retain their 27-slot inventory and animate their lid, with opening and closing sounds, while players use them. Surface workers can follow progressive route segments to reach the edge of their doubled work range.
+
+Removing a tree clears its obsolete sapling requirement. Unreachable or pickup-protected dropped materials are skipped for ten seconds so nearby tree work can continue; they can be retried afterward.

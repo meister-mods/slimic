@@ -3,12 +3,25 @@ package io.github.meistermods.slimic.client;
 import com.mojang.blaze3d.vertex.*;
 import io.github.meistermods.slimic.entity.*;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
 
 public final class GuardianAngelSlimeRenderer extends FriendlySlimeRenderer {
   public GuardianAngelSlimeRenderer(EntityRendererProvider.Context context) {
     super(context);
+  }
+
+  @Override
+  public boolean shouldRender(
+      FriendlySlime slime, Frustum frustum, double cameraX, double cameraY, double cameraZ) {
+    if (super.shouldRender(slime, frustum, cameraX, cameraY, cameraZ)) return true;
+    var guardian = (GuardianAngelSlime) slime;
+    return slime.level().getEntity(guardian.getBeamTargetId()) instanceof LivingEntity target
+        && target.isAlive()
+        && frustum.isVisible(
+            new AABB(slime.getEyePosition(), target.getBoundingBox().getCenter()).inflate(.1));
   }
 
   @Override

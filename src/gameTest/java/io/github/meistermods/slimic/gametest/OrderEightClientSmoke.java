@@ -63,6 +63,23 @@ final class OrderEightClientSmoke {
         return false;
       }
       if (++beamFrames < 3) return false;
+      var renderer = c.getEntityRenderDispatcher().getRenderer(guard);
+      var beamTarget = c.level.getEntity(guard.getBeamTargetId());
+      if (beamTarget == null) return false;
+      var beam =
+          new net.minecraft.world.phys.AABB(
+                  guard.getEyePosition(), beamTarget.getBoundingBox().getCenter())
+              .inflate(.1);
+      var beamOnly =
+          new net.minecraft.client.renderer.culling.Frustum(
+              new org.joml.Matrix4f(), new org.joml.Matrix4f()) {
+            @Override
+            public boolean isVisible(net.minecraft.world.phys.AABB bounds) {
+              return bounds.equals(beam);
+            }
+          };
+      if (!renderer.shouldRender(guard, beamOnly, guard.getX(), guard.getY(), guard.getZ()))
+        throw new IllegalStateException("Guardian beam culled with body outside the view");
       if (!c.getEntityRenderDispatcher()
           .getRenderer(guard)
           .getClass()
@@ -150,7 +167,7 @@ final class OrderEightClientSmoke {
       shot(c, "animated-chest-closed");
       System.out.println(
           "SLIMIC ORDER EIGHT CLIENT SMOKE PASSED: guardian wings/halo, synchronized"
-              + " health/reserve, native totem clicks, animated chest; JEI="
+              + " health/reserve, native totem clicks, animated chest, offscreen beam culling; JEI="
               + ModList.get().isLoaded("jei"));
       phase = 8;
       return true;
@@ -163,7 +180,7 @@ final class OrderEightClientSmoke {
         c.gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.17-"
+                "../verification/0.1.18-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

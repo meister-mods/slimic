@@ -131,7 +131,7 @@ final class FieldClientSmoke {
             .gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.17-"
+                "../verification/0.1.18-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

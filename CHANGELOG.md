@@ -4,6 +4,20 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.18] - 2026-10-16
+
+### Fixed
+
+- Canceled or zero-value healing keeps the slime ball and suppresses healing effects.
+- Switching to Spectator invalidates an already open companion management screen.
+- Lumberjacks skip temporarily unreachable or protected dropped materials so reachable tree work can continue, and clear obsolete sapling requests when the tree disappears or cargo changes.
+- Guardian beams remain visible when the beam crosses the view but the slime body is outside it.
+
+### Validation
+
+- Twenty independent boundary checks cover saved data, summoning, recipes, interactions, permissions, tuning, inventories, growth, mining, search limits, farming, forestry, logistics, cleaning, heralds, combat, guardians, riding, and storage.
+- Full native regression and client checks cover profession behavior, equipment, animated storage, optional JEI, resource consistency, and release packaging.
+
 ## [0.1.17] - 2026-10-16
 
 ### Added

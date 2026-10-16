@@ -239,7 +239,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return SlimeTunerItem.isHolding(player)
+    return !player.isSpectator()
+        && SlimeTunerItem.isHolding(player)
         && slime.isAlive()
         && !slime.isRemoved()
         && player.level() == slime.level()

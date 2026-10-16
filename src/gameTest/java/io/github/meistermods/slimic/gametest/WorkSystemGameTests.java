@@ -428,29 +428,61 @@ public final class WorkSystemGameTests {
             && before.equals(stored.save(new CompoundTag())),
         "Malformed schema versions must remain intact");
     saved.remove(SlimeData.VERSION_KEY);
-    h.assertTrue(
-        use(owner, stored, floor).consumesAction(),
-        "Unversioned stored companions must remain usable");
-    h.succeedWhen(
-        () -> {
-          var restored = (FriendlySlime) h.getLevel().getEntity(pet.getUUID());
-          h.assertTrue(
-              restored != null
-                  && restored.getHealth() == 7
-                  && restored.isOrderedToSit()
-                  && restored.saveWithoutId(new CompoundTag()).getInt(SlimeData.VERSION_KEY)
-                      == SlimeData.VERSION,
-              "Migration must retain identity, health, and orders and write the current schema: "
-                  + restored
-                  + (restored == null
-                      ? ""
-                      : ", health="
-                          + restored.getHealth()
-                          + ", waiting="
-                          + restored.isOrderedToSit()));
-          restored.discard();
-          arena.close();
-        });
+    var joined = new java.util.concurrent.atomic.AtomicReference<FriendlySlime>();
+    java.util.function.Consumer<net.minecraftforge.event.entity.EntityJoinLevelEvent> observe =
+        event -> {
+          if (event.getEntity() instanceof FriendlySlime slime
+              && slime.getUUID().equals(pet.getUUID())) joined.set(slime);
+        };
+    h.startSequence()
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    h.getLevel().isPositionEntityTicking(floor),
+                    "The release fixture must be entity-ticking before interacting"))
+        .thenExecute(
+            () -> {
+              net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(observe);
+              try {
+                h.assertTrue(
+                    use(owner, stored, floor).consumesAction(),
+                    "Unversioned stored companions must remain usable");
+              } finally {
+                net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(observe);
+              }
+              h.assertTrue(joined.get() != null, "Restored companion joins with its original UUID");
+            })
+        .thenWaitUntil(
+            () -> {
+              var restored = (FriendlySlime) h.getLevel().getEntity(pet.getUUID());
+              h.assertTrue(
+                  restored != null
+                      && restored.getHealth() == 7
+                      && restored.isOrderedToSit()
+                      && restored.saveWithoutId(new CompoundTag()).getInt(SlimeData.VERSION_KEY)
+                          == SlimeData.VERSION,
+                  "Migration must retain identity, health, and orders and write the current schema:"
+                      + " "
+                      + restored
+                      + ", joined="
+                      + joined.get()
+                      + ", removed="
+                      + joined.get().getRemovalReason()
+                      + ", chunkLoaded="
+                      + h.getLevel().hasChunkAt(joined.get().blockPosition())
+                      + (restored == null
+                          ? ""
+                          : ", health="
+                              + restored.getHealth()
+                              + ", waiting="
+                              + restored.isOrderedToSit()));
+            })
+        .thenExecute(
+            () -> {
+              joined.get().discard();
+              arena.close();
+            })
+        .thenSucceed();
   }
 
   private static net.minecraft.world.InteractionResult use(

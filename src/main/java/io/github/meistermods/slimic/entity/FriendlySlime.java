@@ -458,11 +458,14 @@ public class FriendlySlime extends TamableAnimal {
       if (getHealth() >= getMaxHealth())
         return InteractionResult.sidedSuccess(level().isClientSide);
       if (!level().isClientSide) {
+        float previousHealth = getHealth();
         heal(4);
-        if (!player.getAbilities().instabuild) held.shrink(1);
-        playSound(SoundEvents.SLIME_SQUISH, 1, 1);
-        ((ServerLevel) level())
-            .sendParticles(ParticleTypes.HEART, getX(), getEyeY(), getZ(), 4, .3, .2, .3, 0);
+        if (getHealth() > previousHealth) {
+          if (!player.getAbilities().instabuild) held.shrink(1);
+          playSound(SoundEvents.SLIME_SQUISH, 1, 1);
+          ((ServerLevel) level())
+              .sendParticles(ParticleTypes.HEART, getX(), getEyeY(), getZ(), 4, .3, .2, .3, 0);
+        }
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
     }

@@ -103,8 +103,7 @@ public final class SlimeClientSmoke {
                   }
                 var stage = new net.minecraft.world.phys.AABB(0, 90, 0, 20, 320, 20);
                 level
-                    .getEntitiesOfClass(
-                        io.github.meistermods.slimic.entity.FriendlySlime.class, stage)
+                    .getEntitiesOfClass(net.minecraft.world.entity.Mob.class, stage)
                     .forEach(net.minecraft.world.entity.Entity::discard);
                 level
                     .getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, stage)
@@ -896,7 +895,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.17-" + suffix + ".png")
+            .resolve("../verification/0.1.18-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());
