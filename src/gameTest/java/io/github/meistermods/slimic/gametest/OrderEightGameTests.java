@@ -446,7 +446,7 @@ public final class OrderEightGameTests {
     h.getLevel().getServer().setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
     var owner = realOwner(h, a);
     h.runAfterDelay(
-        159,
+        999,
         () -> {
           owner.discard();
           h.getLevel().getServer().setDifficulty(previousDifficulty, true);
@@ -463,7 +463,12 @@ public final class OrderEightGameTests {
     h.getLevel().addFreshEntity(attacker);
     h.startSequence()
         .thenWaitUntil(() -> h.assertTrue(guard.tickCount > 0, "Guard is active"))
-        .thenExecute(() -> owner.hurt(h.getLevel().damageSources().mobAttack(attacker), 2))
+        .thenExecute(
+            () ->
+                h.assertTrue(
+                    owner.isAlive()
+                        && owner.hurt(h.getLevel().damageSources().mobAttack(attacker), 2),
+                    "Owner remains alive and receives actual damage before retaliation"))
         .thenWaitUntil(
             () ->
                 h.assertTrue(

@@ -238,3 +238,11 @@ Native regressions cover inlet replacement, cave lining across recovery, exact p
 ## Enderman targeting
 
 Endermen are excluded from the added companion-target goal. Combat classification checks their live target before the generic NeutralMob rule: an Enderman targeting a living FriendlySlime uses HOSTILE; otherwise NEUTRAL. Target selection and attacks revalidate this classification and existing filters. Native tests cover unchanged goal sets, calm/hostile transitions, unrelated targets, and actual combat followed by disengagement.
+
+## Tool effectiveness and block-breaking time
+
+`SlimeBlockBreaking` shares native `getDestroyProgress` timing between quarry mining and `FieldSlime.harvest`. Work Speed multiplies progress only when the held tool's native destroy speed exceeds 1, matching the effectiveness requirement used by native Efficiency. An ineffective fallback tool retains its ordinary native progress. Missing, exhausted, or tier-inadequate equipment cannot advance breaking. Crops with zero native hardness still harvest immediately when the profession's required hoe is equipped. Logging now includes the actual axe's native breaking time before its existing action cooldown.
+
+The transient tracker identifies the block position, state, and an exact snapshot of the tool, including enchantments and damage. Changing any of them, interrupting work, changing orders or areas, or removing the entity clears partial progress and crack overlays. Reloaded and recovered companions restart partial block damage while retaining saved work areas and completed activity. Durability, stamina, cargo, and growth are charged only after successful protected removal.
+
+Native regressions measure actual break-attempt ticks at maximum Work Speed with missing, unsuitable, downgraded, and modified tools. They compare wooden and diamond axe intervals, confirm effective-tool bonuses, and cover logging/farming equipment requirements and resumption. The other companion roles perform no tool-based block-breaking actions. Fluid removal, wall placement, tilling, planting, and player-operated revival remain separate actions with their own resource and permission checks.

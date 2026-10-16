@@ -226,7 +226,7 @@ final class OrderNineClientSmoke {
         c.gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.21-"
+                "../verification/0.1.22-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

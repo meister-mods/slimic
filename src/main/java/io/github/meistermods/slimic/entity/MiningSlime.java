@@ -97,8 +97,7 @@ public final class MiningSlime extends BagSlime {
   private Status status = Status.IDLE;
   private BlockPos target;
   private Vec3 workStand;
-  private float progress;
-  private BlockState breakingState;
+  private final SlimeBlockBreaking breaking = new SlimeBlockBreaking();
   private int targetTicks;
   private Vec3 lastTravelPosition;
   private double closestTravelDistance = Double.MAX_VALUE;
@@ -390,13 +389,10 @@ public final class MiningSlime extends BagSlime {
   }
 
   private void clearTarget() {
-    if (target != null && level() instanceof ServerLevel server)
-      server.destroyBlockProgress(getId(), target, -1);
+    breaking.reset(this);
     target = null;
     wallTarget = null;
     workStand = null;
-    progress = 0;
-    breakingState = null;
     targetTicks = 0;
     lastTravelPosition = null;
     supportTarget = null;
@@ -437,11 +433,13 @@ public final class MiningSlime extends BagSlime {
     int preferred = state.is(BlockTags.MINEABLE_WITH_SHOVEL) ? 1 : 0;
     ItemStack tool = getTool(preferred);
     if (matchesToolSlot(preferred, tool)
+        && SlimeBlockBreaking.usable(tool)
         && (!state.requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(state)))
       return preferred;
     int other = 1 - preferred;
     tool = getTool(other);
     if (matchesToolSlot(other, tool)
+        && SlimeBlockBreaking.usable(tool)
         && (!state.requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(state)))
       return other;
     return -1;
@@ -1110,11 +1108,6 @@ public final class MiningSlime extends BagSlime {
       clearTarget();
       return;
     }
-    if (breakingState != state) {
-      breakingState = state;
-      progress = 0;
-      server.destroyBlockProgress(getId(), target, -1);
-    }
     double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
     if (getEyePosition().distanceToSqr(Vec3.atCenterOf(target)) > reach * reach
         || !canSee(target)) {
@@ -1139,10 +1132,7 @@ public final class MiningSlime extends BagSlime {
     worker.setItemInHand(InteractionHand.MAIN_HAND, tool);
     try {
       status = Status.MINING;
-      progress +=
-          state.getDestroyProgress(worker, server, target) * SlimeStat.WORK_SPEED.value(this);
-      server.destroyBlockProgress(getId(), target, Math.min(9, (int) (progress * 10)));
-      if (progress < 1) return;
+      if (!breaking.advance(this, worker, target, state, tool)) return;
       int experience = ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, worker, target);
       if (experience < 0 || !server.getBlockState(target).equals(state)) {
         travelBlocked = true;

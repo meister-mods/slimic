@@ -902,7 +902,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.21-" + suffix + ".png")
+            .resolve("../verification/0.1.22-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

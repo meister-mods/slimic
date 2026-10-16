@@ -4,6 +4,18 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.22] - 2026-10-16
+
+### Fixed
+
+- Ineffective mining tools no longer receive the Work Speed breaking bonus. Missing or tier-inadequate tools cannot bypass equipment requirements.
+- Mining and surface workers share native block-breaking progress. Tool changes, enchantment changes, interruptions, and block replacement reset partial damage and crack overlays.
+- Logging respects log hardness and the equipped axe's speed and enchantments before its action cooldown. Farming retains native instant crop harvesting and requires its hoe.
+
+### Validation
+
+- Native regressions measure break-attempt ticks for effective and ineffective tools, maximum Work Speed, tool downgrades, enchantment removal, missing equipment, and logging/farming resumption.
+
 ## [0.1.21] - 2026-10-16
 
 ### Added

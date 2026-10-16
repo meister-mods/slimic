@@ -9,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -55,6 +56,7 @@ public abstract class FieldSlime extends BagSlime {
   protected Status status = Status.IDLE;
   protected boolean originChanged;
   private String areaDimension;
+  private final SlimeBlockBreaking breaking = new SlimeBlockBreaking();
   private boolean resting;
   private int cooldown;
   private int travelTicks;
@@ -87,6 +89,7 @@ public abstract class FieldSlime extends BagSlime {
 
   @Override
   public void onReleased() {
+    breaking.reset(this);
     originChanged =
         home != null
             && (!home.equals(blockPosition())
@@ -126,6 +129,7 @@ public abstract class FieldSlime extends BagSlime {
 
   @Override
   public void setWorking(boolean value) {
+    breaking.reset(this);
     working = value;
     setWaiting(false);
     target = null;
@@ -203,6 +207,7 @@ public abstract class FieldSlime extends BagSlime {
 
           @Override
           public void stop() {
+            breaking.reset(FieldSlime.this);
             getNavigation().stop();
           }
 
@@ -217,6 +222,7 @@ public abstract class FieldSlime extends BagSlime {
             }
             if (!ForgeEventFactory.getMobGriefingEvent(level, FieldSlime.this)) {
               status = Status.DISABLED;
+              breaking.reset(FieldSlime.this);
               getNavigation().stop();
               return;
             }
@@ -228,6 +234,7 @@ public abstract class FieldSlime extends BagSlime {
                 }
               if (!acceptsWorkTool(getTool())) {
                 status = Status.NO_TOOL;
+                breaking.reset(FieldSlime.this);
                 getNavigation().stop();
                 return;
               }
@@ -235,6 +242,7 @@ public abstract class FieldSlime extends BagSlime {
             if (getStamina() < 1) resting = true;
             if (resting && getStamina() < getMaxStamina() * .25F) {
               status = Status.RESTING;
+              breaking.reset(FieldSlime.this);
               getNavigation().stop();
               return;
             }
@@ -272,6 +280,7 @@ public abstract class FieldSlime extends BagSlime {
 
   protected final boolean approach(BlockPos pos) {
     if (!pos.equals(target)) {
+      breaking.reset(this);
       target = pos;
       travelTicks = 0;
       workStand = null;
@@ -356,6 +365,7 @@ public abstract class FieldSlime extends BagSlime {
   }
 
   protected final void blocked() {
+    breaking.reset(this);
     status = Status.UNREACHABLE;
     target = null;
     getNavigation().stop();
@@ -363,6 +373,7 @@ public abstract class FieldSlime extends BagSlime {
   }
 
   protected final void completed() {
+    breaking.reset(this);
     spendStamina(1);
     recordCompletedWork();
     cooldown = Math.max(1, (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(this)));
@@ -381,12 +392,20 @@ public abstract class FieldSlime extends BagSlime {
   }
 
   protected final boolean harvest(ServerLevel level, BlockPos pos) {
+    if (!acceptsWorkTool(getTool())) {
+      breaking.reset(this);
+      status = Status.NO_TOOL;
+      getNavigation().stop();
+      return false;
+    }
     if (!permitted(level, pos)) {
       blocked();
       return false;
     }
     BlockState state = level.getBlockState(pos);
-    if (state.hasBlockEntity() || !state.canEntityDestroy(level, pos, this)) {
+    if (state.hasBlockEntity()
+        || state.getDestroySpeed(level, pos) < 0
+        || !state.canEntityDestroy(level, pos, this)) {
       blocked();
       return false;
     }
@@ -394,6 +413,7 @@ public abstract class FieldSlime extends BagSlime {
     ItemStack previous = player.getMainHandItem();
     player.setItemInHand(InteractionHand.MAIN_HAND, getTool());
     try {
+      if (!breaking.advance(this, player, pos, state, getTool())) return false;
       if (ForgeHooks.onBlockBreakEvent(level, GameType.SURVIVAL, player, pos) < 0
           || level.getBlockState(pos) != state) {
         blocked();
@@ -405,6 +425,7 @@ public abstract class FieldSlime extends BagSlime {
               : List.of();
       if (!canStore(drops)) {
         status = Status.FULL;
+        breaking.reset(this);
         getNavigation().stop();
         return false;
       }
@@ -457,6 +478,7 @@ public abstract class FieldSlime extends BagSlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
+    breaking.reset(this);
     var data = tag.getCompound(workTag());
     areaDimension =
         data.contains("Dimension")
@@ -469,5 +491,11 @@ public abstract class FieldSlime extends BagSlime {
     cooldown = Math.max(0, Math.min(200, data.getInt("Cooldown")));
     int i = data.getInt("Status");
     status = i >= 0 && i < Status.values().length ? Status.values()[i] : Status.IDLE;
+  }
+
+  @Override
+  public void remove(Entity.RemovalReason reason) {
+    breaking.reset(this);
+    super.remove(reason);
   }
 }
