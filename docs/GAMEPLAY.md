@@ -79,7 +79,7 @@ Right-click an owned slime to open its management screen. The name field sets a 
 
 Capacity supports six upgrades; the other stats support twenty. Only the owner can spend points, rename the companion, or use its management inventory. All stats, unused points, activity progress, and current stamina survive world saves and recovery.
 
-The first stat point requires 256 activity units. Each earned point increases the next requirement by 64 units, capped at 4,096. Successful mining, combat hits, and cleaning pickups each grant one unit. Transport grants four units per cargo-stack delivery into a Slime Chest or replacement tool supplied to a worker; collecting cargo and fetching tools grant none. This higher delivery reward compensates for travel, while actual progress rates still depend on the job and terrain.
+The first stat point requires 32 activity units. Each earned point increases the next requirement by 64 units, capped at 4,096. Successful mining, combat hits, and cleaning pickups each grant one unit. Transport grants four units per cargo-stack delivery into a Slime Chest or replacement tool supplied to a worker; collecting cargo and fetching tools grant none. This higher delivery reward compensates for travel, while actual progress rates still depend on the job and terrain.
 
 All companions can earn one unit per 100 ticks (five seconds) of actual movement while following a nearby owner. Waiting, standing still, teleporting, and changing orders grant none. Heralds also earn one unit per 100 ticks of monitoring an active or blocked same-owner worker in range; idle, completed, or manually waiting workers grant none. Partial following and monitoring timers survive saves and recovery and pause in item storage. Signals do not grant extra activity.
 
@@ -94,6 +94,10 @@ Stamina recovers at **2% of maximum per second** during recovery: 2 at 100 maxim
 An order describes the assigned task: Follow, Wait, Mine, Haul, Monitor, Fight, or Clean. Execution is idle, active, blocked, or complete. A blocked task carries a reason such as a full bag, missing tool, unsuitable tool tier, exhaustion, missing storage, full storage, unreachable terrain, missing supports, or disabled work.
 
 A full working bag issues a cargo-pickup request. A worker missing its required tool issues a tool-supply request. Transport acts on these requests and rechecks them before every transfer. Heralds use the shared blocked state and its continuous duration. Manual Follow/Wait orders and completed quarries are not blocked work.
+
+Existing activity is recalculated against the current thresholds when a companion is loaded. Newly earned points are granted and remaining activity is retained; existing points and stat investments remain intact. For example, 200 activity at the first tier becomes two points and 72 remaining activity. Subsequent recovery does not grant those points again.
+
+The Slimic Creative tab groups all seven companion items first, followed by the Slime Chest, six armor materials from leather through netherite, and the Creative-only tuner.
 
 ## Mining slimes
 
@@ -122,6 +126,9 @@ Craft eight wooden planks around a slime ball to make a **Slime Chest**. Any pla
 Slime Chests are shared logistics containers for nearby transport slimes. Ordinary chests are used to craft transport slimes and are not automatic pickup or delivery endpoints. Locked Slime Chests are not used by transport slimes.
 
 Slime Chests use dedicated wooden face textures with green slime trim. The inventory item displays the same textured block model.
+
+
+Following preserves the saved quarry until mining is started again. Starting Mine in another chunk establishes a quarry at the current position; starting in the same chunk retains its progress. Slow approaches continue while making horizontal or grounded vertical progress. If a target's block state changes during mining, its work progress restarts and only the current block's drops are produced.
 
 ## Transport slimes
 

@@ -203,12 +203,10 @@ public final class TransportSlimeGameTests {
                   == 1,
               "Emptying the bag must let mining resume");
           helper.assertTrue(
-              carrier.getActivityProgress()
-                      >= 9
-                          * io.github.meistermods.slimic.config.SlimicConfig.TRANSPORT_ACTIVITY
-                              .get()
-                  && carrier.getStatPoints() == 0,
-              "Deliveries must grant slow activity progress");
+              32L * carrier.getStatPoints() * carrier.getStatPoints()
+                      + carrier.getActivityProgress()
+                  == 9L * io.github.meistermods.slimic.config.SlimicConfig.TRANSPORT_ACTIVITY.get(),
+              "Delivery activity must be conserved across awarded stat points");
           carrier.discard();
           miner.discard();
           arena.close();
@@ -394,7 +392,7 @@ public final class TransportSlimeGameTests {
     TransportSlime carrier = carrier(helper);
     Player owner = helper.makeMockSurvivalPlayer();
     carrier.tame(owner);
-    seed(carrier, 7, 37, 13);
+    seed(carrier, 7, 17, 13);
     for (int i = 0; i < 6; i++) carrier.upgradeStat(SlimeStat.CAPACITY);
     carrier.getBag().setStackInSlot(53, new ItemStack(Items.DIAMOND, 17));
     ItemStack tool = new ItemStack(Items.IRON_PICKAXE);
@@ -432,7 +430,7 @@ public final class TransportSlimeGameTests {
         "Both bag pages and worn tools must survive recovery");
     helper.assertTrue(
         restored.getStatPoints() == 1
-            && restored.getActivityProgress() == 37
+            && restored.getActivityProgress() == 17
             && restored.getStamina() == 13
             && restored.getWorkOrigin().equals(restored.blockPosition()),
         "Growth, stamina, and the new work-area anchor must be correct");
@@ -491,7 +489,7 @@ public final class TransportSlimeGameTests {
   @GameTest(template = "empty", timeoutTicks = 400)
   public static void exhaustedCarrierRestsBeforeEarningDeliveryPoint(GameTestHelper helper) {
     TransportSlime carrier = carrier(helper);
-    seed(carrier, 0, 255, 0);
+    seed(carrier, 0, 31, 0);
     carrier.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 10));
     SlimeChestBlockEntity chest = chest(helper, CHEST);
     helper.runAfterDelay(
@@ -500,7 +498,7 @@ public final class TransportSlimeGameTests {
             helper.assertTrue(
                 carrier.getTransportStatus() == TransportSlime.Status.RESTING
                     && count(carrier.getBag(), Items.DIAMOND) == 10
-                    && carrier.getActivityProgress() == 255,
+                    && carrier.getActivityProgress() == 31,
                 "Resting must retain cargo without earning work progress"));
     helper.succeedWhen(
         () ->
@@ -508,7 +506,7 @@ public final class TransportSlimeGameTests {
                 count(chest.inventory(), Items.DIAMOND) == 10
                     && !carrier.hasCargo()
                     && carrier.getStatPoints() == 1
-                    && carrier.getNextPointCost() == 320,
+                    && carrier.getNextPointCost() == 96,
                 "Recovered stamina must permit delivery and earn exactly one point at the shared"
                     + " threshold"));
   }

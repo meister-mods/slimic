@@ -131,7 +131,7 @@ public final class SlimeClientSmoke {
                 miner.getBag().setStackInSlot(2, new ItemStack(Items.DIAMOND, 3));
                 CompoundTag state = miner.saveWithoutId(new CompoundTag());
                 state.putInt("StatPoints", 7);
-                state.putInt("ActivityProgress", 71);
+                state.putInt("ActivityProgress", 17);
                 miner.load(state);
                 level.addFreshEntity(miner);
                 miner.onReleased();
@@ -242,6 +242,9 @@ public final class SlimeClientSmoke {
                 carrier.setYBodyRot(90);
                 carrier.setYHeadRot(90);
                 carrier.setNoAi(true);
+                carrier.setNoAi(true);
+                carrier.setYBodyRot(90);
+                carrier.setYHeadRot(90);
                 carrier.tame(owner);
                 carrier.dye(owner, new ItemStack(Items.BLUE_DYE));
                 carrier.setWorking(false);
@@ -275,8 +278,24 @@ public final class SlimeClientSmoke {
     if (carriers.isEmpty()) return;
     TransportSlime carrier = carriers.get(0);
     if (phase == 4) {
-      if (++phaseTicks < 50 || carrier.getCapacity() != 54) return;
-      screenshot(client, prefix + "transport-world");
+      if (carrier.getCapacity() != 54) return;
+      phaseTicks++;
+      if (phaseTicks == 30) {
+        screenshot(client, prefix + "transport-world");
+        camera(client, 10.5, 5.5, 0);
+        return;
+      }
+      if (phaseTicks == 55) {
+        screenshot(client, prefix + "transport-side");
+        camera(client, 13.5, 8.5, 90);
+        return;
+      }
+      if (phaseTicks == 80) {
+        screenshot(client, prefix + "transport-back");
+        camera(client, 7.5, 8.5, -90);
+        return;
+      }
+      if (phaseTicks < 105) return;
       int entityId = carrier.getId();
       client
           .getSingleplayerServer()
@@ -466,6 +485,15 @@ public final class SlimeClientSmoke {
       CreativeModeTabs.tryRebuildTabContents(
           client.level.enabledFeatures(), true, client.level.registryAccess());
       var items = ModCreativeTabs.SLIMIC.get().getDisplayItems();
+      System.out.println(
+          "SLIMIC CREATIVE CONTENTS: "
+              + items.stream()
+                  .map(
+                      stack ->
+                          net.minecraft.core.registries.BuiltInRegistries.ITEM
+                              .getKey(stack.getItem())
+                              .toString())
+                  .toList());
       if (items.size() != 15
           || items.stream().noneMatch(stack -> stack.is(ModItems.SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
@@ -773,7 +801,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.13-" + suffix + ".png")
+            .resolve("../verification/0.1.14-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

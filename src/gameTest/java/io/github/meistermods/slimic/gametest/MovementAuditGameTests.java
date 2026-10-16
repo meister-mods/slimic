@@ -153,6 +153,7 @@ public final class MovementAuditGameTests {
   public static void fighterRefreshesItsRouteAfterTheTargetMoves(GameTestHelper h) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     var fighter = ModEntities.COMBAT_SLIME.get().create(h.getLevel());
+    fighter.setNoAi(true);
     fighter.tame(h.makeMockSurvivalPlayer());
     fighter.moveTo(arena.point(1, 101, 8));
     fighter.setAllowed(CombatTarget.PASSIVE, true);
@@ -168,8 +169,27 @@ public final class MovementAuditGameTests {
         .thenWaitUntil(
             () ->
                 h.assertTrue(
+                    fighter.tickCount > 0 && cow.tickCount > 0,
+                    "Both native entities must be ticking before pursuit"))
+        .thenExecute(() -> fighter.setNoAi(false))
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
                     fighter.getTarget() == cow && !fighter.getNavigation().isDone(),
-                    "The initial pursuit must have a route before the target moves"))
+                    "The initial pursuit must have a route before the target moves: target="
+                        + fighter.getTarget()
+                        + ", fighter="
+                        + fighter.position()
+                        + ", cow="
+                        + cow.position()
+                        + ", cowAlive="
+                        + cow.isAlive()
+                        + ", mayAttack="
+                        + fighter.mayAttack(cow)
+                        + ", status="
+                        + fighter.getCombatStatus()
+                        + ", path="
+                        + fighter.getNavigation().getPath()))
         .thenExecute(() -> cow.moveTo(arena.point(1, 101, 14)))
         .thenWaitUntil(
             () ->

@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.14] - 2026-10-16
+
+### Changed
+
+- All companions require 32 activity for the first stat point, with the existing 64-unit increase and 4,096-unit cap. Existing saved activity grants earned points and retains its remainder without repeated awards.
+- The Creative tab groups companion items, storage, armor by material, and the tuner.
+
+### Fixed
+
+- Transport packs and straps clear both slime body surfaces, eliminating overlapping faces and flicker.
+- Starting mining after following into another chunk establishes a quarry in the current chunk while same-chunk commands retain progress.
+- Slowly advancing mining approaches no longer fail the travel timeout because of the previous half-block movement threshold.
+- Changing the target block state during mining clears previous damage; the current block takes its own work interval and yields its own drops.
+
+### Validation
+
+- Added all-specialization growth and saved-activity coverage plus native regressions for relocated work commands, low-speed approaches, and block replacement. Client validation includes multiple pack views and the actual Creative ordering.
+
 ## [0.1.13] - 2026-10-16
 
 ### Added

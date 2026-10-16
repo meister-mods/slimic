@@ -41,19 +41,22 @@ public final class TransportSlimeLayer
   }
 
   public static LayerDefinition createLayer() {
+    // Inner and outer slime faces end at z=3 and z=4; keep the pack beyond both.
     MeshDefinition mesh = new MeshDefinition();
     mesh.getRoot()
         .addOrReplaceChild(
             "pack",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, 17, 3, 7, 6, 4),
+            CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, 17, 4.4F, 7, 6, 4),
             PartPose.ZERO);
     mesh.getRoot()
         .addOrReplaceChild(
             "straps",
             CubeListBuilder.create()
                 .texOffs(0, 0)
-                .addBox(-4.15F, 16, -4.2F, 0.7F, 7, 8.5F)
-                .addBox(3.45F, 16, -4.2F, 0.7F, 7, 8.5F),
+                .addBox(-4.65F, 15.8F, -4.2F, 0.5F, 7.2F, 8.8F)
+                .addBox(4.15F, 15.8F, -4.2F, 0.5F, 7.2F, 8.8F)
+                .addBox(-4.65F, 17.2F, 4.15F, 1.3F, 5.6F, 0.5F)
+                .addBox(3.35F, 17.2F, 4.15F, 1.3F, 5.6F, 0.5F),
             PartPose.ZERO);
     return LayerDefinition.create(mesh, 16, 16);
   }

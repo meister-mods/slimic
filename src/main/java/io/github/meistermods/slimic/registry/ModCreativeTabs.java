@@ -26,11 +26,10 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.MINING_SLIME.get());
                         output.accept(ModItems.TRANSPORT_SLIME.get());
                         output.accept(ModItems.HERALD_SLIME.get());
-                        output.accept(ModItems.SLIME_CHEST.get());
-                        output.accept(ModItems.SLIME_TUNER.get());
                         output.accept(ModItems.COMBAT_SLIME.get());
                         output.accept(ModItems.CLEANING_SLIME.get());
                         output.accept(ModItems.SADDLE_SLIME.get());
+                        output.accept(ModItems.SLIME_CHEST.get());
                         for (var chestplate :
                             new net.minecraft.world.item.Item[] {
                               Items.LEATHER_CHESTPLATE,
@@ -41,6 +40,7 @@ public final class ModCreativeTabs {
                               Items.NETHERITE_CHESTPLATE
                             })
                           output.accept(SlimeArmorItem.fromChestplate(new ItemStack(chestplate)));
+                        output.accept(ModItems.SLIME_TUNER.get());
                       })
                   .build());
 

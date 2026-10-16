@@ -144,3 +144,13 @@ Only the owning player can occupy and control the single seat. A priority moveme
 Winged riding supplies transient no-gravity for movement and native vehicle validation. Saving removes that computed flag while preserving explicit native gravity overrides, so recovered mounts do not hover unattended. The saddle has a dedicated model and leather atlas; elytra reuse the vanilla wing model/texture and show an open pose while mounted.
 
 Protocol 6 adds the riding input message. Validation includes crafting and actual release, owner checks, equipment Shift transfers, mounted recovery, unusable wings, explicit versus transient gravity, and native Survival client steering, jumping, ascent, hover, descent, pitch, server vehicle synchronization, and Shift dismount with and without JEI.
+
+## Growth thresholds and quarry consistency
+
+The shared point cost starts at 32, increases by 64 for each earned point, and caps at 4,096. Activity loading retains the supported remainder range and settles earned thresholds before saving the remainder, rather than clamping old activity to the smaller new cost. The same settlement handles live work awards. Existing points, investments, earned-tier counts, and companion traits remain authoritative; normalized saves do not repeat awards.
+
+An explicit Mine command rebases a previously anchored companion when its current chunk differs from the work chunk. Same-chunk commands retain the saved plan. Travel progress uses 0.05 horizontal blocks or 0.5 grounded vertical blocks, preventing slow but advancing approaches from timing out solely because they cannot cover half a block within 400 ticks. Mining tracks the current block state and clears accumulated damage and the crack overlay when it changes.
+
+The transport pack is placed behind the outer slime cube; side and rear straps also clear both body surfaces. This removes the coplanar inner-body/pack face and overlapping outer surfaces while sharing the companion's pose and squish transform. The Creative tab emits companion items together, then storage, armor in material order, and the tuner.
+
+Regressions cover all seven initial growth thresholds, conversion of 200 saved activity without lost or repeated awards, starting a new quarry after following into another chunk, an advancing low-speed miner, and block replacement with exact drops and tool wear. Client checks inspect the pack from multiple angles and record the actual Creative item order.

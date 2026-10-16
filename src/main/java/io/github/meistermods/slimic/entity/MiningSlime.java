@@ -82,6 +82,7 @@ public final class MiningSlime extends BagSlime {
   private BlockPos target;
   private Vec3 workStand;
   private float progress;
+  private BlockState breakingState;
   private int targetTicks;
   private Vec3 lastTravelPosition;
   private BlockPos supportTarget;
@@ -233,6 +234,7 @@ public final class MiningSlime extends BagSlime {
     working = value;
     if (!value) travelBlocked = false;
     setWaiting(false);
+    if (value && hasAnchor && !getMiningChunk().equals(chunkPosition())) onReleased();
     clearTarget();
     status = Status.IDLE;
   }
@@ -280,6 +282,7 @@ public final class MiningSlime extends BagSlime {
     target = null;
     workStand = null;
     progress = 0;
+    breakingState = null;
     targetTicks = 0;
     lastTravelPosition = null;
     supportTarget = null;
@@ -423,7 +426,7 @@ public final class MiningSlime extends BagSlime {
 
   private boolean travelStalled(int elapsed) {
     if (lastTravelPosition == null
-        || position().subtract(lastTravelPosition).horizontalDistanceSqr() >= 0.25
+        || position().subtract(lastTravelPosition).horizontalDistanceSqr() >= 0.0025
         || (onGround() && Math.abs(getY() - lastTravelPosition.y) >= 0.5)) {
       lastTravelPosition = position();
       targetTicks = 0;
@@ -600,6 +603,11 @@ public final class MiningSlime extends BagSlime {
     if (!terrain(target, state) || toolSlot < 0) {
       clearTarget();
       return;
+    }
+    if (breakingState != state) {
+      breakingState = state;
+      progress = 0;
+      server.destroyBlockProgress(getId(), target, -1);
     }
     double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
     if (getEyePosition().distanceToSqr(Vec3.atCenterOf(target)) > reach * reach

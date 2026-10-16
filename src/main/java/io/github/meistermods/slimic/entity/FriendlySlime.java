@@ -46,6 +46,7 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.network.NetworkHooks;
 
 public class FriendlySlime extends TamableAnimal {
+  private static final int MAX_POINT_COST = 4096;
   private static final EntityDataAccessor<CompoundTag> STAT_LEVELS =
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
   private static final EntityDataAccessor<CompoundTag> TUNED_STATS =
@@ -164,7 +165,7 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public int getNextPointCost() {
-    return (int) Math.min(4096L, 256L + earnedPoints * 64L);
+    return (int) Math.min(MAX_POINT_COST, 32L + earnedPoints * 64L);
   }
 
   public float getStamina() {
@@ -235,6 +236,10 @@ public class FriendlySlime extends TamableAnimal {
   protected void recordCompletedWork(int units) {
     if (level().isClientSide) return;
     activityProgress += Mth.clamp(units, 0, 64);
+    settleActivity();
+  }
+
+  private void settleActivity() {
     while (activityProgress >= getNextPointCost()) {
       activityProgress -= getNextPointCost();
       earnedPoints = Math.min(1_000_000, earnedPoints + 1);
@@ -322,7 +327,10 @@ public class FriendlySlime extends TamableAnimal {
     blockedEpisode = Math.max(0, tag.getLong("BlockedEpisode"));
     statPoints = Mth.clamp(tag.getInt("StatPoints"), 0, 32767);
     earnedPoints = Mth.clamp(tag.getInt("EarnedPoints"), 0, 1_000_000);
-    activityProgress = Mth.clamp(tag.getInt("ActivityProgress"), 0, getNextPointCost() - 1);
+    // Older saves can contain more activity than the reduced threshold. Pay the
+    // earned points before retaining the remainder rather than truncating it.
+    activityProgress = Mth.clamp(tag.getInt("ActivityProgress"), 0, MAX_POINT_COST - 1);
+    settleActivity();
     stamina =
         tag.contains("Stamina") && Float.isFinite(tag.getFloat("Stamina"))
             ? Mth.clamp(tag.getFloat("Stamina"), 0.0F, getMaxStamina())

@@ -182,7 +182,7 @@ public final class MiningSlimeGameTests {
   public static void miningCollectsLootWearsToolAndEarnsOnlyCompletedActivity(
       GameTestHelper helper) {
     MiningSlime miner = miner(helper, new ItemStack(Items.IRON_PICKAXE));
-    seed(miner, 0, 255, 100);
+    seed(miner, 0, 31, 100);
     helper.setBlock(ORE, Blocks.STONE);
     helper.succeedWhen(
         () -> {
@@ -194,7 +194,7 @@ public final class MiningSlimeGameTests {
           helper.assertTrue(
               miner.getStatPoints() == 1
                   && miner.getActivityProgress() == 0
-                  && miner.getNextPointCost() == 320,
+                  && miner.getNextPointCost() == 96,
               "Only successful work must cross the progressive point threshold");
           helper.assertTrue(
               miner.getStamina() < miner.getMaxStamina(), "Successful work must consume stamina");
@@ -301,7 +301,7 @@ public final class MiningSlimeGameTests {
     miner.getPickaxe().enchant(Enchantments.BLOCK_FORTUNE, 3);
     miner.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 10));
     miner.setHealth(7.0F);
-    seed(miner, 2, 37, 13);
+    seed(miner, 2, 17, 13);
     miner.upgradeStat(SlimeStat.CAPACITY);
     Player owner = helper.makeMockSurvivalPlayer();
     miner.tame(owner);
@@ -338,7 +338,7 @@ public final class MiningSlimeGameTests {
     helper.assertTrue(
         restored.getStatLevel(SlimeStat.CAPACITY) == 1
             && restored.getStatPoints() == 1
-            && restored.getActivityProgress() == 37
+            && restored.getActivityProgress() == 17
             && restored.getStamina() == 13,
         "Stats, points, activity, and current stamina must survive");
     helper.assertTrue(
