@@ -24,6 +24,8 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(ModEntities.LUMBERJACK_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.FARMER_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.SADDLE_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.FRIENDLY_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.MINING_SLIME.get(), FriendlySlimeRenderer::new);
@@ -35,6 +37,7 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(FieldSlimeLayer.HATS, FieldSlimeLayer::createLayer);
     event.registerLayerDefinition(SaddleSlimeLayer.WING_LAYER, SaddleSlimeLayer::createWings);
     event.registerLayerDefinition(SaddleSlimeLayer.SADDLE, SaddleSlimeLayer::createLayer);
     event.registerLayerDefinition(CombatSlimeLayer.ARMOR, CombatSlimeLayer::createLayer);

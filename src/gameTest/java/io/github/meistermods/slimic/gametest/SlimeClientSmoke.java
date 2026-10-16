@@ -494,7 +494,7 @@ public final class SlimeClientSmoke {
                               .getKey(stack.getItem())
                               .toString())
                   .toList());
-      if (items.size() != 16
+      if (items.size() != 18
           || items.stream().noneMatch(stack -> stack.is(ModItems.SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =
@@ -545,7 +545,7 @@ public final class SlimeClientSmoke {
 
   private static void newCompanions(Minecraft client) {
     if (phase >= 21) {
-      SaddleClientSmoke.tick(client);
+      if (FieldClientSmoke.tick(client)) SaddleClientSmoke.tick(client);
       return;
     }
     boolean jei = ModList.get().isLoaded("jei");
@@ -577,7 +577,9 @@ public final class SlimeClientSmoke {
               ModItems.HERALD_SLIME.get(),
               ModItems.COMBAT_SLIME.get(),
               ModItems.CLEANING_SLIME.get(),
-              ModItems.SADDLE_SLIME.get()))
+              ModItems.SADDLE_SLIME.get(),
+              ModItems.FARMER_SLIME.get(),
+              ModItems.LUMBERJACK_SLIME.get()))
         if (!client
             .getItemRenderer()
             .getModel(new ItemStack(item), client.level, client.player, 0)
@@ -588,13 +590,24 @@ public final class SlimeClientSmoke {
           throw new IllegalStateException("All companion models must share their summoning icon");
       for (var emblem :
           java.util.Map.of(
-                  ModItems.FRIENDLY_SLIME.get(), "heart_of_the_sea",
-                  ModItems.MINING_SLIME.get(), "iron_pickaxe",
-                  ModItems.TRANSPORT_SLIME.get(), "bundle",
-                  ModItems.HERALD_SLIME.get(), "firework_rocket",
-                  ModItems.COMBAT_SLIME.get(), "iron_sword",
-                  ModItems.CLEANING_SLIME.get(), "brush",
-                  ModItems.SADDLE_SLIME.get(), "saddle")
+                  ModItems.FRIENDLY_SLIME.get(),
+                  "heart_of_the_sea",
+                  ModItems.MINING_SLIME.get(),
+                  "iron_pickaxe",
+                  ModItems.TRANSPORT_SLIME.get(),
+                  "bundle",
+                  ModItems.HERALD_SLIME.get(),
+                  "firework_rocket",
+                  ModItems.COMBAT_SLIME.get(),
+                  "iron_sword",
+                  ModItems.CLEANING_SLIME.get(),
+                  "brush",
+                  ModItems.SADDLE_SLIME.get(),
+                  "saddle",
+                  ModItems.FARMER_SLIME.get(),
+                  "iron_hoe",
+                  ModItems.LUMBERJACK_SLIME.get(),
+                  "iron_axe")
               .entrySet()) {
         var expected =
             net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
@@ -853,7 +866,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.15-" + suffix + ".png")
+            .resolve("../verification/0.1.16-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

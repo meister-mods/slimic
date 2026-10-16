@@ -20,6 +20,12 @@ public final class FriendlySlimeInteractions {
   private FriendlySlimeInteractions() {}
 
   @SubscribeEvent
+  public static void preserveFarmland(
+      net.minecraftforge.event.level.BlockEvent.FarmlandTrampleEvent event) {
+    if (event.getEntity() instanceof FarmerSlime) event.setCanceled(true);
+  }
+
+  @SubscribeEvent
   public static void hostileTargets(EntityJoinLevelEvent event) {
     if (!event.getLevel().isClientSide
         && event.getEntity() instanceof Mob mob

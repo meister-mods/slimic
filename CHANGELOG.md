@@ -4,6 +4,19 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.16] - 2026-10-16
+
+### Added
+
+- Farming Slimes equip the exact crafting hoe, wear straw hats, register farmland on the Farm order, harvest and replant crops, restore registered soil, and avoid trampling farmland.
+- Lumberjack Slimes equip the exact crafting axe, wear leather-style caps, fell natural trees around their release origin, and reserve matching saplings to replant the original stumps.
+- Both workers have twice the common Detection Range, ordinary cargo bags, work growth, stamina costs, transport support requests, distinct summoning crests, and optional JEI recipes.
+
+### Validation
+
+- Native tests cover crop and tree work, exact equipment, plot snapshots, replanting, soil exclusion, protections, full bags, tool requests, saved state, and all-nine companion revival.
+- Client validation covers the new hats, held equipment, management screens, recipe families and profession crests with and without JEI.
+
 ## [0.1.15] - 2026-10-16
 
 ### Changed

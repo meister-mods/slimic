@@ -29,6 +29,8 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.COMBAT_SLIME.get());
                         output.accept(ModItems.CLEANING_SLIME.get());
                         output.accept(ModItems.SADDLE_SLIME.get());
+                        output.accept(ModItems.FARMER_SLIME.get());
+                        output.accept(ModItems.LUMBERJACK_SLIME.get());
                         output.accept(ModItems.SLIME_CHEST.get());
                         output.accept(ModItems.BROKEN_SLIME.get());
                         for (var chestplate :

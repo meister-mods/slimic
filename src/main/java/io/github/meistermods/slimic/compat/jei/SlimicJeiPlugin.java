@@ -2,7 +2,9 @@ package io.github.meistermods.slimic.compat.jei;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
+import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
@@ -76,6 +78,21 @@ public final class SlimicJeiPlugin implements IModPlugin {
     for (var item : ForgeRegistries.ITEMS.getValues()) {
       ItemStack stack = new ItemStack(item);
       var key = ForgeRegistries.ITEMS.getKey(item);
+      if (FarmerSlime.isHoe(stack) || LumberjackSlime.isAxe(stack)) {
+        boolean farmer = FarmerSlime.isHoe(stack);
+        String role = farmer ? "farmer" : "lumberjack";
+        recipes.add(
+            new ShapelessRecipe(
+                ResourceLocation.fromNamespaceAndPath(
+                    Slimic.MOD_ID, role + "_slime/" + key.getNamespace() + "/" + key.getPath()),
+                "slimic:" + role + "_slime",
+                CraftingBookCategory.MISC,
+                CompanionRecipe.field(new ItemStack(ModItems.FRIENDLY_SLIME.get()), stack, farmer),
+                NonNullList.of(
+                    Ingredient.EMPTY,
+                    Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                    Ingredient.of(stack))));
+      }
       if (CombatSlime.isSword(stack))
         recipes.add(
             new ShapelessRecipe(
@@ -111,7 +128,11 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 Ingredient.of(Items.ROTTEN_FLESH))));
     for (var item :
         new net.minecraft.world.item.Item[] {
-          ModItems.COMBAT_SLIME.get(), ModItems.CLEANING_SLIME.get(), ModItems.SLIME_ARMOR.get()
+          ModItems.COMBAT_SLIME.get(),
+          ModItems.CLEANING_SLIME.get(),
+          ModItems.SLIME_ARMOR.get(),
+          ModItems.FARMER_SLIME.get(),
+          ModItems.LUMBERJACK_SLIME.get()
         }) {
       registration.addIngredientInfo(
           new ItemStack(item),

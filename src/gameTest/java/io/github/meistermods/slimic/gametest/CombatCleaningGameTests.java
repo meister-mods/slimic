@@ -316,11 +316,14 @@ public final class CombatCleaningGameTests {
           kind == CompanionRecipe.Kind.ARMOR ? new ItemStack(Items.DIAMOND_CHESTPLATE) : friendly;
       ItemStack second =
           new ItemStack(
-              kind == CompanionRecipe.Kind.COMBAT
-                  ? Items.IRON_SWORD
-                  : kind == CompanionRecipe.Kind.CLEANING
-                      ? Items.ROTTEN_FLESH
-                      : kind == CompanionRecipe.Kind.SADDLE ? Items.SADDLE : Items.SLIME_BALL);
+              switch (kind) {
+                case COMBAT -> Items.IRON_SWORD;
+                case CLEANING -> Items.ROTTEN_FLESH;
+                case SADDLE -> Items.SADDLE;
+                case ARMOR -> Items.SLIME_BALL;
+                case FARMER -> Items.IRON_HOE;
+                case LUMBERJACK -> Items.IRON_AXE;
+              });
       grid.setItem(3, first);
       grid.setItem(0, second);
       h.assertTrue(

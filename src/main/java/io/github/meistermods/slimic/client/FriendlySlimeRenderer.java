@@ -24,6 +24,7 @@ public final class FriendlySlimeRenderer
     super(context, new TintedSlimeModel(context.bakeLayer(ModelLayers.SLIME)), 0.5F);
     addLayer(new TintedSlimeOuterLayer(this, context));
     addLayer(new MiningSlimeLayer(this, context));
+    addLayer(new FieldSlimeLayer(this, context));
     addLayer(new CombatSlimeLayer(this, context));
     addLayer(new SaddleSlimeLayer(this, context));
     addLayer(new TransportSlimeLayer(this, context));
@@ -56,7 +57,9 @@ public final class FriendlySlimeRenderer
   protected void renderNameTag(
       FriendlySlime slime, Component name, PoseStack pose, MultiBufferSource buffers, int light) {
     pose.pushPose();
-    if (slime instanceof MiningSlime) pose.translate(0.0, 0.4, 0.0);
+    if (slime instanceof MiningSlime
+        || slime instanceof io.github.meistermods.slimic.entity.FieldSlime)
+      pose.translate(0.0, 0.4, 0.0);
     if (slime instanceof HeraldSlime) pose.translate(0.0, 0.8, 0.0);
     super.renderNameTag(slime, name, pose, buffers, light);
     pose.popPose();

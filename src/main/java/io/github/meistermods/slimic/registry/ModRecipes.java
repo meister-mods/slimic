@@ -55,6 +55,22 @@ public final class ModRecipes {
                   (id, category) ->
                       new CompanionRecipe(id, category, CompanionRecipe.Kind.SADDLE)));
 
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> FARMER_SLIME =
+      SERIALIZERS.register(
+          "farmer_slime",
+          () ->
+              new SimpleCraftingRecipeSerializer<>(
+                  (id, category) ->
+                      new CompanionRecipe(id, category, CompanionRecipe.Kind.FARMER)));
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>>
+      LUMBERJACK_SLIME =
+          SERIALIZERS.register(
+              "lumberjack_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new CompanionRecipe(id, category, CompanionRecipe.Kind.LUMBERJACK)));
+
   private ModRecipes() {}
 
   public static final RegistryObject<SimpleCraftingRecipeSerializer<HeraldSlimeRecipe>>

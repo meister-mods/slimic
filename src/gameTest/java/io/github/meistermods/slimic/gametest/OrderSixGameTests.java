@@ -40,11 +40,13 @@ public final class OrderSixGameTests {
         ModEntities.HERALD_SLIME.get(),
         ModEntities.COMBAT_SLIME.get(),
         ModEntities.CLEANING_SLIME.get(),
-        ModEntities.SADDLE_SLIME.get());
+        ModEntities.SADDLE_SLIME.get(),
+        ModEntities.FARMER_SLIME.get(),
+        ModEntities.LUMBERJACK_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "order_six", timeoutTicks = 80)
-  public static void allSevenDeathsPreserveAndReviveExactCompanions(GameTestHelper h) {
+  public static void allNineDeathsPreserveAndReviveExactCompanions(GameTestHelper h) {
     LoadedWorkArea area = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SLIME_BALL, 20));
@@ -61,6 +63,12 @@ public final class OrderSixGameTests {
       pet.upgradeStat(SlimeStat.HEALTH);
       if (pet instanceof BagSlime bag)
         bag.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 13));
+      if (pet instanceof FieldSlime field) {
+        var tool =
+            new ItemStack(field instanceof FarmerSlime ? Items.DIAMOND_HOE : Items.DIAMOND_AXE);
+        tool.setDamageValue(12);
+        field.setTool(tool);
+      }
       if (pet instanceof CombatSlime fighter)
         fighter.setEquipment(0, new ItemStack(Items.DIAMOND_SWORD));
       if (pet instanceof SaddleSlime mount) {
@@ -109,6 +117,10 @@ public final class OrderSixGameTests {
               h.assertTrue(
                   bag.getBag().getStackInSlot(0).getCount() == 13,
                   "Cargo stays inside the revived companion");
+            if (revived instanceof FieldSlime field)
+              h.assertTrue(
+                  field.getTool().getDamageValue() == 12 && field.matchesTool(field.getTool()),
+                  "Field tool and wear survive revival");
             if (revived instanceof CombatSlime fighter)
               h.assertTrue(fighter.getEquipment(0).is(Items.DIAMOND_SWORD), "Weapon is retained");
             if (revived instanceof SaddleSlime mount)
@@ -118,8 +130,8 @@ public final class OrderSixGameTests {
             revived.discard();
           }
           h.assertTrue(
-              owner.getMainHandItem().getCount() == 13,
-              "Seven revivals consume exactly seven balls");
+              owner.getMainHandItem().getCount() == 20 - types().size(),
+              "Each revival consumes exactly one ball");
           h.assertTrue(
               h.getLevel()
                   .getEntitiesOfClass(ItemEntity.class, new AABB(positions.get(0)).inflate(16))
@@ -288,7 +300,21 @@ public final class OrderSixGameTests {
   @GameTest(template = "empty", batch = "order_six", timeoutTicks = 200)
   public static void aWaitingWorkerEscapesRealDamageWithoutLosingItsOrder(GameTestHelper h) {
     LoadedWorkArea a = new LoadedWorkArea(h);
+    // Keep every random escape candidate on a loaded, level surface.
+    for (int x = -8; x < 24; x++)
+      for (int z = -8; z < 24; z++) {
+        BlockPos floor = BlockPos.containing(a.point(x, 100, z));
+        h.getLevel()
+            .setBlock(floor, net.minecraft.world.level.block.Blocks.BEDROCK.defaultBlockState(), 2);
+        for (int y = 1; y <= 7; y++)
+          h.getLevel()
+              .setBlock(
+                  floor.above(y),
+                  net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(),
+                  2);
+      }
     var pet = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    pet.getRandom().setSeed(1);
     pet.moveTo(a.point(8, 101, 8));
     pet.tame(h.makeMockSurvivalPlayer());
     pet.setWaiting(true);

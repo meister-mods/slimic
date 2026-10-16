@@ -4,6 +4,7 @@ import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
+import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
@@ -89,15 +90,17 @@ public final class SlimeMenu extends AbstractContainerMenu {
                   case HEALTH -> (int) (slime.getHealth() * 10);
                   case MODE -> slime.isOrderedToSit() ? WAIT : slime.isWorking() ? WORK : FOLLOW;
                   case STATUS ->
-                      slime instanceof MiningSlime miner
-                          ? miner.getMiningStatus().ordinal()
-                          : slime instanceof TransportSlime carrier
-                              ? carrier.getTransportStatus().ordinal()
-                              : slime instanceof CombatSlime fighter
-                                  ? fighter.getCombatStatus().ordinal()
-                                  : slime instanceof CleaningSlime cleaner
-                                      ? cleaner.getCleaningStatus().ordinal()
-                                      : 0;
+                      slime instanceof FieldSlime field
+                          ? field.getFieldStatus().ordinal()
+                          : slime instanceof MiningSlime miner
+                              ? miner.getMiningStatus().ordinal()
+                              : slime instanceof TransportSlime carrier
+                                  ? carrier.getTransportStatus().ordinal()
+                                  : slime instanceof CombatSlime fighter
+                                      ? fighter.getCombatStatus().ordinal()
+                                      : slime instanceof CleaningSlime cleaner
+                                          ? cleaner.getCleaningStatus().ordinal()
+                                          : 0;
                   case FILTERS -> {
                     int mask = 0;
                     if (slime instanceof CombatSlime fighter)
@@ -182,15 +185,17 @@ public final class SlimeMenu extends AbstractContainerMenu {
   private static int equipmentSlots(FriendlySlime slime) {
     return slime instanceof MiningSlime || slime instanceof SaddleSlime
         ? 2
-        : slime instanceof CombatSlime ? 3 : 0;
+        : slime instanceof CombatSlime ? 3 : slime instanceof FieldSlime ? 1 : 0;
   }
 
   private static boolean matchesEquipment(FriendlySlime slime, int slot, ItemStack stack) {
-    return slime instanceof MiningSlime
-        ? MiningSlime.matchesToolSlot(slot, stack)
-        : slime instanceof SaddleSlime
-            ? SaddleSlime.matchesEquipment(slot, stack)
-            : slime instanceof CombatSlime && CombatSlime.matchesEquipment(slot, stack);
+    return slime instanceof FieldSlime field
+        ? slot == 0 && field.matchesTool(stack)
+        : slime instanceof MiningSlime
+            ? MiningSlime.matchesToolSlot(slot, stack)
+            : slime instanceof SaddleSlime
+                ? SaddleSlime.matchesEquipment(slot, stack)
+                : slime instanceof CombatSlime && CombatSlime.matchesEquipment(slot, stack);
   }
 
   public FriendlySlime slime() {
@@ -332,11 +337,13 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack getItem(int slot) {
-      return slime instanceof MiningSlime miner
-          ? miner.getTool(slot)
-          : slime instanceof SaddleSlime mount
-              ? mount.getEquipment(slot)
-              : ((CombatSlime) slime).getEquipment(slot);
+      return slime instanceof FieldSlime field
+          ? field.getTool()
+          : slime instanceof MiningSlime miner
+              ? miner.getTool(slot)
+              : slime instanceof SaddleSlime mount
+                  ? mount.getEquipment(slot)
+                  : ((CombatSlime) slime).getEquipment(slot);
     }
 
     @Override
@@ -355,7 +362,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-      if (slime instanceof MiningSlime miner) miner.setTool(slot, stack);
+      if (slime instanceof FieldSlime field) field.setTool(stack);
+      else if (slime instanceof MiningSlime miner) miner.setTool(slot, stack);
       else if (slime instanceof SaddleSlime mount) mount.setEquipment(slot, stack);
       else ((CombatSlime) slime).setEquipment(slot, stack);
     }

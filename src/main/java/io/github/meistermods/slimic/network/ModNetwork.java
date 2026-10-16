@@ -13,12 +13,13 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ModNetwork {
+  private static final String PROTOCOL_VERSION = "8";
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "main"),
-          () -> "7",
-          "7"::equals,
-          "7"::equals);
+          () -> PROTOCOL_VERSION,
+          PROTOCOL_VERSION::equals,
+          PROTOCOL_VERSION::equals);
 
   private ModNetwork() {}
 

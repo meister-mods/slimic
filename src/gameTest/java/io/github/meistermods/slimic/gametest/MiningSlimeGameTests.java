@@ -108,8 +108,10 @@ public final class MiningSlimeGameTests {
             .getLevel()
             .getRecipeManager()
             .getRecipeFor(RecipeType.CRAFTING, invalid, helper.getLevel())
-            .isEmpty(),
-        "Axes must not count as pickaxes");
+            .orElseThrow()
+            .assemble(invalid, helper.getLevel().registryAccess())
+            .is(ModItems.LUMBERJACK_SLIME.get()),
+        "Axes specialize as lumberjacks instead of miners");
     helper.succeed();
   }
 

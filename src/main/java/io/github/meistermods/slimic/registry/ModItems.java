@@ -3,8 +3,10 @@ package io.github.meistermods.slimic.registry;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.item.CleaningSlimeItem;
 import io.github.meistermods.slimic.item.CombatSlimeItem;
+import io.github.meistermods.slimic.item.FarmerSlimeItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.HeraldSlimeItem;
+import io.github.meistermods.slimic.item.LumberjackSlimeItem;
 import io.github.meistermods.slimic.item.MiningSlimeItem;
 import io.github.meistermods.slimic.item.SaddleSlimeItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
@@ -95,6 +97,11 @@ public final class ModItems {
           () ->
               new BlockItem(
                   ModBlocks.BROKEN_SLIME.get(), new Item.Properties().stacksTo(1).fireResistant()));
+
+  public static final RegistryObject<Item> FARMER_SLIME =
+      ITEMS.register("farmer_slime", () -> new FarmerSlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> LUMBERJACK_SLIME =
+      ITEMS.register("lumberjack_slime", () -> new LumberjackSlimeItem(new Item.Properties()));
 
   private ModItems() {}
 

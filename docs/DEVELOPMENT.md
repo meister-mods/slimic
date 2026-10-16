@@ -63,7 +63,7 @@ Tests use a structure loaded one block above its marker, so the fixture floor is
 
 Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
 
-Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 7 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
+Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 8 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
 
 Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe and shovel use the native main-hand and off-hand equipment slots, keeping client rendering and item damage synchronized. Mining progress is bounded by one completed block per tick, searches process a limited number of chunk positions, and no neighbouring chunk is loaded for target discovery.
 
@@ -153,7 +153,7 @@ An explicit Mine command rebases a previously anchored companion when its curren
 
 The transport pack is placed behind the outer slime cube; side and rear straps also clear both body surfaces. This removes the coplanar inner-body/pack face and overlapping outer surfaces while sharing the companion's pose and squish transform. The Creative tab emits companion items together, then storage, armor in material order, and the tuner.
 
-Regressions cover all seven initial growth thresholds, conversion of 200 saved activity without lost or repeated awards, starting a new quarry after following into another chunk, an advancing low-speed miner, and block replacement with exact drops and tool wear. Client checks inspect the pack from multiple angles and record the actual Creative item order.
+Regressions cover all nine initial growth thresholds, conversion of 200 saved activity without lost or repeated awards, starting a new quarry after following into another chunk, an advancing low-speed miner, and block replacement with exact drops and tool wear. Client checks inspect the pack from multiple angles and record the actual Creative item order.
 
 ## Threats, collapse, and active growth
 
@@ -166,3 +166,14 @@ Real non-allied damage and shield blocks grant at most one defense activity per 
 Heralds retain per-worker repeat cooldowns in `HeraldWarningCooldowns`, separate from the episode history. They repeat every 200 active monitoring ticks after the first signal, pause in storage, and stop signaling resolved or out-of-range workers. Legacy `HeraldCooldown` loads into existing warning records.
 
 Protocol 7 changes riding input to ascent and boost. Boost state is synchronized; the server spends 0.1 stamina per airborne tick, 0.5 per ground-sprint tick, and 0.75 per boosted-flight tick. Empty stamina enables synchronized controlled descent at 0.12 blocks per tick, with ascent suppressed, no airborne recovery, and a grounded 25% recovery latch before flight or sprinting resumes. Equipment and stored companion schema remain compatible; `SlimeDataVersion` stays 1.
+
+
+## Surface workers
+
+`FieldSlime` shares a single native main-hand tool, normal bag, stamina recovery, loaded-area checks, protected harvesting/placement, and FARM/LOG work orders. Full inventories request CARGO_PICKUP; an empty broken-tool slot requests TOOL_SUPPLY. Missing seeds use SEEDS_MISSING without creating a tool request. Successful actions award activity only after the world edit succeeds. Networking uses protocol 8.
+
+`BlockSurvey` copies palettes of matching loaded chunk sections, then inspects at most 512 cells per worker tick. Farming activation freezes the existing farmland selection; serialization finishes any pending snapshot so recovery never loses recognized plots. Plot coordinates and crop identities are persistent. Tilling uses the equipped hoe's Forge tool action and native placement cancellation; block removal uses owner-attributed survival break events and simulates all drops before changing terrain.
+
+Lumberjack discovery inspects at most 64 connected candidates per tick, limits trees to 512 logs and 4,096 visited cells, and never loads chunks. Stump-ground and natural-leaf checks exclude decorative structures. Matching saplings are reserved before cutting and serialized separately from transportable cargo. Log queues and replantings resume after world reload; release establishes a new origin and returns unused reservations. Both roles multiply effective detection by two while tuner fields retain the common base.
+
+Native regressions cover exact specialization tools, frozen plots, same-crop replanting, soil restoration/exclusion, farmland trampling, tall-tree felling and replanting, decorative leaves, seed requirements, full inventories, cancelled edits, tool requests, and recovery. Client checks cover hats, held tools, management layouts, both new JEI recipe families, and all nine baked profession crests with JEI enabled and disabled.
