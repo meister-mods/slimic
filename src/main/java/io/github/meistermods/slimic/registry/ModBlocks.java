@@ -1,6 +1,8 @@
 package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.block.BrokenSlimeBlock;
+import io.github.meistermods.slimic.block.BrokenSlimeBlockEntity;
 import io.github.meistermods.slimic.block.SlimeChestBlock;
 import io.github.meistermods.slimic.block.SlimeChestBlockEntity;
 import net.minecraft.world.level.block.Block;
@@ -35,4 +37,21 @@ public final class ModBlocks {
                   .build(null));
 
   private ModBlocks() {}
+
+  public static final RegistryObject<Block> BROKEN_SLIME =
+      BLOCKS.register(
+          "broken_slime",
+          () ->
+              new BrokenSlimeBlock(
+                  BlockBehaviour.Properties.of()
+                      .mapColor(MapColor.COLOR_GREEN)
+                      .strength(.8F, 3_600_000F)
+                      .sound(SoundType.SLIME_BLOCK)
+                      .pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK)));
+  public static final RegistryObject<BlockEntityType<BrokenSlimeBlockEntity>> BROKEN_SLIME_ENTITY =
+      BLOCK_ENTITIES.register(
+          "broken_slime",
+          () ->
+              BlockEntityType.Builder.of(BrokenSlimeBlockEntity::new, BROKEN_SLIME.get())
+                  .build(null));
 }

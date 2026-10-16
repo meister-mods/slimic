@@ -3,13 +3,17 @@ package io.github.meistermods.slimic.registry;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
+import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -75,6 +79,32 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":saddle_slime"));
 
+  public static final RegistryObject<EntityType<FarmerSlime>> FARMER_SLIME =
+      ENTITY_TYPES.register(
+          "farmer_slime",
+          () ->
+              EntityType.Builder.of(FarmerSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":farmer_slime"));
+  public static final RegistryObject<EntityType<LumberjackSlime>> LUMBERJACK_SLIME =
+      ENTITY_TYPES.register(
+          "lumberjack_slime",
+          () ->
+              EntityType.Builder.of(LumberjackSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":lumberjack_slime"));
+
+  public static final RegistryObject<EntityType<GuardianAngelSlime>> GUARDIAN_ANGEL_SLIME =
+      ENTITY_TYPES.register(
+          "guardian_angel_slime",
+          () ->
+              EntityType.Builder.of(GuardianAngelSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":guardian_angel_slime"));
+
   private ModEntities() {}
 
   public static final RegistryObject<EntityType<HeraldSlime>> HERALD_SLIME =
@@ -88,6 +118,11 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(
+        GUARDIAN_ANGEL_SLIME.get(),
+        FriendlySlime.createAttributes().add(Attributes.FLYING_SPEED, .3).build());
+    event.put(LUMBERJACK_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(FARMER_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(SADDLE_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(FRIENDLY_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(MINING_SLIME.get(), FriendlySlime.createAttributes().build());

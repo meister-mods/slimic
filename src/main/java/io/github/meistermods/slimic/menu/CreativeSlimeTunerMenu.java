@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.menu;
 
 import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.registry.ModItems;
 import io.github.meistermods.slimic.registry.ModMenus;
@@ -13,13 +14,13 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 
-public final class TunerMenu extends AbstractContainerMenu {
+public final class CreativeSlimeTunerMenu extends AbstractContainerMenu {
   private final FriendlySlime slime;
   private final ContainerData data;
   private final IntContainerData wireData;
   private int result;
 
-  public TunerMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
+  public CreativeSlimeTunerMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
     this(id, inventory, resolve(inventory, buffer.readVarInt()));
   }
 
@@ -27,8 +28,8 @@ public final class TunerMenu extends AbstractContainerMenu {
     return inventory.player.level().getEntity(id) instanceof FriendlySlime slime ? slime : null;
   }
 
-  public TunerMenu(int id, Inventory inventory, FriendlySlime slime) {
-    super(ModMenus.TUNER.get(), id);
+  public CreativeSlimeTunerMenu(int id, Inventory inventory, FriendlySlime slime) {
+    super(ModMenus.CREATIVE_TUNER.get(), id);
     this.slime = slime;
     data =
         inventory.player.level().isClientSide
@@ -94,8 +95,8 @@ public final class TunerMenu extends AbstractContainerMenu {
   public boolean stillValid(Player player) {
     return player.getAbilities().instabuild
         && !player.isSpectator()
-        && (player.getMainHandItem().is(ModItems.SLIME_TUNER.get())
-            || player.getOffhandItem().is(ModItems.SLIME_TUNER.get()))
+        && (player.getMainHandItem().is(ModItems.CREATIVE_SLIME_TUNER.get())
+            || player.getOffhandItem().is(ModItems.CREATIVE_SLIME_TUNER.get()))
         && (slime == null
             || (slime.isAlive()
                 && !slime.isRemoved()
@@ -115,7 +116,10 @@ public final class TunerMenu extends AbstractContainerMenu {
         || points < 0
         || points > 32767) return false;
     for (SlimeStat stat : SlimeStat.values())
-      if (!stat.acceptsTunedValue(values[stat.ordinal()])) return false;
+      if (!stat.acceptsTunedValue(values[stat.ordinal()])
+          || (stat == SlimeStat.HEALTH
+              && slime instanceof GuardianAngelSlime
+              && values[stat.ordinal()] > 102.4)) return false;
     if (health > 1024 || stamina > values[SlimeStat.STAMINA.ordinal()]) return false;
     if (slime instanceof BagSlime bag) {
       int capacity = (int) values[SlimeStat.CAPACITY.ordinal()] * slime.capacityMultiplier();

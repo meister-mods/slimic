@@ -6,9 +6,9 @@ import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
 import io.github.meistermods.slimic.menu.IntContainerData;
 import io.github.meistermods.slimic.menu.SlimeMenu;
-import io.github.meistermods.slimic.menu.TunerMenu;
 import io.github.meistermods.slimic.registry.ModEntities;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -207,8 +207,8 @@ public final class AuditGameTests {
                 "Large detection bonus",
                 1000,
                 AttributeModifier.Operation.ADDITION));
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), slime);
-    TunerMenu tuner = new TunerMenu(2, owner.getInventory(), slime);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), slime);
+    CreativeSlimeTunerMenu tuner = new CreativeSlimeTunerMenu(2, owner.getInventory(), slime);
     assertRoundTrip(h, menu, false);
     assertRoundTrip(h, tuner, true);
     h.succeed();
@@ -216,7 +216,7 @@ public final class AuditGameTests {
 
   private static void assertRoundTrip(
       GameTestHelper h, net.minecraft.world.inventory.AbstractContainerMenu menu, boolean tuner) {
-    var slime = tuner ? ((TunerMenu) menu).slime() : ((SlimeMenu) menu).slime();
+    var slime = tuner ? ((CreativeSlimeTunerMenu) menu).slime() : ((SlimeMenu) menu).slime();
     slime.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(100);
     var values = new net.minecraft.world.inventory.SimpleContainerData(tuner ? 13 : 20);
     var receiver = new IntContainerData(values, true);
@@ -247,7 +247,8 @@ public final class AuditGameTests {
     menu.broadcastChanges();
     h.assertTrue(receiver.isReady(), "The final snapshot marker must arrive after the data");
     for (SlimeStat stat : SlimeStat.values()) {
-      double expected = tuner ? ((TunerMenu) menu).value(stat) : ((SlimeMenu) menu).value(stat);
+      double expected =
+          tuner ? ((CreativeSlimeTunerMenu) menu).value(stat) : ((SlimeMenu) menu).value(stat);
       h.assertTrue(
           values.get(stat.ordinal()) == Math.round(expected * stat.syncScale()),
           "Native packet round-trip must retain "

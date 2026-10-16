@@ -16,9 +16,9 @@ import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = Slimic.MOD_ID, value = Dist.CLIENT)
 public final class SaddleSlimeControls {
-  public static final KeyMapping DESCEND =
+  public static final KeyMapping BOOST =
       new KeyMapping(
-          "key.slimic.descend",
+          "key.slimic.boost",
           KeyConflictContext.IN_GAME,
           InputConstants.Type.KEYSYM,
           GLFW.GLFW_KEY_LEFT_CONTROL,
@@ -33,7 +33,7 @@ public final class SaddleSlimeControls {
   public static final class Registration {
     @SubscribeEvent
     public static void register(RegisterKeyMappingsEvent event) {
-      event.register(DESCEND);
+      event.register(BOOST);
     }
   }
 
@@ -43,9 +43,9 @@ public final class SaddleSlimeControls {
     var client = Minecraft.getInstance();
     if (client.player == null || !(client.player.getVehicle() instanceof SaddleSlime slime)) return;
     boolean up = client.screen == null && client.options.keyJump.isDown();
-    boolean down = client.screen == null && DESCEND.isDown();
-    // Native riding packets supply steering; this packet only supplies vertical/jump intent.
-    if (slime.setRiderInput(client.player, up, down))
-      ModNetwork.CHANNEL.sendToServer(new ModNetwork.RideSlime(slime.getId(), up, down));
+    boolean boost = client.screen == null && BOOST.isDown();
+    // Native riding packets supply steering; this packet only supplies jump and boost intent.
+    if (slime.setRiderInput(client.player, up, boost))
+      ModNetwork.CHANNEL.sendToServer(new ModNetwork.RideSlime(slime.getId(), up, boost));
   }
 }

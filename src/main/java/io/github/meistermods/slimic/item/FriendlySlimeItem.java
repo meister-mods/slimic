@@ -2,8 +2,11 @@ package io.github.meistermods.slimic.item;
 
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
+import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeData;
@@ -48,19 +51,25 @@ public class FriendlySlimeItem extends Item {
   public static ItemStack fromSlime(FriendlySlime slime) {
     ItemStack stack =
         new ItemStack(
-            slime instanceof SaddleSlime
-                ? ModItems.SADDLE_SLIME.get()
-                : slime instanceof CombatSlime
-                    ? ModItems.COMBAT_SLIME.get()
-                    : slime instanceof CleaningSlime
-                        ? ModItems.CLEANING_SLIME.get()
-                        : slime instanceof HeraldSlime
-                            ? ModItems.HERALD_SLIME.get()
-                            : slime instanceof TransportSlime
-                                ? ModItems.TRANSPORT_SLIME.get()
-                                : slime instanceof MiningSlime
-                                    ? ModItems.MINING_SLIME.get()
-                                    : ModItems.FRIENDLY_SLIME.get());
+            slime instanceof GuardianAngelSlime
+                ? ModItems.GUARDIAN_ANGEL_SLIME.get()
+                : slime instanceof FarmerSlime
+                    ? ModItems.FARMER_SLIME.get()
+                    : slime instanceof LumberjackSlime
+                        ? ModItems.LUMBERJACK_SLIME.get()
+                        : slime instanceof SaddleSlime
+                            ? ModItems.SADDLE_SLIME.get()
+                            : slime instanceof CombatSlime
+                                ? ModItems.COMBAT_SLIME.get()
+                                : slime instanceof CleaningSlime
+                                    ? ModItems.CLEANING_SLIME.get()
+                                    : slime instanceof HeraldSlime
+                                        ? ModItems.HERALD_SLIME.get()
+                                        : slime instanceof TransportSlime
+                                            ? ModItems.TRANSPORT_SLIME.get()
+                                            : slime instanceof MiningSlime
+                                                ? ModItems.MINING_SLIME.get()
+                                                : ModItems.FRIENDLY_SLIME.get());
     CompoundTag data = slime.saveWithoutId(new CompoundTag());
     // Passengers and tethers remain in the world; preserve the slime's own saved state.
     data.remove("Passengers");
@@ -149,6 +158,22 @@ public class FriendlySlimeItem extends Item {
       BlockPos position,
       boolean alignToSurface,
       boolean offsetUp) {
+    return spawn(level, player, stack, position, alignToSurface, offsetUp, false);
+  }
+
+  public boolean revive(ServerLevel level, Player player, ItemStack stored, BlockPos pos) {
+    if (!hasStoredSlime(stored)) return false;
+    return spawn(level, player, stored, pos, false, false, true);
+  }
+
+  private boolean spawn(
+      ServerLevel level,
+      Player player,
+      ItemStack stack,
+      BlockPos position,
+      boolean alignToSurface,
+      boolean offsetUp,
+      boolean reviving) {
     boolean restoring = hasStoredSlime(stack);
     CompoundTag saved =
         restoring ? SlimeData.migrate(stack.getTag().getCompound(SLIME_DATA)) : null;
@@ -159,7 +184,7 @@ public class FriendlySlimeItem extends Item {
           || !saved.hasUUID("Owner")
           || !saved.contains("Health", Tag.TAG_ANY_NUMERIC)
           || !Float.isFinite(saved.getFloat("Health"))
-          || saved.getFloat("Health") <= 0.0F) {
+          || (!reviving && saved.getFloat("Health") <= 0.0F)) {
         return false;
       }
       for (ServerLevel world : level.getServer().getAllLevels()) {
@@ -187,6 +212,11 @@ public class FriendlySlimeItem extends Item {
                     saved.remove("Passengers");
                     saved.remove("Leash");
                     entity.load(saved);
+                    if (reviving) {
+                      entity.setHealth(entity.getMaxHealth());
+                      entity.clearFire();
+                      entity.deathTime = entity.hurtTime = 0;
+                    }
                     entity.moveTo(spawnPosition.x, spawnPosition.y, spawnPosition.z, yaw, 0.0F);
                     entity.setDeltaMovement(Vec3.ZERO);
                     entity.fallDistance = 0.0F;

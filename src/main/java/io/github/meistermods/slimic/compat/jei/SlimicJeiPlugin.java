@@ -2,10 +2,13 @@ package io.github.meistermods.slimic.compat.jei;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
+import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
+import io.github.meistermods.slimic.recipe.GuardianAngelSlimeRecipe;
 import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
@@ -20,6 +23,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -76,6 +80,21 @@ public final class SlimicJeiPlugin implements IModPlugin {
     for (var item : ForgeRegistries.ITEMS.getValues()) {
       ItemStack stack = new ItemStack(item);
       var key = ForgeRegistries.ITEMS.getKey(item);
+      if (FarmerSlime.isHoe(stack) || LumberjackSlime.isAxe(stack)) {
+        boolean farmer = FarmerSlime.isHoe(stack);
+        String role = farmer ? "farmer" : "lumberjack";
+        recipes.add(
+            new ShapelessRecipe(
+                ResourceLocation.fromNamespaceAndPath(
+                    Slimic.MOD_ID, role + "_slime/" + key.getNamespace() + "/" + key.getPath()),
+                "slimic:" + role + "_slime",
+                CraftingBookCategory.MISC,
+                CompanionRecipe.field(new ItemStack(ModItems.FRIENDLY_SLIME.get()), stack, farmer),
+                NonNullList.of(
+                    Ingredient.EMPTY,
+                    Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                    Ingredient.of(stack))));
+      }
       if (CombatSlime.isSword(stack))
         recipes.add(
             new ShapelessRecipe(
@@ -110,8 +129,12 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
                 Ingredient.of(Items.ROTTEN_FLESH))));
     for (var item :
-        new net.minecraft.world.item.Item[] {
-          ModItems.COMBAT_SLIME.get(), ModItems.CLEANING_SLIME.get(), ModItems.SLIME_ARMOR.get()
+        new Item[] {
+          ModItems.COMBAT_SLIME.get(),
+          ModItems.CLEANING_SLIME.get(),
+          ModItems.SLIME_ARMOR.get(),
+          ModItems.FARMER_SLIME.get(),
+          ModItems.LUMBERJACK_SLIME.get()
         }) {
       registration.addIngredientInfo(
           new ItemStack(item),
@@ -133,6 +156,27 @@ public final class SlimicJeiPlugin implements IModPlugin {
         new ItemStack(ModItems.SADDLE_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.saddle_slime"));
+    recipes.add(
+        new ShapelessRecipe(
+            ResourceLocation.fromNamespaceAndPath("slimic", "guardian_angel_slime/totem"),
+            "slimic:guardian_angel_slime",
+            CraftingBookCategory.MISC,
+            GuardianAngelSlimeRecipe.specialize(
+                new ItemStack(ModItems.FRIENDLY_SLIME.get()),
+                new ItemStack(Items.TOTEM_OF_UNDYING)),
+            NonNullList.of(
+                Ingredient.EMPTY,
+                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                Ingredient.of(Items.NETHER_STAR),
+                Ingredient.of(Items.TOTEM_OF_UNDYING))));
+    registration.addIngredientInfo(
+        new ItemStack(ModItems.GUARDIAN_ANGEL_SLIME.get()),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.guardian_angel_slime"));
+    registration.addIngredientInfo(
+        new ItemStack(ModItems.SLIME_TUNER.get()),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.slime_tuner"));
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
     registration.addIngredientInfo(
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),
@@ -155,8 +199,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.herald_slime"));
     registration.addIngredientInfo(
-        new ItemStack(ModItems.SLIME_TUNER.get()),
+        new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()),
         VanillaTypes.ITEM_STACK,
-        Component.translatable("jei.slimic.slime_tuner"));
+        Component.translatable("jei.slimic.creative_slime_tuner"));
   }
 }

@@ -46,8 +46,16 @@ public enum SlimeStat {
   public boolean isUsedBy(FriendlySlime slime) {
     return switch (this) {
       case HEALTH, DEFENSE, MOVEMENT_SPEED -> true;
-      case ATTACK -> slime instanceof CombatSlime;
-      case DETECTION_RANGE -> slime instanceof BagSlime || slime instanceof HeraldSlime;
+      case ATTACK -> slime instanceof CombatSlime || slime instanceof GuardianAngelSlime;
+      case STAMINA ->
+          slime instanceof BagSlime
+              || slime instanceof SaddleSlime
+              || slime instanceof GuardianAngelSlime;
+      case DETECTION_RANGE ->
+          slime instanceof BagSlime
+              || slime instanceof HeraldSlime
+              || slime instanceof GuardianAngelSlime;
+      case WORK_SPEED, REACH -> slime instanceof BagSlime || slime instanceof GuardianAngelSlime;
       default -> slime instanceof BagSlime;
     };
   }

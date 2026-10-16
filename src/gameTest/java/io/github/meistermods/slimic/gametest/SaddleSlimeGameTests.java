@@ -3,7 +3,6 @@ package io.github.meistermods.slimic.gametest;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
-import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
@@ -178,7 +177,7 @@ public final class SaddleSlimeGameTests {
   public static void equipmentOnlyMenuSupportsExactShiftTransfers(GameTestHelper h) {
     Player owner = h.makeMockSurvivalPlayer();
     var slime = pet(h, owner);
-    var menu = new SlimeMenu(1, owner.getInventory(), slime);
+    var menu = TestMenus.create(1, owner.getInventory(), slime);
     ItemStack wings = new ItemStack(Items.ELYTRA);
     wings.setDamageValue(41);
     wings.enchant(Enchantments.UNBREAKING, 3);

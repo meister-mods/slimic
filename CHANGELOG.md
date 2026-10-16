@@ -4,6 +4,77 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.18] - 2026-10-16
+
+### Fixed
+
+- Canceled or zero-value healing keeps the slime ball and suppresses healing effects.
+- Switching to Spectator invalidates an already open companion management screen.
+- Lumberjacks skip temporarily unreachable or protected dropped materials so reachable tree work can continue, and clear obsolete sapling requests when the tree disappears or cargo changes.
+- Guardian beams remain visible when the beam crosses the view but the slime body is outside it.
+
+### Validation
+
+- Twenty independent boundary checks cover saved data, summoning, recipes, interactions, permissions, tuning, inventories, growth, mining, search limits, farming, forestry, logistics, cleaning, heralds, combat, guardians, riding, and storage.
+- Full native regression and client checks cover profession behavior, equipment, animated storage, optional JEI, resource consistency, and release packaging.
+
+## [0.1.17] - 2026-10-16
+
+### Added
+
+- Guardian Angel Slimes fly beside their owners, retaliate with beams, store up to 64 totems and protect against lethal damage. Maximum health stays ten times the common value.
+- A craftable Survival Slime Tuner opens companion management. The former editor is now the Creative Slime Tuner throughout code, registries and UI.
+- Slime balls heal four health; water buckets remove dye. Heralds support manual signals and direct rocket-design replacement.
+- Slime Chests animate their lids with native opening and closing sounds.
+
+### Fixed
+
+- Lumberjacks refresh tree searches when supplied saplings change, skip temporarily unsupplied species, and show the exact sapling type and stump count. Farming and lumberjack status messages are distinct.
+- Surface workers choose reachable standing positions and follow progressive routes across their doubled work range. Miners avoid harvesting wood and revalidate close approach paths. Escape movement retains valid routes through hops and only replaces them with reachable grounded paths.
+- Saddle Slimes accept ordinary mounting interactions while items are held; management uses the Survival tuner.
+
+### Validation
+
+- Native regression coverage includes companion care, management permissions, stored firework designs, guardian crafting and reserve transfers, health scaling, flight, retaliation, lethal protection, sapling resupply, mixed tree species, mining around wood, and chest lids.
+- Client checks cover the guardian halo and wings, reserve synchronization and clicks, animated chests, worker menus and equipment, profession crests, and optional JEI.
+
+## [0.1.16] - 2026-10-16
+
+### Added
+
+- Farming Slimes equip the exact crafting hoe, wear straw hats, register farmland on the Farm order, harvest and replant crops, restore registered soil, and avoid trampling farmland.
+- Lumberjack Slimes equip the exact crafting axe, wear leather-style caps, fell natural trees around their release origin, and reserve matching saplings to replant the original stumps.
+- Both workers have twice the common Detection Range, ordinary cargo bags, work growth, stamina costs, transport support requests, distinct summoning crests, and optional JEI recipes.
+
+### Validation
+
+- Native tests cover crop and tree work, exact equipment, plot snapshots, replanting, soil exclusion, protections, full bags, tool requests, saved state, and all-nine companion revival.
+- Client validation covers the new hats, held equipment, management screens, recipe families and profession crests with and without JEI.
+
+## [0.1.15] - 2026-10-16
+
+### Changed
+
+- Herald signals repeat every ten seconds while a worker remains blocked.
+- Activity growth includes defense, escape movement, and ridden travel.
+- Ground movement speed changes hop frequency while hop propulsion stays fixed.
+- Companion summoning items share a Friendly Slime base with distinct framed profession crests.
+- Winged mounts have paired animated side wings and stamina-powered Ctrl ground and flight sprint. Normal flight also consumes stamina; exhaustion produces a slow controlled landing before grounded recovery.
+
+### Added
+
+- Hostile mobs can target companions; ordinary companions flee after attacks. Creepers receive no additional targeting behavior.
+- Fallen companions become Broken Slime Blocks, preserving their identity, stats, equipment, cargo, and orders. Their owner can revive them with a slimeball.
+
+### Fixed
+
+- Combat slimes face threats while shielding and maintain a usable blocking interval between attacks.
+
+### Validation
+
+- Added native regressions for all-specialization revival, payload-preserving mining and placement, blocked/foreign revival, Creative recovery, hostile targeting, escape, shield timing and cancellation, repeated signals, hop distance, and stamina costs.
+- Client coverage includes shared summoning bases and distinct profession crests, the recovery block model, paired wings, ground and air sprint, and controlled descent after stamina depletion.
+
 ## [0.1.14] - 2026-10-16
 
 ### Changed

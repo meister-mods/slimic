@@ -127,7 +127,7 @@ public final class TransportSlimeGameTests {
     Player owner = helper.makeMockSurvivalPlayer();
     carrier.tame(owner);
     owner.moveTo(carrier.position().add(1, 0, 0));
-    SlimeMenu menu = new SlimeMenu(1, owner.getInventory(), carrier);
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), carrier);
     carrier.getBag().setStackInSlot(53, new ItemStack(Items.EMERALD, 17));
     helper.assertTrue(
         menu.slots.size() == 90
@@ -285,23 +285,36 @@ public final class TransportSlimeGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 400)
   public static void brokenToolIsAutomaticallyReplaced(GameTestHelper helper) {
-    TransportSlime carrier = carrier(helper);
+    var area = new LoadedWorkArea(helper);
+    TransportSlime carrier = area.carrier(new Vec3(6, 101, 6));
     ItemStack worn = new ItemStack(Items.IRON_PICKAXE);
     worn.setDamageValue(worn.getMaxDamage() - 1);
-    MiningSlime miner = miner(helper, carrier, worn);
-    SlimeChestBlockEntity chest = chest(helper, CHEST);
+    MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.moveTo(area.point(6, 101, 8));
+    miner.setOwnerUUID(carrier.getOwnerUUID());
+    miner.setTame(true);
+    miner.setTool(0, worn);
+    helper.getLevel().addFreshEntity(miner);
+    miner.onReleased();
+    var chest = area.chest(9, 101, 6);
     chest.setItem(0, new ItemStack(Items.DIAMOND_PICKAXE));
-    BlockPos ore = ore(helper, miner);
-    helper.setBlock(ore, Blocks.STONE);
+    var ore = BlockPos.containing(area.point(8, 101, 8));
+    helper.getLevel().setBlockAndUpdate(ore, Blocks.STONE.defaultBlockState());
+    helper.assertTrue(helper.getLevel().noCollision(miner), "Miner starts clear of the work block");
     helper.succeedWhen(
         () -> {
-          helper.assertBlockNotPresent(Blocks.STONE, ore);
+          helper.assertTrue(
+              helper.getLevel().getBlockState(ore).isAir(),
+              "The worn tool mines the requested stone");
           helper.assertTrue(
               miner.getPickaxe().is(Items.DIAMOND_PICKAXE) && chest.getItem(0).isEmpty(),
               "A miner whose last durability was consumed must receive a new tool");
           helper.assertTrue(
               count(miner.getBag(), Items.COBBLESTONE) == 1,
               "Replacing a tool must preserve mined resources");
+          miner.discard();
+          carrier.discard();
+          area.close();
         });
   }
 

@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "front": "slimic:block/slime_chest_front",
+    "side": "slimic:block/slime_chest_side",
+    "top": "slimic:block/slime_chest_top",
+    "particle": "slimic:block/slime_chest_side"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        9,
+        1
+      ],
+      "to": [
+        15,
+        14,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "uv": [
+            0,
+            0.0,
+            16,
+            5.714285714285714
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0.0,
+            16,
+            5.714285714285714
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0.0,
+            16,
+            5.714285714285714
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0.0,
+            16,
+            5.714285714285714
+          ]
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

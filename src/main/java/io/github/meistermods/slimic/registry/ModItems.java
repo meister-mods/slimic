@@ -3,15 +3,21 @@ package io.github.meistermods.slimic.registry;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.item.CleaningSlimeItem;
 import io.github.meistermods.slimic.item.CombatSlimeItem;
+import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
+import io.github.meistermods.slimic.item.FarmerSlimeItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.item.GuardianAngelSlimeItem;
 import io.github.meistermods.slimic.item.HeraldSlimeItem;
+import io.github.meistermods.slimic.item.LumberjackSlimeItem;
 import io.github.meistermods.slimic.item.MiningSlimeItem;
 import io.github.meistermods.slimic.item.SaddleSlimeItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.item.TransportSlimeItem;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -41,58 +47,68 @@ public final class ModItems {
           "slime_armor",
           () ->
               new SlimeArmorItem(
-                  net.minecraft.world.item.ArmorMaterials.IRON,
-                  net.minecraft.world.item.Items.IRON_CHESTPLATE,
-                  new Item.Properties()));
+                  ArmorMaterials.IRON, Items.IRON_CHESTPLATE, new Item.Properties()));
 
   public static final RegistryObject<Item> LEATHER_SLIME_ARMOR =
       ITEMS.register(
           "leather_slime_armor",
           () ->
               new SlimeArmorItem(
-                  net.minecraft.world.item.ArmorMaterials.LEATHER,
-                  net.minecraft.world.item.Items.LEATHER_CHESTPLATE,
-                  new Item.Properties()));
+                  ArmorMaterials.LEATHER, Items.LEATHER_CHESTPLATE, new Item.Properties()));
   public static final RegistryObject<Item> CHAINMAIL_SLIME_ARMOR =
       ITEMS.register(
           "chainmail_slime_armor",
           () ->
               new SlimeArmorItem(
-                  net.minecraft.world.item.ArmorMaterials.CHAIN,
-                  net.minecraft.world.item.Items.CHAINMAIL_CHESTPLATE,
-                  new Item.Properties()));
+                  ArmorMaterials.CHAIN, Items.CHAINMAIL_CHESTPLATE, new Item.Properties()));
   public static final RegistryObject<Item> GOLDEN_SLIME_ARMOR =
       ITEMS.register(
           "golden_slime_armor",
           () ->
               new SlimeArmorItem(
-                  net.minecraft.world.item.ArmorMaterials.GOLD,
-                  net.minecraft.world.item.Items.GOLDEN_CHESTPLATE,
-                  new Item.Properties()));
+                  ArmorMaterials.GOLD, Items.GOLDEN_CHESTPLATE, new Item.Properties()));
   public static final RegistryObject<Item> DIAMOND_SLIME_ARMOR =
       ITEMS.register(
           "diamond_slime_armor",
           () ->
               new SlimeArmorItem(
-                  net.minecraft.world.item.ArmorMaterials.DIAMOND,
-                  net.minecraft.world.item.Items.DIAMOND_CHESTPLATE,
-                  new Item.Properties()));
+                  ArmorMaterials.DIAMOND, Items.DIAMOND_CHESTPLATE, new Item.Properties()));
   public static final RegistryObject<Item> NETHERITE_SLIME_ARMOR =
       ITEMS.register(
           "netherite_slime_armor",
           () ->
               new SlimeArmorItem(
-                  net.minecraft.world.item.ArmorMaterials.NETHERITE,
-                  net.minecraft.world.item.Items.NETHERITE_CHESTPLATE,
+                  ArmorMaterials.NETHERITE,
+                  Items.NETHERITE_CHESTPLATE,
                   new Item.Properties().fireResistant()));
 
   public static final RegistryObject<Item> SADDLE_SLIME =
       ITEMS.register("saddle_slime", () -> new SaddleSlimeItem(new Item.Properties()));
 
+  public static final RegistryObject<Item> BROKEN_SLIME =
+      ITEMS.register(
+          "broken_slime",
+          () ->
+              new BlockItem(
+                  ModBlocks.BROKEN_SLIME.get(), new Item.Properties().stacksTo(1).fireResistant()));
+
+  public static final RegistryObject<Item> FARMER_SLIME =
+      ITEMS.register("farmer_slime", () -> new FarmerSlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> LUMBERJACK_SLIME =
+      ITEMS.register("lumberjack_slime", () -> new LumberjackSlimeItem(new Item.Properties()));
+
+  public static final RegistryObject<Item> SLIME_TUNER =
+      ITEMS.register("slime_tuner", () -> new SlimeTunerItem(new Item.Properties().stacksTo(1)));
+  public static final RegistryObject<Item> GUARDIAN_ANGEL_SLIME =
+      ITEMS.register(
+          "guardian_angel_slime", () -> new GuardianAngelSlimeItem(new Item.Properties()));
+
   private ModItems() {}
 
   public static final RegistryObject<Item> HERALD_SLIME =
       ITEMS.register("herald_slime", () -> new HeraldSlimeItem(new Item.Properties()));
-  public static final RegistryObject<Item> SLIME_TUNER =
-      ITEMS.register("slime_tuner", () -> new SlimeTunerItem(new Item.Properties().stacksTo(1)));
+  public static final RegistryObject<Item> CREATIVE_SLIME_TUNER =
+      ITEMS.register(
+          "creative_slime_tuner",
+          () -> new CreativeSlimeTunerItem(new Item.Properties().stacksTo(1)));
 }

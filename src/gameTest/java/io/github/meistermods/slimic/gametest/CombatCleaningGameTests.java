@@ -183,7 +183,7 @@ public final class CombatCleaningGameTests {
   public static void combatMenuOwnsFiltersAndThreeEquipmentSlots(GameTestHelper h) {
     Arena a = arena(h);
     CombatSlime pet = fighter(a);
-    SlimeMenu menu = new SlimeMenu(1, a.owner.getInventory(), pet);
+    SlimeMenu menu = TestMenus.create(1, a.owner.getInventory(), pet);
     h.assertTrue(
         menu.slots.size() == 66
             && menu.getSlot(0).mayPlace(new ItemStack(Items.IRON_SWORD))
@@ -316,11 +316,14 @@ public final class CombatCleaningGameTests {
           kind == CompanionRecipe.Kind.ARMOR ? new ItemStack(Items.DIAMOND_CHESTPLATE) : friendly;
       ItemStack second =
           new ItemStack(
-              kind == CompanionRecipe.Kind.COMBAT
-                  ? Items.IRON_SWORD
-                  : kind == CompanionRecipe.Kind.CLEANING
-                      ? Items.ROTTEN_FLESH
-                      : kind == CompanionRecipe.Kind.SADDLE ? Items.SADDLE : Items.SLIME_BALL);
+              switch (kind) {
+                case COMBAT -> Items.IRON_SWORD;
+                case CLEANING -> Items.ROTTEN_FLESH;
+                case SADDLE -> Items.SADDLE;
+                case ARMOR -> Items.SLIME_BALL;
+                case FARMER -> Items.IRON_HOE;
+                case LUMBERJACK -> Items.IRON_AXE;
+              });
       grid.setItem(3, first);
       grid.setItem(0, second);
       h.assertTrue(

@@ -4,12 +4,15 @@ import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
+import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.registry.ModMenus;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,15 +21,18 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.items.SlotItemHandler;
 
 public final class SlimeMenu extends AbstractContainerMenu {
   public static final int TARGET_TOGGLE = 40, TARGET_PAGE_BUTTON = 46;
   public static final int FILTERS = 18, TARGET_PAGE = 19;
+  public static final int FIRE_SIGNAL = 28;
   public static final int FOLLOW = 20, WAIT = 21, WORK = 22;
   public static final int PREVIOUS_PAGE = 23, NEXT_PAGE = 24;
   public static final int DELAY_DOWN = 25, DELAY_UP = 26, RIDE = 27;
@@ -89,15 +95,17 @@ public final class SlimeMenu extends AbstractContainerMenu {
                   case HEALTH -> (int) (slime.getHealth() * 10);
                   case MODE -> slime.isOrderedToSit() ? WAIT : slime.isWorking() ? WORK : FOLLOW;
                   case STATUS ->
-                      slime instanceof MiningSlime miner
-                          ? miner.getMiningStatus().ordinal()
-                          : slime instanceof TransportSlime carrier
-                              ? carrier.getTransportStatus().ordinal()
-                              : slime instanceof CombatSlime fighter
-                                  ? fighter.getCombatStatus().ordinal()
-                                  : slime instanceof CleaningSlime cleaner
-                                      ? cleaner.getCleaningStatus().ordinal()
-                                      : 0;
+                      slime instanceof FieldSlime field
+                          ? field.getFieldStatus().ordinal()
+                          : slime instanceof MiningSlime miner
+                              ? miner.getMiningStatus().ordinal()
+                              : slime instanceof TransportSlime carrier
+                                  ? carrier.getTransportStatus().ordinal()
+                                  : slime instanceof CombatSlime fighter
+                                      ? fighter.getCombatStatus().ordinal()
+                                      : slime instanceof CleaningSlime cleaner
+                                          ? cleaner.getCleaningStatus().ordinal()
+                                          : 0;
                   case FILTERS -> {
                     int mask = 0;
                     if (slime instanceof CombatSlime fighter)
@@ -134,8 +142,13 @@ public final class SlimeMenu extends AbstractContainerMenu {
             }
 
             @Override
+            public int getMaxStackSize(ItemStack stack) {
+              return slime instanceof GuardianAngelSlime ? 64 : 1;
+            }
+
+            @Override
             public int getMaxStackSize() {
-              return 1;
+              return slime instanceof GuardianAngelSlime ? 64 : 1;
             }
           });
     }
@@ -180,17 +193,21 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private static int equipmentSlots(FriendlySlime slime) {
+    if (slime instanceof GuardianAngelSlime) return 1;
     return slime instanceof MiningSlime || slime instanceof SaddleSlime
         ? 2
-        : slime instanceof CombatSlime ? 3 : 0;
+        : slime instanceof CombatSlime ? 3 : slime instanceof FieldSlime ? 1 : 0;
   }
 
   private static boolean matchesEquipment(FriendlySlime slime, int slot, ItemStack stack) {
-    return slime instanceof MiningSlime
-        ? MiningSlime.matchesToolSlot(slot, stack)
-        : slime instanceof SaddleSlime
-            ? SaddleSlime.matchesEquipment(slot, stack)
-            : slime instanceof CombatSlime && CombatSlime.matchesEquipment(slot, stack);
+    if (slime instanceof GuardianAngelSlime) return slot == 0 && stack.is(Items.TOTEM_OF_UNDYING);
+    return slime instanceof FieldSlime field
+        ? slot == 0 && field.matchesTool(stack)
+        : slime instanceof MiningSlime
+            ? MiningSlime.matchesToolSlot(slot, stack)
+            : slime instanceof SaddleSlime
+                ? SaddleSlime.matchesEquipment(slot, stack)
+                : slime instanceof CombatSlime && CombatSlime.matchesEquipment(slot, stack);
   }
 
   public FriendlySlime slime() {
@@ -222,7 +239,9 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return slime.isAlive()
+    return !player.isSpectator()
+        && SlimeTunerItem.isHolding(player)
+        && slime.isAlive()
         && !slime.isRemoved()
         && player.level() == slime.level()
         && player.getUUID().equals(slime.getOwnerUUID())
@@ -232,6 +251,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (button == FIRE_SIGNAL && slime instanceof HeraldSlime herald)
+      return herald.launchManually();
     if (button == RIDE && slime instanceof SaddleSlime mount) {
       if (!mount.mount(player)) return false;
       player.closeContainer();
@@ -276,14 +297,43 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   @Override
+  public void clicked(int slot, int button, ClickType type, Player player) {
+    if (!stillValid(player)) return;
+    if (slot == 0
+        && slime instanceof GuardianAngelSlime guardian
+        && type == ClickType.SWAP
+        && guardian.getTotems().getCount() > 1) return;
+    super.clicked(slot, button, type, player);
+  }
+
+  @Override
   public ItemStack quickMoveStack(Player player, int index) {
     if (!stillValid(player) || index < 0 || index >= slots.size()) return ItemStack.EMPTY;
     Slot slot = slots.get(index);
     if (!slot.isActive() || !slot.hasItem() || !slot.mayPickup(player)) return ItemStack.EMPTY;
     ItemStack original = slot.getItem();
     ItemStack copy = original.copy();
+    if (index >= petSlots
+        && slime instanceof GuardianAngelSlime guardian
+        && original.is(Items.TOTEM_OF_UNDYING)) {
+      int moved = guardian.addTotems(original);
+      if (moved == 0) return ItemStack.EMPTY;
+      original.shrink(moved);
+      slot.setChanged();
+      slot.onTake(player, original);
+      return copy;
+    }
     if (index < petSlots) {
-      if (!moveItemStackTo(original, petSlots, slots.size(), true)) return ItemStack.EMPTY;
+      if (slime instanceof GuardianAngelSlime) {
+        for (int playerSlot = slots.size() - 1;
+            playerSlot >= petSlots && !original.isEmpty();
+            playerSlot--) {
+          var destination = slots.get(playerSlot);
+          if (!destination.hasItem() && destination.mayPlace(original))
+            destination.setByPlayer(original.split(1));
+        }
+        if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;
+      } else if (!moveItemStackTo(original, petSlots, slots.size(), true)) return ItemStack.EMPTY;
     } else if (petSlots > 0) {
       boolean equipped = false;
       int equipmentSlots = equipmentSlots(slime);
@@ -332,16 +382,20 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack getItem(int slot) {
-      return slime instanceof MiningSlime miner
-          ? miner.getTool(slot)
-          : slime instanceof SaddleSlime mount
-              ? mount.getEquipment(slot)
-              : ((CombatSlime) slime).getEquipment(slot);
+      if (slime instanceof GuardianAngelSlime guardian) return guardian.getTotems();
+      return slime instanceof FieldSlime field
+          ? field.getTool()
+          : slime instanceof MiningSlime miner
+              ? miner.getTool(slot)
+              : slime instanceof SaddleSlime mount
+                  ? mount.getEquipment(slot)
+                  : ((CombatSlime) slime).getEquipment(slot);
     }
 
     @Override
     public ItemStack removeItem(int slot, int count) {
-      ItemStack result = getItem(slot).split(count);
+      ItemStack result =
+          getItem(slot).split(slime instanceof GuardianAngelSlime ? Math.min(1, count) : count);
       setChanged();
       return result;
     }
@@ -355,17 +409,23 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-      if (slime instanceof MiningSlime miner) miner.setTool(slot, stack);
+      if (slime instanceof GuardianAngelSlime guardian) guardian.setTotems(stack);
+      else if (slime instanceof FieldSlime field) field.setTool(stack);
+      else if (slime instanceof MiningSlime miner) miner.setTool(slot, stack);
       else if (slime instanceof SaddleSlime mount) mount.setEquipment(slot, stack);
       else ((CombatSlime) slime).setEquipment(slot, stack);
     }
 
     @Override
-    public void setChanged() {}
+    public void setChanged() {
+      if (slime instanceof GuardianAngelSlime guardian) guardian.setTotems(guardian.getTotems());
+    }
 
     @Override
     public boolean stillValid(Player player) {
-      return slime.isAlive() && player.getUUID().equals(slime.getOwnerUUID());
+      return SlimeTunerItem.isHolding(player)
+          && slime.isAlive()
+          && player.getUUID().equals(slime.getOwnerUUID());
     }
 
     @Override

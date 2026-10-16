@@ -1,7 +1,10 @@
 package io.github.meistermods.slimic.block;
 
+import io.github.meistermods.slimic.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,6 +21,8 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -63,7 +68,21 @@ public final class SlimeChestBlock extends BaseEntityBlock {
 
   @Override
   public RenderShape getRenderShape(BlockState state) {
-    return RenderShape.MODEL;
+    return RenderShape.ENTITYBLOCK_ANIMATED;
+  }
+
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+      Level level, BlockState state, BlockEntityType<T> type) {
+    return level.isClientSide
+        ? createTickerHelper(
+            type, ModBlocks.SLIME_CHEST_ENTITY.get(), (world, pos, block, chest) -> chest.tickLid())
+        : null;
+  }
+
+  @Override
+  public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    if (level.getBlockEntity(pos) instanceof SlimeChestBlockEntity chest) chest.recheckOpeners();
   }
 
   @Override

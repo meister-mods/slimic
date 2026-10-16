@@ -121,8 +121,9 @@ public final class MovementAuditGameTests {
             }
             checked[0] = true;
           }
-          if (checked[0]
+          if ((!stalled || checked[0])
               && !cleaner.isWorkBlocked()
+              && cleaner.position().distanceToSqr(arena.point(1, 101, 8)) > .01
               && cleaner.position().distanceToSqr(cleaner.getCleaningHome()) > 9) resumed[0] = true;
         });
     h.succeedWhen(

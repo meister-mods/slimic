@@ -1,12 +1,14 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.config.SlimicConfig;
+import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
-import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.ModItems;
+import java.util.EnumSet;
 import javax.annotation.Nullable;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,35 +17,37 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
-import net.minecraftforge.network.NetworkHooks;
 
 public class FriendlySlime extends TamableAnimal {
   private static final int MAX_POINT_COST = 4096;
@@ -66,6 +70,11 @@ public class FriendlySlime extends TamableAnimal {
   private ResourceLocation workDimension;
   private int followingActivityTicks;
   private Vec3 lastFollowingPosition;
+  private LivingEntity danger;
+  private int dangerTicks;
+  private int defenseActivityCooldown;
+  private int escapeActivityTicks;
+  private boolean shieldHit;
 
   public FriendlySlime(EntityType<? extends FriendlySlime> type, Level level) {
     super(type, level);
@@ -277,6 +286,8 @@ public class FriendlySlime extends TamableAnimal {
     super.addAdditionalSaveData(tag);
     tag.putInt(SlimeData.VERSION_KEY, SlimeData.VERSION);
     tag.putInt("FollowingActivityTicks", followingActivityTicks);
+    tag.putInt("EscapeActivityTicks", escapeActivityTicks);
+    tag.putInt("DefenseActivityCooldown", defenseActivityCooldown);
     tag.put("SlimeStats", entityData.get(STAT_LEVELS).copy());
     tag.putInt("StatPoints", statPoints);
     tag.putInt("ActivityProgress", activityProgress);
@@ -301,6 +312,12 @@ public class FriendlySlime extends TamableAnimal {
             0,
             SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get() - 1);
     lastFollowingPosition = null;
+    escapeActivityTicks =
+        Mth.clamp(
+            tag.getInt("EscapeActivityTicks"), 0, SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get() - 1);
+    defenseActivityCooldown = Mth.clamp(tag.getInt("DefenseActivityCooldown"), 0, 20);
+    danger = null;
+    dangerTicks = 0;
     String savedDimension = tag.getString("WorkDimension");
     workDimension = savedDimension.isBlank() ? null : ResourceLocation.tryParse(savedDimension);
     if (workDimension == null || workDimension.getPath().isEmpty())
@@ -339,6 +356,7 @@ public class FriendlySlime extends TamableAnimal {
 
   @Override
   protected void registerGoals() {
+    goalSelector.addGoal(-1, new FleeGoal());
     goalSelector.addGoal(0, new FloatGoal(this));
     goalSelector.addGoal(
         1,
@@ -369,24 +387,28 @@ public class FriendlySlime extends TamableAnimal {
         if (blockedWorkTicks < Integer.MAX_VALUE) blockedWorkTicks++;
       } else blockedWorkTicks = 0;
     }
-    if (!level().isClientSide && tickCount % 20 == 0 && !isWorking()) {
+    if (!level().isClientSide && tickCount % 20 == 0 && canRecoverStamina()) {
       recoverStamina(getStaminaRecoveryPerSecond());
     }
     if (!level().isClientSide) {
+      if (defenseActivityCooldown > 0) defenseActivityCooldown--;
+      if (dangerTicks > 0) dangerTicks--;
       var owner = getOwner();
       double movement =
           lastFollowingPosition == null
               ? 0
               : position().subtract(lastFollowingPosition).horizontalDistanceSqr();
-      if (!isWorking()
-          && !isOrderedToSit()
-          && owner != null
-          && !owner.isSpectator()
-          && distanceToSqr(owner) >= 4
-          && distanceToSqr(owner) <= 256
-          && getNavigation().isInProgress()
-          && movement > .0001
-          && movement < 4) {
+      boolean following =
+          !isFleeing()
+              && !isWorking()
+              && !isOrderedToSit()
+              && owner != null
+              && !owner.isSpectator()
+              && distanceToSqr(owner) >= 4
+              && distanceToSqr(owner) <= 256
+              && getNavigation().isInProgress();
+      boolean riding = getControllingPassenger() instanceof Player;
+      if ((following || riding) && movement > .0001 && movement < 16) {
         if (++followingActivityTicks >= SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get()) {
           followingActivityTicks = 0;
           recordCompletedWork();
@@ -429,21 +451,38 @@ public class FriendlySlime extends TamableAnimal {
     if (player.isShiftKeyDown()) {
       return capture(player);
     }
+    if (held.getItem() instanceof CreativeSlimeTunerItem)
+      return CreativeSlimeTunerItem.open(player, this);
     if (held.getItem() instanceof SlimeTunerItem) return SlimeTunerItem.open(player, this);
+    if (player.getUUID().equals(getOwnerUUID()) && isAlive() && held.is(Items.SLIME_BALL)) {
+      if (getHealth() >= getMaxHealth())
+        return InteractionResult.sidedSuccess(level().isClientSide);
+      if (!level().isClientSide) {
+        float previousHealth = getHealth();
+        heal(4);
+        if (getHealth() > previousHealth) {
+          if (!player.getAbilities().instabuild) held.shrink(1);
+          playSound(SoundEvents.SLIME_SQUISH, 1, 1);
+          ((ServerLevel) level())
+              .sendParticles(ParticleTypes.HEART, getX(), getEyeY(), getZ(), 4, .3, .2, .3, 0);
+        }
+      }
+      return InteractionResult.sidedSuccess(level().isClientSide);
+    }
+    if (player.getUUID().equals(getOwnerUUID()) && isAlive() && held.is(Items.WATER_BUCKET)) {
+      if (getDyeColorId() < 0) return InteractionResult.sidedSuccess(level().isClientSide);
+      if (!level().isClientSide) {
+        entityData.set(DYE_COLOR, -1);
+        player.setItemInHand(
+            hand, ItemUtils.createFilledResult(held, player, new ItemStack(Items.BUCKET)));
+        playSound(SoundEvents.BUCKET_EMPTY, 1, 1);
+      }
+      return InteractionResult.sidedSuccess(level().isClientSide);
+    }
     if (held.getItem() instanceof DyeItem)
       return dye(player, held)
           ? InteractionResult.sidedSuccess(level().isClientSide)
           : InteractionResult.FAIL;
-    if (player.getUUID().equals(getOwnerUUID())) {
-      if (player instanceof ServerPlayer serverPlayer) {
-        NetworkHooks.openScreen(
-            serverPlayer,
-            new SimpleMenuProvider(
-                (id, inventory, viewer) -> new SlimeMenu(id, inventory, this), getDisplayName()),
-            buffer -> SlimeMenu.writeOpeningData(buffer, this));
-      }
-      return InteractionResult.sidedSuccess(level().isClientSide);
-    }
     return super.mobInteract(player, hand);
   }
 
@@ -501,6 +540,108 @@ public class FriendlySlime extends TamableAnimal {
     return new ItemStack(ModItems.FRIENDLY_SLIME.get());
   }
 
+  protected boolean canRecoverStamina() {
+    return !isWorking() && !isFleeing();
+  }
+
+  public boolean isFleeing() {
+    return !(this instanceof CombatSlime)
+        && !(this instanceof GuardianAngelSlime)
+        && !isVehicle()
+        && dangerTicks > 0
+        && danger != null
+        && danger.isAlive()
+        && danger.level() == level()
+        && distanceToSqr(danger) < 256;
+  }
+
+  @Override
+  public boolean hurt(DamageSource source, float amount) {
+    float before = getHealth();
+    shieldHit = false;
+    boolean damaged = super.hurt(source, amount);
+    if (!level().isClientSide
+        && isAlive()
+        && source.getEntity() instanceof LivingEntity attacker
+        && attacker != this
+        && !attacker.getUUID().equals(getOwnerUUID())
+        && !isAlliedTo(attacker)
+        && (getHealth() < before || (shieldHit && amount > 0))) {
+      if (defenseActivityCooldown == 0) {
+        recordCompletedWork();
+        defenseActivityCooldown = 20;
+      }
+      if (!(this instanceof CombatSlime)) {
+        danger = attacker;
+        dangerTicks = 200;
+      }
+    }
+    return damaged;
+  }
+
+  @Override
+  protected void hurtCurrentlyUsedShield(float damage) {
+    shieldHit = true;
+    super.hurtCurrentlyUsedShield(damage);
+  }
+
+  public int hopDelayTicks() {
+    double speed = getAttributeValue(Attributes.MOVEMENT_SPEED);
+    return speed <= 0 ? 200 : Mth.clamp((int) Math.ceil(15 * .3 / speed), 1, 200);
+  }
+
+  private final class FleeGoal extends Goal {
+    private int repathTicks;
+
+    FleeGoal() {
+      setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
+    }
+
+    @Override
+    public boolean canUse() {
+      return isFleeing();
+    }
+
+    @Override
+    public boolean requiresUpdateEveryTick() {
+      return true;
+    }
+
+    @Override
+    public void start() {
+      repathTicks = 0;
+      getNavigation().stop();
+    }
+
+    @Override
+    public void stop() {
+      getNavigation().stop();
+    }
+
+    @Override
+    public void tick() {
+      if (isInWaterOrBubble() || isInLava()) getJumpControl().jump();
+      if (--repathTicks <= 0 && (onGround() || isInWater())) {
+        repathTicks = 10;
+        Vec3 away = DefaultRandomPos.getPosAway(FriendlySlime.this, 12, 4, danger.position());
+        if (away != null && away.distanceToSqr(danger.position()) > distanceToSqr(danger)) {
+          var path = getNavigation().createPath(BlockPos.containing(away), 0);
+          if (path != null
+              && path.getNodeCount() > 0
+              && path.getEntityPosAtNode(FriendlySlime.this, path.getNodeCount() - 1)
+                      .distanceToSqr(danger.position())
+                  > distanceToSqr(danger)) getNavigation().moveTo(path, 1.2);
+        }
+      }
+      if (getNavigation().isInProgress()
+          && getDeltaMovement().horizontalDistanceSqr() > .0001
+          && ++escapeActivityTicks >= SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get()) {
+        escapeActivityTicks = 0;
+        recordCompletedWork();
+      }
+    }
+  }
+
   private static final class HopMoveControl extends MoveControl {
     private final FriendlySlime slime;
     private int jumpDelay;
@@ -515,18 +656,21 @@ public class FriendlySlime extends TamableAnimal {
       if (slime.getControllingPassenger() instanceof Player) return;
       boolean moving = hasWanted();
       super.tick();
-      if (slime.isOrderedToSit()) {
-        slime.setSpeed(0.0F);
-        slime.setZza(0.0F);
+      if ((slime.isOrderedToSit() && !slime.isFleeing())
+          || slime.getAttributeValue(Attributes.MOVEMENT_SPEED) <= 0) {
+        slime.setSpeed(0);
+        slime.setZza(0);
         return;
       }
+      // Keep propulsion fixed; the stat changes the pause between hops instead.
+      if (moving) slime.setSpeed((float) (.3 * Math.min(1.5, speedModifier)));
       if (moving && slime.onGround()) {
         if (--jumpDelay <= 0) {
-          jumpDelay = 10 + slime.getRandom().nextInt(10);
+          jumpDelay = slime.hopDelayTicks();
           slime.getJumpControl().jump();
         } else {
-          slime.setSpeed(0.0F);
-          slime.setZza(0.0F);
+          slime.setSpeed(0);
+          slime.setZza(0);
         }
       }
     }

@@ -4,7 +4,11 @@ import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
+import io.github.meistermods.slimic.entity.FarmerSlime;
+import io.github.meistermods.slimic.entity.FieldSlime;
+import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
+import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
@@ -104,10 +108,18 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                   Component.translatable("screen.slimic.ride"), b -> sendButton(SlimeMenu.RIDE))
               .bounds(leftPos + 306, topPos + 25, 50, 18)
               .build());
+    if (menu.slime() instanceof FarmerSlime) addOrder(SlimeMenu.WORK, "farm", 306);
+    if (menu.slime() instanceof LumberjackSlime) addOrder(SlimeMenu.WORK, "log", 306);
     if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 306);
     if (menu.slime() instanceof MiningSlime) addOrder(SlimeMenu.WORK, "mine", 306);
     if (menu.slime() instanceof HeraldSlime) {
       addOrder(SlimeMenu.WORK, "monitor", 306);
+      addRenderableWidget(
+          Button.builder(
+                  Component.translatable("screen.slimic.fire_signal"),
+                  b -> sendButton(SlimeMenu.FIRE_SIGNAL))
+              .bounds(leftPos + 222, topPos + 137, 106, 16)
+              .build());
       addRenderableWidget(
           Button.builder(Component.literal("-"), button -> sendButton(SlimeMenu.DELAY_DOWN))
               .bounds(leftPos + 194, topPos + 112, 24, 18)
@@ -255,7 +267,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             ? 252
             : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
                 ? 234
-                : 194,
+                : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
+                    ? 216
+                    : 194,
         49,
         0xffe5e9e9,
         false);
@@ -269,7 +283,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             ? 252
             : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
                 ? 234
-                : 194,
+                : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
+                    ? 216
+                    : 194,
         62,
         0xffe5e9e9,
         false);
@@ -282,27 +298,38 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           0xffe5e9e9,
           false);
       Enum<?>[] statuses =
-          menu.slime() instanceof TransportSlime
-              ? TransportSlime.Status.values()
-              : menu.slime() instanceof CombatSlime
-                  ? CombatSlime.Status.values()
-                  : menu.slime() instanceof CleaningSlime
-                      ? CleaningSlime.Status.values()
-                      : MiningSlime.Status.values();
+          menu.slime() instanceof FieldSlime
+              ? FieldSlime.Status.values()
+              : menu.slime() instanceof TransportSlime
+                  ? TransportSlime.Status.values()
+                  : menu.slime() instanceof CombatSlime
+                      ? CombatSlime.Status.values()
+                      : menu.slime() instanceof CleaningSlime
+                          ? CleaningSlime.Status.values()
+                          : MiningSlime.Status.values();
       String key =
           statuses[Math.min(statuses.length - 1, Math.max(0, menu.data(SlimeMenu.STATUS)))]
               .name()
               .toLowerCase(Locale.ROOT);
       graphics.drawWordWrap(
           font,
-          Component.translatable(
-              "status.slimic."
-                  + (menu.slime() instanceof TransportSlime
-                      ? "transport."
-                      : menu.slime() instanceof CombatSlime
-                          ? "combat."
-                          : menu.slime() instanceof CleaningSlime ? "cleaning." : "")
-                  + key),
+          menu.slime() instanceof LumberjackSlime logger
+                  && key.equals("no_seeds")
+                  && !logger.getRequiredSapling().isEmpty()
+              ? Component.translatable(
+                  "status.slimic.lumberjack.saplings",
+                  logger.getRequiredSapling().getHoverName(),
+                  logger.getRequiredSaplingCount())
+              : Component.translatable(
+                  "status.slimic."
+                      + (menu.slime() instanceof FieldSlime
+                          ? (menu.slime() instanceof FarmerSlime ? "farmer." : "lumberjack.")
+                          : menu.slime() instanceof TransportSlime
+                              ? "transport."
+                              : menu.slime() instanceof CombatSlime
+                                  ? "combat."
+                                  : menu.slime() instanceof CleaningSlime ? "cleaning." : "")
+                      + key),
           10,
           216,
           174,
@@ -314,6 +341,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
+    } else if (menu.slime() instanceof GuardianAngelSlime) {
+      graphics.drawWordWrap(
+          font, Component.translatable("screen.slimic.guardian_help"), 194, 84, 162, 0xffb4c9d1);
     } else if (menu.slime() instanceof SaddleSlime) {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.saddle_help"), 194, 84, 162, 0xffb4c9d1);

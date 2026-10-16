@@ -4,10 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
-import net.minecraft.client.model.ElytraModel;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -31,11 +29,15 @@ public final class SaddleSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
   private static final ResourceLocation METAL =
       ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/iron_block.png");
   private static final ResourceLocation WINGS =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/entity/elytra.png");
+      ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "textures/entity/slime_wings.png");
   private final ModelPart saddle;
   private final ModelPart stirrups;
   private final ModelPart wingRoot;
-  private final ElytraModel<FriendlySlime> wings;
+  private final ModelPart leftWing;
+  private final ModelPart rightWing;
+  public static final ModelLayerLocation WING_LAYER =
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "slime_wings"), "main");
 
   public SaddleSlimeLayer(
       RenderLayerParent<FriendlySlime, SlimeModel<FriendlySlime>> parent,
@@ -44,8 +46,9 @@ public final class SaddleSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
     ModelPart root = context.bakeLayer(SADDLE);
     saddle = root.getChild("saddle");
     stirrups = root.getChild("stirrups");
-    wingRoot = context.bakeLayer(ModelLayers.ELYTRA);
-    wings = new ElytraModel<>(wingRoot);
+    wingRoot = context.bakeLayer(WING_LAYER);
+    leftWing = wingRoot.getChild("left");
+    rightWing = wingRoot.getChild("right");
   }
 
   public static LayerDefinition createLayer() {
@@ -70,6 +73,20 @@ public final class SaddleSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
                 .addBox(3.7F, 21, -1.6F, 1.4F, .6F, 3.2F),
             PartPose.ZERO);
     return LayerDefinition.create(mesh, 16, 16);
+  }
+
+  public static LayerDefinition createWings() {
+    MeshDefinition mesh = new MeshDefinition();
+    for (int side : new int[] {-1, 1}) {
+      CubeListBuilder wing = CubeListBuilder.create().texOffs(0, 0);
+      wing.addBox(side < 0 ? -6 : 0, -.4F, -3, 6, .8F, 6);
+      wing.texOffs(0, 8).addBox(side < 0 ? -11 : 6, -.3F, -2.5F, 5, .6F, 6);
+      wing.texOffs(0, 16).addBox(side < 0 ? -15 : 11, -.2F, -1.5F, 4, .4F, 5);
+      mesh.getRoot()
+          .addOrReplaceChild(
+              side < 0 ? "left" : "right", wing, PartPose.offset(side * 4.4F, 18, 0));
+    }
+    return LayerDefinition.create(mesh, 32, 32);
   }
 
   @Override
@@ -98,26 +115,20 @@ public final class SaddleSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
           OverlayTexture.NO_OVERLAY);
     }
     if (mount.getEquipment(1).is(net.minecraft.world.item.Items.ELYTRA)) {
-      pose.pushPose();
-      pose.translate(0, .92, .32);
-      pose.scale(.45F, .45F, .45F);
-      getParentModel().copyPropertiesTo(wings);
-      wings.setupAnim(slime, limbSwing, limbAmount, age, headYaw, headPitch);
-      var left = wingRoot.getChild("left_wing");
-      var right = wingRoot.getChild("right_wing");
-      left.zRot = mount.isFlyingMount() ? -1.05F : -.35F;
-      right.zRot = -left.zRot;
-      wings.renderToBuffer(
+      float flap =
+          (mount.isFlyingMount() && !mount.isGroundedMount() && !mount.isGlidingDown())
+              ? net.minecraft.util.Mth.sin(age * (mount.isBoosting() ? .9F : .5F)) * .38F
+              : mount.isFlyingMount() && !mount.isGroundedMount() ? 0 : -.3F;
+      leftWing.zRot = flap;
+      rightWing.zRot = -flap;
+      leftWing.yRot = mount.isFlyingMount() && !mount.isGroundedMount() ? .12F : 1.2F;
+      rightWing.yRot = -leftWing.yRot;
+      wingRoot.render(
           pose,
           ItemRenderer.getArmorFoilBuffer(
               buffers, RenderType.armorCutoutNoCull(WINGS), false, mount.getEquipment(1).hasFoil()),
           light,
-          OverlayTexture.NO_OVERLAY,
-          1,
-          1,
-          1,
-          1);
-      pose.popPose();
+          OverlayTexture.NO_OVERLAY);
     }
   }
 }

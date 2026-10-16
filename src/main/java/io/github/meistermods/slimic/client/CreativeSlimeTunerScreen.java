@@ -1,7 +1,8 @@
 package io.github.meistermods.slimic.client;
 
+import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
-import io.github.meistermods.slimic.menu.TunerMenu;
+import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
 import io.github.meistermods.slimic.network.ModNetwork;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
-public final class TunerScreen extends AbstractContainerScreen<TunerMenu> {
+public final class CreativeSlimeTunerScreen
+    extends AbstractContainerScreen<CreativeSlimeTunerMenu> {
   private final List<EditBox> fields = new ArrayList<>();
   private Button apply;
   private boolean loaded;
 
-  public TunerScreen(TunerMenu menu, Inventory inventory, Component title) {
+  public CreativeSlimeTunerScreen(
+      CreativeSlimeTunerMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
     imageWidth = 360;
     imageHeight = 230;
@@ -33,7 +36,13 @@ public final class TunerScreen extends AbstractContainerScreen<TunerMenu> {
     for (SlimeStat stat : SlimeStat.values()) {
       EditBox box = field(110, 38 + stat.ordinal() * 18, stat.translationKey());
       box.setTooltip(
-          Tooltip.create(Component.literal(stat.minTunedValue() + " – " + stat.maxTunedValue())));
+          Tooltip.create(
+              Component.literal(
+                  stat.minTunedValue()
+                      + " – "
+                      + (stat == SlimeStat.HEALTH && menu.slime() instanceof GuardianAngelSlime
+                          ? 102.4
+                          : stat.maxTunedValue()))));
     }
     field(280, 38, "screen.slimic.current_health");
     field(280, 56, "screen.slimic.current_stamina");
@@ -85,7 +94,7 @@ public final class TunerScreen extends AbstractContainerScreen<TunerMenu> {
       for (SlimeStat stat : SlimeStat.values())
         if (!stat.acceptsTunedValue(values[stat.ordinal()])) return;
       ModNetwork.CHANNEL.sendToServer(
-          new ModNetwork.TuneSlime(menu.containerId, values, health, stamina, points));
+          new ModNetwork.CreativeTuneSlime(menu.containerId, values, health, stamina, points));
     } catch (NumberFormatException ignored) {
     }
   }

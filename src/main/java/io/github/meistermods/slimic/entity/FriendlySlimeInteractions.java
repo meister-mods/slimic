@@ -1,15 +1,93 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.block.BrokenSlimeBlock;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Slimic.MOD_ID)
 public final class FriendlySlimeInteractions {
   private FriendlySlimeInteractions() {}
+
+  @SubscribeEvent
+  public static void preserveFarmland(BlockEvent.FarmlandTrampleEvent event) {
+    if (event.getEntity() instanceof FarmerSlime) event.setCanceled(true);
+  }
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void guardAttackedOwner(LivingDamageEvent event) {
+    if (event.getAmount() > 0
+        && !event.getEntity().level().isClientSide
+        && event.getEntity() instanceof Player owner
+        && event.getSource().getEntity() instanceof LivingEntity attacker)
+      for (var guard :
+          owner
+              .level()
+              .getEntitiesOfClass(
+                  GuardianAngelSlime.class,
+                  owner.getBoundingBox().inflate(16),
+                  g ->
+                      g.isAlive()
+                          && owner.getUUID().equals(g.getOwnerUUID())
+                          && g.distanceToSqr(owner) <= 256)) guard.defendAgainst(attacker);
+  }
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void guardianTotem(LivingDeathEvent event) {
+    if (event.getEntity() instanceof Player player && !player.level().isClientSide) {
+      var guardians =
+          player
+              .level()
+              .getEntitiesOfClass(
+                  GuardianAngelSlime.class,
+                  player.getBoundingBox().inflate(16),
+                  g ->
+                      g.isAlive()
+                          && player.getUUID().equals(g.getOwnerUUID())
+                          && g.distanceToSqr(player) <= 256);
+      guardians.sort(java.util.Comparator.comparingDouble(player::distanceToSqr));
+      for (var guard : guardians)
+        if (guard.protect(player, event.getSource())) {
+          event.setCanceled(true);
+          break;
+        }
+    }
+  }
+
+  @SubscribeEvent
+  public static void hostileTargets(EntityJoinLevelEvent event) {
+    if (!event.getLevel().isClientSide
+        && event.getEntity() instanceof Mob mob
+        && mob instanceof Enemy
+        && !(mob instanceof Creeper))
+      mob.targetSelector.addGoal(
+          3,
+          new NearestAttackableTargetGoal<>(
+              mob, FriendlySlime.class, 10, true, false, slime -> slime.isAlive()));
+  }
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void preserveOnDeath(LivingDeathEvent event) {
+    if (!event.getEntity().level().isClientSide
+        && event.getEntity() instanceof FriendlySlime slime) {
+      BrokenSlimeBlock.preserve(slime);
+      event.setCanceled(true);
+    }
+  }
 
   @SubscribeEvent
   public static void captureOnSneakInteract(PlayerInteractEvent.EntityInteract event) {

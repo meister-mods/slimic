@@ -237,6 +237,7 @@ public final class CombatSlime extends BagSlime {
 
   @Override
   protected void hurtCurrentlyUsedShield(float damage) {
+    super.hurtCurrentlyUsedShield(damage);
     if (getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK) && damage >= 3)
       getUseItem()
           .hurtAndBreak(
@@ -338,9 +339,18 @@ public final class CombatSlime extends BagSlime {
       equipSpares();
       if (!isSword(getMainHandItem())) {
         status = Status.NO_SWORD;
+        LivingEntity threat = getLastHurtByMob();
+        if (threat != null && threat.isAlive() && mayAttack(threat)) {
+          setYRot(
+              (float)
+                  (Math.toDegrees(Math.atan2(threat.getZ() - getZ(), threat.getX() - getX()))
+                      - 90));
+          yBodyRot = yHeadRot = getYRot();
+          if (shieldCooldown == 0 && matchesEquipment(1, getOffhandItem()) && !isUsingItem())
+            startUsingItem(InteractionHand.OFF_HAND);
+        } else stopUsingItem();
         setTarget(null);
         resetTravel();
-        stopUsingItem();
         getNavigation().stop();
         return;
       }
@@ -382,6 +392,11 @@ public final class CombatSlime extends BagSlime {
         return;
       }
       getLookControl().setLookAt(victim, 30, 30);
+      // Shield coverage uses body yaw, not the independent look controller.
+      setYRot(
+          (float)
+              (Math.toDegrees(Math.atan2(victim.getZ() - getZ(), victim.getX() - getX())) - 90));
+      yBodyRot = yHeadRot = getYRot();
       double reach = SlimeStat.REACH.value(CombatSlime.this);
       if (distanceToSqr(victim) <= reach * reach && getSensing().hasLineOfSight(victim)) {
         status = Status.FIGHTING;
@@ -391,7 +406,9 @@ public final class CombatSlime extends BagSlime {
           doHurtTarget(victim);
           swing(InteractionHand.MAIN_HAND);
           attackCooldown =
-              Math.max(4, (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(CombatSlime.this)));
+              Math.max(
+                  matchesEquipment(1, getOffhandItem()) ? 10 : 4,
+                  (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(CombatSlime.this)));
         }
       } else {
         if (lastTravelPosition == null
@@ -412,7 +429,7 @@ public final class CombatSlime extends BagSlime {
       }
       if (shieldCooldown == 0
           && matchesEquipment(1, getOffhandItem())
-          && (status != Status.FIGHTING || attackCooldown > 5)) {
+          && (status != Status.FIGHTING || attackCooldown > 0)) {
         if (!isUsingItem()) startUsingItem(InteractionHand.OFF_HAND);
       } else stopUsingItem();
     }
