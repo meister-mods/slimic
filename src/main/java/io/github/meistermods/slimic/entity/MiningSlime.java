@@ -2,10 +2,9 @@ package io.github.meistermods.slimic.entity;
 
 import com.mojang.authlib.GameProfile;
 import io.github.meistermods.slimic.registry.ModItems;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
@@ -84,6 +83,9 @@ public final class MiningSlime extends BagSlime {
   private Vec3 workStand;
   private float progress;
   private int targetTicks;
+  private Vec3 lastTravelPosition;
+  private BlockPos supportTarget;
+  private long supportRetryAt;
   private final Map<Long, Long> skipped = new HashMap<>();
 
   public MiningSlime(EntityType<? extends MiningSlime> type, Level level) {
@@ -174,16 +176,6 @@ public final class MiningSlime extends BagSlime {
   }
 
   @Override
-  public boolean needsUnloading() {
-    return isWorking() && status == Status.FULL;
-  }
-
-  @Override
-  public boolean needsReplacementTool() {
-    return isWorking() && status == Status.NO_TOOL && getTool(requiredTool).isEmpty();
-  }
-
-  @Override
   public boolean acceptsWorkTool(ItemStack stack) {
     return matchesToolSlot(requiredTool, stack)
         && (!stack.isDamageableItem() || stack.getDamageValue() < stack.getMaxDamage());
@@ -197,16 +189,29 @@ public final class MiningSlime extends BagSlime {
   }
 
   @Override
-  public boolean isWorkBlocked() {
-    return isWorking()
-        && (travelBlocked
-            || status == Status.NO_TOOL
-            || status == Status.FULL
-            || status == Status.RESTING
-            || status == Status.DISABLED
-            || status == Status.NEEDS_SUPPORT
-            || status == Status.UNREACHABLE
-            || status == Status.NEEDS_TIER);
+  protected WorkStatus describeWork() {
+    var order = WorkStatus.Order.MINE;
+    return switch (status) {
+      case FULL ->
+          WorkStatus.blocked(
+              order, WorkStatus.Reason.INVENTORY_FULL, WorkStatus.Request.CARGO_PICKUP);
+      case NO_TOOL ->
+          getTool(requiredTool).isEmpty()
+              ? WorkStatus.blocked(
+                  order, WorkStatus.Reason.TOOL_MISSING, WorkStatus.Request.TOOL_SUPPLY)
+              : WorkStatus.blocked(order, WorkStatus.Reason.TOOL_MISSING);
+      case RESTING -> WorkStatus.blocked(order, WorkStatus.Reason.EXHAUSTED);
+      case DISABLED -> WorkStatus.blocked(order, WorkStatus.Reason.DISABLED);
+      case NEEDS_SUPPORT -> WorkStatus.blocked(order, WorkStatus.Reason.SUPPORT_MISSING);
+      case NEEDS_TIER -> WorkStatus.blocked(order, WorkStatus.Reason.TOOL_TIER);
+      case UNREACHABLE -> WorkStatus.blocked(order, WorkStatus.Reason.UNREACHABLE);
+      case COMPLETE -> WorkStatus.of(order, WorkStatus.State.COMPLETE);
+      default ->
+          travelBlocked
+              ? WorkStatus.blocked(order, WorkStatus.Reason.UNREACHABLE)
+              : WorkStatus.of(
+                  order, status == Status.IDLE ? WorkStatus.State.IDLE : WorkStatus.State.ACTIVE);
+    };
   }
 
   public Status getMiningStatus() {
@@ -235,7 +240,9 @@ public final class MiningSlime extends BagSlime {
   @Override
   public void onReleased() {
     ChunkPos chunk = chunkPosition();
-    boolean changed = hasAnchor && (chunk.x != chunkX || chunk.z != chunkZ);
+    boolean changed =
+        hasAnchor && (chunk.x != chunkX || chunk.z != chunkZ || hasChangedWorkDimension());
+    super.onReleased();
     if (!hasAnchor || changed || quarry == null) {
       chunkX = chunk.x;
       chunkZ = chunk.z;
@@ -262,7 +269,8 @@ public final class MiningSlime extends BagSlime {
     super.tick();
     if (!level().isClientSide) {
       if (!hasAnchor || quarry == null) onReleased();
-      if (isWorking() && status != Status.MINING && tickCount % 20 == 0) recoverStamina(2);
+      if (isWorking() && status != Status.MINING && tickCount % 20 == 0)
+        recoverStamina(getStaminaRecoveryPerSecond());
     }
   }
 
@@ -273,6 +281,9 @@ public final class MiningSlime extends BagSlime {
     workStand = null;
     progress = 0;
     targetTicks = 0;
+    lastTravelPosition = null;
+    supportTarget = null;
+    supportRetryAt = 0;
     getNavigation().stop();
   }
 
@@ -320,58 +331,104 @@ public final class MiningSlime extends BagSlime {
   }
 
   private boolean canSeeFrom(Vec3 eye, BlockPos pos) {
+    return canSeeFrom(eye, pos, false);
+  }
+
+  private boolean canSeeFrom(Vec3 eye, BlockPos pos, boolean placement) {
     var hit =
         level()
             .clip(
                 new ClipContext(
                     eye,
-                    Vec3.atCenterOf(pos),
+                    Vec3.atCenterOf(pos).add(0, placement ? 0.501 : 0, 0),
                     ClipContext.Block.COLLIDER,
                     ClipContext.Fluid.NONE,
                     this));
-    return hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(pos);
+    return hit.getType() == HitResult.Type.BLOCK ? hit.getBlockPos().equals(pos) : placement;
   }
 
-  private void approachTarget() {
+  private void approachTarget(BlockPos destination, boolean placement) {
+    // Keep following an existing route during a hop. Ground navigation cannot
+    // create a replacement in midair, which must not cancel the valid old path.
+    if (!onGround() && !isInWater()) return;
+    if (workStand != null && getNavigation().isInProgress()) return;
     double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
     // Navigation accepts a waypoint within roughly half the slime's width.
     // Keep the requested standing point comfortably inside the tool's reach.
     double arrivalReach = Math.max(0, reach - 0.15);
     int radius = Math.min(3, (int) Math.ceil(reach));
-    List<BlockPos> positions = new ArrayList<>();
+    var positions = new HashSet<BlockPos>();
     double offset = Math.floor(getBbWidth() + 1) * 0.5;
     for (int dx = -radius; dx <= radius; dx++)
       for (int dz = -radius; dz <= radius; dz++)
         for (int dy = -1; dy <= 2; dy++) {
-          BlockPos feet = target.offset(dx, dy, dz);
+          BlockPos feet = destination.offset(dx, dy, dz);
           Vec3 stand = Vec3.atLowerCornerOf(feet).add(offset, 0, offset);
           double half = getBbWidth() / 2;
+          var body = getBoundingBox().move(stand.subtract(position()));
           if (stand.x - half < chunkX * 16
               || stand.x + half > chunkX * 16 + 16
               || stand.z - half < chunkZ * 16
               || stand.z + half > chunkZ * 16 + 16
-              || level()
-                  .getBlockState(feet.below())
-                  .getCollisionShape(level(), feet.below())
-                  .isEmpty()
-              || !level().noCollision(this, getBoundingBox().move(stand.subtract(position()))))
+              || !level().noCollision(this, body)
+              || !level().getBlockCollisions(this, body.move(0, -0.05, 0)).iterator().hasNext())
             continue;
           Vec3 eye = stand.add(0, getEyeHeight(), 0);
-          if (eye.distanceToSqr(Vec3.atCenterOf(target)) <= arrivalReach * arrivalReach
-              && canSeeFrom(eye, target)) positions.add(feet);
+          if (eye.distanceToSqr(Vec3.atCenterOf(destination)) <= arrivalReach * arrivalReach
+              && canSeeFrom(eye, destination, placement)) positions.add(feet);
         }
-    positions.sort(
-        Comparator.comparingDouble(
-            feet -> position().distanceToSqr(Vec3.atLowerCornerOf(feet).add(offset, 0, offset))));
+    // Search all valid standing positions together instead of running a separate
+    // pathfinder for every candidate. Never walk toward the solid target itself.
+    Vec3 finish = null;
+    double nearest = 2.25;
     for (BlockPos feet : positions) {
-      var path = getNavigation().createPath(feet, 0);
-      if (path != null && path.canReach()) {
-        workStand = path.getEntityPosAtNode(this, path.getNodeCount() - 1);
-        getNavigation().moveTo(path, 1);
-        return;
+      Vec3 stand = Vec3.atLowerCornerOf(feet).add(offset, 0, offset);
+      Vec3 delta = stand.subtract(position());
+      double distance = delta.lengthSqr();
+      if (distance < nearest
+          && Math.abs(delta.y) < 0.1
+          && level().noCollision(this, getBoundingBox().expandTowards(delta))
+          && level()
+              .getBlockCollisions(this, getBoundingBox().move(delta.scale(0.5)).move(0, -0.05, 0))
+              .iterator()
+              .hasNext()) {
+        finish = stand;
+        nearest = distance;
       }
     }
-    getNavigation().moveTo(target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5, 1);
+    if (finish != null) {
+      // A wide-mob node can reject the last step beside a small floor gap.
+      // Finish only a short, level, collision-free approach with support below it.
+      workStand = finish;
+      getNavigation().stop();
+      finishApproach();
+      return;
+    }
+    var path = getNavigation().createPath(positions, 0);
+    if (path != null && path.canReach()) {
+      workStand = path.getEntityPosAtNode(this, path.getNodeCount() - 1);
+      getNavigation().moveTo(path, 1);
+    } else {
+      workStand = null;
+      getNavigation().stop();
+    }
+  }
+
+  private void finishApproach() {
+    if (workStand != null
+        && getNavigation().isDone()
+        && position().subtract(workStand).horizontalDistanceSqr() <= 2.25)
+      getMoveControl().setWantedPosition(workStand.x, workStand.y, workStand.z, 0.5);
+  }
+
+  private boolean travelStalled(int elapsed) {
+    if (lastTravelPosition == null
+        || position().subtract(lastTravelPosition).horizontalDistanceSqr() >= 0.25
+        || (onGround() && Math.abs(getY() - lastTravelPosition.y) >= 0.5)) {
+      lastTravelPosition = position();
+      targetTicks = 0;
+    } else targetTicks += elapsed;
+    return targetTicks > 400;
   }
 
   private FakePlayer worker(ServerLevel server) {
@@ -409,16 +466,45 @@ public final class MiningSlime extends BagSlime {
       }
       ItemStack stack = getBag().getStackInSlot(material);
       BlockState support = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-      double reach = SlimeStat.REACH.value(this);
-      if (getEyePosition().distanceToSqr(Vec3.atCenterOf(floor)) > reach * reach) {
+      if (!floor.equals(supportTarget)) {
+        supportTarget = floor;
+        supportRetryAt = 0;
+        targetTicks = 0;
+        lastTravelPosition = null;
+        workStand = null;
+      }
+      if (server.getGameTime() < supportRetryAt) {
+        status = Status.UNREACHABLE;
+        return false;
+      }
+      double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
+      if (getEyePosition().distanceToSqr(Vec3.atCenterOf(floor)) > reach * reach
+          || !canSeeFrom(getEyePosition(), floor, true)) {
         status = Status.MOVING;
-        if (tickCount % 10 == 0)
-          getNavigation().moveTo(floor.getX() + 0.5, floor.getY() + 1, floor.getZ() + 0.5, 1);
+        if (travelStalled(5)) {
+          travelBlocked = true;
+          status = Status.UNREACHABLE;
+          supportRetryAt = server.getGameTime() + 100;
+          targetTicks = 0;
+          workStand = null;
+          getNavigation().stop();
+        } else {
+          if (tickCount % 10 == 0) approachTarget(floor, true);
+          finishApproach();
+        }
         return false;
       }
       if (!server.isUnobstructed(support, floor, CollisionContext.empty())) {
-        getJumpControl().jump();
-        status = Status.MOVING;
+        if (travelStalled(5)) {
+          travelBlocked = true;
+          status = Status.UNREACHABLE;
+          supportRetryAt = server.getGameTime() + 100;
+          targetTicks = 0;
+          workStand = null;
+        } else {
+          getJumpControl().jump();
+          status = Status.MOVING;
+        }
         return false;
       }
       BlockSnapshot snapshot = BlockSnapshot.create(server.dimension(), server, floor);
@@ -433,7 +519,11 @@ public final class MiningSlime extends BagSlime {
         return false;
       }
       getBag().extractItem(material, 1, false);
+      travelBlocked = false;
     }
+    supportTarget = null;
+    lastTravelPosition = null;
+    targetTicks = 0;
     return true;
   }
 
@@ -455,7 +545,7 @@ public final class MiningSlime extends BagSlime {
         for (int z = 0; z < 16; z++) {
           BlockPos pos = new BlockPos(chunkX * 16 + x, quarry.layer(), chunkZ * 16 + z);
           BlockState state = server.getBlockState(pos);
-          if (state.getDestroySpeed(server, pos) < 0
+          if ((state.getDestroySpeed(server, pos) < 0 || quarry.isRampFloor(pos))
               && state.isCollisionShapeFullBlock(server, pos)) barriers++;
           if (!terrain(pos, state)) continue;
           if (skipped.containsKey(pos.asLong())) {
@@ -515,15 +605,14 @@ public final class MiningSlime extends BagSlime {
     if (getEyePosition().distanceToSqr(Vec3.atCenterOf(target)) > reach * reach
         || !canSee(target)) {
       status = Status.MOVING;
-      if (++targetTicks > 400) {
+      if (travelStalled(1)) {
         travelBlocked = true;
         skipped.put(target.asLong(), server.getGameTime() + 200);
         clearTarget();
         return;
       }
-      if (tickCount % 10 == 0) approachTarget();
-      if (workStand != null && getNavigation().isDone())
-        getMoveControl().setWantedPosition(workStand.x, workStand.y, workStand.z, 0.5);
+      if (tickCount % 10 == 0) approachTarget(target, false);
+      finishApproach();
       return;
     }
     targetTicks = 0;
@@ -682,7 +771,10 @@ public final class MiningSlime extends BagSlime {
         resting = false;
       }
       if (target == null) {
-        if (tickCount % 5 != 0) return;
+        if (tickCount % 5 != 0) {
+          if (supportTarget != null) finishApproach();
+          return;
+        }
         target = findTarget(server);
         if (target == null) return;
       }

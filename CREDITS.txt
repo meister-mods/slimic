@@ -69,5 +69,7 @@ Slimic base assets
 
 The companion entity texture uses Minecraft's slime artwork by Mojang Studios.
 Slimic item icons adapt the Minecraft slime-ball silhouette with specialization
-colors and symbols. Minecraft artwork belongs to Mojang Studios.
+colors and symbols. Slimic supplies dedicated 16x16 item, Slime Chest,
+and herald-hat textures. Equipment rendering also references Minecraft materials.
+Minecraft artwork belongs to Mojang Studios.
 

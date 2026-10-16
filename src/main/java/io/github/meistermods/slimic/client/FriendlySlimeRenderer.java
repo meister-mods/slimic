@@ -3,6 +3,7 @@ package io.github.meistermods.slimic.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -23,7 +24,9 @@ public final class FriendlySlimeRenderer
     super(context, new TintedSlimeModel(context.bakeLayer(ModelLayers.SLIME)), 0.5F);
     addLayer(new TintedSlimeOuterLayer(this, context));
     addLayer(new MiningSlimeLayer(this, context));
+    addLayer(new CombatSlimeLayer(this, context));
     addLayer(new TransportSlimeLayer(this, context));
+    addLayer(new HeraldSlimeLayer(this));
   }
 
   @Override
@@ -53,6 +56,7 @@ public final class FriendlySlimeRenderer
       FriendlySlime slime, Component name, PoseStack pose, MultiBufferSource buffers, int light) {
     pose.pushPose();
     if (slime instanceof MiningSlime) pose.translate(0.0, 0.4, 0.0);
+    if (slime instanceof HeraldSlime) pose.translate(0.0, 0.8, 0.0);
     super.renderNameTag(slime, name, pose, buffers, light);
     pose.popPose();
   }

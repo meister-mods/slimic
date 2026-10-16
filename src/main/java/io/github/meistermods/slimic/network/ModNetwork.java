@@ -16,9 +16,9 @@ public final class ModNetwork {
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "main"),
-          () -> "2",
-          "2"::equals,
-          "2"::equals);
+          () -> "5",
+          "5"::equals,
+          "5"::equals);
 
   private ModNetwork() {}
 

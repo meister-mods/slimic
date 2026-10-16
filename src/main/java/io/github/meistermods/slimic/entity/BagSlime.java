@@ -45,11 +45,11 @@ public abstract class BagSlime extends FriendlySlime {
   public abstract void setWorking(boolean working);
 
   public boolean needsUnloading() {
-    return false;
+    return getWorkStatus().requests(WorkStatus.Request.CARGO_PICKUP);
   }
 
   public boolean needsReplacementTool() {
-    return false;
+    return getWorkStatus().requests(WorkStatus.Request.TOOL_SUPPLY);
   }
 
   public boolean acceptsWorkTool(ItemStack stack) {

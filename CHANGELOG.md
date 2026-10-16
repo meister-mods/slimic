@@ -4,6 +4,114 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.12] - 2026-10-16
+
+### Fixed
+
+- Slow combat pursuit and cleaning returns no longer report unreachable routes solely because 400 travel ticks have elapsed. Stationary companions still report blocked work, and resumed movement clears the state before arrival.
+- Combat pursuit and cleaning returns preserve valid paths during hops. Pursuit refreshes its route when the target moves, and each cleaning return starts with a fresh stall timer.
+- Transport slimes recheck the current work radius before deposits and tool pickups, cancelling selected storage that becomes out of range after a Detection Range change.
+
+### Validation
+
+- Added server regressions for advancing and stationary combat/cleaning slimes, recovery of movement, moving combat targets, exact cleaning returns, and range changes during both storage operations.
+
+## [0.1.11] - 2026-10-15
+
+### Fixed
+
+- Herald warning history retains every recorded worker episode across recovery. New warnings no longer evict older records and cause repeated signals in large groups.
+- Combat slimes respect the server's PVP setting and their owner's player-damage permissions when player targets are enabled.
+- Management and tuner screens preserve complete integer values over native container packets, including large attributes and multiplied detection ranges. Initial editor values wait for the complete snapshot.
+
+### Compatibility
+
+- Network protocol 5 requires compatible client and server builds because menu-data layouts have changed. Existing worlds and recovered items keep their save format.
+
+### Validation
+
+- Added tests for 200 saved warning records, warning insertion without eviction, PVP and team rules, native packet round-trips in both menus, and clearing high bits after values shrink.
+- Client checks include an attribute value exceeding a single native data packet's range.
+
+## [0.1.10] - 2026-10-15
+
+### Added
+
+- A shared work status separates orders, execution states, blocking reasons, and cargo/tool support requests. Transport and herald behavior consume the common contract.
+- Moving with an owner and monitoring active workers provide growth opportunities for companions without collection or combat actions. Delivery growth rewards and following/monitoring intervals are configurable.
+- Companion saves include `SlimeDataVersion`; unversioned data remains compatible, and stored companions from unsupported future schemas cannot be released or consumed.
+- Management upgrade tooltips identify stats used after specialization.
+
+### Changed
+
+- Newly crafted and Creative mining items summon waiting companions. The owner explicitly starts the quarry with Mine. Recovered miners retain same-area orders; relocation to another chunk or dimension still resumes a new quarry.
+- Work orders can start after waiting even when the owner is not loaded; the native sitting goal no longer blocks the assigned task.
+- Stamina recovery scales at 2% of maximum per second, keeping the recovery period to 25% similar across upgrade levels.
+- Completed cargo deliveries and supplied tools award four activity units by default to account for transport travel.
+- Transport slimes share loaded-chunk candidate snapshots for up to 20 ticks and stagger idle searches. Requests, ownership, distance, locks, and transfer capacity are rechecked before use.
+
+### Validation
+
+- Added coverage for initial mining orders, common requests, proportional recovery, growth and paused timers, legacy/future data, cache expiration without chunk loading, and 32 concurrent carriers sharing storage.
+
+## [0.1.9] - 2026-10-15
+
+### Fixed
+
+- Partial Shift-click unloading wakes full miners even when the original bag stack remains occupied.
+- Combat target settings reject Shift-click merges into hidden bag slots.
+- Open transport menus return to an existing page after Capacity is reduced.
+- Slime menus retain their slot layout and close safely if the companion disappears during opening. Network protocol 4 requires matching client and server versions.
+
+### Validation
+
+- Added regression tests for partial unloading, hidden-slot transfers, capacity changes, missing entities, and stale menu actions.
+
+## [0.1.8] - 2026-10-15
+
+### Fixed
+
+- Mining in another dimension establishes a new quarry even when its X/Z chunk coordinates match the previous world.
+- Fixed work areas move to the arrival point after portal transfers and dimension-restored entity copies, while ordinary same-world reloads retain their saved origins.
+- Transport travel timeouts measure stalled movement, allowing slow deliveries to continue beyond 400 elapsed ticks.
+- Carriers preserve valid paths during hops and refresh paths when destinations move or a route ends.
+- Transport action cooldowns survive world saves and recovery, preserving Work Speed intervals.
+
+### Validation
+
+- Added regression coverage for dimension changes, legacy saves, cancelled transfers, work-area restoration, slow and stalled deliveries, and persisted transfer cooldowns.
+- Isolated cargo-transfer integration tests in a fully prepared work chunk, independent of surrounding natural terrain.
+
+## [0.1.7] - 2026-10-15
+
+### Changed
+
+- Coarser 16×16 summon and tuner icons, with dedicated textures for all six Slime Armor materials.
+- Dedicated Slime Chest face textures shared by the placed block and its block-model inventory item.
+- A striped conical hat for herald slimes, with the nameplate raised above it.
+
+### Fixed
+
+- Quarry routes now cover long perimeter detours at default stats while restricting navigation reads and the slime footprint to the work chunk.
+- Valid quarry paths survive hops, and tighter waypoint arrival prevents wide slimes from cutting into staircase corners.
+- Mining approaches search valid visible standing positions together rather than repeatedly pathfinding toward individual positions or solid targets.
+- Support repairs check sight and reach, report stalled routes, and retry after obstructions are cleared.
+- Sealed bedrock floors complete correctly when their only breakable blocks are preserved staircase supports.
+- Travel timeouts measure lack of movement so long routes can finish without being abandoned solely for taking time.
+
+## [0.1.6] - 2026-10-15
+
+### Added
+
+- Combat slimes specialized with a sword, with sword, shield, and Slime Armor equipment slots, native melee damage and defenses, stamina, and growth.
+- Independent hostile, neutral, passive, player, tamed-mob, and creeper target switches; defaults enable only hostile mobs other than creepers.
+- Slime Armor crafted from a chestplate and a slime ball, preserving the original material, durability, enchantments, color, name, and attributes, with six standard material variants.
+- Cleaning slimes specialized with rotten flesh, collecting dropped items within a fixed area with five times the shared Detection Range and returning after each pickup.
+- Three-minute pickup retries that prefer another available item when the current target remains inaccessible.
+- Persistent combat filters, equipment, cleaning origins and retry state; transport support for combat swords and full cleaning bags.
+- Visible combat armor, swords, and shields, simultaneous pickaxe/shovel display, and shared held-tool poses with upright tool heads and inward grips.
+- New summon icons, armor material models, target controls, JEI previews, and bilingual guides.
+
 ## [0.1.5] - 2026-10-15
 
 ### Added

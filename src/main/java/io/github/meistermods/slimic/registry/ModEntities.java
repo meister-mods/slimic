@@ -1,6 +1,8 @@
 package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.entity.CleaningSlime;
+import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
@@ -46,6 +48,23 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":transport_slime"));
 
+  public static final RegistryObject<EntityType<CombatSlime>> COMBAT_SLIME =
+      ENTITY_TYPES.register(
+          "combat_slime",
+          () ->
+              EntityType.Builder.of(CombatSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":combat_slime"));
+  public static final RegistryObject<EntityType<CleaningSlime>> CLEANING_SLIME =
+      ENTITY_TYPES.register(
+          "cleaning_slime",
+          () ->
+              EntityType.Builder.of(CleaningSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":cleaning_slime"));
+
   private ModEntities() {}
 
   public static final RegistryObject<EntityType<HeraldSlime>> HERALD_SLIME =
@@ -62,6 +81,8 @@ public final class ModEntities {
     event.put(FRIENDLY_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(MINING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(TRANSPORT_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(COMBAT_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(CLEANING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(HERALD_SLIME.get(), FriendlySlime.createAttributes().build());
   }
 }

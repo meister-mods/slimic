@@ -3,8 +3,10 @@ package io.github.meistermods.slimic.entity;
 import io.github.meistermods.slimic.config.SlimicConfig;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.EnumSet;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -20,6 +22,8 @@ public final class HeraldSlime extends FriendlySlime {
   private boolean monitoring = true;
   private CompoundTag warned = new CompoundTag();
   private int signalCooldown;
+  private int monitoringActivityTicks;
+  private boolean watchingWorkers;
 
   public HeraldSlime(EntityType<? extends HeraldSlime> type, Level level) {
     super(type, level);
@@ -65,33 +69,52 @@ public final class HeraldSlime extends FriendlySlime {
   }
 
   @Override
+  protected WorkStatus describeWork() {
+    return WorkStatus.of(
+        WorkStatus.Order.MONITOR,
+        watchingWorkers ? WorkStatus.State.ACTIVE : WorkStatus.State.IDLE);
+  }
+
+  @Override
   protected void registerGoals() {
     super.registerGoals();
     goalSelector.addGoal(1, new WatchGoal());
   }
 
-  private void signal() {
+  private void watchWorkers() {
     double range = SlimeStat.DETECTION_RANGE.value(this);
+    watchingWorkers = false;
     for (FriendlySlime worker :
         level().getEntitiesOfClass(FriendlySlime.class, getBoundingBox().inflate(range))) {
       if (worker == this
           || !worker.isAlive()
           || !worker.isWorking()
-          || !worker.isWorkBlocked()
           || getOwnerUUID() == null
           || !getOwnerUUID().equals(worker.getOwnerUUID())
-          || distanceToSqr(worker) > range * range
+          || distanceToSqr(worker) > range * range) continue;
+      WorkStatus state = worker.getWorkStatus();
+      if (!(worker instanceof BagSlime)
+          || state.state() == WorkStatus.State.COMPLETE
+          || state.state() == WorkStatus.State.IDLE) continue;
+      watchingWorkers = true;
+      if (signalCooldown > 0
+          || state.state() != WorkStatus.State.BLOCKED
           || worker.getBlockedWorkTicks() < getDelayMinutes() * 1200) continue;
       String key = worker.getUUID().toString();
       if (warned.contains(key) && warned.getLong(key) == worker.getBlockedEpisode()) continue;
       FireworkRocketEntity rocket =
           new FireworkRocketEntity(level(), this, getX(), getEyeY() + 0.3, getZ(), firework.copy());
       rocket.getPersistentData().putBoolean(SIGNAL_MARKER, true);
-      if (!level().addFreshEntity(rocket)) return;
-      if (warned.getAllKeys().size() >= 128) warned.remove(warned.getAllKeys().iterator().next());
+      if (!level().addFreshEntity(rocket)) continue;
       warned.putLong(key, worker.getBlockedEpisode());
       signalCooldown = 60;
-      return;
+    }
+    if (watchingWorkers) {
+      monitoringActivityTicks += 20;
+      if (monitoringActivityTicks >= SlimicConfig.MONITOR_ACTIVITY_INTERVAL.get()) {
+        monitoringActivityTicks -= SlimicConfig.MONITOR_ACTIVITY_INTERVAL.get();
+        recordCompletedWork();
+      }
     }
   }
 
@@ -103,6 +126,7 @@ public final class HeraldSlime extends FriendlySlime {
     tag.putBoolean("HeraldMonitoring", monitoring);
     tag.put("HeraldWarnings", warned.copy());
     tag.putInt("HeraldCooldown", signalCooldown);
+    tag.putInt("HeraldMonitoringActivityTicks", monitoringActivityTicks);
   }
 
   @Override
@@ -117,8 +141,23 @@ public final class HeraldSlime extends FriendlySlime {
     monitoring = !tag.contains("HeraldMonitoring") || tag.getBoolean("HeraldMonitoring");
     warned = new CompoundTag();
     CompoundTag saved = tag.getCompound("HeraldWarnings");
-    saved.getAllKeys().stream().limit(128).forEach(key -> warned.putLong(key, saved.getLong(key)));
+    for (String key : saved.getAllKeys()) {
+      if (!saved.contains(key, Tag.TAG_ANY_NUMERIC) || saved.getLong(key) < 0) continue;
+      try {
+        String identity = UUID.fromString(key).toString();
+        warned.putLong(identity, Math.max(warned.getLong(identity), saved.getLong(key)));
+      } catch (IllegalArgumentException ignored) {
+        // Warning records always identify a worker; ignore malformed legacy keys.
+      }
+    }
     signalCooldown = Math.max(0, Math.min(60, tag.getInt("HeraldCooldown")));
+    monitoringActivityTicks =
+        Math.max(
+            0,
+            Math.min(
+                SlimicConfig.MONITOR_ACTIVITY_INTERVAL.get() - 1,
+                tag.getInt("HeraldMonitoringActivityTicks")));
+    watchingWorkers = false;
   }
 
   @Override
@@ -149,7 +188,7 @@ public final class HeraldSlime extends FriendlySlime {
     @Override
     public void tick() {
       if (signalCooldown > 0) signalCooldown--;
-      else if (tickCount % 20 == 0) signal();
+      if (tickCount % 20 == 0) watchWorkers();
     }
   }
 }

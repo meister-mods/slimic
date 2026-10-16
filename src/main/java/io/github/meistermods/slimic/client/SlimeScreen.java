@@ -1,6 +1,9 @@
 package io.github.meistermods.slimic.client;
 
 import io.github.meistermods.slimic.entity.BagSlime;
+import io.github.meistermods.slimic.entity.CleaningSlime;
+import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
@@ -34,10 +37,15 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     inventoryLabelY = 146;
   }
 
+  private final java.util.List<Button> filters = new java.util.ArrayList<>();
+  private Button targetPageButton;
+
   @Override
   protected void init() {
     super.init();
     upgrades.clear();
+    filters.clear();
+    targetPageButton = null;
     orders.clear();
     name =
         new EditBox(
@@ -51,15 +59,45 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             .bounds(leftPos + 154, topPos + 25, 30, 18)
             .build());
     for (SlimeStat stat : SlimeStat.values()) {
+      var upgradeHelp = Component.translatable("screen.slimic.upgrade_tooltip");
+      if (!stat.isUsedBy(menu.slime()))
+        upgradeHelp
+            .append("\n")
+            .append(Component.translatable("screen.slimic.specialization_stat"));
       Button button =
           Button.builder(Component.literal("+"), clicked -> sendButton(stat.ordinal()))
               .bounds(leftPos + 166, topPos + 80 + stat.ordinal() * 14, 18, 13)
-              .tooltip(Tooltip.create(Component.translatable("screen.slimic.upgrade_tooltip")))
+              .tooltip(Tooltip.create(upgradeHelp))
               .build();
       upgrades.put(stat, addRenderableWidget(button));
     }
     addOrder(SlimeMenu.FOLLOW, "follow", 194);
     addOrder(SlimeMenu.WAIT, "wait", 250);
+    if (menu.slime() instanceof CombatSlime) {
+      addOrder(SlimeMenu.WORK, "fight", 306);
+      targetPageButton =
+          addRenderableWidget(
+              Button.builder(
+                      Component.translatable("screen.slimic.targets"),
+                      button -> sendButton(SlimeMenu.TARGET_PAGE_BUTTON))
+                  .bounds(leftPos + 294, topPos + 73, 62, 14)
+                  .build());
+      for (CombatTarget kind : CombatTarget.values()) {
+        Button button =
+            Button.builder(
+                    Component.empty(),
+                    pressed -> sendButton(SlimeMenu.TARGET_TOGGLE + kind.ordinal()))
+                .bounds(
+                    leftPos + 194 + kind.ordinal() % 2 * 82,
+                    topPos + 89 + kind.ordinal() / 2 * 18,
+                    80,
+                    16)
+                .build();
+        button.visible = false;
+        filters.add(addRenderableWidget(button));
+      }
+    }
+    if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 306);
     if (menu.slime() instanceof MiningSlime) addOrder(SlimeMenu.WORK, "mine", 306);
     if (menu.slime() instanceof HeraldSlime) {
       addOrder(SlimeMenu.WORK, "monitor", 306);
@@ -110,6 +148,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   @Override
   protected void containerTick() {
     super.containerTick();
+    if (!menu.slime().isAlive() || menu.slime().isRemoved()) {
+      onClose();
+      return;
+    }
+    if (!menu.isSynchronized()) return;
     name.tick();
     upgrades.forEach(
         (stat, button) ->
@@ -117,6 +160,19 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                 menu.data(SlimeMenu.POINTS) > 0
                     && menu.slime().getStatLevel(stat) < stat.maxLevel());
     orders.forEach((id, button) -> button.active = menu.data(SlimeMenu.MODE) != id);
+    if (targetPageButton != null) {
+      boolean open = menu.data(SlimeMenu.TARGET_PAGE) == 1;
+      targetPageButton.setMessage(
+          Component.translatable(open ? "screen.slimic.bag_tab" : "screen.slimic.targets"));
+      for (CombatTarget kind : CombatTarget.values()) {
+        Button button = filters.get(kind.ordinal());
+        button.visible = open;
+        boolean on = (menu.data(SlimeMenu.FILTERS) & (1 << kind.ordinal())) != 0;
+        button.setMessage(
+            Component.translatable("target.slimic." + kind.key())
+                .append(Component.literal(on ? " [ON]" : " [OFF]")));
+      }
+    }
     if (previousPage != null) {
       previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;
       nextPage.active = menu.data(SlimeMenu.BAG_PAGE) + 1 < menu.bagPages();
@@ -188,7 +244,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.health",
             menu.data(SlimeMenu.HEALTH) / 10.0F,
             (int) menu.value(SlimeStat.HEALTH)),
-        menu.slime() instanceof MiningSlime ? 234 : 194,
+        menu.slime() instanceof CombatSlime ? 252 : menu.slime() instanceof MiningSlime ? 234 : 194,
         49,
         0xffe5e9e9,
         false);
@@ -198,7 +254,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.stamina",
             menu.data(SlimeMenu.STAMINA) / 10,
             (int) menu.value(SlimeStat.STAMINA)),
-        menu.slime() instanceof MiningSlime ? 234 : 194,
+        menu.slime() instanceof CombatSlime ? 252 : menu.slime() instanceof MiningSlime ? 234 : 194,
         62,
         0xffe5e9e9,
         false);
@@ -213,7 +269,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
       Enum<?>[] statuses =
           menu.slime() instanceof TransportSlime
               ? TransportSlime.Status.values()
-              : MiningSlime.Status.values();
+              : menu.slime() instanceof CombatSlime
+                  ? CombatSlime.Status.values()
+                  : menu.slime() instanceof CleaningSlime
+                      ? CleaningSlime.Status.values()
+                      : MiningSlime.Status.values();
       String key =
           statuses[Math.min(statuses.length - 1, Math.max(0, menu.data(SlimeMenu.STATUS)))]
               .name()
@@ -222,7 +282,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           font,
           Component.translatable(
               "status.slimic."
-                  + (menu.slime() instanceof TransportSlime ? "transport." : "")
+                  + (menu.slime() instanceof TransportSlime
+                      ? "transport."
+                      : menu.slime() instanceof CombatSlime
+                          ? "combat."
+                          : menu.slime() instanceof CleaningSlime ? "cleaning." : "")
                   + key),
           10,
           216,

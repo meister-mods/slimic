@@ -1,7 +1,6 @@
 package io.github.meistermods.slimic.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
@@ -19,7 +18,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemDisplayContext;
 
 public final class MiningSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel<FriendlySlime>> {
   public static final ModelLayerLocation HELMET =
@@ -85,26 +83,7 @@ public final class MiningSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
         buffers.getBuffer(RenderType.entityCutoutNoCull(LAMP_TEXTURE)),
         15728880,
         OverlayTexture.NO_OVERLAY);
-    if (!miner.getRenderedTool().isEmpty()) {
-      pose.pushPose();
-      pose.translate(0.44, 1.26, -0.10);
-      pose.mulPose(Axis.XP.rotationDegrees(90.0F));
-      pose.mulPose(Axis.YP.rotationDegrees(180.0F));
-      pose.scale(0.55F, 0.55F, 0.55F);
-      context
-          .getItemRenderer()
-          .renderStatic(
-              slime,
-              miner.getRenderedTool(),
-              ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
-              false,
-              pose,
-              buffers,
-              slime.level(),
-              light,
-              OverlayTexture.NO_OVERLAY,
-              slime.getId());
-      pose.popPose();
-    }
+    SlimeEquipmentRenderer.held(context, pose, buffers, light, miner, miner.getPickaxe(), false);
+    SlimeEquipmentRenderer.held(context, pose, buffers, light, miner, miner.getShovel(), true);
   }
 }

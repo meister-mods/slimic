@@ -43,8 +43,19 @@ public enum SlimeStat {
     return syncScale;
   }
 
+  public boolean isUsedBy(FriendlySlime slime) {
+    return switch (this) {
+      case HEALTH, DEFENSE, MOVEMENT_SPEED -> true;
+      case ATTACK -> slime instanceof CombatSlime;
+      case DETECTION_RANGE -> slime instanceof BagSlime || slime instanceof HeraldSlime;
+      default -> slime instanceof BagSlime;
+    };
+  }
+
   public double value(FriendlySlime slime) {
-    if (attribute != null) return slime.getAttributeValue(attribute);
+    if (attribute != null)
+      return slime.getAttributeValue(attribute)
+          * (this == DETECTION_RANGE ? slime.detectionMultiplier() : 1);
     if (slime.hasTunedStat(this))
       return slime.tunedStat(this) * (this == CAPACITY ? slime.capacityMultiplier() : 1);
     int level = slime.getStatLevel(this);

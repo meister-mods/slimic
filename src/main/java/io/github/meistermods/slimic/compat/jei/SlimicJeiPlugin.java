@@ -1,8 +1,11 @@
 package io.github.meistermods.slimic.compat.jei;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.item.SlimeArmorItem;
+import io.github.meistermods.slimic.recipe.CompanionRecipe;
 import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
@@ -70,6 +73,51 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 Ingredient.EMPTY,
                 Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
                 Ingredient.of(Items.FIREWORK_ROCKET))));
+    for (var item : ForgeRegistries.ITEMS.getValues()) {
+      ItemStack stack = new ItemStack(item);
+      var key = ForgeRegistries.ITEMS.getKey(item);
+      if (CombatSlime.isSword(stack))
+        recipes.add(
+            new ShapelessRecipe(
+                ResourceLocation.fromNamespaceAndPath(
+                    Slimic.MOD_ID, "combat_slime/" + key.getNamespace() + "/" + key.getPath()),
+                "slimic:combat_slime",
+                CraftingBookCategory.MISC,
+                CompanionRecipe.combat(new ItemStack(ModItems.FRIENDLY_SLIME.get()), stack),
+                NonNullList.of(
+                    Ingredient.EMPTY,
+                    Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                    Ingredient.of(stack))));
+      if (SlimeArmorItem.accepts(stack))
+        recipes.add(
+            new ShapelessRecipe(
+                ResourceLocation.fromNamespaceAndPath(
+                    Slimic.MOD_ID, "slime_armor/" + key.getNamespace() + "/" + key.getPath()),
+                "slimic:slime_armor",
+                CraftingBookCategory.MISC,
+                SlimeArmorItem.fromChestplate(stack),
+                NonNullList.of(
+                    Ingredient.EMPTY, Ingredient.of(stack), Ingredient.of(Items.SLIME_BALL))));
+    }
+    recipes.add(
+        new ShapelessRecipe(
+            ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "cleaning_slime/rotten_flesh"),
+            "slimic:cleaning_slime",
+            CraftingBookCategory.MISC,
+            new ItemStack(ModItems.CLEANING_SLIME.get()),
+            NonNullList.of(
+                Ingredient.EMPTY,
+                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                Ingredient.of(Items.ROTTEN_FLESH))));
+    for (var item :
+        new net.minecraft.world.item.Item[] {
+          ModItems.COMBAT_SLIME.get(), ModItems.CLEANING_SLIME.get(), ModItems.SLIME_ARMOR.get()
+        }) {
+      registration.addIngredientInfo(
+          new ItemStack(item),
+          VanillaTypes.ITEM_STACK,
+          Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
+    }
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
     registration.addIngredientInfo(
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),

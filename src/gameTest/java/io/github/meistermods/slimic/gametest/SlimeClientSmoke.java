@@ -1,12 +1,17 @@
 package io.github.meistermods.slimic.gametest;
 
+import io.github.meistermods.slimic.block.SlimeChestBlock;
 import io.github.meistermods.slimic.block.SlimeChestBlockEntity;
 import io.github.meistermods.slimic.client.SlimeScreen;
 import io.github.meistermods.slimic.client.TunerScreen;
+import io.github.meistermods.slimic.entity.CleaningSlime;
+import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.menu.TunerMenu;
@@ -14,6 +19,7 @@ import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModCreativeTabs;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
+import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +29,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -56,6 +63,10 @@ public final class SlimeClientSmoke {
     if (++ticks > 2400) throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (phase >= 13) {
+      newCompanions(client);
+      return;
+    }
     if (phase >= 8) {
       toolsSmoke(client);
       return;
@@ -84,6 +95,16 @@ public final class SlimeClientSmoke {
                       level.setBlockAndUpdate(
                           new BlockPos(x, y, z), Blocks.AIR.defaultBlockState());
                   }
+                var stage = new net.minecraft.world.phys.AABB(0, 90, 0, 20, 320, 20);
+                level
+                    .getEntitiesOfClass(
+                        io.github.meistermods.slimic.entity.FriendlySlime.class, stage)
+                    .forEach(net.minecraft.world.entity.Entity::discard);
+                level
+                    .getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, stage)
+                    .forEach(net.minecraft.world.entity.Entity::discard);
+                owner.getInventory().clearContent();
+                owner.inventoryMenu.broadcastChanges();
                 owner.setGameMode(GameType.CREATIVE);
                 owner.teleportTo(level, 7.5, 101, 8.5, -90, 15);
                 MiningSlime miner = ModEntities.MINING_SLIME.get().create(level);
@@ -128,10 +149,27 @@ public final class SlimeClientSmoke {
     MiningSlime miner = miners.get(0);
     boolean jei = ModList.get().isLoaded("jei");
     if (phase == 1) {
-      client.player.setYRot(-90);
-      client.player.setXRot(15);
+      if (phaseTicks < 10) {
+        client.player.setYRot(-90);
+        client.player.setXRot(15);
+      }
       if (++phaseTicks < 50 || miner.getPickaxe().isEmpty()) return;
-      screenshot(client, jei ? "jei-world" : "no-jei-world");
+      if (phaseTicks == 50) {
+        screenshot(client, jei ? "jei-world" : "no-jei-world");
+        camera(client, 10.5, 5.5, 0);
+        return;
+      }
+      if (phaseTicks == 75) {
+        screenshot(client, jei ? "jei-mining-side" : "no-jei-mining-side");
+        camera(client, 13.5, 8.5, 90);
+        return;
+      }
+      if (phaseTicks == 100) {
+        screenshot(client, jei ? "jei-mining-back" : "no-jei-mining-back");
+        camera(client, 7.5, 8.5, -90);
+        return;
+      }
+      if (phaseTicks < 125) return;
       phase = 2;
       phaseTicks = 0;
       int entityId = miner.getId();
@@ -424,7 +462,7 @@ public final class SlimeClientSmoke {
       CreativeModeTabs.tryRebuildTabContents(
           client.level.enabledFeatures(), true, client.level.registryAccess());
       var items = ModCreativeTabs.SLIMIC.get().getDisplayItems();
-      if (items.size() != 6
+      if (items.size() != 14
           || items.stream().noneMatch(stack -> stack.is(ModItems.SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =
@@ -435,24 +473,292 @@ public final class SlimeClientSmoke {
       if (miner.hasTag()) throw new IllegalStateException("Creative miner has initial equipment");
       if (jei && JeiClientSmoke.heraldRecipes() != 1) return;
       screenshot(client, prefix + "tuner");
-      System.out.println(
-          "SLIMIC CLIENT SMOKE PASSED: rename, upgrades, mining, transport, 54-slot paging, chest,"
-              + " red/blue/white dye rendering, Herald delay, tuner packet and UI, six creative"
-              + " entries; JEI="
-              + jei
-              + (jei
-                  ? ", mining="
-                      + JeiClientSmoke.miningRecipes()
-                      + ", transport="
-                      + JeiClientSmoke.transportRecipes()
-                      + ", herald="
-                      + JeiClientSmoke.heraldRecipes()
-                      + ", chest="
-                      + JeiClientSmoke.chestRecipes()
-                  : ""));
+      client.player.closeContainer();
+      int id = herald.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                var level = owner.serverLevel();
+                if (level.getEntity(id) != null) level.getEntity(id).discard();
+                owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                CombatSlime fighter = ModEntities.COMBAT_SLIME.get().create(level);
+                fighter.moveTo(10.5, 101, 8.5, 90, 0);
+                fighter.setYBodyRot(90);
+                fighter.setYHeadRot(90);
+                fighter.setNoAi(true);
+                fighter
+                    .getAttribute(
+                        net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED)
+                    .setBaseValue(100);
+                fighter.tame(owner);
+                fighter.dye(owner, new ItemStack(Items.LIME_DYE));
+                fighter.setCustomName(Component.literal("Guardian"));
+                fighter.setCustomNameVisible(true);
+                fighter.setEquipment(0, new ItemStack(Items.DIAMOND_SWORD));
+                fighter.setEquipment(1, new ItemStack(Items.SHIELD));
+                fighter.setEquipment(
+                    2, SlimeArmorItem.fromChestplate(new ItemStack(Items.DIAMOND_CHESTPLATE)));
+                level.addFreshEntity(fighter);
+              });
       phase = 13;
-      client.stop();
+      phaseTicks = 0;
     }
+  }
+
+  private static void newCompanions(Minecraft client) {
+    boolean jei = ModList.get().isLoaded("jei");
+    String prefix = jei ? "jei-" : "no-jei-";
+    if (phase == 19) {
+      if (++phaseTicks < 40) return;
+      if (!client
+          .getItemRenderer()
+          .getModel(new ItemStack(ModItems.SLIME_CHEST.get()), client.level, client.player, 0)
+          .isGui3d())
+        throw new IllegalStateException("Slime Chest item must render its block model");
+      screenshot(client, prefix + "chest-models-and-icons");
+      var vanished = ModEntities.TRANSPORT_SLIME.get().create(client.level);
+      FriendlyByteBuf opening = new FriendlyByteBuf(Unpooled.buffer());
+      try {
+        SlimeMenu.writeOpeningData(opening, vanished);
+        SlimeMenu stale = new SlimeMenu(123, client.player.getInventory(), opening);
+        if (stale.slots.size() != 90 || !stale.slime().isRemoved())
+          throw new IllegalStateException("Missing companion must retain the carrier slot layout");
+        client.player.containerMenu = stale;
+        client.setScreen(
+            new SlimeScreen(stale, client.player.getInventory(), vanished.getDisplayName()));
+      } finally {
+        opening.release();
+      }
+      phase = 20;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 20 && ++phaseTicks >= 5) {
+      if (client.screen != null || client.player.containerMenu instanceof SlimeMenu)
+        throw new IllegalStateException("Missing companion menu must close safely");
+      System.out.println(
+          "SLIMIC CLIENT SMOKE PASSED: shared UI, equipment, dye, all specializations, 16px item"
+              + " and armor textures, four chest facings and native block item, herald hat; JEI="
+              + jei);
+      phase = 21;
+      client.stop();
+      return;
+    }
+    if (phase <= 16) {
+      var fighters =
+          client.level.getEntitiesOfClass(
+              CombatSlime.class, client.player.getBoundingBox().inflate(12));
+      if (fighters.isEmpty()) return;
+      CombatSlime fighter = fighters.get(0);
+      if (phase == 13) {
+        if (fighter.getEquipment(2).isEmpty() || ++phaseTicks < 30) return;
+        if (phaseTicks == 30) {
+          screenshot(client, prefix + "combat-world");
+          camera(client, 10.5, 5.5, 0);
+          return;
+        }
+        if (phaseTicks == 55) {
+          screenshot(client, prefix + "combat-side");
+          camera(client, 13.5, 8.5, 90);
+          return;
+        }
+        if (phaseTicks == 80) {
+          screenshot(client, prefix + "combat-back");
+          camera(client, 7.5, 8.5, -90);
+          return;
+        }
+        if (phaseTicks < 105) return;
+        int id = fighter.getId();
+        client
+            .getSingleplayerServer()
+            .execute(
+                () -> {
+                  var owner =
+                      client
+                          .getSingleplayerServer()
+                          .getPlayerList()
+                          .getPlayer(client.player.getUUID());
+                  ((CombatSlime) owner.serverLevel().getEntity(id))
+                      .mobInteract(owner, InteractionHand.MAIN_HAND);
+                });
+        phase = 14;
+        phaseTicks = 0;
+        return;
+      }
+      if (phase == 14 && client.screen instanceof SlimeScreen screen) {
+        if (!screen.getMenu().isSynchronized()) return;
+        if (screen.getMenu().value(SlimeStat.MOVEMENT_SPEED) != 100)
+          throw new IllegalStateException(
+              "Large native movement stat was truncated in the management screen");
+        if (screen.getMenu().slots.size() != 66
+            || screen.getMenu().getSlot(2).getItem().isEmpty()
+            || ++phaseTicks < 20) return;
+        screenshot(client, prefix + "combat-menu");
+        client.gameMode.handleInventoryButtonClick(
+            screen.getMenu().containerId, SlimeMenu.TARGET_PAGE_BUTTON);
+        phase = 15;
+        phaseTicks = 0;
+        return;
+      }
+      if (phase == 15 && client.screen instanceof SlimeScreen screen) {
+        if (screen.getMenu().data(SlimeMenu.TARGET_PAGE) != 1 || ++phaseTicks < 20) return;
+        if (screen.getMenu().getSlot(3).isActive())
+          throw new IllegalStateException("Filters overlap bag slots");
+        screen.children().stream()
+            .filter(Button.class::isInstance)
+            .map(Button.class::cast)
+            .filter(
+                button ->
+                    button.visible
+                        && button
+                            .getMessage()
+                            .getString()
+                            .startsWith(
+                                Component.translatable("target.slimic.creepers").getString()))
+            .findFirst()
+            .orElseThrow()
+            .onPress();
+        phase = 16;
+        phaseTicks = 0;
+        return;
+      }
+      if (phase == 16 && client.screen instanceof SlimeScreen screen) {
+        if ((screen.getMenu().data(SlimeMenu.FILTERS) & (1 << CombatTarget.CREEPERS.ordinal())) == 0
+            || ++phaseTicks < 20) return;
+        if (jei
+            && (JeiClientSmoke.combatRecipes() < 6
+                || JeiClientSmoke.armorRecipes() < 6
+                || JeiClientSmoke.cleaningRecipes() != 1)) return;
+        screenshot(client, prefix + "combat-targets");
+        client.player.closeContainer();
+        int id = fighter.getId();
+        client
+            .getSingleplayerServer()
+            .execute(
+                () -> {
+                  var owner =
+                      client
+                          .getSingleplayerServer()
+                          .getPlayerList()
+                          .getPlayer(client.player.getUUID());
+                  var level = owner.serverLevel();
+                  if (level.getEntity(id) != null) level.getEntity(id).discard();
+                  CleaningSlime cleaner = ModEntities.CLEANING_SLIME.get().create(level);
+                  cleaner.moveTo(10.5, 101, 8.5, 90, 0);
+                  cleaner.setNoAi(true);
+                  cleaner.tame(owner);
+                  cleaner.dye(owner, new ItemStack(Items.CYAN_DYE));
+                  cleaner.setCustomName(Component.literal("Sweep"));
+                  cleaner.setCustomNameVisible(true);
+                  cleaner.getBag().setStackInSlot(0, new ItemStack(Items.ROTTEN_FLESH, 17));
+                  level.addFreshEntity(cleaner);
+                  cleaner.onReleased();
+                  int slot = 0;
+                  for (var chestplate :
+                      new net.minecraft.world.item.Item[] {
+                        Items.LEATHER_CHESTPLATE,
+                        Items.CHAINMAIL_CHESTPLATE,
+                        Items.IRON_CHESTPLATE,
+                        Items.GOLDEN_CHESTPLATE,
+                        Items.DIAMOND_CHESTPLATE,
+                        Items.NETHERITE_CHESTPLATE
+                      })
+                    owner
+                        .getInventory()
+                        .setItem(slot++, SlimeArmorItem.fromChestplate(new ItemStack(chestplate)));
+                  owner.getInventory().setItem(6, new ItemStack(ModItems.COMBAT_SLIME.get()));
+                  owner.getInventory().setItem(7, new ItemStack(ModItems.CLEANING_SLIME.get()));
+                  owner.inventoryMenu.broadcastChanges();
+                });
+        phase = 17;
+        phaseTicks = 0;
+        return;
+      }
+    }
+    var cleaners =
+        client.level.getEntitiesOfClass(
+            CleaningSlime.class, client.player.getBoundingBox().inflate(12));
+    if (cleaners.isEmpty()) return;
+    CleaningSlime cleaner = cleaners.get(0);
+    if (phase == 17) {
+      if (SlimeStat.DETECTION_RANGE.value(cleaner) != 40 || ++phaseTicks < 40) return;
+      screenshot(client, prefix + "cleaning-world");
+      int id = cleaner.getId();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                ((CleaningSlime) owner.serverLevel().getEntity(id))
+                    .mobInteract(owner, InteractionHand.MAIN_HAND);
+              });
+      phase = 18;
+      phaseTicks = 0;
+      return;
+    }
+    if (phase == 18 && client.screen instanceof SlimeScreen screen) {
+      if (screen.getMenu().value(SlimeStat.DETECTION_RANGE) != 40
+          || screen.getMenu().getSlot(0).getItem().getCount() != 17
+          || ++phaseTicks < 20) return;
+      screenshot(client, prefix + "cleaning-menu");
+      client.player.closeContainer();
+      client
+          .getSingleplayerServer()
+          .execute(
+              () -> {
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                var level = owner.serverLevel();
+                int index = 0;
+                for (var facing : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+                  level.setBlockAndUpdate(
+                      new BlockPos(10 + index % 2 * 2, 101, 7 + index / 2 * 3),
+                      ModBlocks.SLIME_CHEST
+                          .get()
+                          .defaultBlockState()
+                          .setValue(SlimeChestBlock.FACING, facing));
+                  index++;
+                }
+                int slot = 0;
+                for (var item :
+                    new net.minecraft.world.item.Item[] {
+                      ModItems.SLIME_CHEST.get(), ModItems.FRIENDLY_SLIME.get(),
+                          ModItems.MINING_SLIME.get(),
+                      ModItems.TRANSPORT_SLIME.get(), ModItems.HERALD_SLIME.get(),
+                          ModItems.COMBAT_SLIME.get(),
+                      ModItems.CLEANING_SLIME.get(), ModItems.SLIME_TUNER.get(),
+                          ModItems.DIAMOND_SLIME_ARMOR.get()
+                    }) owner.getInventory().setItem(slot++, new ItemStack(item));
+                owner.inventoryMenu.broadcastChanges();
+                owner.teleportTo(level, 7.5, 103, 5.5, -40, 30);
+              });
+      phase = 19;
+      phaseTicks = 0;
+    }
+  }
+
+  private static void camera(Minecraft client, double x, double z, float yaw) {
+    client
+        .getSingleplayerServer()
+        .execute(
+            () -> {
+              var owner =
+                  client.getSingleplayerServer().getPlayerList().getPlayer(client.player.getUUID());
+              owner.teleportTo(owner.serverLevel(), x, 101, z, yaw, 15);
+            });
   }
 
   private static void screenshot(Minecraft client, String suffix) {
@@ -460,7 +766,7 @@ public final class SlimeClientSmoke {
         client
             .gameDirectory
             .toPath()
-            .resolve("../verification/0.1.5-" + suffix + ".png")
+            .resolve("../verification/0.1.12-" + suffix + ".png")
             .normalize();
     try {
       Files.createDirectories(target.getParent());

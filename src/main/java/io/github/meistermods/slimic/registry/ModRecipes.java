@@ -1,6 +1,7 @@
 package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.recipe.CompanionRecipe;
 import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
@@ -23,6 +24,28 @@ public final class ModRecipes {
           SERIALIZERS.register(
               "transport_slime",
               () -> new SimpleCraftingRecipeSerializer<>(TransportSlimeRecipe::new));
+
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> COMBAT_SLIME =
+      SERIALIZERS.register(
+          "combat_slime",
+          () ->
+              new SimpleCraftingRecipeSerializer<>(
+                  (id, category) ->
+                      new CompanionRecipe(id, category, CompanionRecipe.Kind.COMBAT)));
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>>
+      CLEANING_SLIME =
+          SERIALIZERS.register(
+              "cleaning_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new CompanionRecipe(id, category, CompanionRecipe.Kind.CLEANING)));
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> SLIME_ARMOR =
+      SERIALIZERS.register(
+          "slime_armor",
+          () ->
+              new SimpleCraftingRecipeSerializer<>(
+                  (id, category) -> new CompanionRecipe(id, category, CompanionRecipe.Kind.ARMOR)));
 
   private ModRecipes() {}
 

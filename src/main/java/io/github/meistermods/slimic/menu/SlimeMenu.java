@@ -1,14 +1,19 @@
 package io.github.meistermods.slimic.menu;
 
 import io.github.meistermods.slimic.entity.BagSlime;
+import io.github.meistermods.slimic.entity.CleaningSlime;
+import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.registry.ModMenus;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
 public final class SlimeMenu extends AbstractContainerMenu {
+  public static final int TARGET_TOGGLE = 40, TARGET_PAGE_BUTTON = 46;
+  public static final int FILTERS = 18, TARGET_PAGE = 19;
   public static final int FOLLOW = 20, WAIT = 21, WORK = 22;
   public static final int PREVIOUS_PAGE = 23, NEXT_PAGE = 24;
   public static final int DELAY_DOWN = 25, DELAY_UP = 26;
@@ -33,16 +40,31 @@ public final class SlimeMenu extends AbstractContainerMenu {
       ALERT_MINUTES = 17;
   private final FriendlySlime slime;
   private final ContainerData data;
+  private final IntContainerData wireData;
   private final int petSlots;
   private int bagPage;
+  private int targetPage;
 
   public SlimeMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
-    this(id, inventory, resolve(inventory, buffer.readVarInt()));
+    this(id, inventory, resolve(inventory, buffer));
   }
 
-  private static FriendlySlime resolve(Inventory inventory, int entityId) {
-    if (inventory.player.level().getEntity(entityId) instanceof FriendlySlime slime) return slime;
-    throw new IllegalArgumentException("Missing slime for menu");
+  public static void writeOpeningData(FriendlyByteBuf buffer, FriendlySlime slime) {
+    buffer.writeVarInt(slime.getId());
+    buffer.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(slime.getType()));
+  }
+
+  private static FriendlySlime resolve(Inventory inventory, FriendlyByteBuf buffer) {
+    int entityId = buffer.readVarInt();
+    EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.byId(buffer.readVarInt());
+    if (inventory.player.level().getEntity(entityId) instanceof FriendlySlime slime
+        && slime.getType() == type) return slime;
+    // Keep the server's slot layout until the client closes a menu whose entity disappeared.
+    if (type != null && type.create(inventory.player.level()) instanceof FriendlySlime missing) {
+      missing.discard();
+      return missing;
+    }
+    throw new IllegalArgumentException("Invalid slime menu type");
   }
 
   public SlimeMenu(int id, Inventory inventory, FriendlySlime slime) {
@@ -50,7 +72,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     this.slime = slime;
     this.data =
         inventory.player.level().isClientSide
-            ? new SimpleContainerData(18)
+            ? new SimpleContainerData(20)
             : new ContainerData() {
               @Override
               public int get(int index) {
@@ -70,7 +92,19 @@ public final class SlimeMenu extends AbstractContainerMenu {
                           ? miner.getMiningStatus().ordinal()
                           : slime instanceof TransportSlime carrier
                               ? carrier.getTransportStatus().ordinal()
-                              : 0;
+                              : slime instanceof CombatSlime fighter
+                                  ? fighter.getCombatStatus().ordinal()
+                                  : slime instanceof CleaningSlime cleaner
+                                      ? cleaner.getCleaningStatus().ordinal()
+                                      : 0;
+                  case FILTERS -> {
+                    int mask = 0;
+                    if (slime instanceof CombatSlime fighter)
+                      for (CombatTarget kind : CombatTarget.values())
+                        if (fighter.allows(kind)) mask |= 1 << kind.ordinal();
+                    yield mask;
+                  }
+                  case TARGET_PAGE -> targetPage;
                   case BAG_PAGE -> bagPage;
                   case ALERT_MINUTES ->
                       slime instanceof HeraldSlime herald ? herald.getDelayMinutes() : 0;
@@ -83,28 +117,29 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
               @Override
               public int getCount() {
-                return 18;
+                return 20;
               }
             };
-    addDataSlots(data);
-    if (slime instanceof MiningSlime miner) {
-      for (int tool = 0; tool < 2; tool++) {
-        final int toolSlot = tool;
-        addSlot(
-            new Slot(new ToolContainer(miner), tool, 194 + tool * 18, 49) {
-              @Override
-              public boolean mayPlace(ItemStack stack) {
-                return MiningSlime.matchesToolSlot(toolSlot, stack);
-              }
+    wireData = new IntContainerData(data, inventory.player.level().isClientSide);
+    addDataSlots(wireData);
+    int toolSlots = slime instanceof MiningSlime ? 2 : slime instanceof CombatSlime ? 3 : 0;
+    for (int tool = 0; tool < toolSlots; tool++) {
+      final int equipment = tool;
+      addSlot(
+          new Slot(new ToolContainer(slime), tool, 194 + tool * 18, 49) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+              return slime instanceof MiningSlime
+                  ? MiningSlime.matchesToolSlot(equipment, stack)
+                  : CombatSlime.matchesEquipment(equipment, stack);
+            }
 
-              @Override
-              public int getMaxStackSize() {
-                return 1;
-              }
-            });
-      }
+            @Override
+            public int getMaxStackSize() {
+              return 1;
+            }
+          });
     }
-    int toolSlots = slime instanceof MiningSlime ? 2 : 0;
     if (slime instanceof BagSlime carrier) {
       for (int index = 0; index < carrier.getBag().getSlots(); index++) {
         final int slot = index;
@@ -113,7 +148,9 @@ public final class SlimeMenu extends AbstractContainerMenu {
                 carrier.getBag(), index, 194 + index % 9 * 18, 89 + index % 27 / 9 * 18) {
               @Override
               public boolean isActive() {
-                return slot < (int) value(SlimeStat.CAPACITY) && slot / 27 == data(BAG_PAGE);
+                return !(slime instanceof CombatSlime && data(TARGET_PAGE) == 1)
+                    && slot < (int) value(SlimeStat.CAPACITY)
+                    && slot / 27 == data(BAG_PAGE);
               }
 
               @Override
@@ -124,6 +161,12 @@ public final class SlimeMenu extends AbstractContainerMenu {
               @Override
               public boolean mayPickup(Player player) {
                 return isActive() && stillValid(player) && super.mayPickup(player);
+              }
+
+              @Override
+              public void setChanged() {
+                // Vanilla transfers can mutate an existing stack without calling Slot.set.
+                carrier.getBag().setStackInSlot(slot, getItem());
               }
             });
       }
@@ -141,6 +184,10 @@ public final class SlimeMenu extends AbstractContainerMenu {
     return slime;
   }
 
+  public boolean isSynchronized() {
+    return wireData.isReady();
+  }
+
   public int data(int index) {
     return data.get(index);
   }
@@ -151,6 +198,13 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
   public int bagPages() {
     return Math.max(1, ((int) value(SlimeStat.CAPACITY) + 26) / 27);
+  }
+
+  @Override
+  public void broadcastChanges() {
+    if (!slime.level().isClientSide)
+      bagPage = Math.min(bagPage, Math.max(0, (slime.getCapacity() - 1) / 27));
+    super.broadcastChanges();
   }
 
   @Override
@@ -165,6 +219,17 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (slime instanceof CombatSlime fighter) {
+      if (button == TARGET_PAGE_BUTTON) {
+        targetPage = 1 - targetPage;
+        return true;
+      }
+      if (button >= TARGET_TOGGLE && button < TARGET_TOGGLE + CombatTarget.values().length) {
+        CombatTarget kind = CombatTarget.values()[button - TARGET_TOGGLE];
+        fighter.setAllowed(kind, !fighter.allows(kind));
+        return true;
+      }
+    }
     if ((button == DELAY_DOWN || button == DELAY_UP) && slime instanceof HeraldSlime herald) {
       int next = herald.getDelayMinutes() + (button == DELAY_UP ? 1 : -1);
       if (next < 1 || next > 60) return false;
@@ -202,12 +267,21 @@ public final class SlimeMenu extends AbstractContainerMenu {
     if (index < petSlots) {
       if (!moveItemStackTo(original, petSlots, slots.size(), true)) return ItemStack.EMPTY;
     } else if (slime instanceof BagSlime) {
-      boolean equipped =
-          slime instanceof MiningSlime
-              && ((MiningSlime.isPickaxe(original) && moveItemStackTo(original, 0, 1, false))
-                  || (MiningSlime.isShovel(original) && moveItemStackTo(original, 1, 2, false)));
+      boolean equipped = false;
+      int equipmentSlots = slime instanceof MiningSlime ? 2 : slime instanceof CombatSlime ? 3 : 0;
+      for (int equipment = 0; equipment < equipmentSlots; equipment++) {
+        boolean matches =
+            slime instanceof MiningSlime
+                ? MiningSlime.matchesToolSlot(equipment, original)
+                : CombatSlime.matchesEquipment(equipment, original);
+        if (matches && moveItemStackTo(original, equipment, equipment + 1, false)) {
+          equipped = true;
+          break;
+        }
+      }
       if (!equipped) {
-        int start = (slime instanceof MiningSlime ? 2 : 0) + data(BAG_PAGE) * 27;
+        if (slime instanceof CombatSlime && data(TARGET_PAGE) == 1) return ItemStack.EMPTY;
+        int start = equipmentSlots + data(BAG_PAGE) * 27;
         int end =
             Math.min(
                 petSlots,
@@ -222,25 +296,29 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private static final class ToolContainer implements Container {
-    private final MiningSlime slime;
+    private final FriendlySlime slime;
 
-    ToolContainer(MiningSlime slime) {
+    ToolContainer(FriendlySlime slime) {
       this.slime = slime;
     }
 
     @Override
     public int getContainerSize() {
-      return 2;
+      return slime instanceof CombatSlime ? 3 : 2;
     }
 
     @Override
     public boolean isEmpty() {
-      return slime.getPickaxe().isEmpty() && slime.getShovel().isEmpty();
+      for (int slot = 0; slot < getContainerSize(); slot++)
+        if (!getItem(slot).isEmpty()) return false;
+      return true;
     }
 
     @Override
     public ItemStack getItem(int slot) {
-      return slime.getTool(slot);
+      return slime instanceof MiningSlime miner
+          ? miner.getTool(slot)
+          : ((CombatSlime) slime).getEquipment(slot);
     }
 
     @Override
@@ -259,7 +337,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-      slime.setTool(slot, stack);
+      if (slime instanceof MiningSlime miner) miner.setTool(slot, stack);
+      else ((CombatSlime) slime).setEquipment(slot, stack);
     }
 
     @Override
@@ -272,8 +351,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public void clearContent() {
-      setItem(0, ItemStack.EMPTY);
-      setItem(1, ItemStack.EMPTY);
+      for (int slot = 0; slot < getContainerSize(); slot++) setItem(slot, ItemStack.EMPTY);
     }
   }
 }

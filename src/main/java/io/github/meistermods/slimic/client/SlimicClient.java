@@ -27,11 +27,14 @@ public final class SlimicClient {
     event.registerEntityRenderer(ModEntities.FRIENDLY_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.MINING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.TRANSPORT_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.COMBAT_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.CLEANING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.HERALD_SLIME.get(), FriendlySlimeRenderer::new);
   }
 
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(CombatSlimeLayer.ARMOR, CombatSlimeLayer::createLayer);
     event.registerLayerDefinition(MiningSlimeLayer.HELMET, MiningSlimeLayer::createLayer);
     event.registerLayerDefinition(TransportSlimeLayer.PACK, TransportSlimeLayer::createLayer);
   }
@@ -40,6 +43,32 @@ public final class SlimicClient {
   public static void clientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> MenuScreens.register(ModMenus.SLIME.get(), SlimeScreen::new));
     event.enqueueWork(() -> MenuScreens.register(ModMenus.TUNER.get(), TunerScreen::new));
+    event.enqueueWork(
+        () ->
+            net.minecraft.client.renderer.item.ItemProperties.register(
+                io.github.meistermods.slimic.registry.ModItems.SLIME_ARMOR.get(),
+                ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "armor_material"),
+                (stack, level, entity, seed) ->
+                    io.github.meistermods.slimic.item.SlimeArmorItem.materialIndex(stack)));
+  }
+
+  @SubscribeEvent
+  public static void registerItemColors(
+      net.minecraftforge.client.event.RegisterColorHandlersEvent.Item event) {
+    event.register(
+        (stack, tint) -> {
+          var base = io.github.meistermods.slimic.item.SlimeArmorItem.baseArmor(stack);
+          return tint == 0
+                  && base.getItem() instanceof net.minecraft.world.item.DyeableLeatherItem leather
+              ? leather.getColor(base)
+              : -1;
+        },
+        io.github.meistermods.slimic.registry.ModItems.SLIME_ARMOR.get(),
+        io.github.meistermods.slimic.registry.ModItems.LEATHER_SLIME_ARMOR.get(),
+        io.github.meistermods.slimic.registry.ModItems.CHAINMAIL_SLIME_ARMOR.get(),
+        io.github.meistermods.slimic.registry.ModItems.GOLDEN_SLIME_ARMOR.get(),
+        io.github.meistermods.slimic.registry.ModItems.DIAMOND_SLIME_ARMOR.get(),
+        io.github.meistermods.slimic.registry.ModItems.NETHERITE_SLIME_ARMOR.get());
   }
 
   @SubscribeEvent

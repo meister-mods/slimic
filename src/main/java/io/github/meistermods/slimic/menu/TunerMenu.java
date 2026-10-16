@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 public final class TunerMenu extends AbstractContainerMenu {
   private final FriendlySlime slime;
   private final ContainerData data;
+  private final IntContainerData wireData;
   private int result;
 
   public TunerMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
@@ -57,11 +58,16 @@ public final class TunerMenu extends AbstractContainerMenu {
                 return 13;
               }
             };
-    addDataSlots(data);
+    wireData = new IntContainerData(data, inventory.player.level().isClientSide);
+    addDataSlots(wireData);
   }
 
   public FriendlySlime slime() {
     return slime;
+  }
+
+  public boolean isSynchronized() {
+    return wireData.isReady();
   }
 
   public double value(SlimeStat stat) {

@@ -159,21 +159,43 @@ public final class TransportSlimeGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 400)
   public static void unloadsFullMinerAndResumesMining(GameTestHelper helper) {
-    TransportSlime carrier = carrier(helper);
-    MiningSlime miner = miner(helper, carrier, new ItemStack(Items.IRON_PICKAXE));
+    LoadedWorkArea arena = new LoadedWorkArea(helper);
+    TransportSlime carrier = arena.carrier(new Vec3(8, 101, 8));
+    MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.moveTo(arena.point(6, 101, 8));
+    miner.setOwnerUUID(carrier.getOwnerUUID());
+    miner.setTame(true);
+    miner.setTool(0, new ItemStack(Items.IRON_PICKAXE));
+    miner.onReleased();
+    helper.getLevel().addFreshEntity(miner);
     for (int slot = 0; slot < 9; slot++)
       miner.getBag().setStackInSlot(slot, new ItemStack(Items.DIAMOND, 64));
-    SlimeChestBlockEntity chest = chest(helper, CHEST);
-    BlockPos ore = ore(helper, miner);
-    helper.setBlock(ore, Blocks.STONE);
+    SlimeChestBlockEntity chest = arena.chest(11, 101, 8);
+    BlockPos ore = BlockPos.containing(arena.point(5, 101, 8));
+    helper.getLevel().setBlockAndUpdate(ore, Blocks.STONE.defaultBlockState());
     helper.succeedWhen(
         () -> {
           helper.assertTrue(
               count(chest.inventory(), Items.DIAMOND) == 576
                   && count(carrier.getBag(), Items.DIAMOND) == 0
                   && count(miner.getBag(), Items.DIAMOND) == 0,
-              "All mined cargo must arrive exactly once in the chest");
-          helper.assertBlockNotPresent(Blocks.STONE, ore);
+              "All mined cargo must arrive exactly once in the chest: chest="
+                  + count(chest.inventory(), Items.DIAMOND)
+                  + ", carrier="
+                  + count(carrier.getBag(), Items.DIAMOND)
+                  + ", miner="
+                  + count(miner.getBag(), Items.DIAMOND)
+                  + ", hauling="
+                  + carrier.getTransportStatus()
+                  + " at "
+                  + carrier.position()
+                  + ", mining="
+                  + miner.getMiningStatus()
+                  + " at "
+                  + miner.position());
+          helper.assertTrue(
+              !helper.getLevel().getBlockState(ore).is(Blocks.STONE),
+              "Emptying the bag must allow the target block to be mined");
           helper.assertTrue(
               count(miner.getBag(), Items.COBBLESTONE)
                       + count(carrier.getBag(), Items.COBBLESTONE)
@@ -181,8 +203,15 @@ public final class TransportSlimeGameTests {
                   == 1,
               "Emptying the bag must let mining resume");
           helper.assertTrue(
-              carrier.getActivityProgress() >= 9 && carrier.getStatPoints() == 0,
+              carrier.getActivityProgress()
+                      >= 9
+                          * io.github.meistermods.slimic.config.SlimicConfig.TRANSPORT_ACTIVITY
+                              .get()
+                  && carrier.getStatPoints() == 0,
               "Deliveries must grant slow activity progress");
+          carrier.discard();
+          miner.discard();
+          arena.close();
         });
   }
 
@@ -249,8 +278,10 @@ public final class TransportSlimeGameTests {
                   && carrier.getMainHandItem().isEmpty(),
               "Only the requested tool may leave stock, using cargo instead of equipment");
           helper.assertTrue(
-              carrier.getActivityProgress() == 1 && carrier.getStatPoints() == 0,
-              "One supplied tool is one completed activity");
+              carrier.getActivityProgress()
+                      == io.github.meistermods.slimic.config.SlimicConfig.TRANSPORT_ACTIVITY.get()
+                  && carrier.getStatPoints() == 0,
+              "One supplied tool earns the configured delivery activity");
         });
   }
 

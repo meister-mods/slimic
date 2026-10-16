@@ -1,0 +1,98 @@
+package io.github.meistermods.slimic.client;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.item.SlimeArmorItem;
+import net.minecraft.client.model.SlimeModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.ItemStack;
+
+public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel<FriendlySlime>> {
+  public static final ModelLayerLocation ARMOR =
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "combat_armor"), "main");
+  private final ModelPart armor;
+  private final EntityRendererProvider.Context context;
+
+  public CombatSlimeLayer(
+      RenderLayerParent<FriendlySlime, SlimeModel<FriendlySlime>> parent,
+      EntityRendererProvider.Context context) {
+    super(parent);
+    this.context = context;
+    armor = context.bakeLayer(ARMOR).getChild("armor");
+  }
+
+  public static LayerDefinition createLayer() {
+    MeshDefinition mesh = new MeshDefinition();
+    mesh.getRoot()
+        .addOrReplaceChild(
+            "armor",
+            CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, 20, -4.5F, 9, 4.1F, 9),
+            PartPose.ZERO);
+    return LayerDefinition.create(mesh, 16, 16);
+  }
+
+  @Override
+  public void render(
+      PoseStack pose,
+      MultiBufferSource buffers,
+      int light,
+      FriendlySlime slime,
+      float limbSwing,
+      float limbAmount,
+      float partialTick,
+      float age,
+      float headYaw,
+      float headPitch) {
+    if (!(slime instanceof CombatSlime fighter) || slime.isInvisible()) return;
+    ItemStack gear = fighter.getEquipment(2);
+    if (gear.getItem() instanceof SlimeArmorItem) {
+      String block =
+          new String[] {
+                "white_terracotta",
+                "iron_bars",
+                "iron_block",
+                "gold_block",
+                "diamond_block",
+                "netherite_block"
+              }
+              [SlimeArmorItem.materialIndex(gear)];
+      ItemStack original = SlimeArmorItem.baseArmor(gear);
+      int color =
+          original.getItem() instanceof DyeableLeatherItem leather
+              ? leather.getColor(original)
+              : 0xffffff;
+      armor.render(
+          pose,
+          buffers.getBuffer(
+              RenderType.entityCutoutNoCull(
+                  ResourceLocation.fromNamespaceAndPath(
+                      "minecraft", "textures/block/" + block + ".png"))),
+          light,
+          OverlayTexture.NO_OVERLAY,
+          ((color >> 16) & 255) / 255F,
+          ((color >> 8) & 255) / 255F,
+          (color & 255) / 255F,
+          1);
+    }
+    SlimeEquipmentRenderer.held(
+        context, pose, buffers, light, fighter, fighter.getMainHandItem(), false);
+    SlimeEquipmentRenderer.held(
+        context, pose, buffers, light, fighter, fighter.getOffhandItem(), true);
+  }
+}

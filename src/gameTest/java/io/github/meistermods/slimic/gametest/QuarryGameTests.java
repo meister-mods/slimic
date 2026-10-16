@@ -78,10 +78,6 @@ public final class QuarryGameTests {
     probe.moveTo(cx * 16 + 8, 97, cz * 16 + 8);
     probe.onReleased();
     probe.setOnGround(true);
-    probe
-        .getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE)
-        .setBaseValue(64);
-    probe.getNavigation().setMaxVisitedNodesMultiplier(16);
     var exit = probe.getNavigation().createPath(new BlockPos(cx * 16, 100, cz * 16), 0);
     forceRegion(level, cx, cz, false);
     helper.assertTrue(
@@ -261,11 +257,6 @@ public final class QuarryGameTests {
               level.getBlockState(gap).is(Blocks.COBBLESTONE)
                   && level.getBlockState(outside).is(Blocks.DIAMOND_ORE),
               "Ramp repair must consume supports while respecting the chunk boundary");
-          // The exit is farther than the normal eight-block target search.
-          miner
-              .getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE)
-              .setBaseValue(64);
-          miner.getNavigation().setMaxVisitedNodesMultiplier(16);
           var path = miner.getNavigation().createPath(new BlockPos(minX, 100, minZ), 0);
           helper.assertTrue(
               path != null && path.canReach(),

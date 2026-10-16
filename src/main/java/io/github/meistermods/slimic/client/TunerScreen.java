@@ -94,7 +94,10 @@ public final class TunerScreen extends AbstractContainerScreen<TunerMenu> {
   protected void containerTick() {
     super.containerTick();
     fields.forEach(EditBox::tick);
-    if (!loaded && menu.slime() != null && menu.value(SlimeStat.HEALTH) > 0) {
+    if (!loaded
+        && menu.isSynchronized()
+        && menu.slime() != null
+        && menu.value(SlimeStat.HEALTH) > 0) {
       refresh();
       loaded = true;
     }

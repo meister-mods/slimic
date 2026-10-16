@@ -27,6 +27,10 @@ public final class MiningSlimeItem extends FriendlySlimeItem {
 
   @Override
   protected void initializeSlime(FriendlySlime slime, ItemStack stack) {
+    if (!stack.hasTag() || !stack.getTag().getCompound("SlimeData").contains("MiningWorking")) {
+      ((MiningSlime) slime).setWorking(false);
+      slime.setWaiting(true);
+    }
     if (stack.hasTag() && stack.getTag().contains(INITIAL_PICKAXE)) {
       ItemStack tool = ItemStack.of(stack.getTag().getCompound(INITIAL_PICKAXE));
       if (MiningSlime.isPickaxe(tool)) {

@@ -1,5 +1,6 @@
 package io.github.meistermods.slimic.entity;
 
+import io.github.meistermods.slimic.config.SlimicConfig;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.menu.SlimeMenu;
@@ -12,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -22,6 +24,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -38,6 +41,8 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.network.NetworkHooks;
 
 public class FriendlySlime extends TamableAnimal {
@@ -57,6 +62,9 @@ public class FriendlySlime extends TamableAnimal {
   public float oldSquish;
   private float targetSquish;
   private boolean wasOnGround;
+  private ResourceLocation workDimension;
+  private int followingActivityTicks;
+  private Vec3 lastFollowingPosition;
 
   public FriendlySlime(EntityType<? extends FriendlySlime> type, Level level) {
     super(type, level);
@@ -121,7 +129,18 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public boolean isWorkBlocked() {
-    return false;
+    return getWorkStatus().state() == WorkStatus.State.BLOCKED;
+  }
+
+  public final WorkStatus getWorkStatus() {
+    if (isOrderedToSit()) return WorkStatus.of(WorkStatus.Order.WAIT, WorkStatus.State.IDLE);
+    return isWorking()
+        ? describeWork()
+        : WorkStatus.of(WorkStatus.Order.FOLLOW, WorkStatus.State.IDLE);
+  }
+
+  protected WorkStatus describeWork() {
+    return WorkStatus.of(WorkStatus.Order.FOLLOW, WorkStatus.State.IDLE);
   }
 
   public int getBlockedWorkTicks() {
@@ -160,6 +179,10 @@ public class FriendlySlime extends TamableAnimal {
     return (int) SlimeStat.CAPACITY.value(this);
   }
 
+  public int detectionMultiplier() {
+    return 1;
+  }
+
   public int capacityMultiplier() {
     return 1;
   }
@@ -172,7 +195,27 @@ public class FriendlySlime extends TamableAnimal {
     stamina = Math.min(getMaxStamina(), stamina + amount);
   }
 
-  public void onReleased() {}
+  public final float getStaminaRecoveryPerSecond() {
+    return getMaxStamina() * .02F;
+  }
+
+  public void onReleased() {
+    workDimension = level().dimension().location();
+  }
+
+  protected final boolean hasChangedWorkDimension() {
+    return workDimension != null && !workDimension.equals(level().dimension().location());
+  }
+
+  @Nullable
+  @Override
+  public Entity changeDimension(ServerLevel destination, ITeleporter teleporter) {
+    var origin = level().dimension();
+    Entity moved = super.changeDimension(destination, teleporter);
+    if (moved instanceof FriendlySlime companion && !origin.equals(companion.level().dimension()))
+      companion.onReleased();
+    return moved;
+  }
 
   public boolean upgradeStat(SlimeStat stat) {
     if (level().isClientSide || statPoints <= 0 || getStatLevel(stat) >= stat.maxLevel())
@@ -186,9 +229,13 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   protected void recordCompletedWork() {
+    recordCompletedWork(1);
+  }
+
+  protected void recordCompletedWork(int units) {
     if (level().isClientSide) return;
-    activityProgress++;
-    if (activityProgress >= getNextPointCost()) {
+    activityProgress += Mth.clamp(units, 0, 64);
+    while (activityProgress >= getNextPointCost()) {
       activityProgress -= getNextPointCost();
       earnedPoints = Math.min(1_000_000, earnedPoints + 1);
       statPoints = Math.min(32767, statPoints + 1);
@@ -223,6 +270,8 @@ public class FriendlySlime extends TamableAnimal {
   @Override
   public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
+    tag.putInt(SlimeData.VERSION_KEY, SlimeData.VERSION);
+    tag.putInt("FollowingActivityTicks", followingActivityTicks);
     tag.put("SlimeStats", entityData.get(STAT_LEVELS).copy());
     tag.putInt("StatPoints", statPoints);
     tag.putInt("ActivityProgress", activityProgress);
@@ -232,11 +281,25 @@ public class FriendlySlime extends TamableAnimal {
     tag.putInt("SlimeDyeColor", getDyeColorId());
     tag.putInt("BlockedWorkTicks", blockedWorkTicks);
     tag.putLong("BlockedEpisode", blockedEpisode);
+    tag.putString(
+        "WorkDimension",
+        (workDimension == null ? level().dimension().location() : workDimension).toString());
   }
 
   @Override
-  public void readAdditionalSaveData(CompoundTag tag) {
+  public void readAdditionalSaveData(CompoundTag saved) {
+    CompoundTag tag = SlimeData.migrate(saved);
     super.readAdditionalSaveData(tag);
+    followingActivityTicks =
+        Mth.clamp(
+            tag.getInt("FollowingActivityTicks"),
+            0,
+            SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get() - 1);
+    lastFollowingPosition = null;
+    String savedDimension = tag.getString("WorkDimension");
+    workDimension = savedDimension.isBlank() ? null : ResourceLocation.tryParse(savedDimension);
+    if (workDimension == null || workDimension.getPath().isEmpty())
+      workDimension = level().dimension().location();
     CompoundTag levels = new CompoundTag();
     for (SlimeStat stat : SlimeStat.values()) {
       levels.putInt(
@@ -269,7 +332,15 @@ public class FriendlySlime extends TamableAnimal {
   @Override
   protected void registerGoals() {
     goalSelector.addGoal(0, new FloatGoal(this));
-    goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
+    goalSelector.addGoal(
+        1,
+        new SitWhenOrderedToGoal(this) {
+          @Override
+          public boolean canUse() {
+            // The native goal also sits for an unavailable owner, even with a work order.
+            return !FriendlySlime.this.isWorking() && super.canUse();
+          }
+        });
     goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.2D, 4.0F, 2.0F, false));
     goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
     goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -278,6 +349,9 @@ public class FriendlySlime extends TamableAnimal {
 
   @Override
   public void tick() {
+    // Native command teleports can restore a copy without calling changeDimension.
+    // Rebase its work area before any AI goal can use the old world's coordinates.
+    if (!level().isClientSide && (workDimension == null || hasChangedWorkDimension())) onReleased();
     oldSquish = squish;
     squish += (targetSquish - squish) * 0.5F;
     super.tick();
@@ -288,7 +362,29 @@ public class FriendlySlime extends TamableAnimal {
       } else blockedWorkTicks = 0;
     }
     if (!level().isClientSide && tickCount % 20 == 0 && !isWorking()) {
-      stamina = Math.min(getMaxStamina(), stamina + 2.0F);
+      recoverStamina(getStaminaRecoveryPerSecond());
+    }
+    if (!level().isClientSide) {
+      var owner = getOwner();
+      double movement =
+          lastFollowingPosition == null
+              ? 0
+              : position().subtract(lastFollowingPosition).horizontalDistanceSqr();
+      if (!isWorking()
+          && !isOrderedToSit()
+          && owner != null
+          && !owner.isSpectator()
+          && distanceToSqr(owner) >= 4
+          && distanceToSqr(owner) <= 256
+          && getNavigation().isInProgress()
+          && movement > .0001
+          && movement < 4) {
+        if (++followingActivityTicks >= SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get()) {
+          followingActivityTicks = 0;
+          recordCompletedWork();
+        }
+      }
+      lastFollowingPosition = position();
     }
     if (onGround() && !wasOnGround) {
       targetSquish = -0.5F;
@@ -336,7 +432,7 @@ public class FriendlySlime extends TamableAnimal {
             serverPlayer,
             new SimpleMenuProvider(
                 (id, inventory, viewer) -> new SlimeMenu(id, inventory, this), getDisplayName()),
-            buffer -> buffer.writeVarInt(getId()));
+            buffer -> SlimeMenu.writeOpeningData(buffer, this));
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
     }
