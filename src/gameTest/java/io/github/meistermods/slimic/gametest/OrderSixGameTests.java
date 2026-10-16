@@ -107,14 +107,14 @@ public final class OrderSixGameTests {
                 revived != null
                     && revived.getType() == old.getType()
                     && revived.getOwnerUUID().equals(owner.getUUID())
-                    && revived.getHealth() == revived.getMaxHealth()
+                    && revived.getHealth() == 1.0F
                     && revived.getStamina() == 39
                     && revived.getStatPoints() == 6
                     && revived.getStatLevel(SlimeStat.HEALTH) == 1
                     && revived.getCustomName().equals(old.getCustomName())
                     && revived.isOrderedToSit(),
-                "Identity, specialization, owner, name, stats, points, stamina and order survive"
-                    + " revival");
+                "Revival starts at one health; identity, specialization, owner, name, stats,"
+                    + " points, stamina and order survive revival");
             if (revived instanceof BagSlime bag)
               h.assertTrue(
                   bag.getBag().getStackInSlot(0).getCount() == 13,

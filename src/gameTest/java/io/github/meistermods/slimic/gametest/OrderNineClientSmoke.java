@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.gametest;
 
 import io.github.meistermods.slimic.client.SlimeScreen;
 import io.github.meistermods.slimic.entity.*;
+import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
@@ -92,6 +93,54 @@ final class OrderNineClientSmoke {
       if (!(s.getMenu().slime() instanceof SoggySlime) || s.getMenu().slots.size() != 36)
         throw new IllegalStateException("Soggy menu has no equipment or hidden bag slots");
       shot(c, "soggy-menu");
+      c.gameMode.handleInventoryButtonClick(s.getMenu().containerId, SlimeMenu.ROAM);
+      phase = 5;
+      ticks = 0;
+      return false;
+    }
+    if (phase == 5) {
+      if (!(c.screen instanceof SlimeScreen s)
+          || s.getMenu().data(SlimeMenu.MODE) != SlimeMenu.ROAM
+          || ++ticks < 20) return false;
+      boolean found =
+          s.children().stream()
+              .anyMatch(
+                  w ->
+                      w instanceof net.minecraft.client.gui.components.Button b
+                          && b.getMessage()
+                              .equals(
+                                  net.minecraft.network.chat.Component.translatable(
+                                      "screen.slimic.roam"))
+                          && !b.active);
+      if (!found)
+        throw new IllegalStateException("Roam button must reflect the synchronized order");
+      for (var widget : s.children()) {
+        if (widget instanceof net.minecraft.client.gui.components.Button button
+            && button
+                .getMessage()
+                .equals(net.minecraft.network.chat.Component.translatable("screen.slimic.roam"))
+            && c.font.width(button.getMessage()) > button.getWidth() - 6)
+          throw new IllegalStateException("Roam label must fit without scrolling");
+      }
+      shot(c, "soggy-roaming");
+      c.gameMode.handleInventoryButtonClick(s.getMenu().containerId, SlimeMenu.WAIT);
+      phase = 6;
+      ticks = 0;
+      return false;
+    }
+    if (phase == 6) {
+      if (!(c.screen instanceof SlimeScreen s)
+          || s.getMenu().data(SlimeMenu.MODE) != SlimeMenu.WAIT
+          || ++ticks < 15) return false;
+      c.gameMode.handleInventoryButtonClick(s.getMenu().containerId, SlimeMenu.FOLLOW);
+      phase = 7;
+      ticks = 0;
+      return false;
+    }
+    if (phase == 7) {
+      if (!(c.screen instanceof SlimeScreen s)
+          || s.getMenu().data(SlimeMenu.MODE) != SlimeMenu.FOLLOW
+          || ++ticks < 15) return false;
       c.player.closeContainer();
       c.getSingleplayerServer()
           .execute(
@@ -133,9 +182,38 @@ final class OrderNineClientSmoke {
           != MiningSlime.Status.NO_BUCKET.ordinal()) return false;
       shot(c, "mining-no-bucket");
       c.player.closeContainer();
+      c.getSingleplayerServer()
+          .execute(
+              () -> {
+                var level = c.getSingleplayerServer().overworld();
+                var miner = (MiningSlime) level.getEntity(pet.getUUID());
+                level.setBlockAndUpdate(new BlockPos(12, 102, 8), Blocks.AIR.defaultBlockState());
+                level.setBlockAndUpdate(new BlockPos(16, 102, 8), Blocks.WATER.defaultBlockState());
+                miner.moveTo(14, 101, 8.5);
+                miner.setWorking(true);
+              });
+      phase = 8;
+      ticks = 0;
+      return false;
+    }
+    if (phase == 8) {
+      var pets =
+          c.level.getEntitiesOfClass(MiningSlime.class, c.player.getBoundingBox().inflate(12));
+      if (pets.isEmpty()) return false;
+      if (c.screen == null) {
+        c.gameMode.interact(c.player, pets.get(0), InteractionHand.MAIN_HAND);
+        return false;
+      }
+      if (!(c.screen instanceof SlimeScreen s)
+          || !s.getMenu().isSynchronized()
+          || s.getMenu().data(SlimeMenu.STATUS) != MiningSlime.Status.NO_COBBLESTONE.ordinal()
+          || ++ticks < 20) return false;
+      shot(c, "mining-no-cobblestone");
+      c.player.closeContainer();
       System.out.println(
           "SLIMIC ORDER NINE CLIENT SMOKE PASSED: soggy shared summon model, slag sprite, trail"
-              + " rendering, equipment-free menu, bucket request UI, JEI="
+              + " rendering, equipment-free menu, roaming/follow/wait synchronization, bucket and"
+              + " cobblestone request UI, JEI="
               + ModList.get().isLoaded("jei"));
       phase = 4;
       return true;
@@ -148,7 +226,7 @@ final class OrderNineClientSmoke {
         c.gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.20-"
+                "../verification/0.1.21-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

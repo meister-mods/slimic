@@ -54,7 +54,9 @@ public abstract class BagSlime extends FriendlySlime {
   }
 
   public boolean needsWorkSupply() {
-    return needsReplacementTool() || getWorkStatus().requests(WorkStatus.Request.BUCKET_SUPPLY);
+    return needsReplacementTool()
+        || getWorkStatus().requests(WorkStatus.Request.BUCKET_SUPPLY)
+        || getWorkStatus().requests(WorkStatus.Request.COBBLESTONE_SUPPLY);
   }
 
   public boolean acceptsWorkTool(ItemStack stack) {
@@ -63,6 +65,14 @@ public abstract class BagSlime extends FriendlySlime {
 
   public boolean receiveWorkTool(ItemStack stack) {
     return false;
+  }
+
+  public int workSupplyLimit() {
+    return 1;
+  }
+
+  public int receiveWorkSupply(ItemStack stack) {
+    return receiveWorkTool(stack) ? 1 : 0;
   }
 
   protected abstract String bagTagName();

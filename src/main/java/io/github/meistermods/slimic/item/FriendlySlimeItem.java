@@ -216,7 +216,7 @@ public class FriendlySlimeItem extends Item {
                     saved.remove("Leash");
                     entity.load(saved);
                     if (reviving) {
-                      entity.setHealth(entity.getMaxHealth());
+                      entity.setHealth(1.0F);
                       entity.clearFire();
                       entity.deathTime = entity.hurtTime = 0;
                     }

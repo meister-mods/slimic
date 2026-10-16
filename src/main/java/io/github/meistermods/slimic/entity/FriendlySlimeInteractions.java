@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -97,7 +98,8 @@ public final class FriendlySlimeInteractions {
     if (!event.getLevel().isClientSide
         && event.getEntity() instanceof Mob mob
         && mob instanceof Enemy
-        && !(mob instanceof Creeper))
+        && !(mob instanceof Creeper)
+        && !(mob instanceof EnderMan))
       mob.targetSelector.addGoal(
           3,
           new NearestAttackableTargetGoal<>(

@@ -13,7 +13,8 @@ public record WorkStatus(Order order, State state, Reason reason, Set<Request> r
     FIGHT,
     CLEAN,
     FARM,
-    LOG
+    LOG,
+    ROAM
   }
 
   public enum State {
@@ -35,13 +36,15 @@ public record WorkStatus(Order order, State state, Reason reason, Set<Request> r
     SUPPORT_MISSING,
     DISABLED,
     SEEDS_MISSING,
-    BUCKET_MISSING
+    BUCKET_MISSING,
+    COBBLESTONE_MISSING
   }
 
   public enum Request {
     CARGO_PICKUP,
     TOOL_SUPPLY,
-    BUCKET_SUPPLY
+    BUCKET_SUPPLY,
+    COBBLESTONE_SUPPLY
   }
 
   public WorkStatus {

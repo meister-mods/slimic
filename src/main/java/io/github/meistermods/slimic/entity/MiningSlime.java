@@ -74,7 +74,9 @@ public final class MiningSlime extends BagSlime {
     COMPLETE,
     NEEDS_TIER,
     NO_BUCKET,
-    DRAINING
+    DRAINING,
+    NO_COBBLESTONE,
+    WALLING
   }
 
   private static final EntityDataAccessor<Integer> ACTIVE_TOOL =
@@ -88,6 +90,8 @@ public final class MiningSlime extends BagSlime {
   private boolean hasAnchor;
   private int chunkX, chunkZ;
   private QuarryPlan quarry;
+  private QuarryWalls walls;
+  private BlockPos wallTarget;
   private int requiredTool;
   private boolean travelBlocked;
   private Status status = Status.IDLE;
@@ -196,6 +200,10 @@ public final class MiningSlime extends BagSlime {
 
   @Override
   public boolean acceptsWorkTool(ItemStack stack) {
+    if (status == Status.NO_COBBLESTONE)
+      return needsWallMaterial()
+          && stack.is(Items.COBBLESTONE)
+          && ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
     if (status == Status.NO_BUCKET && !hasBucket())
       return stack.is(Items.BUCKET)
           && ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
@@ -205,6 +213,7 @@ public final class MiningSlime extends BagSlime {
 
   @Override
   public boolean receiveWorkTool(ItemStack stack) {
+    if (status == Status.NO_COBBLESTONE) return receiveWallMaterial(stack, 1) > 0;
     if (status == Status.NO_BUCKET && !hasBucket()) {
       if (!acceptsWorkTool(stack)) return false;
       if (!ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), false).isEmpty())
@@ -218,10 +227,67 @@ public final class MiningSlime extends BagSlime {
     return true;
   }
 
+  private boolean hasCobblestone() {
+    for (int slot = 0; slot < getCapacity(); slot++)
+      if (getBag().getStackInSlot(slot).is(Items.COBBLESTONE)) return true;
+    return false;
+  }
+
+  private boolean needsWallMaterial() {
+    return !hasCobblestone()
+        && walls != null
+        && level() instanceof ServerLevel server
+        && walls.pending().stream()
+            .anyMatch(
+                p ->
+                    walls.exposed(server, p)
+                        && level().hasChunkAt(p)
+                        && level().getBlockState(p).canBeReplaced()
+                        && !level().getBlockState(p).hasBlockEntity());
+  }
+
+  @Override
+  public int workSupplyLimit() {
+    return status == Status.NO_COBBLESTONE ? 64 : 1;
+  }
+
+  private int receiveWallMaterial(ItemStack stack, int limit) {
+    if (!isWorking() || !acceptsWorkTool(stack)) return 0;
+    var offered = stack.copyWithCount(Math.min(limit, stack.getCount()));
+    int moved =
+        offered.getCount()
+            - ItemHandlerHelper.insertItemStacked(getBag(), offered, false).getCount();
+    if (moved > 0) {
+      status = Status.IDLE;
+      fullRevision = -1;
+    }
+    return moved;
+  }
+
+  @Override
+  public int receiveWorkSupply(ItemStack stack) {
+    return status == Status.NO_COBBLESTONE
+        ? receiveWallMaterial(stack, 64)
+        : super.receiveWorkSupply(stack);
+  }
+
   @Override
   protected WorkStatus describeWork() {
     var order = WorkStatus.Order.MINE;
     return switch (status) {
+      case NO_COBBLESTONE ->
+          !needsWallMaterial()
+              ? WorkStatus.of(order, WorkStatus.State.ACTIVE)
+              : WorkStatus.blocked(
+                  order,
+                  WorkStatus.Reason.COBBLESTONE_MISSING,
+                  ItemHandlerHelper.insertItemStacked(
+                              getBag(), new ItemStack(Items.COBBLESTONE), true)
+                          .isEmpty()
+                      ? new WorkStatus.Request[] {WorkStatus.Request.COBBLESTONE_SUPPLY}
+                      : new WorkStatus.Request[] {
+                        WorkStatus.Request.COBBLESTONE_SUPPLY, WorkStatus.Request.CARGO_PICKUP
+                      });
       case NO_BUCKET ->
           hasBucket()
               ? WorkStatus.of(order, WorkStatus.State.ACTIVE)
@@ -297,6 +363,7 @@ public final class MiningSlime extends BagSlime {
               level().getMinBuildHeight(),
               Math.min(level().getMaxBuildHeight() - 3, blockPosition().getY() - 1));
       quarry = new QuarryPlan(chunk, top, top + 2);
+      walls = new QuarryWalls(chunk);
       if (changed) {
         working = true;
         travelBlocked = false;
@@ -326,6 +393,7 @@ public final class MiningSlime extends BagSlime {
     if (target != null && level() instanceof ServerLevel server)
       server.destroyBlockProgress(getId(), target, -1);
     target = null;
+    wallTarget = null;
     workStand = null;
     progress = 0;
     breakingState = null;
@@ -631,6 +699,10 @@ public final class MiningSlime extends BagSlime {
   }
 
   private void approachTarget(BlockPos destination, boolean placement) {
+    approachTarget(destination, placement, false);
+  }
+
+  private void approachTarget(BlockPos destination, boolean placement, boolean wall) {
     // Keep following an existing route during a hop. Ground navigation cannot
     // create a replacement in midair, which must not cancel the valid old path.
     if (!onGround() && !isInWater()) return;
@@ -662,7 +734,8 @@ public final class MiningSlime extends BagSlime {
             continue;
           Vec3 eye = stand.add(0, getEyeHeight(), 0);
           if (eye.distanceToSqr(Vec3.atCenterOf(destination)) <= arrivalReach * arrivalReach
-              && canSeeFrom(eye, destination, placement)) positions.add(feet);
+              && (wall ? canSeeWall(eye, destination) : canSeeFrom(eye, destination, placement)))
+            positions.add(feet);
         }
     // Search all valid standing positions together instead of running a separate
     // pathfinder for every candidate. Never walk toward the solid target itself.
@@ -730,6 +803,128 @@ public final class MiningSlime extends BagSlime {
     worker.moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
     worker.setOnGround(true);
     return worker;
+  }
+
+  private boolean canSeeWall(Vec3 eye, BlockPos pos) {
+    var hit =
+        level()
+            .clip(
+                new ClipContext(
+                    eye,
+                    Vec3.atCenterOf(pos),
+                    ClipContext.Block.COLLIDER,
+                    ClipContext.Fluid.NONE,
+                    this));
+    return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos);
+  }
+
+  private boolean ensureWalls(ServerLevel server) {
+    if (quarry.layer() < server.getMinBuildHeight()) return true;
+    if (walls == null) walls = new QuarryWalls(getMiningChunk());
+    walls.discover(server, quarry);
+    if (walls.pending().isEmpty()) {
+      if (wallTarget != null) clearTarget();
+      return true;
+    }
+    var selected =
+        walls.pending().stream()
+            .filter(p -> walls.exposed(server, p))
+            .filter(server::hasChunkAt)
+            .min(
+                Comparator.comparingInt(
+                        (BlockPos p) -> QuarryWalls.fluid(server.getBlockState(p)) ? 0 : 1)
+                    .thenComparingInt(p -> -p.getY())
+                    .thenComparingDouble(p -> p.distToCenterSqr(position())))
+            .orElse(null);
+    if (selected == null) {
+      if (walls.pending().stream().noneMatch(p -> walls.exposed(server, p))) {
+        if (wallTarget != null) clearTarget();
+        return true;
+      }
+      status = Status.UNREACHABLE;
+      getNavigation().stop();
+      return false;
+    }
+    if (!selected.equals(wallTarget)) {
+      clearTarget();
+      wallTarget = selected;
+      supportTarget = selected;
+    }
+    var previous = server.getBlockState(selected);
+    if (!previous.canBeReplaced() || previous.hasBlockEntity()) {
+      status = Status.UNREACHABLE;
+      travelBlocked = true;
+      getNavigation().stop();
+      return false;
+    }
+    int material = -1;
+    for (int i = 0; i < getCapacity(); i++)
+      if (getBag().getStackInSlot(i).is(Items.COBBLESTONE)) {
+        material = i;
+        break;
+      }
+    if (material < 0) {
+      status = Status.NO_COBBLESTONE;
+      getNavigation().stop();
+      return false;
+    }
+    if (server.getGameTime() < supportRetryAt) {
+      status = Status.UNREACHABLE;
+      return false;
+    }
+    double reach = Math.min(SlimeStat.REACH.value(this), SlimeStat.DETECTION_RANGE.value(this));
+    if (getEyePosition().distanceToSqr(Vec3.atCenterOf(selected)) > reach * reach
+        || !canSeeWall(getEyePosition(), selected)) {
+      status = Status.MOVING;
+      if (travelStalled(1)) {
+        travelBlocked = true;
+        status = Status.UNREACHABLE;
+        supportRetryAt = server.getGameTime() + 100;
+        targetTicks = 0;
+        workStand = null;
+        getNavigation().stop();
+      } else {
+        if (tickCount % 10 == 0) approachTarget(selected, true, true);
+        finishApproach();
+      }
+      return false;
+    }
+    var block = Blocks.COBBLESTONE.defaultBlockState();
+    var player = worker(server);
+    if (!server.getWorldBorder().isWithinBounds(selected)
+        || !server.mayInteract(player, selected)
+        || !server.isUnobstructed(block, selected, CollisionContext.empty())) {
+      status = Status.UNREACHABLE;
+      travelBlocked = true;
+      getNavigation().stop();
+      return false;
+    }
+    var snapshot = BlockSnapshot.create(server.dimension(), server, selected);
+    getNavigation().stop();
+    if (!server.setBlock(selected, block, 3)) {
+      status = Status.UNREACHABLE;
+      return false;
+    }
+    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
+      snapshot.restore(true, false);
+      status = Status.UNREACHABLE;
+      travelBlocked = true;
+      supportRetryAt = server.getGameTime() + 100;
+      return false;
+    }
+    if (!server.getBlockState(selected).equals(block)) {
+      status = Status.UNREACHABLE;
+      return false;
+    }
+    getBag().extractItem(material, 1, false);
+    spendStamina(1);
+    recordCompletedWork();
+    walls.pending().remove(selected);
+    clearTarget();
+    fluidCooldown = Math.max(1, (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(this)));
+    status = Status.WALLING;
+    travelBlocked = false;
+    return false;
   }
 
   private boolean ensureRamp(ServerLevel server) {
@@ -828,6 +1023,7 @@ public final class MiningSlime extends BagSlime {
         travelBlocked = false;
         return null;
       }
+      if (!ensureWalls(server)) return null;
       BlockPos fluid = findFluid(server);
       if (fluid != null) {
         if (!hasBucket()) {
@@ -998,6 +1194,7 @@ public final class MiningSlime extends BagSlime {
     tag.putBoolean("MiningTravelBlocked", travelBlocked);
     tag.putInt("MiningStatus", status.ordinal());
     tag.putInt("MiningFluidCooldown", fluidCooldown);
+    if (walls != null) tag.putLongArray("MiningWallPending", walls.save());
     if (drainedWaterLayer != Integer.MIN_VALUE)
       tag.putInt("MiningDrainedWaterLayer", drainedWaterLayer);
     if (quarry != null) tag.put("MiningQuarry", quarry.save());
@@ -1029,6 +1226,13 @@ public final class MiningSlime extends BagSlime {
                 level().getMinBuildHeight(),
                 level().getMaxBuildHeight())
             : null;
+    walls = quarry == null ? null : new QuarryWalls(getMiningChunk());
+    if (walls != null)
+      walls.load(
+          tag.getLongArray("MiningWallPending"),
+          quarry,
+          level().getMinBuildHeight(),
+          level().getMaxBuildHeight());
     drainedWaterLayer =
         tag.contains("MiningDrainedWaterLayer")
             ? tag.getInt("MiningDrainedWaterLayer")
@@ -1099,6 +1303,7 @@ public final class MiningSlime extends BagSlime {
         fluidCooldown--;
         return;
       }
+      if ((tickCount % 5 == 0 || wallTarget != null) && !ensureWalls(server)) return;
       if (target == null) {
         if (tickCount % 5 != 0) {
           if (supportTarget != null) finishApproach();

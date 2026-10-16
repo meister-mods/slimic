@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.21] - 2026-10-16
+
+### Added
+
+- Mining Slimes reinforce exposed side fluid inlets and large underground openings with their own cobblestone, preserving the quarry staircase and unfinished wall jobs across recovery.
+- Missing wall material pauses mining and requests transport delivery of up to one stack; partial stock and available bag space bound the transfer.
+- Soggy Slimes support an explicit Roam order, independent of the owner's presence, with a saved local origin, loaded-terrain navigation, and normal trail production and stamina recovery.
+
+### Changed
+
+- Revival from a Broken Slime Block starts every specialization at 1 health while preserving stored traits, equipment, cargo, and stamina.
+- Endermen retain native targeting. Combat Slimes classify an Enderman targeting a living companion as Hostile and return it to Neutral when it disengages.
+- Updated bilingual management messages, JEI guidance, and gameplay/development guides for wall reinforcement and free roaming. Network protocol is 10; saved-data schema remains 1.
+
+### Validation
+
+- Native server regressions cover wall geometry, protection and costs, recovery, material delivery, roaming, command permissions, stamina recovery, Enderman target transitions, and all eleven specializations revived at one health.
+
 ## [0.1.20] - 2026-10-16
 
 ### Changed

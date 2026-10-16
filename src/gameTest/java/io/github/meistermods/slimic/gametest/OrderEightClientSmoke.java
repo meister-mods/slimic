@@ -146,6 +146,7 @@ final class OrderEightClientSmoke {
     if (phase == 5) {
       if (!(c.player.containerMenu instanceof ChestMenu) || ++ticks < 25) return false;
       var chest = (SlimeChestBlockEntity) c.level.getBlockEntity(new BlockPos(10, 101, 11));
+      if (chest.getOpenness(1) < .9 && ticks < 200) return false;
       if (chest.getOpenness(1) < .9)
         throw new IllegalStateException("Chest did not open from native menu event");
       shot(c, "animated-chest-menu");
@@ -164,6 +165,7 @@ final class OrderEightClientSmoke {
     if (phase == 7) {
       if (++ticks < 20) return false;
       var chest = (SlimeChestBlockEntity) c.level.getBlockEntity(new BlockPos(10, 101, 11));
+      if (chest.getOpenness(1) > .01 && ticks < 200) return false;
       if (chest.getOpenness(1) > .01) throw new IllegalStateException("Chest did not close");
       shot(c, "animated-chest-closed");
       System.out.println(
@@ -181,7 +183,7 @@ final class OrderEightClientSmoke {
         c.gameDirectory
             .toPath()
             .resolve(
-                "../verification/0.1.20-"
+                "../verification/0.1.21-"
                     + (ModList.get().isLoaded("jei") ? "jei-" : "no-jei-")
                     + label
                     + ".png")

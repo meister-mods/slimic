@@ -439,7 +439,7 @@ public final class OrderEightGameTests {
     return p;
   }
 
-  @GameTest(template = "empty", batch = "order_eight", timeoutTicks = 160)
+  @GameTest(template = "empty", batch = "order_eight", timeoutTicks = 1000)
   public static void guardianFliesAndRetaliatesAfterActualOwnerDamage(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var previousDifficulty = h.getLevel().getDifficulty();

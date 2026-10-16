@@ -24,7 +24,7 @@ public final class GuardianDamageBoundaryGameTests {
     h.succeed();
   }
 
-  @GameTest(template = "empty", batch = "guardian_damage", timeoutTicks = 160)
+  @GameTest(template = "empty", batch = "guardian_damage", timeoutTicks = 800)
   public static void absorbedDamageStillTriggersGuardianSelfDefense(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var guard = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());

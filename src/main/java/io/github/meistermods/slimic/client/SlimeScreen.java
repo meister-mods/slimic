@@ -12,6 +12,7 @@ import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
+import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.network.ModNetwork;
@@ -78,6 +79,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     addOrder(SlimeMenu.FOLLOW, "follow", 194);
     addOrder(SlimeMenu.WAIT, "wait", 250);
+    if (menu.slime() instanceof SoggySlime) addOrder(SlimeMenu.ROAM, "roam", 306);
     if (menu.slime() instanceof CombatSlime) {
       addOrder(SlimeMenu.WORK, "fight", 306);
       targetPageButton =
@@ -342,9 +344,21 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
-    } else if (menu.slime() instanceof io.github.meistermods.slimic.entity.SoggySlime) {
+    } else if (menu.slime() instanceof SoggySlime) {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.soggy_info"), 194, 84, 162, 0xffb4c9d1);
+      graphics.drawWordWrap(
+          font,
+          Component.translatable(
+              menu.data(SlimeMenu.MODE) == SlimeMenu.ROAM
+                  ? "status.slimic.roaming"
+                  : menu.data(SlimeMenu.MODE) == SlimeMenu.WAIT
+                      ? "status.slimic.waiting"
+                      : "status.slimic.following"),
+          10,
+          216,
+          174,
+          0xffb4c9d1);
     } else if (menu.slime() instanceof GuardianAngelSlime) {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.guardian_help"), 194, 84, 162, 0xffb4c9d1);

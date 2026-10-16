@@ -19,6 +19,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -123,6 +124,9 @@ public final class CombatSlime extends BagSlime {
     if ((target instanceof TamableAnimal tame && tame.isTame())
         || (target instanceof AbstractHorse horse && horse.isTamed())) return CombatTarget.TAMED;
     if (target instanceof Creeper) return CombatTarget.CREEPERS;
+    if (target instanceof EnderMan enderman
+        && enderman.getTarget() instanceof FriendlySlime companion
+        && companion.isAlive()) return CombatTarget.HOSTILE;
     if (target instanceof NeutralMob) return CombatTarget.NEUTRAL;
     return target instanceof Enemy ? CombatTarget.HOSTILE : CombatTarget.PASSIVE;
   }

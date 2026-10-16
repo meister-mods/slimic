@@ -351,15 +351,25 @@ public final class TransportSlime extends BagSlime {
       }
       case FETCH_TOOL -> {
         IItemHandler source = targetChest().inventory();
-        if (transfer(source, toolSlot(source, workerTarget), getBag(), 1) > 0) {
+        if (transfer(
+                source, toolSlot(source, workerTarget), getBag(), workerTarget.workSupplyLimit())
+            > 0) {
           spendStamina(1);
           actions++;
         }
       }
       case SUPPLY_TOOL -> {
         int slot = toolSlot(getBag(), workerTarget);
-        if (workerTarget.receiveWorkTool(getBag().getStackInSlot(slot))) {
-          getBag().extractItem(slot, 1, false);
+        int accepted =
+            workerTarget.receiveWorkSupply(
+                getBag()
+                    .getStackInSlot(slot)
+                    .copyWithCount(
+                        Math.min(
+                            workerTarget.workSupplyLimit(),
+                            getBag().getStackInSlot(slot).getCount())));
+        if (accepted > 0) {
+          getBag().extractItem(slot, accepted, false);
           spendStamina(1);
           recordCompletedWork(SlimicConfig.TRANSPORT_ACTIVITY.get());
           actions++;

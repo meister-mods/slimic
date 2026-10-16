@@ -63,7 +63,7 @@ Tests use a structure loaded one block above its marker, so the fixture floor is
 
 Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
 
-Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 9 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
+Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 10 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
 
 Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe and shovel use the native main-hand and off-hand equipment slots, keeping client rendering and item damage synchronized. Ordinary mining is bounded by one completed solid block per tick, searches process a limited number of chunk positions, and no neighbouring chunk is loaded for target discovery.
 
@@ -159,7 +159,7 @@ Regressions cover the initial growth thresholds for all companion types, convers
 
 The entity-join hook adds a companion target goal to hostile `Enemy` mobs, excluding creepers. Their native attack goals retain damage and projectile behavior. A higher-priority escape goal responds to a real attacker for non-combat companions and yields to rider control. Hop propulsion stays at a common base while the movement attribute sets the grounded delay; ridden ground travel uses the same principle.
 
-A lowest-priority uncancelled `LivingDeathEvent` preserves the companion before native equipment, bag, or experience drops. `BrokenSlimeBlockEntity` stores its specialized recovery stack under `Slime`. A replaceable death cell becomes a block; an occupied cell produces its block item without overwriting terrain. Native block loot copies this payload to `BlockEntityTag.Slime`, retaining it through mining and placement. Revival uses the normal spawn validation and UUID checks, restores full health, clears death/fire/motion state, and consumes the block and ball only on success. Failed spawning restores the block entity.
+A lowest-priority uncancelled `LivingDeathEvent` preserves the companion before native equipment, bag, or experience drops. `BrokenSlimeBlockEntity` stores its specialized recovery stack under `Slime`. A replaceable death cell becomes a block; an occupied cell produces its block item without overwriting terrain. Native block loot copies this payload to `BlockEntityTag.Slime`, retaining it through mining and placement. Revival uses the normal spawn validation and UUID checks, sets current health to 1, clears death/fire/motion state, and consumes the block and ball only on success. Failed spawning restores the block entity.
 
 Real non-allied damage and shield blocks grant at most one defense activity per 20 ticks. Owner and environmental damage grant none. Escape and ridden movement use the configured following interval. Combat shields face the target using entity yaw and retain at least a ten-tick attack interval so the native activation delay can complete.
 
@@ -169,7 +169,7 @@ Riding input carries ascent and boost. Boost state is synchronized; the server s
 
 ## Surface workers
 
-`FieldSlime` shares a single native main-hand tool, normal bag, stamina recovery, loaded-area checks, protected harvesting/placement, and FARM/LOG work orders. Full inventories request CARGO_PICKUP; an empty broken-tool slot requests TOOL_SUPPLY. Missing seeds use SEEDS_MISSING without creating a tool request. Successful actions award activity only after the world edit succeeds. Networking uses protocol 9.
+`FieldSlime` shares a single native main-hand tool, normal bag, stamina recovery, loaded-area checks, protected harvesting/placement, and FARM/LOG work orders. Full inventories request CARGO_PICKUP; an empty broken-tool slot requests TOOL_SUPPLY. Missing seeds use SEEDS_MISSING without creating a tool request. Successful actions award activity only after the world edit succeeds. Networking uses protocol 10.
 
 `BlockSurvey` copies palettes of matching loaded chunk sections, then inspects at most 512 cells per worker tick. Farming activation freezes the existing farmland selection; serialization finishes any pending snapshot so recovery never loses recognized plots. Plot coordinates and crop identities are persistent. Tilling uses the equipped hoe's Forge tool action and native placement cancellation; block removal uses owner-attributed survival break events and simulates all drops before changing terrain.
 
@@ -224,3 +224,17 @@ Screens and gameplay guides share the stat names Health, Attack, Defense, Moveme
 Follow and Wait are owner-selected orders. Resource shortages and other impediments are described as blocked work. Farming and logging messages identify their own tasks. Keep status text brief, action guidance direct, and button labels short. Use the game's localized names for vanilla ingredients.
 
 Copy changes retain translation keys and persistent data identifiers. Check matching English/Korean keys, formatting placeholders, and document links, then inspect wrapping, button widths, and help panels in the client.
+
+## Quarry lining and free roaming
+
+`QuarryWalls` scans a bounded 192-cell window on the four exterior faces of the work chunk, at most once per 20 ticks unless the layer changes. Loaded side fluids and underground 2×2 air openings create a retained job; the inside face must be exposed before a cell is actionable. The exterior lining preserves both staircase columns. Pending cells are bounded, validated against the current plan, and saved in `MiningWallPending`; changing quarry coordinates or dimension creates a new wall job. Discovery and navigation never acquire adjacent chunk tickets.
+
+`COBBLESTONE_MISSING` with `COBBLESTONE_SUPPLY` pauses mining; lack of bag space also requests `CARGO_PICKUP`. `BagSlime.workSupplyLimit` and `receiveWorkSupply` retain one-item defaults for tools and buckets. A miner requesting wall material accepts up to 64, with live request/ownership/capacity validation before transfer; transport extracts only the accepted count. Successfully placed cobblestone costs one material and stamina and grants one activity unit. Forge placement cancellation restores the snapshot and spends nothing. Unreplaceable and occupied cells are preserved.
+
+`SoggyRoaming` and `SoggyRoamHome` store the optional ROAM order and its origin without changing schema version 1. Missing fields retain previous Follow/Wait behavior. Roaming reserves MOVE/LOOK, chooses bounded random supported destinations, and uses a path region only after every intersecting chunk is confirmed loaded. It remains independent of the owner's presence and yields to fleeing. Follow and Wait clear the roaming flag; release reanchors it. Terrain changes release roaming paths for local reselection, avoiding reuse of an earlier Follow destination. Its recovery override permits trail stamina to recover while ROAM is active. The menu synchronizes ROAM through the existing mode field; protocol 10 requires matching clients.
+
+Native regressions cover inlet replacement, cave lining across recovery, exact placement costs, protected placements, material shortages, stack-limited and partial-stock delivery, menu permissions, actual owner-independent roaming, trail production, command changes, saved traits, and exhausted-roamer recovery.
+
+## Enderman targeting
+
+Endermen are excluded from the added companion-target goal. Combat classification checks their live target before the generic NeutralMob rule: an Enderman targeting a living FriendlySlime uses HOSTILE; otherwise NEUTRAL. Target selection and attacks revalidate this classification and existing filters. Native tests cover unchanged goal sets, calm/hostile transitions, unrelated targets, and actual combat followed by disengagement.

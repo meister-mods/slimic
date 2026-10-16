@@ -53,7 +53,8 @@ public enum SlimeStat {
               || slime instanceof SoggySlime
               || slime instanceof GuardianAngelSlime;
       case DETECTION_RANGE ->
-          slime instanceof BagSlime
+          slime instanceof SoggySlime
+              || slime instanceof BagSlime
               || slime instanceof HeraldSlime
               || slime instanceof GuardianAngelSlime;
       case WORK_SPEED ->

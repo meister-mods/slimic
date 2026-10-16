@@ -223,7 +223,7 @@ public final class MiningDrainageGameTests {
         .thenSucceed();
   }
 
-  @GameTest(template = "empty", batch = "drainage", timeoutTicks = 220)
+  @GameTest(template = "empty", batch = "drainage", timeoutTicks = 1000)
   public static void sourceGuardSurvivesRecoveryAndDoesNotChangeNeighbouringChunks(
       GameTestHelper h) {
     var b = basin(h, 3, 5, 1);

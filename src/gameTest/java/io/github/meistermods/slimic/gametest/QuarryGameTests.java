@@ -215,6 +215,14 @@ public final class QuarryGameTests {
                           : y == 98 ? Blocks.STONE : y == 99 ? Blocks.DIRT : Blocks.AIR)
                   .defaultBlockState());
       }
+    // This fixture tests excavation and stairs; separate wall fixtures provide cave openings.
+    for (int i = 0; i < 16; i++)
+      for (int y = 96; y <= 101; y++)
+        for (var pos :
+            java.util.List.of(
+                new BlockPos(minX - 1, y, minZ + i), new BlockPos(minX + 16, y, minZ + i),
+                new BlockPos(minX + i, y, minZ - 1), new BlockPos(minX + i, y, minZ + 16)))
+          level.setBlockAndUpdate(pos, Blocks.BEDROCK.defaultBlockState());
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(level);
     miner.setWorking(true);
     miner.moveTo(minX + 8, 100, minZ + 8);
