@@ -6,6 +6,8 @@ import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.gametest.framework.GameTestListener;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -19,11 +21,16 @@ final class LoadedWorkArea {
   private final int x, z;
 
   LoadedWorkArea(GameTestHelper helper) {
+    this(helper, 5000);
+  }
+
+  LoadedWorkArea(GameTestHelper helper, int lifetimeTicks) {
     this.helper = helper;
     x = OFFSET + nextArea++ * 64;
     z = -OFFSET;
+    registerCleanup();
     force(true);
-    helper.runAfterDelay(4990, this::close);
+    helper.runAfterDelay(lifetimeTicks - 10, this::close);
     helper
         .getLevel()
         .getEntitiesOfClass(
@@ -47,6 +54,61 @@ final class LoadedWorkArea {
         helper.assertTrue(
             helper.getLevel().getHeight(Heightmap.Types.WORLD_SURFACE, x + dx, z + dz) == 101,
             "Work arena must have no natural ceiling or falling material above its floor");
+      }
+  }
+
+  private void registerCleanup() {
+    try {
+      var field = GameTestHelper.class.getDeclaredField("testInfo");
+      field.setAccessible(true);
+      var info = (GameTestInfo) field.get(helper);
+      info.addListener(
+          new GameTestListener() {
+            @Override
+            public void testStructureLoaded(GameTestInfo test) {}
+
+            @Override
+            public void testPassed(GameTestInfo test) {
+              close();
+            }
+
+            @Override
+            public void testFailed(GameTestInfo test) {
+              close();
+            }
+          });
+    } catch (ReflectiveOperationException failure) {
+      throw new IllegalStateException("Cannot register work-area cleanup", failure);
+    }
+  }
+
+  void clearSurroundingTrees() {
+    var level = helper.getLevel();
+    for (int dx = -1; dx <= 1; dx++)
+      for (int dz = -1; dz <= 1; dz++) {
+        var chunk = level.getChunk((x >> 4) + dx, (z >> 4) + dz);
+        for (int sectionIndex = 0; sectionIndex < chunk.getSections().length; sectionIndex++) {
+          var section = chunk.getSections()[sectionIndex];
+          if (!section.maybeHas(
+              s ->
+                  s.is(net.minecraft.tags.BlockTags.LOGS)
+                      || s.is(net.minecraft.tags.BlockTags.LEAVES))) continue;
+          int baseY = level.getSectionYFromSectionIndex(sectionIndex) << 4;
+          for (int bx = 0; bx < 16; bx++)
+            for (int by = 0; by < 16; by++)
+              for (int bz = 0; bz < 16; bz++) {
+                var state = section.getBlockState(bx, by, bz);
+                if (state.is(net.minecraft.tags.BlockTags.LOGS)
+                    || state.is(net.minecraft.tags.BlockTags.LEAVES))
+                  level.setBlock(
+                      new BlockPos(
+                          chunk.getPos().getMinBlockX() + bx,
+                          baseY + by,
+                          chunk.getPos().getMinBlockZ() + bz),
+                      Blocks.AIR.defaultBlockState(),
+                      2);
+              }
+        }
       }
   }
 

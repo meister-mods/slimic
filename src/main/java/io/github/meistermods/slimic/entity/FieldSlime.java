@@ -3,7 +3,6 @@ package io.github.meistermods.slimic.entity;
 import com.mojang.authlib.GameProfile;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,8 +12,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
@@ -22,7 +19,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
@@ -68,23 +65,6 @@ public abstract class FieldSlime extends BagSlime {
   protected FieldSlime(EntityType<? extends FieldSlime> type, Level level) {
     super(type, level, 27);
     setMaxUpStep(1);
-  }
-
-  @Override
-  protected PathNavigation createNavigation(Level level) {
-    return new GroundPathNavigation(this, level) {
-      @Override
-      protected Path createPath(
-          Set<BlockPos> targets, int padding, boolean above, int accuracy, float range) {
-        // A worker can travel between opposite edges of its fixed work area.
-        return super.createPath(
-            targets,
-            padding,
-            above,
-            accuracy,
-            (float) Math.max(range, SlimeStat.DETECTION_RANGE.value(FieldSlime.this) * 2));
-      }
-    };
   }
 
   @Override
@@ -213,6 +193,10 @@ public abstract class FieldSlime extends BagSlime {
 
           @Override
           public void tick() {
+            if (!canUse()) {
+              stop();
+              return;
+            }
             if (!(level() instanceof ServerLevel level)) return;
             if (home == null) home = blockPosition();
             if (areaDimension == null) areaDimension = level.dimension().location().toString();
@@ -310,14 +294,14 @@ public abstract class FieldSlime extends BagSlime {
         && (onGround() || isInWater())
         && (getNavigation().isDone() || workStand == null)) {
       var candidates = new java.util.HashSet<BlockPos>();
-      double offset = Math.floor(getBbWidth() + 1) * .5;
       int radius = Math.min(4, (int) Math.ceil(reach));
       for (int x = -radius; x <= radius; x++)
         for (int z = -radius; z <= radius; z++)
           for (int y = -2; y <= 1; y++) {
             BlockPos feet = pos.offset(x, y, z);
             if (!level().hasChunkAt(feet) || !level().hasChunkAt(feet.offset(1, 0, 1))) continue;
-            Vec3 stand = Vec3.atLowerCornerOf(feet).add(offset, 0, offset);
+            Vec3 stand = standingPoint(feet);
+            if (stand.y <= feet.getY() - 1) continue;
             var body = getBoundingBox().move(stand.subtract(position()));
             Vec3 eye = stand.add(0, getEyeHeight(), 0);
             if (eye.distanceToSqr(Vec3.atCenterOf(pos))
@@ -333,7 +317,12 @@ public abstract class FieldSlime extends BagSlime {
               || path.getEntityPosAtNode(this, path.getNodeCount() - 1)
                       .distanceToSqr(Vec3.atCenterOf(pos))
                   < distance - .1)) {
-        workStand = path.getEntityPosAtNode(this, path.getNodeCount() - 1);
+        var end = path.getEndNode().asBlockPos();
+        Vec3 grounded = standingPoint(end);
+        workStand =
+            grounded.y > end.getY() - 1
+                ? grounded
+                : path.getEntityPosAtNode(this, path.getNodeCount() - 1);
         getNavigation().moveTo(path, 1);
       } else {
         workStand = null;
@@ -351,16 +340,22 @@ public abstract class FieldSlime extends BagSlime {
     return false;
   }
 
+  private Vec3 standingPoint(BlockPos feet) {
+    double offset = Math.floor(getBbWidth() + 1) * .5;
+    return new Vec3(
+        feet.getX() + offset, WalkNodeEvaluator.getFloorLevel(level(), feet), feet.getZ() + offset);
+  }
+
   private boolean visibleFrom(Vec3 eye, BlockPos pos) {
     var hit =
-        level()
-            .clip(
-                new ClipContext(
-                    eye,
-                    Vec3.atCenterOf(pos),
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    this));
+        LoadedBlockView.clip(
+            level(),
+            new ClipContext(
+                eye,
+                Vec3.atCenterOf(pos),
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                this));
     return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos);
   }
 
@@ -415,6 +410,7 @@ public abstract class FieldSlime extends BagSlime {
     try {
       if (!breaking.advance(this, player, pos, state, getTool())) return false;
       if (ForgeHooks.onBlockBreakEvent(level, GameType.SURVIVAL, player, pos) < 0
+          || !canContinueWork(player)
           || level.getBlockState(pos) != state) {
         blocked();
         return false;
@@ -452,12 +448,15 @@ public abstract class FieldSlime extends BagSlime {
     }
     var snapshot = BlockSnapshot.create(level.dimension(), level, pos);
     if (!level.setBlock(pos, state, 3)) return false;
-    if (ForgeEventFactory.onBlockPlace(worker(level), snapshot, Direction.UP)) {
+    var player = worker(level);
+    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)
+        || !canContinueWork(player)) {
       snapshot.restore(true, false);
       blocked();
       return false;
     }
-    return level.getBlockState(pos).equals(state);
+    // An allowed placement remains a completed action when its event adjusts the block.
+    return true;
   }
 
   @Override

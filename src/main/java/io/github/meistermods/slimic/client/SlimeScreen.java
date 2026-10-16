@@ -7,6 +7,7 @@ import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
+import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
@@ -14,6 +15,7 @@ import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.entity.WarehouseSlime;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.network.ModNetwork;
 import java.util.EnumMap;
@@ -110,6 +112,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                   Component.translatable("screen.slimic.ride"), b -> sendButton(SlimeMenu.RIDE))
               .bounds(leftPos + 306, topPos + 25, 50, 18)
               .build());
+    if (menu.slime() instanceof HealingSlime) addOrder(SlimeMenu.WORK, "heal", 306);
     if (menu.slime() instanceof FarmerSlime) addOrder(SlimeMenu.WORK, "farm", 306);
     if (menu.slime() instanceof LumberjackSlime) addOrder(SlimeMenu.WORK, "log", 306);
     if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 306);
@@ -131,7 +134,8 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               .bounds(leftPos + 332, topPos + 112, 24, 18)
               .build());
     }
-    if (menu.slime() instanceof TransportSlime) addOrder(SlimeMenu.WORK, "transport", 306);
+    if (menu.slime() instanceof TransportSlime)
+      addOrder(SlimeMenu.WORK, menu.slime() instanceof WarehouseSlime ? "store" : "transport", 306);
     if (menu.slime() instanceof TransportSlime) {
       previousPage =
           addRenderableWidget(
@@ -301,15 +305,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           0xffe5e9e9,
           false);
       Enum<?>[] statuses =
-          menu.slime() instanceof FieldSlime
-              ? FieldSlime.Status.values()
-              : menu.slime() instanceof TransportSlime
-                  ? TransportSlime.Status.values()
-                  : menu.slime() instanceof CombatSlime
-                      ? CombatSlime.Status.values()
-                      : menu.slime() instanceof CleaningSlime
-                          ? CleaningSlime.Status.values()
-                          : MiningSlime.Status.values();
+          menu.slime() instanceof HealingSlime
+              ? HealingSlime.Status.values()
+              : menu.slime() instanceof FieldSlime
+                  ? FieldSlime.Status.values()
+                  : menu.slime() instanceof TransportSlime
+                      ? TransportSlime.Status.values()
+                      : menu.slime() instanceof CombatSlime
+                          ? CombatSlime.Status.values()
+                          : menu.slime() instanceof CleaningSlime
+                              ? CleaningSlime.Status.values()
+                              : MiningSlime.Status.values();
       String key =
           statuses[Math.min(statuses.length - 1, Math.max(0, menu.data(SlimeMenu.STATUS)))]
               .name()
@@ -325,13 +331,21 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                   logger.getRequiredSaplingCount())
               : Component.translatable(
                   "status.slimic."
-                      + (menu.slime() instanceof FieldSlime
-                          ? (menu.slime() instanceof FarmerSlime ? "farmer." : "lumberjack.")
-                          : menu.slime() instanceof TransportSlime
-                              ? "transport."
-                              : menu.slime() instanceof CombatSlime
-                                  ? "combat."
-                                  : menu.slime() instanceof CleaningSlime ? "cleaning." : "")
+                      + (menu.slime() instanceof HealingSlime
+                          ? "healing."
+                          : menu.slime() instanceof WarehouseSlime
+                              ? "warehouse."
+                              : menu.slime() instanceof FieldSlime
+                                  ? (menu.slime() instanceof FarmerSlime
+                                      ? "farmer."
+                                      : "lumberjack.")
+                                  : menu.slime() instanceof TransportSlime
+                                      ? "transport."
+                                      : menu.slime() instanceof CombatSlime
+                                          ? "combat."
+                                          : menu.slime() instanceof CleaningSlime
+                                              ? "cleaning."
+                                              : "")
                       + key),
           10,
           216,

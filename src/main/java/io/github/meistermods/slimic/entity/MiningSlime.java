@@ -456,14 +456,14 @@ public final class MiningSlime extends BagSlime {
   private boolean canSeeFrom(Vec3 eye, BlockPos pos, boolean placement) {
     boolean fluid = !placement && isRemovableFluid(level().getBlockState(pos));
     var hit =
-        level()
-            .clip(
-                new ClipContext(
-                    eye,
-                    Vec3.atCenterOf(pos).add(0, placement ? 0.501 : 0, 0),
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    this));
+        LoadedBlockView.clip(
+            level(),
+            new ClipContext(
+                eye,
+                Vec3.atCenterOf(pos).add(0, placement ? 0.501 : 0, 0),
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                this));
     return hit.getType() == HitResult.Type.BLOCK
         ? hit.getBlockPos().equals(pos)
         : placement || fluid;
@@ -670,6 +670,7 @@ public final class MiningSlime extends BagSlime {
     if (!server.getWorldBorder().isWithinBounds(pos)
         || !server.mayInteract(player, pos)
         || ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, player, pos) < 0
+        || !canContinueWork(player)
         || !server.getBlockState(pos).equals(state)
         || !hasBucket()) {
       skipped.put(pos.asLong(), server.getGameTime() + 200);
@@ -681,7 +682,8 @@ public final class MiningSlime extends BagSlime {
             ? state.setValue(BlockStateProperties.WATERLOGGED, false)
             : Blocks.AIR.defaultBlockState();
     if (!server.setBlock(pos, dry, 3)) return false;
-    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
+    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)
+        || !canContinueWork(player)) {
       snapshot.restore(true, false);
       skipped.put(pos.asLong(), server.getGameTime() + 200);
       return false;
@@ -805,14 +807,14 @@ public final class MiningSlime extends BagSlime {
 
   private boolean canSeeWall(Vec3 eye, BlockPos pos) {
     var hit =
-        level()
-            .clip(
-                new ClipContext(
-                    eye,
-                    Vec3.atCenterOf(pos),
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    this));
+        LoadedBlockView.clip(
+            level(),
+            new ClipContext(
+                eye,
+                Vec3.atCenterOf(pos),
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                this));
     return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos);
   }
 
@@ -903,15 +905,20 @@ public final class MiningSlime extends BagSlime {
       status = Status.UNREACHABLE;
       return false;
     }
-    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
+    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)
+        || !canContinueWork(player)) {
       snapshot.restore(true, false);
       status = Status.UNREACHABLE;
       travelBlocked = true;
       supportRetryAt = server.getGameTime() + 100;
       return false;
     }
-    if (!server.getBlockState(selected).equals(block)) {
+    var placed = server.getBlockState(selected);
+    if (!placed.isCollisionShapeFullBlock(server, selected) || QuarryWalls.fluid(placed)) {
+      snapshot.restore(true, false);
       status = Status.UNREACHABLE;
+      travelBlocked = true;
+      supportRetryAt = server.getGameTime() + 100;
       return false;
     }
     getBag().extractItem(material, 1, false);
@@ -997,7 +1004,9 @@ public final class MiningSlime extends BagSlime {
         status = Status.UNREACHABLE;
         return false;
       }
-      if (ForgeEventFactory.onBlockPlace(worker(server), snapshot, Direction.UP)) {
+      var player = worker(server);
+      if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)
+          || !canContinueWork(player)) {
         snapshot.restore(true, false);
         travelBlocked = true;
         status = Status.UNREACHABLE;
@@ -1133,7 +1142,10 @@ public final class MiningSlime extends BagSlime {
     try {
       status = Status.MINING;
       if (!breaking.advance(this, worker, target, state, tool)) return;
-      int experience = ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, worker, target);
+      BlockPos miningTarget = target;
+      int experience =
+          ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, worker, miningTarget);
+      if (!canContinueWork(worker) || !miningTarget.equals(target)) return;
       if (experience < 0 || !server.getBlockState(target).equals(state)) {
         travelBlocked = true;
         skipped.put(target.asLong(), server.getGameTime() + 200);
@@ -1267,9 +1279,14 @@ public final class MiningSlime extends BagSlime {
 
     @Override
     public void tick() {
+      if (!canUse()) {
+        stop();
+        return;
+      }
       if (!(level() instanceof ServerLevel server)) return;
       if (!hasAnchor || quarry == null) onReleased();
       if (!server.hasChunk(chunkX, chunkZ)) {
+        clearTarget();
         status = Status.UNREACHABLE;
         return;
       }

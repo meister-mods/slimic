@@ -22,6 +22,8 @@ import net.minecraftforge.gametest.*;
 public final class InitialWorkOrderGameTests {
   private static List<EntityType<? extends FriendlySlime>> workers() {
     return List.of(
+        ModEntities.HEALING_SLIME.get(),
+        ModEntities.WAREHOUSE_SLIME.get(),
         ModEntities.MINING_SLIME.get(),
         ModEntities.TRANSPORT_SLIME.get(),
         ModEntities.HERALD_SLIME.get(),
@@ -94,7 +96,7 @@ public final class InitialWorkOrderGameTests {
               for (int i = 0; i < workers().size(); i++) {
                 var type = workers().get(i);
                 var preview = type.create(h.getLevel());
-                var floor = BlockPos.containing(a.point(3 + (i % 3) * 4, 100, 3 + (i / 3) * 4));
+                var floor = BlockPos.containing(a.point(3 + (i % 3) * 4, 100, 3 + (i / 3) * 3));
                 var pet = release(h, owner, preview.getPickResult(), floor);
                 h.assertTrue(
                     pet.getType() == type && pet.isOrderedToSit() && !pet.isWorking(),
@@ -103,6 +105,7 @@ public final class InitialWorkOrderGameTests {
                 pet.setTunedVitals(7, 41, 3);
                 owner.setItemInHand(
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+                owner.moveTo(pet.position());
                 var menu = TestMenus.create(10 + i, owner.getInventory(), pet);
                 var work = pet instanceof BagSlime || pet instanceof HeraldSlime;
                 h.assertTrue(
@@ -156,7 +159,7 @@ public final class InitialWorkOrderGameTests {
                         h,
                         owner,
                         specialized,
-                        BlockPos.containing(a.point(3 + (i % 3) * 4, 100, 3 + (i / 3) * 4)));
+                        BlockPos.containing(a.point(3 + (i % 3) * 4, 100, 3 + (i / 3) * 3)));
                 h.assertTrue(
                     pet.isOrderedToSit()
                         && !pet.isWorking()

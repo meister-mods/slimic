@@ -38,14 +38,17 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 
@@ -80,6 +83,27 @@ public class FriendlySlime extends TamableAnimal {
     super(type, level);
     moveControl = new HopMoveControl(this);
     setPersistenceRequired();
+  }
+
+  @Override
+  protected PathNavigation createNavigation(Level level) {
+    return new WorkNavigation(this, level);
+  }
+
+  @Override
+  public boolean hasLineOfSight(Entity entity) {
+    if ((!isWorking() && !(this instanceof GuardianAngelSlime))
+        || !(level() instanceof ServerLevel)) return super.hasLineOfSight(entity);
+    if (entity.level() != level()) return false;
+    var from = getEyePosition();
+    var to = entity.getEyePosition();
+    return from.distanceToSqr(to) <= 128 * 128
+        && LoadedBlockView.clip(
+                    level(),
+                    new ClipContext(
+                        from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
+                .getType()
+            == HitResult.Type.MISS;
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -199,6 +223,16 @@ public class FriendlySlime extends TamableAnimal {
 
   public boolean isWorking() {
     return false;
+  }
+
+  /** Revalidate after callbacks that can change commands, ownership or the entity's lifetime. */
+  protected final boolean canContinueWork(Player worker) {
+    return isWorking()
+        && isTame()
+        && isAlive()
+        && !isRemoved()
+        && worker.level() == level()
+        && worker.getUUID().equals(getOwnerUUID());
   }
 
   protected void recoverStamina(float amount) {

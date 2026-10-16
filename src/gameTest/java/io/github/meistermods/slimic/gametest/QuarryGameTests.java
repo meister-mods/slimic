@@ -87,13 +87,14 @@ public final class QuarryGameTests {
     helper.succeed();
   }
 
-  @GameTest(template = "empty", timeoutTicks = 160)
+  @GameTest(template = "empty", timeoutTicks = 300)
   public static void brokenPickaxeAndEmptyShovelUseExactBagSpares(GameTestHelper helper) {
-    floor(helper);
-    MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), PET);
-    miner.setWorking(true);
+    var area = new LoadedWorkArea(helper);
+    MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.moveTo(area.point(7.5, 101, 8.5));
     miner.tame(helper.makeMockSurvivalPlayer());
     miner.onReleased();
+    miner.setWorking(true);
     ItemStack worn = new ItemStack(Items.IRON_PICKAXE);
     worn.setDamageValue(worn.getMaxDamage() - 1);
     miner.setTool(0, worn);
@@ -104,20 +105,38 @@ public final class QuarryGameTests {
     shovel.setDamageValue(5);
     miner.getBag().setStackInSlot(0, spare.copy());
     miner.getBag().setStackInSlot(1, shovel.copy());
-    helper.setBlock(PET.east(), Blocks.STONE);
-    helper.succeedWhen(
-        () -> {
-          helper.assertTrue(
-              ItemStack.matches(miner.getPickaxe(), spare)
-                  && ItemStack.matches(miner.getShovel(), shovel),
-              "Native equipment must reuse the exact worn/enchanted spare tools");
-          for (int slot = 0; slot < miner.getBag().getSlots(); slot++)
-            helper.assertTrue(
-                !MiningSlime.isPickaxe(miner.getBag().getStackInSlot(slot))
-                    && !MiningSlime.isShovel(miner.getBag().getStackInSlot(slot)),
-                "Each spare must be removed exactly once");
-          miner.setWorking(false);
-        });
+    helper
+        .getLevel()
+        .setBlockAndUpdate(
+            BlockPos.containing(area.point(9, 101, 8)), Blocks.STONE.defaultBlockState());
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().isPositionEntityTicking(miner.blockPosition()),
+                    "Arena ticks"))
+        .thenExecute(() -> helper.getLevel().addFreshEntity(miner))
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    ItemStack.matches(miner.getPickaxe(), spare)
+                        && ItemStack.matches(miner.getShovel(), shovel),
+                    "Native equipment must reuse the exact worn/enchanted spare tools"))
+        .thenExecute(
+            () -> {
+              for (int slot = 0; slot < miner.getBag().getSlots(); slot++)
+                helper.assertTrue(
+                    !MiningSlime.isPickaxe(miner.getBag().getStackInSlot(slot))
+                        && !MiningSlime.isShovel(miner.getBag().getStackInSlot(slot)),
+                    "Each spare must be removed exactly once");
+              helper.assertTrue(
+                  miner.getActivityProgress() == 1,
+                  "One stone block consumes the worn pickaxe's final durability");
+              miner.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty")

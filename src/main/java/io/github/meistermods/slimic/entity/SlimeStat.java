@@ -15,12 +15,14 @@ public enum SlimeStat {
   REACH(null, 0.25, 20, 100),
   DETECTION_RANGE(Attributes.FOLLOW_RANGE, 1.0, 20, 10);
 
+  private final String key;
   private final Attribute attribute;
   private final double increment;
   private final int maxLevel;
   private final int syncScale;
 
   SlimeStat(Attribute attribute, double increment, int maxLevel, int syncScale) {
+    this.key = name().toLowerCase(Locale.ROOT);
     this.attribute = attribute;
     this.increment = increment;
     this.maxLevel = maxLevel;
@@ -28,7 +30,7 @@ public enum SlimeStat {
   }
 
   public String key() {
-    return name().toLowerCase(Locale.ROOT);
+    return key;
   }
 
   public String translationKey() {

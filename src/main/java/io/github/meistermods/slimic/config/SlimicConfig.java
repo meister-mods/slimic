@@ -18,8 +18,8 @@ public final class SlimicConfig {
     TRANSPORT_ACTIVITY =
         builder
             .comment(
-                "Activity units per cargo stack delivered to a Slime Chest or item supplied to a"
-                    + " worker.")
+                "Activity units per cargo stack delivered to storage, collected by a warehouse, or"
+                    + " supplied to a worker.")
             .defineInRange("transportActivityPerDelivery", 4, 1, 64);
     FOLLOW_ACTIVITY_INTERVAL =
         builder

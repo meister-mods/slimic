@@ -80,6 +80,7 @@ public final class ToolBreakingGameTests {
 
   private static Rig logger(GameTestHelper h, ItemStack axe, double speed) {
     var a = new LoadedWorkArea(h);
+    a.clearSurroundingTrees();
     var target = BlockPos.containing(a.point(8, 101, 8));
     h.getLevel().setBlockAndUpdate(target.below(), Blocks.DIRT.defaultBlockState());
     h.getLevel().setBlockAndUpdate(target, Blocks.OAK_LOG.defaultBlockState());

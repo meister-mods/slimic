@@ -29,7 +29,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.MangrovePropaguleBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -80,6 +82,7 @@ public final class LumberjackSlime extends FieldSlime {
   private final Map<UUID, Long> unavailablePickups = new HashMap<>();
   private final ArrayDeque<BlockPos> candidates = new ArrayDeque<>();
   private final ArrayDeque<BlockPos> logs = new ArrayDeque<>();
+  private final Set<BlockPos> plannedRoots = new HashSet<>();
   private final Map<BlockPos, ItemStack> plantings = new LinkedHashMap<>();
   private final ArrayDeque<BlockPos> frontier = new ArrayDeque<>();
   private final Set<BlockPos> visited = new HashSet<>();
@@ -144,6 +147,7 @@ public final class LumberjackSlime extends FieldSlime {
     survey = null;
     candidates.clear();
     logs.clear();
+    plannedRoots.clear();
     resetDiscovery();
     target = null;
     unavailable.clear();
@@ -164,6 +168,25 @@ public final class LumberjackSlime extends FieldSlime {
 
   private boolean root(ServerLevel level, BlockPos pos) {
     return level.hasChunkAt(pos.below()) && ground(level.getBlockState(pos.below()));
+  }
+
+  private BlockPos plantingRoot(ServerLevel level, BlockPos log) {
+    if (root(level, log)) return log;
+    if (!level.getBlockState(log).is(Blocks.MANGROVE_LOG)
+        || !level.getBlockState(log.below()).is(Blocks.MANGROVE_ROOTS)) return null;
+    BlockPos bottom = log;
+    for (int depth = 0; depth < 32; depth++) {
+      BlockPos below = bottom.below();
+      if (!level.hasChunkAt(below)) return null;
+      var state = level.getBlockState(below);
+      if (!state.is(Blocks.MANGROVE_ROOTS) && !state.isAir() && !state.is(Blocks.WATER)) break;
+      bottom = below;
+    }
+    return !bottom.equals(log) && inArea(bottom) && root(level, bottom) ? bottom : null;
+  }
+
+  private static boolean treeWood(BlockState state, Block log) {
+    return state.is(log) || (log == Blocks.MANGROVE_LOG && state.is(Blocks.MANGROVE_ROOTS));
   }
 
   private boolean naturalLeaf(BlockState state) {
@@ -195,6 +218,7 @@ public final class LumberjackSlime extends FieldSlime {
     skippedUntil = level.getGameTime() + 200;
     resetDiscovery();
     logs.clear();
+    plannedRoots.clear();
   }
 
   private boolean discover(ServerLevel level) {
@@ -209,12 +233,17 @@ public final class LumberjackSlime extends FieldSlime {
       }
       if (!level.getBlockState(pos).is(treeBlock)) continue;
       tree.add(pos);
+      BlockPos stump = plantingRoot(level, pos);
+      if (stump != null) {
+        roots.add(stump);
+        for (BlockPos column = stump; column.getY() < pos.getY(); column = column.above())
+          if (level.getBlockState(column).is(Blocks.MANGROVE_ROOTS)) tree.add(column);
+      }
       if (tree.size() > 512) {
         skip(level, pos);
         status = Status.UNREACHABLE;
         return false;
       }
-      if (root(level, pos)) roots.add(pos);
       for (int dx = -1; dx <= 1; dx++)
         for (int dy = -1; dy <= 1; dy++)
           for (int dz = -1; dz <= 1; dz++) {
@@ -261,13 +290,20 @@ public final class LumberjackSlime extends FieldSlime {
         || !level.hasChunkAt(leafWitness)
         || !naturalLeaf(level.getBlockState(leafWitness))
         || tree.stream()
-            .anyMatch(pos -> !level.hasChunkAt(pos) || !level.getBlockState(pos).is(treeBlock))
+            .anyMatch(
+                pos ->
+                    !inArea(pos)
+                        || !level.hasChunkAt(pos)
+                        || !treeWood(level.getBlockState(pos), treeBlock))
         || roots.stream().anyMatch(pos -> !root(level, pos))) {
       resetDiscovery();
       return false;
     }
     clearSaplingRequirement();
     plannedLog = treeBlock;
+    plannedRoots.clear();
+    for (var pos : tree)
+      if (level.getBlockState(pos).is(Blocks.MANGROVE_ROOTS)) plannedRoots.add(pos);
     for (BlockPos root : roots) {
       for (int i = 0; i < getCapacity(); i++)
         if (getBag().getStackInSlot(i).is(sapling.asItem())) {
@@ -290,7 +326,10 @@ public final class LumberjackSlime extends FieldSlime {
     for (var entry : new ArrayList<>(plantings.entrySet())) {
       BlockPos pos = entry.getKey();
       if (!level.hasChunkAt(pos) || !inArea(pos)) continue;
-      if (!level.getBlockState(pos).isAir() || !root(level, pos)) {
+      var seed = ((BlockItem) entry.getValue().getItem()).getBlock();
+      var current = level.getBlockState(pos);
+      boolean water = seed == Blocks.MANGROVE_PROPAGULE && current.is(Blocks.WATER);
+      if ((!current.isAir() && !water) || !root(level, pos)) {
         var left = ItemHandlerHelper.insertItemStacked(getBag(), entry.getValue().copy(), false);
         if (!left.isEmpty()) {
           status = Status.FULL;
@@ -300,7 +339,13 @@ public final class LumberjackSlime extends FieldSlime {
         continue;
       }
       if (!approach(pos)) return true;
-      var state = ((BlockItem) entry.getValue().getItem()).getBlock().defaultBlockState();
+      var state = seed.defaultBlockState();
+      if (seed == Blocks.MANGROVE_PROPAGULE)
+        state =
+            state
+                .setValue(MangrovePropaguleBlock.AGE, 4)
+                .setValue(
+                    BlockStateProperties.WATERLOGGED, water && level.getFluidState(pos).isSource());
       if (place(level, pos, state)) {
         plantings.remove(pos);
         completed();
@@ -338,7 +383,9 @@ public final class LumberjackSlime extends FieldSlime {
       return true;
     }
     var player = worker(level);
-    if (ForgeEventFactory.onItemPickup(item, player) < 0 || !collectible(item)) {
+    if (ForgeEventFactory.onItemPickup(item, player) < 0
+        || !canContinueWork(player)
+        || !collectible(item)) {
       unavailablePickups.put(pickupTarget, level.getGameTime() + 200);
       pickupTarget = null;
       target = null;
@@ -391,7 +438,7 @@ public final class LumberjackSlime extends FieldSlime {
             || missingLeaf == null
             || !level.hasChunkAt(missingRoot)
             || !level.hasChunkAt(missingLeaf)
-            || !root(level, missingRoot)
+            || plantingRoot(level, missingRoot) == null
             || !(getRequiredSapling().getItem() instanceof BlockItem seed)
             || TREES.get(level.getBlockState(missingRoot).getBlock()) != seed.getBlock()
             || !naturalLeaf(level.getBlockState(missingLeaf)))) clearSaplingRequirement();
@@ -408,8 +455,10 @@ public final class LumberjackSlime extends FieldSlime {
         getNavigation().stop();
         return;
       }
-      if (plannedLog == null || !level.getBlockState(pos).is(plannedLog)) {
+      Block expected = plannedRoots.contains(pos) ? Blocks.MANGROVE_ROOTS : plannedLog;
+      if (expected == null || !level.getBlockState(pos).is(expected)) {
         logs.remove();
+        plannedRoots.remove(pos);
         return;
       }
       BlockPos stump =
@@ -417,7 +466,10 @@ public final class LumberjackSlime extends FieldSlime {
               .min(Comparator.comparingDouble(p -> p.distSqr(blockPosition())))
               .orElse(pos);
       if (!approach(stump)) return;
-      if (harvest(level, pos)) logs.remove();
+      if (harvest(level, pos)) {
+        logs.remove();
+        plannedRoots.remove(pos);
+      }
       return;
     }
     if (treeBlock != null) {
@@ -455,7 +507,7 @@ public final class LumberjackSlime extends FieldSlime {
       BlockPos pos = candidates.remove();
       if (!level.hasChunkAt(pos)
           || !inArea(pos)
-          || !root(level, pos)
+          || plantingRoot(level, pos) == null
           || unavailable.containsKey(pos)
           || (pos.equals(skipped) && level.getGameTime() < skippedUntil)) continue;
       Block block = level.getBlockState(pos).getBlock();
@@ -474,6 +526,8 @@ public final class LumberjackSlime extends FieldSlime {
     if (plannedLog != null)
       tag.putString("LoggingBlock", BuiltInRegistries.BLOCK.getKey(plannedLog).toString());
     tag.putLongArray("LoggingLogs", logs.stream().mapToLong(BlockPos::asLong).toArray());
+    tag.putLongArray(
+        "LoggingRootColumns", plannedRoots.stream().mapToLong(BlockPos::asLong).toArray());
     ListTag saved = new ListTag();
     for (var entry : plantings.entrySet()) {
       var p = new CompoundTag();
@@ -492,6 +546,14 @@ public final class LumberjackSlime extends FieldSlime {
     logs.clear();
     for (long pos : tag.getLongArray("LoggingLogs"))
       if (logs.size() < 512) logs.add(BlockPos.of(pos));
+    plannedRoots.clear();
+    if (plannedLog == Blocks.MANGROVE_LOG) {
+      long[] savedRoots = tag.getLongArray("LoggingRootColumns");
+      for (int i = 0; i < Math.min(512, savedRoots.length); i++) {
+        var pos = BlockPos.of(savedRoots[i]);
+        if (logs.contains(pos)) plannedRoots.add(pos);
+      }
+    }
     plantings.clear();
     for (Tag saved : tag.getList("LoggingPlantings", Tag.TAG_COMPOUND)) {
       var p = (CompoundTag) saved;

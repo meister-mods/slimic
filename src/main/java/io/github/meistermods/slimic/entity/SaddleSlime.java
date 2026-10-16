@@ -38,6 +38,7 @@ public final class SaddleSlime extends FriendlySlime {
       SynchedEntityData.defineId(SaddleSlime.class, EntityDataSerializers.BOOLEAN);
   private int inputAge;
   private int jumpCooldown;
+  private boolean serverFlightPrediction;
 
   public SaddleSlime(EntityType<? extends SaddleSlime> type, Level level) {
     super(type, level);
@@ -81,6 +82,7 @@ public final class SaddleSlime extends FriendlySlime {
 
   public void setEquipment(int slot, ItemStack stack) {
     setItemSlot(slot == 0 ? EquipmentSlot.MAINHAND : EquipmentSlot.CHEST, stack);
+    if (!hasWings()) clearServerFlightPrediction();
     if (slot == 0 && !isSaddled()) {
       ejectPassengers();
       clearRiderInput();
@@ -156,6 +158,19 @@ public final class SaddleSlime extends FriendlySlime {
     inputAge = 0;
   }
 
+  private void clearServerFlightPrediction() {
+    if (!serverFlightPrediction) return;
+    serverFlightPrediction = false;
+    setDeltaMovement(Vec3.ZERO);
+  }
+
+  @Override
+  protected void removePassenger(Entity passenger) {
+    super.removePassenger(passenger);
+    clearServerFlightPrediction();
+    clearRiderInput();
+  }
+
   @Override
   protected void registerGoals() {
     super.registerGoals();
@@ -228,15 +243,7 @@ public final class SaddleSlime extends FriendlySlime {
   public void travel(Vec3 input) {
     if (isFlyingMount() && getControllingPassenger() instanceof Player rider) {
       if (isControlledByLocalInstance()) {
-        float yaw = rider.getYRot() * Mth.DEG_TO_RAD;
-        Vec3 right = new Vec3(Mth.cos(yaw), 0, Mth.sin(yaw));
-        Vec3 direction =
-            rider.getLookAngle().scale(input.z).add(right.scale(input.x)).add(0, input.y, 0);
-        if (direction.lengthSqr() > 1) direction = direction.normalize();
-        if (isGlidingDown()) {
-          direction = new Vec3(direction.x, 0, direction.z);
-          setDeltaMovement(direction.scale(.15).add(0, -.12, 0));
-        } else setDeltaMovement(direction.scale(getRiddenSpeed(rider) * 1.5));
+        setDeltaMovement(flightMovement(rider, input));
         move(MoverType.SELF, getDeltaMovement());
       }
       resetFallDistance();
@@ -244,8 +251,21 @@ public final class SaddleSlime extends FriendlySlime {
     } else super.travel(input);
   }
 
+  private Vec3 flightMovement(Player rider, Vec3 input) {
+    float yaw = rider.getYRot() * Mth.DEG_TO_RAD;
+    Vec3 right = new Vec3(Mth.cos(yaw), 0, Mth.sin(yaw));
+    Vec3 direction =
+        rider.getLookAngle().scale(input.z).add(right.scale(input.x)).add(0, input.y, 0);
+    if (direction.lengthSqr() > 1) direction = direction.normalize();
+    return isGlidingDown()
+        ? new Vec3(direction.x * .15, -.12, direction.z * .15)
+        : direction.scale(getRiddenSpeed(rider) * 1.5);
+  }
+
   @Override
   public void tick() {
+    // This velocity is for native vehicle-packet validation, not a second physics step.
+    clearServerFlightPrediction();
     if (isVehicle() && getControllingPassenger() == null && !level().isClientSide)
       ejectPassengers();
     if (getControllingPassenger() == null || ++inputAge > 30) clearRiderInput();
@@ -265,6 +285,10 @@ public final class SaddleSlime extends FriendlySlime {
       }
       entityData.set(EXHAUSTED, energyExhausted);
       entityData.set(BOOSTING, boost);
+      if (isFlyingMount() && getControllingPassenger() instanceof Player rider) {
+        setDeltaMovement(flightMovement(rider, getRiddenInput(rider, Vec3.ZERO)));
+        serverFlightPrediction = true;
+      }
     }
   }
 
@@ -272,6 +296,7 @@ public final class SaddleSlime extends FriendlySlime {
   public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
     tag.putBoolean("SaddleEnergyExhausted", energyExhausted);
+    if (serverFlightPrediction) tag.put("Motion", newDoubleList(0, 0, 0));
     // Flight is a transient consequence of the rider and wings, not a saved gravity override.
     if (isFlyingMount() && !super.isNoGravity()) tag.remove("NoGravity");
   }
@@ -279,6 +304,7 @@ public final class SaddleSlime extends FriendlySlime {
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
+    serverFlightPrediction = false;
     energyExhausted = tag.getBoolean("SaddleEnergyExhausted");
     entityData.set(EXHAUSTED, energyExhausted);
     clearRiderInput();

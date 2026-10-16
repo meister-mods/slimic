@@ -341,6 +341,10 @@ public final class CombatSlime extends BagSlime {
 
     @Override
     public void tick() {
+      if (!canUse()) {
+        stop();
+        return;
+      }
       equipSpares();
       if (!isSword(getMainHandItem())) {
         status = Status.NO_SWORD;

@@ -5,6 +5,7 @@ import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
+import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
@@ -12,9 +13,13 @@ import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeData;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.entity.WarehouseSlime;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -44,12 +49,16 @@ import net.minecraft.world.phys.Vec3;
 
 public class FriendlySlimeItem extends Item {
   private static final String SLIME_DATA = "SlimeData";
+  private static final ThreadLocal<Set<UUID>> PENDING_RESTORATIONS =
+      ThreadLocal.withInitial(HashSet::new);
 
   public FriendlySlimeItem(Properties properties) {
     super(properties);
   }
 
   public static ItemStack fromSlime(FriendlySlime slime) {
+    if (slime instanceof HealingSlime) return storedSlime(slime, ModItems.HEALING_SLIME.get());
+    if (slime instanceof WarehouseSlime) return storedSlime(slime, ModItems.WAREHOUSE_SLIME.get());
     ItemStack stack =
         new ItemStack(
             slime instanceof SoggySlime
@@ -73,6 +82,11 @@ public class FriendlySlimeItem extends Item {
                                                 : slime instanceof MiningSlime
                                                     ? ModItems.MINING_SLIME.get()
                                                     : ModItems.FRIENDLY_SLIME.get());
+    return storedSlime(slime, stack.getItem());
+  }
+
+  private static ItemStack storedSlime(FriendlySlime slime, Item item) {
+    ItemStack stack = new ItemStack(item);
     CompoundTag data = slime.saveWithoutId(new CompoundTag());
     // Passengers and tethers remain in the world; preserve the slime's own saved state.
     data.remove("Passengers");
@@ -170,6 +184,28 @@ public class FriendlySlimeItem extends Item {
   }
 
   private boolean spawn(
+      ServerLevel level,
+      Player player,
+      ItemStack stack,
+      BlockPos position,
+      boolean alignToSurface,
+      boolean offsetUp,
+      boolean reviving) {
+    if (!hasStoredSlime(stack) || !stack.getTag().getCompound(SLIME_DATA).hasUUID("UUID"))
+      return spawnCompanion(level, player, stack, position, alignToSurface, offsetUp, reviving);
+    UUID identity = stack.getTag().getCompound(SLIME_DATA).getUUID("UUID");
+    Set<UUID> pending = PENDING_RESTORATIONS.get();
+    // Join and finalize-spawn callbacks can attempt another restoration before registration.
+    if (!pending.add(identity)) return false;
+    try {
+      return spawnCompanion(level, player, stack, position, alignToSurface, offsetUp, reviving);
+    } finally {
+      pending.remove(identity);
+      if (pending.isEmpty()) PENDING_RESTORATIONS.remove();
+    }
+  }
+
+  private boolean spawnCompanion(
       ServerLevel level,
       Player player,
       ItemStack stack,

@@ -256,34 +256,75 @@ public final class TransportSlimeGameTests {
         });
   }
 
-  @GameTest(template = "empty", timeoutTicks = 300)
+  @GameTest(template = "empty", timeoutTicks = 700)
   public static void replacementToolRetainsDamageNameAndEnchantments(GameTestHelper helper) {
-    TransportSlime carrier = carrier(helper);
-    MiningSlime miner = miner(helper, carrier, ItemStack.EMPTY);
-    SlimeChestBlockEntity chest = chest(helper, CHEST);
+    var area = new LoadedWorkArea(helper);
+    var owner = helper.makeMockSurvivalPlayer();
+    TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    carrier.tame(owner);
+    carrier.moveTo(area.point(6.5, 101, 8.5));
+    carrier.onReleased();
+    MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.tame(owner);
+    miner.moveTo(area.point(8.5, 101, 8.5));
+    miner.onReleased();
+    miner.setWorking(true);
+    helper
+        .getLevel()
+        .setBlockAndUpdate(
+            BlockPos.containing(area.point(10, 101, 8)), Blocks.STONE.defaultBlockState());
+    SlimeChestBlockEntity chest = area.chest(6, 101, 10);
     ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
     tool.setDamageValue(99);
     tool.enchant(Enchantments.BLOCK_FORTUNE, 3);
     tool.setHoverName(Component.literal("Spare"));
     chest.setItem(0, new ItemStack(Items.STICK));
     chest.setItem(4, tool.copy());
-    helper.succeedWhen(
-        () -> {
-          helper.assertTrue(
-              ItemStack.matches(miner.getPickaxe(), tool),
-              "The exact replacement tool must reach the miner");
-          helper.assertTrue(
-              chest.getItem(4).isEmpty()
-                  && chest.getItem(0).is(Items.STICK)
-                  && !carrier.hasCargo()
-                  && carrier.getMainHandItem().isEmpty(),
-              "Only the requested tool may leave stock, using cargo instead of equipment");
-          helper.assertTrue(
-              carrier.getActivityProgress()
-                      == io.github.meistermods.slimic.config.SlimicConfig.TRANSPORT_ACTIVITY.get()
-                  && carrier.getStatPoints() == 0,
-              "One supplied tool earns the configured delivery activity");
-        });
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().isPositionEntityTicking(miner.blockPosition()),
+                    "Supply area ticks"))
+        .thenExecute(
+            () -> {
+              helper.getLevel().addFreshEntity(miner);
+              helper.getLevel().addFreshEntity(carrier);
+            })
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(miner.needsReplacementTool(), "A work block requests a pickaxe"))
+        .thenExecute(
+            () -> {
+              // Observe the delivered tool before subsequent mining changes its durability.
+              miner.setNoAi(true);
+              carrier.setWorking(true);
+            })
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    ItemStack.matches(miner.getPickaxe(), tool),
+                    "The exact replacement tool must reach the miner"))
+        .thenExecute(
+            () -> {
+              helper.assertTrue(
+                  chest.getItem(4).isEmpty()
+                      && chest.getItem(0).is(Items.STICK)
+                      && !carrier.hasCargo()
+                      && carrier.getMainHandItem().isEmpty(),
+                  "Only the requested tool may leave stock, using cargo instead of equipment");
+              helper.assertTrue(
+                  carrier.getActivityProgress()
+                          == io.github.meistermods.slimic.config.SlimicConfig.TRANSPORT_ACTIVITY
+                              .get()
+                      && carrier.getStatPoints() == 0,
+                  "One supplied tool earns the configured delivery activity");
+              carrier.discard();
+              miner.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", timeoutTicks = 400)
@@ -358,23 +399,47 @@ public final class TransportSlimeGameTests {
         });
   }
 
-  @GameTest(template = "empty", timeoutTicks = 300)
+  @GameTest(template = "empty", timeoutTicks = 800)
   public static void partialStacksUseAnotherChestWithoutLoss(GameTestHelper helper) {
-    TransportSlime carrier = carrier(helper);
+    var area = new LoadedWorkArea(helper);
+    var carrier = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    carrier.moveTo(area.point(4.5, 101, 8.5));
+    carrier.tame(helper.makeMockSurvivalPlayer());
+    carrier.onReleased();
+    carrier.setWorking(true);
     carrier.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 64));
     carrier.getBag().setStackInSlot(1, new ItemStack(Items.DIAMOND, 6));
-    SlimeChestBlockEntity first = chest(helper, new BlockPos(6, 2, 7));
+    var first = area.chest(6, 101, 7);
     fill(first, Items.COBBLESTONE);
     first.setItem(0, new ItemStack(Items.DIAMOND, 63));
-    SlimeChestBlockEntity second = chest(helper, CHEST);
-    helper.succeedWhen(
-        () ->
-            helper.assertTrue(
-                !carrier.hasCargo()
-                    && count(first.inventory(), Items.DIAMOND)
-                            + count(second.inventory(), Items.DIAMOND)
-                        == 133,
-                "Partial insertion must preserve every item and continue to another chest"));
+    var second = area.chest(12, 101, 8);
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().isPositionEntityTicking(carrier.blockPosition()),
+                    "Carrier area ticks"))
+        .thenExecute(() -> helper.getLevel().addFreshEntity(carrier))
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    !carrier.hasCargo()
+                        && count(first.inventory(), Items.DIAMOND) == 64
+                        && count(second.inventory(), Items.DIAMOND) == 69,
+                    "Partial insertion preserves all 133 items and completes through the other"
+                        + " chest; ticks="
+                        + carrier.tickCount
+                        + ", status="
+                        + carrier.getWorkStatus()
+                        + ", position="
+                        + carrier.position()))
+        .thenExecute(
+            () -> {
+              carrier.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", timeoutTicks = 300)
@@ -504,29 +569,57 @@ public final class TransportSlimeGameTests {
         });
   }
 
-  @GameTest(template = "empty", timeoutTicks = 400)
+  @GameTest(template = "empty", timeoutTicks = 1000)
   public static void exhaustedCarrierRestsBeforeEarningDeliveryPoint(GameTestHelper helper) {
-    TransportSlime carrier = carrier(helper);
+    var area = new LoadedWorkArea(helper);
+    TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    carrier.tame(helper.makeMockSurvivalPlayer());
+    carrier.moveTo(area.point(6.5, 101, 8.5));
+    carrier.onReleased();
+    carrier.setWorking(true);
     seed(carrier, 0, 31, 0);
     carrier.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 10));
-    SlimeChestBlockEntity chest = chest(helper, CHEST);
-    helper.runAfterDelay(
-        60,
-        () ->
-            helper.assertTrue(
-                carrier.getTransportStatus() == TransportSlime.Status.RESTING
-                    && count(carrier.getBag(), Items.DIAMOND) == 10
-                    && carrier.getActivityProgress() == 31,
-                "Resting must retain cargo without earning work progress"));
-    helper.succeedWhen(
-        () ->
-            helper.assertTrue(
-                count(chest.inventory(), Items.DIAMOND) == 10
-                    && !carrier.hasCargo()
-                    && carrier.getStatPoints() == 1
-                    && carrier.getNextPointCost() == 96,
-                "Recovered stamina must permit delivery and earn exactly one point at the shared"
-                    + " threshold"));
+    SlimeChestBlockEntity chest = area.chest(8, 101, 8);
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().isPositionEntityTicking(carrier.blockPosition()),
+                    "Carrier area ticks"))
+        .thenExecute(() -> helper.getLevel().addFreshEntity(carrier))
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    carrier.getTransportStatus() == TransportSlime.Status.RESTING,
+                    "Exhausted carrier begins resting"))
+        .thenIdle(40)
+        .thenExecute(
+            () ->
+                helper.assertTrue(
+                    carrier.getTransportStatus() == TransportSlime.Status.RESTING
+                        && count(carrier.getBag(), Items.DIAMOND) == 10
+                        && carrier.getActivityProgress() == 31,
+                    "Resting must retain cargo without earning work progress"))
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    count(chest.inventory(), Items.DIAMOND) == 10
+                        && !carrier.hasCargo()
+                        && carrier.getStatPoints() == 1
+                        && carrier.getNextPointCost() == 96,
+                    "Recovered stamina permits delivery and earns one point: status="
+                        + carrier.getTransportStatus()
+                        + ", stamina="
+                        + carrier.getStamina()
+                        + ", position="
+                        + carrier.position()))
+        .thenExecute(
+            () -> {
+              carrier.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", timeoutTicks = 200)

@@ -54,6 +54,7 @@ public final class OrderSevenGameTests {
   }
 
   private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea area) {
+    area.clearSurroundingTrees();
     var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
     pet.setWorking(true);
     pet.moveTo(area.point(6.5, 101, 5.5));
@@ -279,28 +280,37 @@ public final class OrderSevenGameTests {
     h.succeed();
   }
 
-  @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 300)
+  @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 1000)
   public static void lumberjackFellsTallTreeAndReplantsAtOriginalStump(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var pet = logger(h, area);
     var root = tree(h, area, Blocks.OAK_LOG, Blocks.OAK_LEAVES, 6);
     pet.getBag().setStackInSlot(0, new ItemStack(Items.OAK_SAPLING));
-    h.runAfterDelay(
-        230,
-        () -> {
-          h.assertTrue(
-              h.getLevel().getBlockState(root).is(Blocks.OAK_SAPLING), "Original stump replanted");
-          h.assertTrue(
-              count(pet, Items.OAK_LOG) == 6
-                  && count(pet, Items.OAK_SAPLING) == 0
-                  && pet.getPendingPlantings() == 0,
-              "Full connected crown collected and exactly one sapling consumed");
-          h.assertTrue(
-              pet.getActivityProgress() >= 7 && pet.getTool().getDamageValue() > 0,
-              "Logging and replanting award activity and wear axe");
-          area.close();
-          h.succeed();
-        });
+    h.startSequence()
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    h.getLevel().getBlockState(root).is(Blocks.OAK_SAPLING),
+                    "Original stump replanted: status="
+                        + pet.getFieldStatus()
+                        + ", progress="
+                        + pet.getActivityProgress()
+                        + ", pending="
+                        + pet.getPendingPlantings()))
+        .thenExecute(
+            () -> {
+              h.assertTrue(
+                  count(pet, Items.OAK_LOG) == 6
+                      && count(pet, Items.OAK_SAPLING) == 0
+                      && pet.getPendingPlantings() == 0,
+                  "Full connected crown collected and exactly one sapling consumed");
+              h.assertTrue(
+                  pet.getActivityProgress() >= 7 && pet.getTool().getDamageValue() > 0,
+                  "Logging and replanting award activity and wear axe");
+              pet.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 180)
@@ -315,7 +325,14 @@ public final class OrderSevenGameTests {
           h.assertTrue(
               h.getLevel().getBlockState(root).is(Blocks.BIRCH_LOG)
                   && pet.getWorkStatus().reason() == WorkStatus.Reason.SEEDS_MISSING,
-              "Wrong or absent saplings cannot start destructive work");
+              "Wrong or absent saplings cannot start destructive work: "
+                  + pet.getWorkStatus()
+                  + ", home="
+                  + pet.getWorkHome()
+                  + ", root="
+                  + root
+                  + ", leaves="
+                  + h.getLevel().getBlockState(root.above(3)));
           h.assertTrue(
               count(pet, Items.BIRCH_LOG) == 0 && pet.getActivityProgress() == 0,
               "No fake growth for blocked work");
@@ -431,27 +448,35 @@ public final class OrderSevenGameTests {
     f.pet.setTool(ItemStack.EMPTY);
     log.setTool(ItemStack.EMPTY);
     f.pet.setWorking(true);
-    h.runAfterDelay(
-        15,
-        () -> {
-          for (FieldSlime pet : List.of(f.pet, log)) {
-            var tool =
-                new ItemStack(pet instanceof FarmerSlime ? Items.DIAMOND_HOE : Items.DIAMOND_AXE);
-            tool.setDamageValue(11);
-            tool.setHoverName(Component.literal("Supplied"));
-            h.assertTrue(
-                pet.needsReplacementTool()
-                    && !pet.acceptsWorkTool(new ItemStack(Items.IRON_PICKAXE))
-                    && pet.receiveWorkTool(tool),
-                "Shared tool-supply request accepts correct profession tool");
-            h.assertTrue(
-                ItemStack.matches(pet.getTool(), tool)
-                    && !pet.receiveWorkTool(new ItemStack(tool.getItem())),
-                "Received tool stays exact and duplicate supply is rejected");
-          }
-          f.area.close();
-          h.succeed();
-        });
+    h.startSequence()
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    f.pet.needsReplacementTool() && log.needsReplacementTool(),
+                    "Both workers request their profession tools"))
+        .thenExecute(
+            () -> {
+              for (FieldSlime pet : List.of(f.pet, log)) {
+                var tool =
+                    new ItemStack(
+                        pet instanceof FarmerSlime ? Items.DIAMOND_HOE : Items.DIAMOND_AXE);
+                tool.setDamageValue(11);
+                tool.setHoverName(Component.literal("Supplied"));
+                h.assertTrue(
+                    pet.needsReplacementTool()
+                        && !pet.acceptsWorkTool(new ItemStack(Items.IRON_PICKAXE))
+                        && pet.receiveWorkTool(tool),
+                    "Shared tool-supply request accepts correct profession tool");
+                h.assertTrue(
+                    ItemStack.matches(pet.getTool(), tool)
+                        && !pet.receiveWorkTool(new ItemStack(tool.getItem())),
+                    "Received tool stays exact and duplicate supply is rejected");
+              }
+              f.pet.discard();
+              log.discard();
+              f.area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 100)

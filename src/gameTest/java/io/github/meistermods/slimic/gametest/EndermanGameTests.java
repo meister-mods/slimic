@@ -85,6 +85,8 @@ public final class EndermanGameTests {
     e.moveTo(a.point(10, 101, 8));
     e.setNoAi(true);
     e.setTarget(fighter);
+    e.setPersistentAngerTarget(fighter.getUUID());
+    e.setRemainingPersistentAngerTime(1200);
     e.setPersistenceRequired();
     h.startSequence()
         .thenWaitUntil(
@@ -101,7 +103,32 @@ public final class EndermanGameTests {
             () ->
                 h.assertTrue(
                     e.getHealth() < e.getMaxHealth() && fighter.getActivityProgress() > 0,
-                    "Default hostile combat engages enderman attacking slime"))
+                    "Default hostile combat engages enderman attacking slime: hp="
+                        + e.getHealth()
+                        + " alive="
+                        + e.isAlive()
+                        + " removed="
+                        + e.isRemoved()
+                        + " endTarget="
+                        + e.getTarget()
+                        + " kind="
+                        + CombatSlime.targetKind(e)
+                        + " fighterStatus="
+                        + fighter.getCombatStatus()
+                        + " target="
+                        + fighter.getTarget()
+                        + " mayAttack="
+                        + fighter.mayAttack(e)
+                        + " ticks="
+                        + fighter.tickCount
+                        + " stam="
+                        + fighter.getStamina()
+                        + " activity="
+                        + fighter.getActivityProgress()
+                        + " diff="
+                        + h.getLevel().getDifficulty()
+                        + " distance="
+                        + fighter.distanceTo(e)))
         .thenExecute(() -> e.setTarget(null))
         .thenWaitUntil(
             () ->

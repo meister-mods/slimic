@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.entity.WarehouseSlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -74,11 +75,17 @@ public final class TransportSlimeLayer
       float headYaw,
       float headPitch) {
     if (!(slime instanceof TransportSlime) || slime.isInvisible()) return;
+    pose.pushPose();
+    if (slime instanceof WarehouseSlime) {
+      pose.translate(0, -.25, -.1);
+      pose.scale(1.35F, 1.2F, 1.5F);
+    }
     pack.render(
         pose,
         buffers.getBuffer(RenderType.entityCutoutNoCull(WOOD)),
         light,
         OverlayTexture.NO_OVERLAY);
+    pose.popPose();
     straps.render(
         pose,
         buffers.getBuffer(RenderType.entityCutoutNoCull(STRAPS)),

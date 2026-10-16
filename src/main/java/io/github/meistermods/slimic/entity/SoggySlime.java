@@ -129,7 +129,12 @@ public final class SoggySlime extends FriendlySlime {
     if (!server.mayInteract(player, pos)) return;
     var snapshot = BlockSnapshot.create(server.dimension(), server, pos);
     if (!server.setBlock(pos, state, 3)) return;
-    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
+    if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)
+        || isOrderedToSit()
+        || !isTame()
+        || !isAlive()
+        || isRemoved()
+        || !player.getUUID().equals(getOwnerUUID())) {
       snapshot.restore(true, false);
       trailCooldown = 20;
       return;
@@ -201,6 +206,10 @@ public final class SoggySlime extends FriendlySlime {
 
     @Override
     public void tick() {
+      if (!canUse()) {
+        stop();
+        return;
+      }
       if (!getNavigation().isDone() || (!onGround() && !isInWater())) return;
       if (pause-- > 0 || !(level() instanceof ServerLevel server)) return;
       pause = 20 + random.nextInt(21);

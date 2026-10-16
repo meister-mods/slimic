@@ -20,6 +20,14 @@ public final class JeiClientSmoke implements IModPlugin {
     runtime = value;
   }
 
+  public static long healingRecipes() {
+    return recipes("healing_slime/");
+  }
+
+  public static long warehouseRecipes() {
+    return recipes("warehouse_slime/");
+  }
+
   public static long farmingRecipes() {
     return recipes("farmer_slime/");
   }

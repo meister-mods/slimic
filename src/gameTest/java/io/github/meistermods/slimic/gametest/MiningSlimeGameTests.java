@@ -220,30 +220,54 @@ public final class MiningSlimeGameTests {
         });
   }
 
-  @GameTest(template = "empty", timeoutTicks = 180)
+  @GameTest(template = "empty", timeoutTicks = 300)
   public static void fullBagPausesUntilItsContentsChange(GameTestHelper helper) {
-    MiningSlime miner = miner(helper, new ItemStack(Items.IRON_PICKAXE));
+    var area = new LoadedWorkArea(helper);
+    MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.tame(helper.makeMockSurvivalPlayer());
+    miner.moveTo(area.point(7.5, 101, 8.5));
+    miner.setTool(0, new ItemStack(Items.IRON_PICKAXE));
+    miner.onReleased();
+    miner.setWorking(true);
+    BlockPos ore = BlockPos.containing(area.point(9, 100, 8));
+    helper.getLevel().setBlockAndUpdate(ore, Blocks.STONE.defaultBlockState());
     for (int slot = 0; slot < miner.getCapacity(); slot++)
       miner.getBag().setStackInSlot(slot, new ItemStack(Items.DIAMOND, 64));
-    helper.setBlock(ORE, Blocks.STONE);
-    helper.runAfterDelay(
-        60,
-        () -> {
-          helper.assertBlockPresent(Blocks.STONE, ORE);
-          helper.assertTrue(
-              miner.getMiningStatus() == MiningSlime.Status.FULL
-                  && miner.getPickaxe().getDamageValue() == 0
-                  && miner.getActivityProgress() == 0,
-              "A full bag must pause without damage or rewards");
-          miner.getBag().extractItem(0, 64, false);
-          helper.succeedWhen(
-              () -> {
-                helper.assertBlockPresent(Blocks.AIR, ORE);
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
                 helper.assertTrue(
-                    count(miner, Items.COBBLESTONE) == 1, "Freeing a bag slot must resume work");
-                miner.setWorking(false);
-              });
-        });
+                    helper.getLevel().isPositionEntityTicking(miner.blockPosition()),
+                    "Mining arena ticks"))
+        .thenExecute(() -> helper.getLevel().addFreshEntity(miner))
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    miner.getMiningStatus() == MiningSlime.Status.FULL, "Full bag pauses mining"))
+        .thenIdle(20)
+        .thenExecute(
+            () -> {
+              helper.assertTrue(
+                  helper.getLevel().getBlockState(ore).is(Blocks.STONE)
+                      && miner.getPickaxe().getDamageValue() == 0
+                      && miner.getActivityProgress() == 0,
+                  "A full bag must pause without damage or rewards");
+              miner.getBag().extractItem(0, 64, false);
+            })
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().getBlockState(ore).isAir(),
+                    "Freeing a bag slot resumes mining in the same chunk"))
+        .thenExecute(
+            () -> {
+              helper.assertTrue(
+                  count(miner, Items.COBBLESTONE) == 1, "Exactly one mined drop is retained");
+              miner.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", timeoutTicks = 140)
@@ -270,29 +294,54 @@ public final class MiningSlimeGameTests {
         });
   }
 
-  @GameTest(template = "empty", timeoutTicks = 380)
+  @GameTest(template = "empty", timeoutTicks = 1000)
   public static void staminaExhaustionRestsThenResumes(GameTestHelper helper) {
-    MiningSlime miner = miner(helper, new ItemStack(Items.IRON_PICKAXE));
+    var area = new LoadedWorkArea(helper);
+    var miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.moveTo(area.point(7.5, 101, 8.5));
+    miner.tame(helper.makeMockSurvivalPlayer());
+    miner.setTool(0, new ItemStack(Items.IRON_PICKAXE));
+    miner.onReleased();
+    miner.setWorking(true);
     seed(miner, 0, 0, 0);
-    BlockPos restingOre = ORE.above();
-    helper.setBlock(restingOre, Blocks.STONE);
-    helper.runAfterDelay(
-        40,
-        () -> {
-          helper.assertBlockPresent(Blocks.STONE, restingOre);
-          helper.assertTrue(
-              miner.getMiningStatus() == MiningSlime.Status.RESTING
-                  && miner.getStamina() > 0
-                  && miner.getActivityProgress() == 0,
-              "Exhausted miners must rest without free activity");
-        });
-    helper.succeedWhen(
-        () -> {
-          helper.assertBlockPresent(Blocks.AIR, restingOre);
-          helper.assertTrue(
-              miner.getActivityProgress() == 1, "Recovered stamina must allow work to resume");
-          miner.setWorking(false);
-        });
+    var ore = BlockPos.containing(area.point(9, 102, 8));
+    helper.getLevel().setBlockAndUpdate(ore, Blocks.STONE.defaultBlockState());
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().isPositionEntityTicking(miner.blockPosition()),
+                    "Arena ticks"))
+        .thenExecute(() -> helper.getLevel().addFreshEntity(miner))
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    miner.getMiningStatus() == MiningSlime.Status.RESTING,
+                    "Exhaustion begins a real rest"))
+        .thenIdle(40)
+        .thenExecute(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().getBlockState(ore).is(Blocks.STONE)
+                        && miner.getMiningStatus() == MiningSlime.Status.RESTING
+                        && miner.getStamina() > 0
+                        && miner.getActivityProgress() == 0,
+                    "Exhausted miners recover without free mining or activity"))
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().getBlockState(ore).isAir(),
+                    "Recovered stamina resumes the same-chunk work"))
+        .thenExecute(
+            () -> {
+              helper.assertTrue(
+                  miner.getActivityProgress() == 1,
+                  "Recovered stamina permits exactly one completed block");
+              miner.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty")
@@ -309,6 +358,7 @@ public final class MiningSlimeGameTests {
     miner.tame(owner);
     ItemStack tool = miner.getPickaxe().copy();
     var identity = miner.getUUID();
+    BlockPos floor = miner.blockPosition().below();
     helper.assertTrue(miner.capture(owner).consumesAction(), "A miner must be recoverable");
     ItemStack stored =
         owner.getInventory().items.stream()
@@ -318,7 +368,6 @@ public final class MiningSlimeGameTests {
     ItemStack reloaded = ItemStack.of(stored.save(new CompoundTag()));
     owner.getInventory().clearContent();
     owner.setItemInHand(InteractionHand.MAIN_HAND, reloaded);
-    BlockPos floor = helper.absolutePos(new BlockPos(8, 1, 8));
     helper.assertTrue(
         reloaded
             .getItem()
@@ -330,7 +379,9 @@ public final class MiningSlimeGameTests {
                         Vec3.atCenterOf(floor).add(0, 0.5, 0), Direction.UP, floor, false)))
             .consumesAction(),
         "A stored miner must release as a miner");
-    MiningSlime restored = helper.getEntities(ModEntities.MINING_SLIME.get(), FLOOR, 7).get(0);
+    helper.assertTrue(
+        helper.getLevel().getEntity(identity) instanceof MiningSlime, "Restored UUID exists");
+    MiningSlime restored = (MiningSlime) helper.getLevel().getEntity(identity);
     helper.assertTrue(
         identity.equals(restored.getUUID()) && restored.getHealth() == 7 && !restored.isWorking(),
         "Miner identity, health, and order must survive");

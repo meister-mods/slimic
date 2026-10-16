@@ -185,8 +185,9 @@ public final class FriendlySlimeGameTests {
     helper.succeed();
   }
 
-  @GameTest(template = "empty", timeoutTicks = 60)
+  @GameTest(template = "empty", batch = "peaceful_companions", timeoutTicks = 60)
   public static void companionIsHarmlessAndSurvivesPeaceful(GameTestHelper helper) {
+    Difficulty previousDifficulty = helper.getLevel().getDifficulty();
     helper.getLevel().getServer().setDifficulty(Difficulty.PEACEFUL, true);
     Player player = helper.makeMockSurvivalPlayer();
     FriendlySlime slime = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), SPAWN_FLOOR.above());
@@ -197,12 +198,16 @@ public final class FriendlySlimeGameTests {
     helper.runAfterDelay(
         20,
         () -> {
-          helper.assertTrue(
-              slime.isAlive() && !slime.isRemoved(),
-              "A companion must remain alive in Peaceful difficulty");
-          helper.assertTrue(
-              player.getHealth() == health && slime.getTarget() == null,
-              "A friendly slime must not damage or target players");
+          try {
+            helper.assertTrue(
+                slime.isAlive() && !slime.isRemoved(),
+                "A companion must remain alive in Peaceful difficulty");
+            helper.assertTrue(
+                player.getHealth() == health && slime.getTarget() == null,
+                "A friendly slime must not damage or target players");
+          } finally {
+            helper.getLevel().getServer().setDifficulty(previousDifficulty, true);
+          }
           helper.succeed();
         });
   }
