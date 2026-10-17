@@ -344,6 +344,7 @@ public final class MiningSlime extends BagSlime {
     clearTarget();
     status = Status.IDLE;
     refreshFluidSourceGuard();
+    shareStaircase();
   }
 
   @Override
@@ -372,6 +373,7 @@ public final class MiningSlime extends BagSlime {
       }
     }
     hasAnchor = true;
+    shareStaircase();
     skipped.clear();
     clearTarget();
     refreshFluidSourceGuard();
@@ -414,10 +416,23 @@ public final class MiningSlime extends BagSlime {
     }
   }
 
+  public void shareStaircase() {
+    if (level() instanceof ServerLevel server
+        && !hasChangedWorkDimension()
+        && quarry != null
+        && (isWorking() || quarry.layer() <= quarry.topFloor()))
+      QuarryStaircaseData.get(server).register(getMiningChunk(), quarry);
+  }
+
+  private boolean rampFloor(BlockPos pos) {
+    return quarry.isRampFloor(pos)
+        || (level() instanceof ServerLevel server && QuarryStaircaseData.get(server).protects(pos));
+  }
+
   private boolean terrain(BlockPos pos, BlockState state) {
     return quarry != null
         && quarry.contains(pos)
-        && !quarry.isRampFloor(pos)
+        && !rampFloor(pos)
         && level().hasChunkAt(pos)
         && !state.is(BlockTags.LOGS)
         && !state.is(BlockTags.LEAVES)
@@ -941,6 +956,16 @@ public final class MiningSlime extends BagSlime {
         status = Status.UNREACHABLE;
         return false;
       }
+      for (int below = 1; below <= 2; below++) {
+        BlockPos otherFloor = floor.below(below);
+        if (QuarryStaircaseData.get(server).protects(otherFloor)
+            && server.getBlockState(otherFloor).isCollisionShapeFullBlock(server, otherFloor)) {
+          travelBlocked = true;
+          status = Status.UNREACHABLE;
+          getNavigation().stop();
+          return false;
+        }
+      }
       int material = -1;
       for (int slot = 0; slot < getBag().getSlots(); slot++) {
         ItemStack stack = getBag().getStackInSlot(slot);
@@ -1057,7 +1082,7 @@ public final class MiningSlime extends BagSlime {
         for (int z = 0; z < 16; z++) {
           BlockPos pos = new BlockPos(chunkX * 16 + x, quarry.layer(), chunkZ * 16 + z);
           BlockState state = server.getBlockState(pos);
-          if ((state.getDestroySpeed(server, pos) < 0 || quarry.isRampFloor(pos))
+          if ((state.getDestroySpeed(server, pos) < 0 || rampFloor(pos))
               && state.isCollisionShapeFullBlock(server, pos)) barriers++;
           if (!terrain(pos, state)) continue;
           if (skipped.containsKey(pos.asLong())) {
@@ -1146,6 +1171,11 @@ public final class MiningSlime extends BagSlime {
       int experience =
           ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, worker, miningTarget);
       if (!canContinueWork(worker) || !miningTarget.equals(target)) return;
+      if (!terrain(miningTarget, state)) {
+        clearTarget();
+        status = Status.IDLE;
+        return;
+      }
       if (experience < 0 || !server.getBlockState(target).equals(state)) {
         travelBlocked = true;
         skipped.put(target.asLong(), server.getGameTime() + 200);
@@ -1285,6 +1315,7 @@ public final class MiningSlime extends BagSlime {
       }
       if (!(level() instanceof ServerLevel server)) return;
       if (!hasAnchor || quarry == null) onReleased();
+      shareStaircase();
       if (!server.hasChunk(chunkX, chunkZ)) {
         clearTarget();
         status = Status.UNREACHABLE;

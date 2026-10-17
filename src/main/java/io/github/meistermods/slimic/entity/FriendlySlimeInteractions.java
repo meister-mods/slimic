@@ -39,8 +39,10 @@ public final class FriendlySlimeInteractions {
 
   @SubscribeEvent
   public static void trackQuarryDrainage(EntityJoinLevelEvent event) {
-    if (!event.getLevel().isClientSide && event.getEntity() instanceof MiningSlime miner)
+    if (!event.getLevel().isClientSide && event.getEntity() instanceof MiningSlime miner) {
+      miner.shareStaircase();
       miner.refreshFluidSourceGuard();
+    }
   }
 
   @SubscribeEvent

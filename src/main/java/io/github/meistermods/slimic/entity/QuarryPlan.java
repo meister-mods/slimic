@@ -10,15 +10,25 @@ public final class QuarryPlan {
   private final ChunkPos chunk;
   private final int topFloor;
   private int layer;
+  private int rampOrigin;
 
   public QuarryPlan(ChunkPos chunk, int topFloor, int layer) {
     this.chunk = chunk;
     this.topFloor = topFloor;
     this.layer = layer;
+    rampOrigin = Math.floorMod(topFloor, 28);
   }
 
   public int topFloor() {
     return topFloor;
+  }
+
+  public int rampOrigin() {
+    return rampOrigin;
+  }
+
+  void alignRamp(int origin) {
+    rampOrigin = Math.floorMod(origin, 28);
   }
 
   public int layer() {
@@ -50,7 +60,7 @@ public final class QuarryPlan {
   public boolean isRampFloor(BlockPos pos) {
     if (!contains(pos) || pos.getY() > topFloor) return false;
     int phase = rampPhase(pos.getX() - chunk.getMinBlockX(), pos.getZ() - chunk.getMinBlockZ());
-    return phase >= 0 && Math.floorMod(topFloor - pos.getY(), 28) == phase / 2;
+    return phase >= 0 && Math.floorMod(rampOrigin - pos.getY(), 28) == phase / 2;
   }
 
   public List<BlockPos> floorsAt(int y) {
@@ -68,12 +78,16 @@ public final class QuarryPlan {
     CompoundTag tag = new CompoundTag();
     tag.putInt("TopFloor", topFloor);
     tag.putInt("Layer", layer);
+    tag.putInt("RampOrigin", rampOrigin);
     return tag;
   }
 
   public static QuarryPlan load(ChunkPos chunk, CompoundTag tag, int minY, int maxY) {
     int top = Math.max(minY, Math.min(maxY - 3, tag.getInt("TopFloor")));
     int layer = Math.max(minY - 1, Math.min(top + 2, tag.getInt("Layer")));
-    return new QuarryPlan(chunk, top, layer);
+    var plan = new QuarryPlan(chunk, top, layer);
+    if (tag.contains("RampOrigin", net.minecraft.nbt.Tag.TAG_INT))
+      plan.alignRamp(tag.getInt("RampOrigin"));
+    return plan;
   }
 }

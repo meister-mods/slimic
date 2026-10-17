@@ -4,6 +4,21 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.26] - 2026-10-17
+
+### Fixed
+
+- Mining Slimes share a persistent staircase layout per quarry chunk, including companions starting at different heights or owned by different players. Recovered or unloaded builders leave their staircase protection intact.
+- Previously saved staircase layouts remain protected together. Repairs stop before filling another staircase's headroom, and queued mining rechecks shared floor protection after break callbacks.
+- Releasing miners in another dimension keeps staircase protection scoped to each dimension, including the entity join callback before the work anchor resets.
+
+### Validation
+
+- Fourteen cooperative-quarry regressions cover different starting heights, multiple owners, legacy layouts, exact loot and repair costs, callback protection, and dimension changes. Three live miners complete a five-layer quarry while preserving its shared stairs.
+- A native world restart retains a repaired step and its protection after the builder is recovered, without loading the quarry for metadata lookup. The same staircase-breaking probe fails against 0.1.25 and passes after the fix.
+- Work-area fixtures finish native chunk preparation before actors spawn, retaining the existing action deadlines. Thirty-one quarry, wall, and combat regressions pass with this preparation.
+- All 438 native game regressions pass with and without JEI. The Java 17 build, release metadata, source archive, and runtime member linkage checks pass.
+
 ## [0.1.25] - 2026-10-17
 
 ### Changed
