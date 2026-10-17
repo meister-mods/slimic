@@ -185,14 +185,14 @@ public final class SaddleSlimeGameTests {
     owner.getInventory().setItem(10, wings.copy());
     owner.getInventory().setItem(11, new ItemStack(Items.DIAMOND, 5));
     h.assertTrue(
-        menu.slots.size() == 38
-            && !menu.quickMoveStack(owner, 2).isEmpty()
+        menu.slots.size() == 39
             && !menu.quickMoveStack(owner, 3).isEmpty()
+            && !menu.quickMoveStack(owner, 4).isEmpty()
             && slime.isSaddled()
             && ItemStack.matches(slime.getEquipment(1), wings),
         "Both equipment slots receive exact items through Shift-click");
     h.assertTrue(
-        menu.quickMoveStack(owner, 4).isEmpty() && owner.getInventory().getItem(11).getCount() == 5,
+        menu.quickMoveStack(owner, 5).isEmpty() && owner.getInventory().getItem(11).getCount() == 5,
         "An equipment-only mount must not swallow cargo into nonexistent bag slots");
     h.assertTrue(slime.mount(owner), "The equipped owner can ride");
     h.assertTrue(

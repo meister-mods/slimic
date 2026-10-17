@@ -1,6 +1,6 @@
 {
   "parent": "slimic:item/slime_summon_base",
   "textures": {
-    "crest": "minecraft:item/heart_of_the_sea"
+    "crest": "minecraft:block/gold_block"
   }
 }

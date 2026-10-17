@@ -63,6 +63,10 @@ public final class SlimeClientSmoke {
     if (++ticks > 3600) throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.orderElevenOnly")) {
+      if (OrderElevenClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.saddleOnly")) {
       SaddleClientSmoke.tick(client);
       return;
@@ -569,7 +573,8 @@ public final class SlimeClientSmoke {
       if (FieldClientSmoke.tick(client)
           && OrderEightClientSmoke.tick(client)
           && OrderNineClientSmoke.tick(client)
-          && OrderTenClientSmoke.tick(client)) SaddleClientSmoke.tick(client);
+          && OrderTenClientSmoke.tick(client)
+          && OrderElevenClientSmoke.tick(client)) SaddleClientSmoke.tick(client);
       return;
     }
     boolean jei = ModList.get().isLoaded("jei");
@@ -617,8 +622,6 @@ public final class SlimeClientSmoke {
           throw new IllegalStateException("All companion models must share their summoning icon");
       for (var emblem :
           java.util.Map.of(
-                  ModItems.FRIENDLY_SLIME.get(),
-                  "heart_of_the_sea",
                   ModItems.MINING_SLIME.get(),
                   "iron_pickaxe",
                   ModItems.TRANSPORT_SLIME.get(),
