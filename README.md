@@ -1,6 +1,6 @@
 # Slimic
 
-English | [한국어](README.kr.md)
+English | [Korean](README.kr.md)
 
 > Raise slime companions and give them jobs.
 
