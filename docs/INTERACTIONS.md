@@ -37,7 +37,10 @@ The following scenarios have independent native game regressions. Transfers chec
 | I27 | Herald / worker | A signal callback cannot continue a cancelled monitoring order. |
 | I28 | Warehouse / worker | Use a real loaded detour to reach cargo. |
 | I29 | Healing / Soggy | Keep Roam and its fixed origin during treatment. |
+| I30 | Mining / Mining | Share one chunk staircase across start heights; preserve legacy floors, queued protection, exact repair costs and loot. |
 
 Endurance validation runs for at least two hours of real elapsed server time. It repeats obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 
 Version 0.1.25 passes all 424 regressions both with and without JEI. The 29-scenario matrix runs repeatedly for over two real hours; a separate continuous movement run completes 288 cycles in 7,212 seconds. All thirteen professions retain their saved traits when a 0.1.24 world loads, and both Korean with JEI and English without JEI pass the client checks.
+
+Version 0.1.26 adds fourteen cooperative-quarry regressions for I30. Three miners starting at different heights complete one chunk while preserving its stairs and exact cargo; a native world restart retains a repaired step after its builder is recovered. All 438 regressions pass with and without JEI. Work-area preparation waits for native entity ticks before spawning actors, with action deadlines unchanged.

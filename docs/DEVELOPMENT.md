@@ -59,7 +59,7 @@ Format all Java sources with Google Java Format before completing a change. Vers
 
 Run `build` and `runGameTestServer` after gameplay changes. Coverage includes crafting, normal spawning, recovery and release, health and other traits, ownership, full inventories, blocked placement, Creative use, persistence, following, and death behavior.
 
-Tests use a structure loaded one block above its marker, so the fixture floor is at relative Y=1. Keep world fixtures separate from production assets.
+Tests use a structure loaded one block above its marker, so the fixture floor is at relative Y=1. Keep world fixtures separate from production assets. Work-area preparation processes native chunk tasks until all forced chunks support entity ticks. Preparation has a 30-second real-time bound; action tick deadlines remain unchanged.
 
 ## Stats, mining, and integrations
 
@@ -92,6 +92,8 @@ Herald recipes store the exact rocket stack. Signals are vanilla firework entiti
 Client rendering applies a brightness-preserving dye shader to the original slime texture while leaving equipment unchanged. Optional JEI previews include every specialization. Validate client shader loading, translated screens, tuner packets, creative defaults, two tool slots, and JEI enabled/disabled alongside dedicated-server tests.
 
 Quarry navigation uses a bounded 4,096-node search with a 128-block route budget inside the already-loaded work chunk. The route budget is independent of Detection Range; tool actions retain their actual range and sight checks. Candidate standing positions are searched together using the actual body footprint for support. Valid paths survive hops, and tight waypoint tolerance prevents clipping staircase corners. Travel timers reset on movement, and failed support routes retry after a short cooldown. Regression coverage includes default-stat staircase navigation, wall detours, blocked repairs, and resumption after clearance.
+
+`QuarryStaircaseData` stores dimension-local, persistent staircase profiles in `slimic_quarry_staircases.dat`. Each worked chunk retains one shared origin and at most 28 top-height bounds; protection lookup is constant time and does not acquire chunks. Unstarted plans adopt the shared origin while keeping their own starting height and layer. Started legacy plans retain their original phase, and their profiles are merged before work. Fresh waiting summons do not register a worksite. `MiningQuarry.RampOrigin` is optional in older entity data; absent values derive from `TopFloor`. Registered protection outlives entities. Join callbacks skip stale work anchors from another dimension until release initializes the destination. Final breaking checks revalidate protection after Forge callbacks. Repair checks preserve two blocks of headroom above other protected floors. The common companion schema remains 1 and the network protocol remains 13.
 
 ## Combat and cleaning
 

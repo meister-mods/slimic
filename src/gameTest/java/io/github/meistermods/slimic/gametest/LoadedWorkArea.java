@@ -136,9 +136,30 @@ final class LoadedWorkArea {
     for (int dx = -1; dx <= 1; dx++)
       for (int dz = -1; dz <= 1; dz++)
         helper.getLevel().setChunkForced((x >> 4) + dx, (z >> 4) + dz, value);
-    if (value)
+    if (value) {
       for (int dx = -1; dx <= 1; dx++)
         for (int dz = -1; dz <= 1; dz++) helper.getLevel().getChunk((x >> 4) + dx, (z >> 4) + dz);
+      // FULL chunks can still be waiting for their asynchronous entity-ticking transition.
+      long readyBy = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(30);
+      helper
+          .getLevel()
+          .getServer()
+          .managedBlock(
+              () -> {
+                helper.getLevel().getChunkSource().pollTask();
+                return regionTicks() || System.nanoTime() >= readyBy;
+              });
+      helper.assertTrue(
+          regionTicks(), "Forced work chunks support entity ticks before setup completes");
+    }
+  }
+
+  private boolean regionTicks() {
+    for (int dx = -1; dx <= 1; dx++)
+      for (int dz = -1; dz <= 1; dz++)
+        if (!helper.getLevel().isPositionEntityTicking(new BlockPos(x + dx * 16, 101, z + dz * 16)))
+          return false;
+    return true;
   }
 
   void close() {
