@@ -214,5 +214,8 @@
   "status.slimic.warehouse.waiting": "Waiting for Store orders; cargo remains available",
   "status.slimic.warehouse.following": "Following owner; cargo remains available",
   "status.slimic.warehouse.unreachable": "Cannot reach the destination; retrying",
-  "status.slimic.healing.full": "Bag full; unload cargo before slimeball supply"
+  "status.slimic.healing.full": "Bag full; unload cargo before slimeball supply",
+  "book.slimic.guide.name": "Slimic Companion Guide",
+  "book.slimic.guide.landing": "Raise companions, assign work, and build a cooperative slime team. Start with a Friendly Slime and a Slime Tuner.",
+  "book.slimic.guide.subtitle": "Growth & Teamwork"
 }

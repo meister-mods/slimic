@@ -1,0 +1,28 @@
+{
+  "name": "Lumberjack Slime",
+  "icon": "slimic:lumberjack_slime",
+  "category": "slimic:companions",
+  "sortnum": 16,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_axe",
+      "result": "slimic:lumberjack_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + any axe. The exact axe keeps its wear and enchantments."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting; select Chop. It works around a fixed origin with twice the common Detection Range, initially 16 blocks. Put matching saplings in its own bag before expecting it to fell a tree."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It reserves a sapling for every stump, cuts a connected natural tree, and replants. A 2×2 trunk needs four matching saplings. Reserved saplings cannot be unloaded. See $(l:fieldwork/forests)Trees and saplings$() when it stays idle."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:lumberjack_slime": 0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Storage and delivery",
+  "icon": "slimic:warehouse_slime",
+  "category": "slimic:cooperation",
+  "sortnum": 22,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Workers and carriers must share an owner. Keep workers and storage within the carrier’s fixed work area. Transfers need loaded terrain, a reachable route, Reach, and line of sight. Walking does not move the area’s center."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Carriers prefer eligible same-owner warehouses over Slime Chests. Full or unsuitable stores are skipped; partial deposits keep the remainder in cargo. If all stores are full, nothing is discarded."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A warehouse does not use itself as a transfer target, and automatic warehouse-to-warehouse cargo loops are excluded. Manually paused workers do not issue work requests."
+    }
+  ]
+}

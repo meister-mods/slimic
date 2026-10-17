@@ -1,0 +1,28 @@
+{
+  "name": "Saddle Slime",
+  "icon": "slimic:saddle_slime",
+  "category": "slimic:companions",
+  "sortnum": 14,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:saddle",
+      "result": "slimic:saddle_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + one saddle. The exact saddle becomes its first equipment. Creative defaults start unequipped."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Only the owner may equip and ride it. Its three slots hold a saddle, elytra, and Slime Armor together; it has no cargo bag. Apply gear by right-clicking an empty slot or use the tuner."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click a saddled companion to ride. Shift dismounts; Shift-right-click recovers it. Visible saddles and wings show equipped gear. See $(l:care/flight)Mounted flight$() for steering and stamina."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:saddle_slime": 0
+  }
+}

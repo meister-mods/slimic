@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.27] - 2026-10-18
+
+### Added
+
+- An optional Patchouli companion guide in English and Korean, crafted shapelessly from one book and one slimeball.
+- In-game instructions for companionship, growth, all thirteen companion types, equipment, quarry work, logistics, and recovery.
+
+### Changed
+
+- English and Korean guides align job commands, storage priorities, stat usage, and terminology with current companion behavior.
+
+### Validation
+
+- All 446 native regressions pass with both Patchouli and JEI enabled and with both absent. Focused guide checks cover their independent combinations; growth checks include all thirteen companion types.
+- Native book checks cover Survival crafting, recipe unlock and synchronization, Creative access, all 99 content pages per language, English fallback, 25 item lookups, internal links, and localized search. Default and uniform fonts and multiple UI scales retain readable layouts.
+- The Java 17 build, bilingual document links, conditional resources, release contents, and runtime member references pass verification.
+- Terrain preparation clears vegetation drops before test actors spawn. Placement fixtures isolate their registered plot and native planting conditions, while collapse checks retain exact gear and cargo assertions inside their own arena.
+
 ## [0.1.26] - 2026-10-17
 
 ### Fixed

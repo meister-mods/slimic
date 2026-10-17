@@ -1,0 +1,28 @@
+{
+  "name": "운반 슬라임",
+  "icon": "slimic:transport_slime",
+  "category": "slimic:companions",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:chest",
+      "result": "slimic:transport_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 일반 상자 1개. 제작 재료는 슬라임 상자가 아닙니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처음에는 대기하며 운반 명령으로 시작합니다. 소환 지점 중심의 고정 구역에서 같은 주인의 요청을 처리합니다. 멈춘 작업자의 짐을 비워 보관하고 도구·자재를 보급합니다. 장비 칸은 없습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "같은 능력치의 일반 가방보다 적재량이 항상 2배입니다. 처음 18칸, 강화마다 6칸, 최대 54칸입니다. 관리 화면의 화살표로 가방 페이지를 바꿉니다. $(l:cooperation/network)창고$()를 슬라임 상자보다 우선합니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:transport_slime": 0
+  }
+}

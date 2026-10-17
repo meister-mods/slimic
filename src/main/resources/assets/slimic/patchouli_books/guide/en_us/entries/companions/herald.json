@@ -1,0 +1,28 @@
+{
+  "name": "Herald Slime",
+  "icon": "slimic:herald_slime",
+  "category": "slimic:companions",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:firework_rocket",
+      "result": "slimic:herald_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + any firework rocket. Its full design is retained. Creative defaults use a white small-ball firework."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting; select Watch. It monitors same-owner workers in range. After the chosen continuous blocked delay, it launches a harmless signal, repeating every ten seconds while the worker stays blocked."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The delay is 1–60 minutes, default five. Manual pauses and completed work do not count. Right-click launches a manual signal; applying a rocket replaces the saved design. Healing, dyes, washing, and tuners take priority."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:herald_slime": 0
+  }
+}

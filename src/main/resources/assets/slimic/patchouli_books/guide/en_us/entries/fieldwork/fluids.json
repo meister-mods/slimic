@@ -1,0 +1,20 @@
+{
+  "name": "Water and lava",
+  "icon": "minecraft:water_bucket",
+  "category": "slimic:fieldwork",
+  "sortnum": 25,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A miner must carry an empty bucket in its own bag to remove water or lava. A player’s bucket or a nearby chest does not enable removal. Missing buckets pause work and request carrier delivery."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The bucket is neither filled nor consumed. Fluid is removed in horizontal patches of up to 3×3, preferring exposed source corners. Each removed cell costs one stamina, and waterlogged blocks keep their block and contents."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Source regeneration is suppressed in the active drained layer so an infinite pool cannot refill the same cell forever. Work still needs Reach, visibility, and permissions. Side inlets are handled by $(l:fieldwork/walls)Wall reinforcement$()."
+    }
+  ]
+}

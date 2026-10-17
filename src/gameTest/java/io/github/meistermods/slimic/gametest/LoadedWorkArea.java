@@ -31,13 +31,7 @@ final class LoadedWorkArea {
     registerCleanup();
     force(true);
     helper.runAfterDelay(lifetimeTicks - 10, this::close);
-    helper
-        .getLevel()
-        .getEntitiesOfClass(
-            net.minecraft.world.entity.Entity.class,
-            new AABB(x, 101, z, x + 16, helper.getLevel().getMaxBuildHeight(), z + 16),
-            entity -> !(entity instanceof net.minecraft.world.entity.player.Player))
-        .forEach(net.minecraft.world.entity.Entity::discard);
+    clearEntities();
     for (int dx = 0; dx < 16; dx++)
       for (int dz = 0; dz < 16; dz++) {
         // Higher terrain can fall into the arena after its lower blocks are cleared.
@@ -55,6 +49,18 @@ final class LoadedWorkArea {
             helper.getLevel().getHeight(Heightmap.Types.WORLD_SURFACE, x + dx, z + dz) == 101,
             "Work arena must have no natural ceiling or falling material above its floor");
       }
+    // Clearing tall vegetation can spawn seeds even before the first fixture tick.
+    clearEntities();
+  }
+
+  private void clearEntities() {
+    helper
+        .getLevel()
+        .getEntitiesOfClass(
+            net.minecraft.world.entity.Entity.class,
+            new AABB(x, 101, z, x + 16, helper.getLevel().getMaxBuildHeight(), z + 16),
+            entity -> !(entity instanceof net.minecraft.world.entity.player.Player))
+        .forEach(net.minecraft.world.entity.Entity::discard);
   }
 
   private void registerCleanup() {

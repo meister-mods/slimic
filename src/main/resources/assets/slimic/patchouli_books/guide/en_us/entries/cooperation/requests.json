@@ -1,0 +1,20 @@
+{
+  "name": "Tools and supplies",
+  "icon": "minecraft:bucket",
+  "category": "slimic:cooperation",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A full working bag requests cargo pickup. Missing tools request one compatible spare; tools retain wear, enchantments, names, and tags. Farm workers need hoes, lumberjacks axes, miners pickaxes/shovels, and combat workers swords."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Miner fluid removal requests one empty bucket. Wall reinforcement requests up to 64 cobblestone. Healers request up to 64 slimeballs. Supply is limited by stock and usable space; full bags need unloading first."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Carriers recheck the request before delivery, so two carriers do not overfill it. Follow and Wait withdraw requests. $(l:companions/herald)Heralds$() report continuous blocked work; a retry alone does not erase that duration."
+    }
+  ]
+}

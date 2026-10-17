@@ -1,0 +1,25 @@
+{
+  "name": "Slime Tuners",
+  "icon": "slimic:slime_tuner",
+  "category": "slimic:basics",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_tuner",
+      "text": "Combine one iron ingot and one slimeball without a fixed shape."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Use the tuner on your companion within eight blocks. Manage names, points, orders, equipment, and cargo. Keep the tuner in either hand while the screen is open."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Creative Slime Tuner edits base stats and current resources in Creative only. It has no Survival recipe. Shrinking Capacity requires emptying the slots that would be lost."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_tuner": 0,
+    "slimic:creative_slime_tuner": 2
+  }
+}

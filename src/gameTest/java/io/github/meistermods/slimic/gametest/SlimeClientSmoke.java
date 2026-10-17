@@ -63,6 +63,10 @@ public final class SlimeClientSmoke {
     if (++ticks > 3600) throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.guidebookOnly")) {
+      if (GuidebookClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.orderElevenOnly")) {
       if (OrderElevenClientSmoke.tick(client)) client.stop();
       return;
@@ -516,7 +520,7 @@ public final class SlimeClientSmoke {
                               .getKey(stack.getItem())
                               .toString())
                   .toList());
-      if (items.size() != 25
+      if (items.size() != 25 + (ModList.get().isLoaded("patchouli") ? 1 : 0)
           || items.stream().noneMatch(stack -> stack.is(ModItems.CREATIVE_SLIME_TUNER.get())))
         throw new IllegalStateException("Creative tab entries");
       ItemStack miner =

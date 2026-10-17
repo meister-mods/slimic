@@ -1,0 +1,20 @@
+{
+  "name": "When work stops",
+  "icon": "minecraft:barrier",
+  "category": "slimic:care",
+  "sortnum": 33,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "First confirm the explicit work order, owner, and loaded work area. Wait and Follow intentionally pause work. Read the status: full bag, missing tool or tier, missing material, exhaustion, storage unavailable, or unreachable route."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empty cargo or provide a warehouse/Slime Chest. Put the requested tool, seed, sapling, empty bucket, or cobblestone in the correct bag. A bucket never substitutes for wall cobblestone. Open a route and clear the work position."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Mining, farming, logging, and trail placement honor mobGriefing and Forge protection. Work uses loaded terrain, Reach, and sight. Extra stats or supplies cannot bypass denied edits. A $(l:companions/herald)herald$() can report lasting blockages."
+    }
+  ]
+}

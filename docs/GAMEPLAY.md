@@ -2,11 +2,19 @@
 
 English | [한국어](GAMEPLAY.kr.md) · [Project overview](../README.md)
 
-Slimic provides friendly companions with upgradeable stats, mining, transport, herald, combat, cleaning, riding, farming, lumberjack, guardian, and soggy specializations.
+Slimic provides friendly companions with upgradeable stats, mining, transport, herald, combat, cleaning, riding, farming, lumberjack, guardian, soggy, healing, and warehouse specializations.
 
 ## Installation
 
 Use Minecraft 1.20.1, Forge 47.x (developed against 47.4.10), and Java 17. Place `slimic-1.20.1-*.jar` from the build or release into the Minecraft `mods` folder, then launch the Forge profile. Do not install the `-sources.jar` development artifact.
+
+## In-game guidebook
+
+With [Patchouli](https://vazkiimods.github.io/Patchouli/) installed, craft one **book** and one **slimeball** without a fixed arrangement to make the **Slimic Companion Guide**. A 2×2 inventory grid is sufficient. The guide also appears in the Slimic Creative tab.
+
+For multiplayer guidebook use, install the Minecraft 1.20.1 Forge version of Patchouli on both client and server.
+
+The guide contains English and Korean instructions for all thirteen companions, orders, stats, equipment, cooperation, work sites, and recovery. Other languages fall back to English. All entries are available immediately. Patchouli is optional; Slimic and these web guides remain usable without it. JEI is independent of the guidebook.
 
 ## Crafting a Friendly Slime
 
@@ -31,7 +39,7 @@ An anvil name on the item becomes the slime's custom name.
 | Owner Shift-right-clicks | Recover the slime into an inventory item, even while holding another item. |
 | Use a recovered item on a block or water source | Release the same companion with its saved traits. |
 
-All newly created work specializations start in **Wait**, including Creative defaults and specialization of a stored Friendly Slime. Start Mine, Haul, Watch, Fight, Clean, Farm, or Chop explicitly in management. Select Follow or Free roam for Soggy Slime trails, or Follow for guardian movement. Recovered companions retain their saved commands; miners retain the documented relocation behavior. Missing job data defaults to Wait.
+All newly created work specializations start in **Wait**, including Creative defaults and specialization of a stored Friendly Slime. Start Mine, Haul, Watch, Fight, Clean, Farm, Chop, Search, or Store explicitly in management. Select Follow or Roam for Soggy Slime trails, or Follow for guardian movement. Recovered companions retain their saved commands; miners retain the documented relocation behavior. Missing job data defaults to Wait.
 
 Ordinary use of a saddled Saddle Slime mounts it, including while holding an item. Use a Slime Tuner for management. Ordinary Herald Slime use launches its saved firework.
 
@@ -80,8 +88,8 @@ Use a **Slime Tuner** on an owned slime to open its management screen. The name 
 | Work Speed | 1.0× | +0.1× | Mining progress and action intervals for transport, combat, cleaning, farming, logging, healing, warehouse logistics, beams, and trails. |
 | Capacity | 9 slots / transport: 18 / warehouse: 72 | +3 / +6 / +24 slots | Usable bag slots, up to 27 / 54 / 216 respectively. |
 | Stamina | 100 | +20 | Maximum stamina for continuous work and proportional recovery. |
-| Reach | 3 blocks | +0.25 blocks | Maximum distance for mining, healing, and item transfers. |
-| Detection Range | 8 blocks | +1 block | Worker target/work-area range and herald monitoring radius. |
+| Reach | 3 blocks | +0.25 blocks | Maximum distance for job actions, attacks, healing, and item transfers. |
+| Detection Range | 8 blocks | +1 block | Worker target/work-area range and herald monitoring radius. Cleaning uses 5× the common base; farming/logging use 2×. |
 
 Capacity supports six upgrades; the other stats support twenty. Only the owner can spend points, rename the companion, or use its management inventory. All stats, unused points, activity progress, and current stamina survive world saves and recovery.
 
@@ -93,11 +101,11 @@ The world's `serverconfig/slimic-server.toml` configures `transportActivityPerDe
 
 Stats have different roles. Health, Defense, and Movement Speed benefit every companion. Attack affects combat and guardian slimes; Work Speed, Capacity, Stamina, and Reach serve mining, transport, combat, cleaning, farming, logging, healing, and warehouse slimes. Guardian Angel Slimes also use Work Speed, Stamina, and Reach for their abilities. Soggy slimes use Work Speed and Stamina for trail production. Stamina also powers normal mounted flight and ground or air sprinting. Detection Range serves those workers, herald monitoring, guardian beams, and the Soggy Slime roaming area. Friendly slimes retain all investments when specialized. Upgrade tooltips identify stats outside the current specialization.
 
-Stamina recovers at **2% of maximum per second** during recovery: 2 at 100 maximum, 4 at 200, and 10 at 500. Mining, transport, combat, cleaning, farming, and lumberjack workers resume at 25%, taking about 13 seconds from zero regardless of maximum, subject to tick timing. Larger stamina pools support longer work bursts and proportionally higher recovery. Recovery opportunities still depend on the job.
+Stamina recovers at **2% of maximum per second** during recovery: 2 at 100 maximum, 4 at 200, and 10 at 500. Mining, transport, combat, cleaning, farming, lumberjack, healing, and warehouse workers resume at 25%, taking about 13 seconds from zero regardless of maximum, subject to tick timing. Larger stamina pools support longer work bursts and proportionally higher recovery. Recovery opportunities still depend on the job.
 
 ## Work orders and support requests
 
-An order describes the assigned task: Follow, Wait, Mine, Haul, Monitor, Fight, Clean, Farm, Log, Free roam, Search, or Store. Execution is idle, active, blocked, or complete. A blocked task carries a reason such as a full bag, missing tool, unsuitable tool tier, exhaustion, missing storage, full storage, unreachable terrain, missing supports, or disabled work.
+An order describes the assigned task: Follow, Wait, Mine, Haul, Watch, Fight, Clean, Farm, Chop, Roam, Search, or Store. Execution is idle, active, blocked, or complete. A blocked task carries a reason such as a full bag, missing tool, unsuitable tool tier, exhaustion, missing storage, full storage, unreachable terrain, missing supports, or disabled work.
 
 A full working bag issues a cargo-pickup request. A worker missing its required tool issues a tool-supply request. A miner encountering water or lava without an empty bucket issues a separate bucket-supply request; a full bag also requests cargo pickup. Transport acts on these requests and rechecks them before every transfer. Heralds use the shared blocked state and its continuous duration. Manual Follow/Wait orders and completed quarries are not blocked work.
 
@@ -119,7 +127,7 @@ Mining Slimes in the same chunk share the staircase layout, including new worker
 
 Mining stays within the chunk and does not load neighbouring chunks. Air, block entities, and unbreakable blocks are skipped as mining targets. Water and lava are handled separately before ordinary blocks in the current layer. An unbreakable floor sealed by the reserved staircase, or the bottom of the dimension completes the quarry. Protected containers or other obstructions can prevent access and may require manual clearance. Block breaking and support placement respect Forge events and `mobGriefing`.
 
-When the current quarry layer contains water or lava, a miner without an **empty bucket in its own bag** stops and requests one. A bucket in a nearby chest or the player's inventory does not directly enable removal. Transport slimes can fetch one from a Slime Chest and place it in the miner's bag; mining resumes automatically. If the bag is full, cargo is unloaded first. Each successful removal costs one stamina and grants one activity unit. The bucket is neither consumed nor filled, including for lava. Waterlogged blocks retain their block and inventory while their water is removed. Removal respects Reach, sight, Forge protection events, and `mobGriefing`.
+When the current quarry layer contains water or lava, a miner without an **empty bucket in its own bag** stops and requests one. A bucket in a nearby chest or the player's inventory does not directly enable removal. Transport slimes can fetch one from a warehouse or Slime Chest and place it in the miner's bag; mining resumes automatically. If the bag is full, cargo is unloaded first. Each successful removal costs one stamina and grants one activity unit. The bucket is neither consumed nor filled, including for lava. Waterlogged blocks retain their block and inventory while their water is removed. Removal respects Reach, sight, Forge protection events, and `mobGriefing`.
 
 Water and lava are removed in horizontal patches of up to **3×3 blocks**, starting with exposed source corners where possible. Each cell must be within Reach and line of sight. While a quarry layer is being drained, source regeneration is suppressed in that layer so an infinite-water pool cannot continually refill the same spot. The restriction ends when work stops or advances to another layer. Drainage removes water inside the quarry chunk; side inlets are sealed under the wall-reinforcement rules. Global source-conversion settings remain unchanged. Each removed cell has its own stamina cost and protection checks.
 
@@ -155,11 +163,11 @@ Craft a Friendly Slime item with a **regular chest**, without a fixed shape, to 
 
 Its Capacity is always exactly twice the common bag capacity at the same upgrade level: 18 slots initially, six additional slots per Capacity upgrade, and 54 slots at the maximum. Both bag pages can be accessed with the arrow buttons in the management screen. Shift-click moves cargo between the visible bag page and the player's inventory.
 
-New transport slimes wait when summoned. Select **Haul** in management to start logistics. Their release position is the center of a work area whose radius is their Detection Range. They find loaded Slime Chests and same-owner workers inside this area, walk between them, and transfer items within Reach and line of sight. The area remains centered on the release position while they travel; recovery and release establish a new center. They do not load neighbouring chunks to find work. Changes to Detection Range also apply to previously selected chests before deposits or tool pickups.
+New transport slimes wait when summoned. Select **Haul** in management to start logistics. Their release position is the center of a work area whose radius is their Detection Range. They find loaded Slime Chests and same-owner warehouses and workers inside this area, walk between them, and transfer items within Reach and line of sight. The area remains centered on the release position while they travel; recovery and release establish a new center. They do not load neighbouring chunks to find work. Changes to Detection Range also apply to previously selected chests before deposits or tool pickups.
 
-When a worker stops because its bag is full, a transport slime approaches, picks up cargo that fits in its own bag, and delivers it to available warehouses or Slime Chests. The worker resumes as space becomes available. Partial stacks are merged, and another chest is used when needed. If no suitable chest has room, existing cargo stays in the transport bag and no items are discarded. It retries as space becomes available.
+When a worker stops because its bag is full, a transport slime approaches, picks up cargo that fits in its own bag, and delivers it to available warehouses or Slime Chests. The worker resumes as space becomes available. Partial stacks are merged, and another storage destination is used when needed. If no suitable destination has room, existing cargo stays in the transport bag and no items are discarded. It retries as space becomes available.
 
-When a worker stops because its tool is missing or broken, the transport slime fetches one compatible spare tool from a warehouse or Slime Chest and brings it to the worker. For mining slimes this means the requested pickaxe or shovel; combat slimes request swords. For a miner paused at water or lava, the same logistics delivers one empty bucket into its bag. Full bags request unloading before bucket supply. Item counts and custom data are preserved along with tools' damage, enchantments, and names. If another carrier already supplied the worker, remaining tools stay in cargo and are reused or returned to a Slime Chest. Manually waiting or following workers are not treated as stopped work requests.
+When a worker stops because its tool is missing or broken, the transport slime fetches one compatible spare tool from a warehouse or Slime Chest and brings it to the worker. For mining slimes this means the requested pickaxe or shovel; combat slimes request swords. For a miner paused at water or lava, the same logistics delivers one empty bucket into its bag. Full bags request unloading before bucket supply. Item counts and custom data are preserved along with tools' damage, enchantments, and names. If another carrier already supplied the worker, remaining tools stay in cargo and are reused or returned to storage. Manually waiting or following workers are not treated as stopped work requests.
 
 Each cargo-stack pickup or delivery and each supply pickup or delivery consumes one stamina. Exhausted carriers rest until 25% stamina, recovering 2% of maximum per second. Work Speed shortens the interval between transfer actions. Follow and Wait suspend logistics, and all bag contents, stats, current stamina, growth, and orders survive saves and recovery.
 
@@ -167,7 +175,7 @@ Transport travel failures are based on stalled movement. A delivery that keeps a
 
 ## JEI
 
-JEI is optional. When installed, it shows the Friendly Slime and Slime Chest recipes, Mining Slime combinations for registered pickaxes, the Transport Slime, Herald Slime, Combat Slime, Cleaning Slime, Saddle Slime, Farming Slime, Lumberjack Slime, Guardian Angel Slime, Soggy Slime, Slime Slag recycling, and Slime Armor combinations, and companion information pages. Mining and combat recipe previews retain the corresponding tool. Armor previews show each registered chestplate conversion. Slimic also runs without JEI.
+JEI is optional. When installed, it shows the Friendly Slime and Slime Chest recipes, Mining Slime combinations for registered pickaxes, the Transport Slime, Herald Slime, Combat Slime, Cleaning Slime, Saddle Slime, Farming Slime, Lumberjack Slime, Guardian Angel Slime, Soggy Slime, Healing Slime, Warehouse Slime, Slime Slag recycling, and Slime Armor combinations, and companion information pages. Mining and combat recipe previews retain the corresponding tool. Armor previews show each registered chestplate conversion. Slimic also runs without JEI.
 
 ## Dye colors
 
@@ -219,7 +227,7 @@ Ordinary reloads within the same dimension retain the saved work area. Cancelled
 
 Craft a Friendly Slime item with any sword, without a fixed shape, to make a **Combat Slime**. The recipe equips the exact input sword, including its wear and enchantments. Stored companion traits survive specialization. Creative defaults have empty equipment.
 
-Combat slimes share the common stats and have a normal-capacity bag plus three equipment slots: sword, shield, and Slime Armor. Fight searches within Detection Range and approaches visible permitted targets; Follow and Wait suspend combat. Sword damage, enchantments, knockback, fire effects, and durability use Minecraft's melee behavior. Reach bounds attack distance and Work Speed shortens the interval between attacks. Each successful hit costs one stamina and earns one activity unit. Exhausted companions rest until 25% stamina. Missing equipment can be filled from compatible bag spares, and transport slimes can fetch replacement swords from Slime Chests.
+Combat slimes share the common stats and have a normal-capacity bag plus three equipment slots: sword, shield, and Slime Armor. Fight searches within Detection Range and approaches visible permitted targets; Follow and Wait suspend combat. Sword damage, enchantments, knockback, fire effects, and durability use Minecraft's melee behavior. Reach bounds attack distance and Work Speed shortens the interval between attacks. Each successful hit costs one stamina and earns one activity unit. Exhausted companions rest until 25% stamina. Missing equipment can be filled from compatible bag spares, and transport slimes can fetch replacement swords from warehouses or Slime Chests.
 
 Pursuit reports an unreachable route after 400 ticks without horizontal or grounded vertical progress. Slow movement keeps pursuit active, and advancing again clears the blocked state. Hopping in place does not count as travel.
 
@@ -252,7 +260,7 @@ Clean begins work around the release position. It waits there, selects a dropped
 
 Returns also measure stalled movement rather than total travel time. A cleaner that keeps advancing can take more than 400 ticks to reach home; a stalled return clears its warning state when travel resumes.
 
-Pickup respects item pickup delays, reserved ownership, Forge pickup cancellation, stack limits, and available bag space. Partial pickups leave the remainder in the world. A full bag pauses collection, and a transport slime can unload it into a nearby Slime Chest. Removing cargo also resumes work. Each successful pickup action costs one stamina and earns one activity unit; Work Speed shortens the search interval. Exhaustion pauses collection until 25% stamina, with 2% of maximum restored per second.
+Pickup respects item pickup delays, reserved ownership, Forge pickup cancellation, stack limits, and available bag space. Partial pickups leave the remainder in the world. A full bag pauses collection, and a transport slime can unload it into a nearby warehouse or Slime Chest. Removing cargo also resumes work. Each successful pickup action costs one stamina and earns one activity unit; Work Speed shortens the search interval. Exhaustion pauses collection until 25% stamina, with 2% of maximum restored per second.
 
 After **three minutes** of attempting to acquire the same item without success, the cleaner searches for another eligible item with available bag space. If one exists, it changes target and temporarily avoids the failed item. Otherwise it resets the attempt timer and retries the same item. A removed or unavailable target is replaced promptly. The retry timer advances during active collection and pauses while following, waiting, or stored as an item. Retry state, cargo, dye, stats, current health, and stamina survive saves and recovery.
 
@@ -349,7 +357,6 @@ Break a trail to obtain **one Slime Slag**. Shovels break it faster. Craft **fou
 The management screen offers **Follow**, **Wait**, and **Roam**. New Soggy Slimes still start waiting. Roam chooses nearby walkable destinations around the position where that command was selected, within Detection Range, and does not require the owner to be nearby or online. Movement uses loaded terrain and does not load new chunks for pathfinding. An attacker can temporarily cause the slime to flee; afterward it resumes roaming toward its assigned area.
 
 Both Follow and Roam leave trails with the existing stamina cost, growth, and recovery rules. Wait stops autonomous movement and trail placement. Selecting Follow or Wait replaces Roam. The order and area survive world saves; releasing a recovered roaming slime preserves its traits and order and centers the roaming area on the new release position.
-
 
 ## Healing slimes
 

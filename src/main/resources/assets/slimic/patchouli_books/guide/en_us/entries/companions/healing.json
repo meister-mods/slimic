@@ -1,0 +1,28 @@
+{
+  "name": "Healing Slime",
+  "icon": "slimic:healing_slime",
+  "category": "slimic:companions",
+  "sortnum": 19,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:golden_carrot",
+      "result": "slimic:healing_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + one golden carrot."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting; select Search. It approaches same-owner injured companions and Broken Slime Blocks in its fixed area, prioritizing revival. It can also heal itself. Supply slimeballs in its own usable bag."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Each successful treatment costs one slimeball and one stamina: up to four health healed, or revival at one health. Full health, cancelled healing, blocked placement, invalid data, or duplicate identity costs nothing. Missing balls request supply."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:healing_slime": 0
+  }
+}

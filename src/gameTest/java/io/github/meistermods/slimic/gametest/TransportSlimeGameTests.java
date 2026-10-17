@@ -703,7 +703,16 @@ public final class TransportSlimeGameTests {
               chest.isEmpty()
                   && count(carrier.getBag(), Items.DIAMOND) == 10
                   && carrier.getTransportStatus() == TransportSlime.Status.NO_CHEST,
-              "A locked container must not accept automatic transfers");
+              "A locked container must not accept automatic transfers: empty="
+                  + chest.isEmpty()
+                  + ", cargo="
+                  + count(carrier.getBag(), Items.DIAMOND)
+                  + ", status="
+                  + carrier.getTransportStatus()
+                  + ", ticks="
+                  + carrier.tickCount
+                  + ", loaded="
+                  + helper.getLevel().isPositionEntityTicking(carrier.blockPosition()));
           helper.succeed();
         });
   }

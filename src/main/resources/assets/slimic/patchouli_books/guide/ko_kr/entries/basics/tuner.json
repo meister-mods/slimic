@@ -1,0 +1,25 @@
+{
+  "name": "슬라임 튜너",
+  "icon": "slimic:slime_tuner",
+  "category": "slimic:basics",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_tuner",
+      "text": "철 주괴 1개와 슬라임볼 1개를 모양 없이 조합합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "8블록 안의 자신의 동료에게 사용하세요. 이름·포인트·명령·장비·가방을 관리합니다. 화면을 사용하는 동안 어느 한 손에 튜너를 들고 있어야 합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "크리에이티브 슬라임 튜너는 크리에이티브에서만 기본 능력치와 현재 자원을 편집합니다. 서바이벌 조합법은 없습니다. 적재량을 줄일 때는 사라질 칸을 먼저 비우세요."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_tuner": 0,
+    "slimic:creative_slime_tuner": 2
+  }
+}

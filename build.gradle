@@ -71,6 +71,10 @@ minecraft {
         // applies to all the run configs below
         configureEach {
             workingDirectory project.file('run')
+            if (providers.gradleProperty('enablePatchouli').map { it.toBoolean() }.getOrElse(true)) {
+                property 'mixin.env.remapRefMap', 'true'
+                property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+            }
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -97,6 +101,10 @@ minecraft {
             if (providers.gradleProperty('clientSmoke').map { it.toBoolean() }.getOrElse(false)) {
                 workingDirectory project.file('.agent/client-smoke')
                 property 'slimic.clientSmoke', 'true'
+                if (providers.gradleProperty('guidebookSmoke').map { it.toBoolean() }.getOrElse(false)) {
+                    workingDirectory layout.buildDirectory.dir('guidebook-client').get().asFile
+                    property 'slimic.guidebookOnly', 'true'
+                }
                 args '--quickPlaySingleplayer', 'slimic-smoke', '--width', '1280', '--height', '900'
                 mods { "${mod_id}_tests" { source sourceSets.gameTest } }
             }
@@ -137,7 +145,7 @@ repositories {
     maven {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com/'
-        content { includeGroup 'mezz.jei'; includeGroup 'net.mezzdev.config' }
+        content { includeGroup 'mezz.jei'; includeGroup 'net.mezzdev.config'; includeGroup 'vazkii.patchouli' }
     }
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
@@ -160,6 +168,10 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     if (providers.gradleProperty('enableJei').map { it.toBoolean() }.getOrElse(true)) {
         runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    }
+
+    if (providers.gradleProperty('enablePatchouli').map { it.toBoolean() }.getOrElse(true)) {
+        runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     }
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
@@ -255,4 +267,100 @@ tasks.named('build').configure {
 
 tasks.named('check').configure {
     dependsOn tasks.named('compileGameTestJava')
+}
+
+tasks.register('verifyGuidebook') {
+    inputs.files(fileTree('src/main/resources/assets/slimic/patchouli_books'),
+            fileTree('src/main/resources/data/slimic/patchouli_books'),
+            fileTree('src/main/resources/assets/slimic/lang'),
+            fileTree('src/main/resources/data/slimic/recipes'),
+            file('src/main/resources/data/slimic/advancements/recipes/misc/guide_book.json'))
+    doLast {
+        def parse = { File f -> new groovy.json.JsonSlurper().parse(f, 'UTF-8') }
+        def require = { boolean valid, String message ->
+            if (!valid) throw new GradleException(message)
+        }
+        def base = file('src/main/resources/assets/slimic/patchouli_books/guide')
+        def paths = { String lang -> fileTree(new File(base, lang)).matching { include '**/*.json' }
+                .files.collect { new File(base, lang).toPath().relativize(it.toPath()).toString() }.toSet() }
+        def english = paths('en_us')
+        require(!english.empty && english == paths('ko_kr'), 'Guide locales must have identical resource paths.')
+        def localized = ['name', 'description', 'title', 'text', 'label'] as Set
+        Closure structure
+        structure = { value ->
+            if (value instanceof Map) return value.findAll { k, v -> !localized.contains(k) }
+                    .collectEntries { k, v -> [(k): structure(v)] }
+            if (value instanceof List) return value.collect { structure(it) }
+            value
+        }
+        def entries = english.findAll { it.startsWith('entries/') }
+                .collect { it.substring('entries/'.length(), it.length() - '.json'.length()) }.toSet()
+        def categories = english.findAll { it.startsWith('categories/') }
+                .collect { 'slimic:' + it.substring('categories/'.length(), it.length() - '.json'.length()) }.toSet()
+        def templates = english.findAll { it.startsWith('templates/') }
+                .collect { 'slimic:' + it.substring('templates/'.length(), it.length() - '.json'.length()) }.toSet()
+        def book = parse(file('src/main/resources/data/slimic/patchouli_books/guide/book.json'))
+        require(book.use_resource_pack == true && book.i18n == false && book.version == '0'
+                && book.creative_tab == 'slimic:slimic',
+                'Guide metadata must support localized resource packs and the Slimic Creative tab.')
+        def recipe = parse(file('src/main/resources/data/slimic/recipes/guide_book.json'))
+        def condition = [[type: 'forge:mod_loaded', modid: 'patchouli']]
+        require(recipe.conditions == condition && recipe.book == 'slimic:guide'
+                && recipe.type == 'patchouli:shapeless_book_recipe'
+                && recipe.ingredients.collect { it.item }.sort() == ['minecraft:book', 'minecraft:slime_ball'],
+                'The optional guide recipe must use exactly one book and one slimeball, shapelessly.')
+        def advancement = parse(file('src/main/resources/data/slimic/advancements/recipes/misc/guide_book.json'))
+        require(advancement.conditions == condition && advancement.rewards.recipes == ['slimic:guide_book'],
+                'The guide recipe unlock must use the same optional condition.')
+        int pages = 0
+        english.each { path ->
+            def first = parse(new File(base, 'en_us/' + path))
+            def second = parse(new File(base, 'ko_kr/' + path))
+            require(structure(first) == structure(second), 'Guide locale structure differs: ' + path)
+            if (!path.startsWith('entries/')) return
+            require(categories.contains(first.category) && first.pages && !first.advancement,
+                    'Guide entries must have a valid category and remain unlocked: ' + path)
+            pages += first.pages.size()
+            ['en_us', 'ko_kr'].each { lang ->
+                def entry = parse(new File(base, lang + '/' + path))
+                require(entry.name && entry.icon, 'Missing entry name or icon: ' + path)
+                if (entry.extra_recipe_mappings) {
+                    require(entry.extra_recipe_mappings instanceof Map, 'Recipe mappings must be an object: ' + path)
+                    entry.extra_recipe_mappings.each { key, page ->
+                        require(page instanceof Number && page == page.intValue()
+                                && page >= 0 && page < entry.pages.size(),
+                                'Recipe mapping has an invalid page: ' + path)
+                    }
+                }
+                entry.pages.each { page ->
+                    require(page.type in ['patchouli:text', 'patchouli:crafting'] || templates.contains(page.type),
+                            'Unknown guide page type in ' + path)
+                    if (page.type == 'patchouli:crafting') {
+                        def source = file('src/main/resources/data/' + page.recipe.replace(':', '/recipes/') + '.json')
+                        require(source.exists(), 'Unknown crafting page recipe: ' + page.recipe)
+                        def type = parse(source).type
+                        require(type.startsWith('minecraft:crafting_') || type == 'patchouli:shapeless_book_recipe',
+                                'Dynamic companion recipes need their ingredient diagram: ' + page.recipe)
+                    }
+                    if (page.text instanceof String) {
+                        (page.text =~ /\$\(l:([^)]+)\)/).each { match ->
+                            def target = match[1].split('#', 2)[0].replaceFirst('^slimic:', '')
+                            require(entries.contains(target), 'Broken guide link ' + match[1] + ' in ' + path)
+                        }
+                    }
+                }
+            }
+        }
+        ['en_us', 'ko_kr'].each { lang ->
+            def strings = parse(file('src/main/resources/assets/slimic/lang/' + lang + '.json'))
+            [book.name, book.landing_text, book.subtitle].each { key ->
+                require(strings[key] instanceof String && !strings[key].blank, 'Missing guide translation: ' + lang + '/' + key)
+            }
+        }
+        logger.lifecycle("Guide verified: ${categories.size()} categories, ${entries.size()} entries, ${pages} pages per language; bilingual links and recipes valid.")
+    }
+}
+
+tasks.named('check').configure {
+    dependsOn tasks.named('verifyGuidebook')
 }

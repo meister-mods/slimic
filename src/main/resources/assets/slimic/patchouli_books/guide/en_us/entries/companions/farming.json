@@ -1,0 +1,28 @@
+{
+  "name": "Farming Slime",
+  "icon": "slimic:farmer_slime",
+  "category": "slimic:companions",
+  "sortnum": 15,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_hoe",
+      "result": "slimic:farmer_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + any hoe. The original tool and its data are equipped."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting. Farm registers the farmland currently in its loaded area. Range is twice the common base, initially 16 blocks. Supply seeds or crops in its normal bag. New farmland needs a new Farm activation."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It harvests mature crops, replants from its own bag, and restores registered soil with a hoe. It cannot trample farmland. Full cargo and broken tools request support. See $(l:fieldwork/farmland)Registered plots$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:farmer_slime": 0
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "채굴 슬라임",
+  "icon": "slimic:mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_pickaxe",
+      "result": "slimic:mining_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 아무 곡괭이. 원본 도구의 내구도·이름·마법 부여를 유지합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처음에는 대기합니다. 채굴 명령으로 소환 청크를 아래로 굴착하며 계단을 남깁니다. 목재·나뭇잎·보관함·파괴 불가능한 블록은 남깁니다. 곡괭이·삽과 보수 블록을 준비하세요. 가방 포화·도구 부족·기력 고갈·보호 설정으로 멈출 수 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "실제 도구가 기본 속도와 전리품을 결정합니다. 작업 속도는 적합한 도구에만 적용되므로 삽 없이 곡괭이로 흙을 빠르게 캐지는 못합니다. 광물 등급도 지켜야 합니다. $(l:fieldwork/fluids)유체$()와 $(l:cooperation/shared_quarry)공동 계단$()도 확인하세요."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:mining_slime": 0
+  }
+}

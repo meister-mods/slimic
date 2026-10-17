@@ -1,0 +1,28 @@
+{
+  "name": "Warehouse Slime",
+  "icon": "slimic:warehouse_slime",
+  "category": "slimic:companions",
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:transport_slime",
+      "input2": "minecraft:chest#8",
+      "result": "slimic:warehouse_slime",
+      "label": "Combine → one result",
+      "text": "Transport Slime + eight regular chests fills a 3×3 crafting grid. It keeps the stored companion and cargo, and starts waiting."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Capacity is eight times the common bag, or four times a transport bag: 72 slots initially, up to 216. It has no equipment slot. Menu pages show 27 slots at a time."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Store collects blocked workers’ cargo and delivers supplies, keeping cargo inside the warehouse. It does not empty itself into chests. Other carriers may use it as storage or supply even during Wait or Follow."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:warehouse_slime": 0
+  }
+}

@@ -36,7 +36,9 @@ public final class MiningAuditGameTests {
         ModEntities.FARMER_SLIME.get(),
         ModEntities.LUMBERJACK_SLIME.get(),
         ModEntities.GUARDIAN_ANGEL_SLIME.get(),
-        ModEntities.SOGGY_SLIME.get());
+        ModEntities.SOGGY_SLIME.get(),
+        ModEntities.HEALING_SLIME.get(),
+        ModEntities.WAREHOUSE_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "mining_audit")

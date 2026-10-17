@@ -1,0 +1,28 @@
+{
+  "name": "치유 슬라임",
+  "icon": "slimic:healing_slime",
+  "category": "slimic:companions",
+  "sortnum": 19,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:golden_carrot",
+      "result": "slimic:healing_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 황금 당근 1개."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처음에는 대기하며 탐색 명령으로 시작합니다. 고정 구역의 같은 주인 부상 동료와 망가진 슬라임 블록에 접근하고 부활을 우선합니다. 자기 치료도 가능합니다. 사용 가능한 가방에 슬라임볼을 넣으세요."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "성공한 치료마다 슬라임볼 1개와 기력 1을 씁니다. 생명력을 최대 4 회복하거나 생명력 1로 부활합니다. 생명력이 가득 찬 상태·치료 취소·배치 불가·잘못된 데이터·중복 식별자는 비용을 쓰지 않습니다. 재료가 없으면 보급을 요청합니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:healing_slime": 0
+  }
+}

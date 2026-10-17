@@ -1,0 +1,20 @@
+{
+  "name": "Orders and ownership",
+  "icon": "minecraft:compass",
+  "category": "slimic:basics",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Follow moves after the owner; Wait pauses ordinary work. New workers wait, including Creative defaults and specialization of a recovered Friendly Slime. Stored companions retain their saved order."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Mining uses Mine, carriers Haul, heralds Watch, combat Fight, cleaners Clean, farmers Farm, and lumberjacks Chop. Healers use Search and warehouses Store. Soggy Slimes can Follow or Roam."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Only the owner may manage or recover a companion. Giving a recovered item to someone else does not change ownership. Workers, healers, and carriers normally cooperate with the same owner’s team."
+    }
+  ]
+}

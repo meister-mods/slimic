@@ -1,0 +1,28 @@
+{
+  "name": "Nine shared stats",
+  "icon": "minecraft:experience_bottle",
+  "category": "slimic:growth",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Health starts at 16 and gains 4 per point; upgrades do not heal. Attack starts at 2 and gains 1, serving combat and guardian beams. Defense starts at 0 and gains 1 using normal armor rules."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Movement Speed starts at 0.30, gaining 0.015 per point. It shortens ground-hop pauses and scales mounted flight; ground-hop launch speed stays fixed. Work Speed starts at 1× and gains 0.1×, affecting job action intervals and effective-tool mining."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Common Capacity starts at 9 slots and gains 3 per point, up to 27. Transport always has twice that capacity; warehouses eight times. Capacity has six upgrades, while the other stats have twenty."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Stamina starts at 100 and gains 20 per point. Reach starts at 3 blocks and gains 0.25. Detection Range starts at 8 and gains 1; farming/logging multiply it by 2, cleaning by 5."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The management screen marks stats unused by the current job. Investments persist when a Friendly Slime specializes. Guardian health is ten times the corresponding common value."
+    }
+  ]
+}

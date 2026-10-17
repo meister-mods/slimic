@@ -1,0 +1,20 @@
+{
+  "name": "Earning points",
+  "icon": "minecraft:emerald",
+  "category": "slimic:growth",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The first point costs 32 activity. Each earned point adds 64 to the next cost, capped at 4,096. Successful job actions earn activity; failed actions, idle time, and changing orders do not."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Successful deliveries and warehouse cargo collection normally earn four units per moved stack; fetching or ordinary cargo pickup by a carrier earns none. Healing and revival earn one unit on success."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Actual following or rider movement earns one unit per 100 ticks by default. Heralds earn the same while monitoring an active or blocked worker. Defensive hits or shield blocks have a one-second award limit."
+    }
+  ]
+}

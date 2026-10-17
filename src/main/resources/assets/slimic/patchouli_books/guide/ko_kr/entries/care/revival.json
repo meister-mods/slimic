@@ -1,0 +1,23 @@
+{
+  "name": "쓰러진 동료",
+  "icon": "slimic:broken_slime",
+  "category": "slimic:care",
+  "sortnum": 31,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "쓰러진 동료는 식별자와 장비·화물 등 특성을 담은 망가진 슬라임 블록을 남깁니다. 그 자리가 차 있으면 기존 블록을 없애지 않고 회수 블록 아이템을 떨어뜨립니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "주인이 블록에 슬라임볼 하나를 사용하면 $(bold)생명력 1$()로 부활합니다. 먼저 공간을 비우세요. 서바이벌에서는 성공할 때 하나를 쓰고, 배치 불가·잘못된 데이터·이미 존재하는 같은 식별자는 모두 유지합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "회수 블록을 부수면 저장된 동료를 담은 블록 아이템 하나가 나옵니다. $(l:companions/healing)치유 슬라임$()도 자신의 슬라임볼로 같은 주인의 블록을 부활시키고 이후 생명력을 더 회복할 수 있습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:broken_slime": 0
+  }
+}

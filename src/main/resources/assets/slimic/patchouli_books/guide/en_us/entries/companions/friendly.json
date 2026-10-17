@@ -1,0 +1,20 @@
+{
+  "name": "Friendly Slime",
+  "icon": "slimic:friendly_slime",
+  "category": "slimic:companions",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:friendly_slime",
+      "text": "Eight slimeballs and one soul sand or soul soil produce your first companion."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A Friendly Slime follows its owner and can be ordered to Wait. Raise its stats, give it a name, and later specialize its item. Specialization retains saved traits. New workers initially wait."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:friendly_slime": 0
+  }
+}

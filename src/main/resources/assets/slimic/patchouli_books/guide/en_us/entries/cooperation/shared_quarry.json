@@ -1,0 +1,20 @@
+{
+  "name": "Shared quarry stairs",
+  "icon": "minecraft:cobblestone",
+  "category": "slimic:cooperation",
+  "sortnum": 24,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Miners starting in one chunk share a staircase layout even at different elevations. They preserve registered companion floors, including those of another owner. New workers do not treat those stairs as ordinary terrain."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Stair protection stays in world data after the builder waits, is recovered, unloads, or leaves the world. Existing saved work records preserve earlier layouts together. Repairs pause if they would block another staircase’s headroom."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Keep repair blocks in workers’ bags. A shared missing tread costs one placed block, and competing targets produce loot only for the worker that actually breaks the block. Player mining follows normal rules."
+    }
+  ]
+}

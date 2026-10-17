@@ -1,0 +1,20 @@
+{
+  "name": "Trees and saplings",
+  "icon": "minecraft:oak_sapling",
+  "category": "slimic:fieldwork",
+  "sortnum": 28,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Use natural overworld trees with unstripped logs, leaves, and soil-rooted stumps. Supported types are oak, spruce, birch, jungle, acacia, dark oak, mangrove, and cherry. Decorative leaves and out-of-range trees are excluded."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Read the required sapling type and stump count in management. One stump needs one matching sapling; a 2×2 trunk needs four. A mismatched sapling cannot satisfy the request. Resupply the bag to trigger a new search."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Clear an approach to short trunks or improve Reach. Very large trees exceeding the inspection budget, obstructed trunks, and trees crossing unloaded boundaries may need manual work. Mangroves replant mature propagules and keep shallow source water."
+    }
+  ]
+}

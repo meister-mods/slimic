@@ -22,6 +22,7 @@ The runnable artifact is `build/libs/slimic-1.20.1-<version>.jar`. The `-sources
 | `./gradlew runServer` | Launch a local development server. |
 | `./gradlew runGameTestServer` | Run the dedicated Forge GameTest server. |
 | `./gradlew runData` | Run configured data generators. |
+| `./gradlew verifyGuidebook` | Check bilingual guide resources, links, recipes, and optional conditions. |
 
 GameTests run in `build/game-test-server`, separate from the normal development world under `run`. Their Java sources and fixtures live in `src/gameTest` and are excluded from release artifacts. The build compiles the GameTests; `runGameTestServer` executes them.
 
@@ -95,6 +96,18 @@ Quarry navigation uses a bounded 4,096-node search with a 128-block route budget
 
 `QuarryStaircaseData` stores dimension-local, persistent staircase profiles in `slimic_quarry_staircases.dat`. Each worked chunk retains one shared origin and at most 28 top-height bounds; protection lookup is constant time and does not acquire chunks. Unstarted plans adopt the shared origin while keeping their own starting height and layer. Started legacy plans retain their original phase, and their profiles are merged before work. Fresh waiting summons do not register a worksite. `MiningQuarry.RampOrigin` is optional in older entity data; absent values derive from `TopFloor`. Registered protection outlives entities. Join callbacks skip stale work anchors from another dimension until release initializes the destination. Final breaking checks revalidate protection after Forge callbacks. Repair checks preserve two blocks of headroom above other protected floors. The common companion schema remains 1 and the network protocol remains 13.
 
+## Patchouli guidebook
+
+Development runs use optional runtime dependency Patchouli `1.20.1-84.1-FORGE`. Disable it with `-PenablePatchouli=false`, independently of `-PenableJei=false`. Common game logic has no Patchouli Java API dependency, and the release JAR does not bundle the library.
+
+The definition is `data/slimic/patchouli_books/guide/book.json`; contents live in `assets/slimic/patchouli_books/guide/{en_us,ko_kr}`. The guide uses the [Patchouli resource book format](https://vazkiimods.github.io/Patchouli/docs/reference/book-json/). Locale folders translate the body; `i18n` stays disabled so literal percentages are not interpreted as translation format strings. The standard language files translate the book name, landing text, and subtitle. Book `version` is `0` so the localized subtitle appears instead of an edition number.
+
+The one-book, one-slimeball recipe and its recipe-book unlock share a `forge:mod_loaded` condition. Dynamic companion recipes retain their normal ingredients and saved data; the guide displays them through shared item diagrams. Ordinary recipes use native crafting pages.
+
+`verifyGuidebook` checks matching locale paths and page structures, categories, templates, internal links, recipe references, and optional conditions; `check` and `build` include it.
+
+For native validation, create a test world named `slimic-smoke` in the normal development client, save and quit, then copy `run/saves/slimic-smoke` to `build/guidebook-client/saves/slimic-smoke`. Run `./gradlew runClient -PclientSmoke=true -PguidebookSmoke=true`. The separate world checks Survival 2×2 crafting, consumption, unlocks, Creative placement, language/resource reloads, every page, text bounds, item lookups, links, and localized search. It changes the copied player inventory and game mode.
+
 ## Combat and cleaning
 
 `CombatSlime` keeps sword, shield, and armor in native equipment slots and shares the normal capacity-aware bag. Its synchronized target mask has six independent bits; owner menu checks protect all changes, and current targets are revalidated after a filter or order change. Native melee, armor, shield timing, enchantments, durability, and Forge events provide combat behavior. Serialized settings and cooldowns survive recovery.
@@ -163,7 +176,7 @@ Regressions cover the initial growth thresholds for all companion types, convers
 
 ## Threats, collapse, and active growth
 
-The entity-join hook adds a companion target goal to hostile `Enemy` mobs, excluding creepers. Their native attack goals retain damage and projectile behavior. A higher-priority escape goal responds to a real attacker for non-combat companions and yields to rider control. Hop propulsion stays at a common base while the movement attribute sets the grounded delay; ridden ground travel uses the same principle.
+The entity-join hook adds a companion target goal to hostile `Enemy` mobs, excluding creepers and Endermen. Their native attack goals retain damage and projectile behavior. A higher-priority escape goal responds to a real attacker for non-combat companions and yields to rider control. Hop propulsion stays at a common base while the movement attribute sets the grounded delay; ridden ground travel uses the same principle.
 
 A lowest-priority uncancelled `LivingDeathEvent` preserves the companion before native equipment, bag, or experience drops. `BrokenSlimeBlockEntity` stores its specialized recovery stack under `Slime`. A replaceable death cell becomes a block; an occupied cell produces its block item without overwriting terrain. Native block loot copies this payload to `BlockEntityTag.Slime`, retaining it through mining and placement. Revival uses the normal spawn validation and UUID checks, sets current health to 1, clears death/fire/motion state, and consumes the block and ball only on success. Failed spawning restores the block entity.
 
@@ -207,7 +220,7 @@ Lumberjacks defer unreachable or pickup-protected material entities for 200 tick
 
 Recovery fixtures wait for the destination chunk to become entity-ticking before interaction, observe the restored UUID at the join event, and verify identity, health, order, and schema through the server's entity lookup. Verification and fixture cleanup run in separate sequence steps.
 
-Work arenas clear complete columns above their floor and remove existing non-player entities. This prevents overhanging mountain terrain and falling gravel from changing the test inputs. Asynchronous worker tests wait for the required work state before changing resources or terrain instead of assuming discovery finishes after a fixed delay.
+Work arenas clear complete columns above their floor and remove non-player entities before and after terrain preparation, including drops from cleared vegetation. This prevents natural terrain and preparation drops from changing the test inputs. Placement-accounting fixtures register only their prepared plot and wait for valid native planting conditions; loot checks remain inside the cleared arena. Asynchronous worker tests wait for the required work state before changing resources or terrain instead of assuming discovery finishes after a fixed delay.
 
 ## Fluid work, trails, and step movement
 
@@ -221,7 +234,7 @@ Ground hop control caps propulsion throughout native `JUMPING` as well as moveme
 
 Regression coverage includes all ground roles in the jumping state, actual fall/lava/drowning/fire deaths, offline guardian retaliation, trail costs/loot/cancellation, stored soggy traits, fluid protection rollback, unchanged bucket data, waterlogged inventories, and transport unloading followed by bucket delivery. Native clients verify the new models, trail rendering, management screen, and optional JEI recipes.
 
-All work-specialization constructors start waiting. Missing profession order data also selects Wait, including Friendly Slime specialization, while explicit saved orders remain authoritative. Job tests issue their starting commands explicitly. Native item-use tests cover defaults, specialization, and command-preserving recovery for all nine work roles.
+All work-specialization constructors start waiting. Missing profession order data also selects Wait, including Friendly Slime specialization, while explicit saved orders remain authoritative. Job tests issue their starting commands explicitly. Native item-use tests cover defaults, specialization, and command-preserving recovery for all eleven autonomous work specializations.
 
 Guardian retaliation also recognizes damage absorbed by temporary absorption health. Untamed guardians safely reject owner-dependent target checks; native regressions cover both boundaries.
 

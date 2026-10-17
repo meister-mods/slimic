@@ -1,0 +1,28 @@
+{
+  "name": "Combat Slime",
+  "icon": "slimic:combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_sword",
+      "result": "slimic:combat_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + any sword. The exact sword is equipped on release."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting; select Fight. Equip a sword, shield, and $(l:care/armor)Slime Armor$(). The bag has normal Capacity. It uses normal melee and shield rules, spending one stamina per successful hit."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Targets has six independent filters. Hostile is enabled initially; Neutral, Passive, Players, Tamed, and Creepers are disabled. Owners, allies, and same-owner companions stay excluded. An Enderman attacking a living companion counts as Hostile until it disengages."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:combat_slime": 0
+  }
+}

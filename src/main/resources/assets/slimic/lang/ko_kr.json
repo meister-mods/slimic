@@ -214,5 +214,8 @@
   "status.slimic.warehouse.waiting": "보관 지시 대기 중; 화물 보관소로 사용 가능",
   "status.slimic.warehouse.following": "주인 따라가는 중; 화물 보관소로 사용 가능",
   "status.slimic.warehouse.unreachable": "목적지에 접근 불가; 재시도 중",
-  "status.slimic.healing.full": "가방이 가득 찼습니다. 비운 뒤 슬라임볼을 보급합니다."
+  "status.slimic.healing.full": "가방이 가득 찼습니다. 비운 뒤 슬라임볼을 보급합니다.",
+  "book.slimic.guide.name": "슬라임 동료 안내서",
+  "book.slimic.guide.landing": "슬라임을 육성하고 일을 맡겨 함께 생활해 보세요. 친근한 슬라임과 슬라임 튜너로 시작할 수 있습니다.",
+  "book.slimic.guide.subtitle": "성장과 협력"
 }
