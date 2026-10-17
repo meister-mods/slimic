@@ -53,6 +53,8 @@ Recovered items have a stack limit of one. Their release consumes the stored ite
 
 ## Validation
 
+The [companion interaction matrix](INTERACTIONS.md) covers cooperation and ownership, quantity and equipment invariants.
+
 Format all Java sources with Google Java Format before completing a change. Version 1.37 requires Java 21 to run; the mod still compiles and runs on Java 17.
 
 Run `build` and `runGameTestServer` after gameplay changes. Coverage includes crafting, normal spawning, recovery and release, health and other traits, ownership, full inventories, blocked placement, Creative use, persistence, following, and death behavior.
@@ -63,7 +65,7 @@ Tests use a structure loaded one block above its marker, so the fixture floor is
 
 Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
 
-Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 12 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
+Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 13 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
 
 Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe and shovel use the native main-hand and off-hand equipment slots, keeping client rendering and item damage synchronized. Ordinary mining is bounded by one completed solid block per tick, searches process a limited number of chunk positions, and no neighbouring chunk is loaded for target discovery.
 
@@ -103,7 +105,7 @@ Validation covers target defaults and toggles, ownership, native combat and defe
 
 ## Visual asset conventions
 
-Summoning items share the `slime_summon_base` model and Friendly Slime texture. Child models select a profession crest from native item artwork; the common model places it in a small frame over the base. Other new items include a dedicated Minecraft-style 16×16 pixel texture with a limited palette and clear silhouette. Use nearest-neighbor scaling when preparing pixel art. Leather armor keeps its tintable base separate from the untinted slime badge. Block items inherit their textured block model so inventory and placed appearances stay consistent. Companion accessories use separate textures and retain their colors when the slime is dyed.
+Summoning items share the `slime_summon_base` model and Friendly Slime texture. Child models select profession artwork; Friendly uses a plain native gold plate and Soggy uses the registered Slime Slag texture. The common model places it in a small frame over the base. Other new items include a dedicated Minecraft-style 16×16 pixel texture with a limited palette and clear silhouette. Use nearest-neighbor scaling when preparing pixel art. Leather armor keeps its tintable base separate from the untinted slime badge. Block items inherit their textured block model so inventory and placed appearances stay consistent. Companion accessories use separate textures and retain their colors when the slime is dyed.
 
 ## Work-state restoration
 
@@ -133,17 +135,19 @@ Herald warning history keeps the latest signaled episode for each worker UUID wi
 
 Player target selection checks the server PVP flag and the loaded owner's player-damage permissions before both target acquisition and melee damage. Native team/alliance exclusions remain in effect. Tests restore server PVP and scoreboard fixtures after checking each rule.
 
-Native container-data packets carry signed 16-bit values. `IntContainerData` encodes each logical integer as two halves and appends an initial-snapshot marker. Management and tuner menus share this transport, retaining large effective attributes and clearing old high bits after a smaller update. Editors wait for the marker before loading initial values. Protocol 12 includes this layout, riding controls and the current management types. Validation covers real native packet serialization, both menus, large cleaning range modifiers, value reductions, and native clients with and without JEI.
+Native container-data packets carry signed 16-bit values. `IntContainerData` encodes each logical integer as two halves and appends an initial-snapshot marker. Management and tuner menus share this transport, retaining large effective attributes and clearing old high bits after a smaller update. Editors wait for the marker before loading initial values. Protocol 13 includes this layout, riding controls and the current management types. Validation covers real native packet serialization, both menus, large cleaning range modifiers, value reductions, and native clients with and without JEI.
 
 ## Saddle equipment and riding
 
-`SaddleSlime` uses native main-hand saddle and chest-slot elytra stacks for equipment synchronization, saving, recovery, and collapse preservation. The equipment-only menu contributes two companion slots before the player's inventory. Native crafting copies stored Friendly Slime data and the exact initial saddle; recovery emits the specialized item without reapplying initial equipment.
+`SaddleSlime` uses the native main hand for its saddle, off hand for elytra, and chest slot for Slime Armor. The equipment-only menu contributes three companion slots before the player's inventory. Native armor attributes, enchantments and durability remain separate from the wings. `SaddleEquipmentVersion = 1` marks this layout: legacy chest-slot elytra move to the off hand on load, preserving their full data. Any nonstandard old offhand item is retained in the chest slot for retrieval. Saving the marker prevents repeated migration; the shared companion schema stays 1. Native crafting copies stored Friendly Slime data and the exact initial saddle; recovery emits the specialized item without reapplying initial equipment.
+
+Normal flight velocity in blocks per tick is `min(0.45, 0.24 × sqrt(Movement Speed / 0.3))`, multiplied by 1.75 while boosting. Non-finite or non-positive movement attributes produce zero thrust. Ground sprint without elytra retains its existing twofold speed. Client travel and server vehicle prediction share this calculation, with normalized input and the existing stamina/descent rules.
 
 Only the owning player can occupy and control the single seat. A priority movement goal suspends companion AI during a ride. Native ridden-input/speed hooks provide steering and ground jumps. Winged travel uses collision-aware entity movement and the rider's view, with normalized combined directional input, hover, and Movement Speed scaling. Flight is available to Survival riders and uses normal vehicle movement packets. The client sends ascent/jump and boost intent; the server requires the sender to be the current owner rider of that exact entity. Input expires after 30 ticks without refresh and clears on dismount.
 
 Winged riding supplies transient no-gravity for movement and native vehicle validation. Saving removes that computed flag while preserving explicit native gravity overrides, so recovered mounts do not hover unattended. The saddle has a dedicated model and leather atlas; paired side-wing geometry uses a dedicated opaque feather texture and animates independently while flying.
 
-Protocol 12 carries ascent and boost in the riding input message. Validation includes crafting and actual release, owner checks, equipment Shift transfers, mounted recovery, unusable wings, explicit versus transient gravity, and native Survival client steering, jumping, ascent, hover, boost, pitch, server vehicle synchronization, and Shift dismount with and without JEI.
+Protocol 13 carries ascent and boost in the riding input message. Validation includes crafting and actual release, owner checks, equipment Shift transfers, mounted recovery, unusable wings, explicit versus transient gravity, and native Survival client steering, jumping, ascent, hover, boost, pitch, server vehicle synchronization, and Shift dismount with and without JEI.
 
 ## Growth thresholds and quarry consistency
 
@@ -169,7 +173,7 @@ Riding input carries ascent and boost. Boost state is synchronized; the server s
 
 ## Surface workers
 
-`FieldSlime` shares a single native main-hand tool, normal bag, stamina recovery, loaded-area checks, protected harvesting/placement, and FARM/LOG work orders. Full inventories request CARGO_PICKUP; an empty broken-tool slot requests TOOL_SUPPLY. Missing seeds use SEEDS_MISSING without creating a tool request. Successful actions award activity only after the world edit succeeds. Networking uses protocol 12.
+`FieldSlime` shares a single native main-hand tool, normal bag, stamina recovery, loaded-area checks, protected harvesting/placement, and FARM/LOG work orders. Full inventories request CARGO_PICKUP; an empty broken-tool slot requests TOOL_SUPPLY. Missing seeds use SEEDS_MISSING without creating a tool request. Successful actions award activity only after the world edit succeeds. Networking uses protocol 13.
 
 `BlockSurvey` copies palettes of matching loaded chunk sections, then inspects at most 512 cells per worker tick. Farming activation freezes the existing farmland selection; serialization finishes any pending snapshot so recovery never loses recognized plots. Plot coordinates and crop identities are persistent. Tilling uses the equipped hoe's Forge tool action and native placement cancellation; block removal uses owner-attributed survival break events and simulates all drops before changing terrain.
 
@@ -181,7 +185,7 @@ Native regressions cover exact specialization tools, frozen plots, same-crop rep
 
 ## Companion care, tools, guardians, and animated storage
 
-`SlimeTunerItem` is the Survival management tool; its shapeless recipe uses a slimeball and an iron ingot. `CreativeSlimeTunerItem`, `CreativeSlimeTunerMenu`, `CreativeSlimeTunerScreen`, `creative_slime_tuner`, and `creative_tuner` identify the Creative editor. Protocol 12 carries its renamed packet and adds the guardian menu layout and herald manual-fire command. Management validates ownership, alive state, dimension, distance and a held ordinary tuner on the server. Healing and washing consume items only on an actual change; capture retains priority.
+`SlimeTunerItem` is the Survival management tool; its shapeless recipe uses a slimeball and an iron ingot. `CreativeSlimeTunerItem`, `CreativeSlimeTunerMenu`, `CreativeSlimeTunerScreen`, `creative_slime_tuner`, and `creative_tuner` identify the Creative editor. Protocol 13 carries its renamed packet and adds the guardian menu layout and herald manual-fire command. Management validates ownership, alive state, dimension, distance and a held ordinary tuner on the server. Healing and washing consume items only on an actual change; capture retains priority.
 
 `GuardianAngelSlimeRecipe` preserves the input companion payload and exact totem in `InitialGuardianTotem`. The guardian stores `GuardianTotems` and its attack cooldown. A stable permanent maximum-health multiplier applies tenfold scaling without compounding on reload. The native health limit bounds Creative base input to 102.4. Flying navigation and move control use a dedicated flying-speed attribute derived from common Movement Speed. Retaliation targets and beams are transient. A lowest-priority damage event selects the owner's attacker; sight, alliance, range and resource checks gate beams. A lowest-priority uncancelled death event selects one nearby owned guardian, invokes Forge totem-use permission, consumes one reserve and restores native-style effects. Held native totems resolve before death. Beam ribbons emit both windings for the native lightning render type.
 
@@ -233,7 +237,7 @@ Copy changes retain translation keys and persistent data identifiers. Check matc
 
 `COBBLESTONE_MISSING` with `COBBLESTONE_SUPPLY` pauses mining; lack of bag space also requests `CARGO_PICKUP`. `BagSlime.workSupplyLimit` and `receiveWorkSupply` retain one-item defaults for tools and buckets. A miner requesting wall material accepts up to 64, with live request/ownership/capacity validation before transfer; transport extracts only the accepted count. Successfully placed cobblestone costs one material and stamina and grants one activity unit. Forge placement cancellation restores the snapshot and spends nothing. Unreplaceable and occupied cells are preserved.
 
-`SoggyRoaming` and `SoggyRoamHome` store the optional ROAM order and its origin without changing schema version 1. Missing fields retain previous Follow/Wait behavior. Roaming reserves MOVE/LOOK, chooses bounded random supported destinations, and uses a path region only after every intersecting chunk is confirmed loaded. It remains independent of the owner's presence and yields to fleeing. Follow and Wait clear the roaming flag; release reanchors it. Terrain changes release roaming paths for local reselection, avoiding reuse of an earlier Follow destination. Its recovery override permits trail stamina to recover while ROAM is active. The menu synchronizes ROAM through the existing mode field; protocol 12 requires matching clients.
+`SoggyRoaming` and `SoggyRoamHome` store the optional ROAM order and its origin without changing schema version 1. Missing fields retain previous Follow/Wait behavior. Roaming reserves MOVE/LOOK, chooses bounded random supported destinations, and uses a path region only after every intersecting chunk is confirmed loaded. It remains independent of the owner's presence and yields to fleeing. Follow and Wait clear the roaming flag; release reanchors it. Terrain changes release roaming paths for local reselection, avoiding reuse of an earlier Follow destination. Its recovery override permits trail stamina to recover while ROAM is active. The menu synchronizes ROAM through the existing mode field; protocol 13 requires matching clients.
 
 Native regressions cover inlet replacement, cave lining across recovery, exact placement costs, protected placements, material shortages, stack-limited and partial-stock delivery, menu permissions, actual owner-independent roaming, trail production, command changes, saved traits, and exhausted-roamer recovery.
 
@@ -254,7 +258,7 @@ Native regressions measure actual break-attempt ticks at maximum Work Speed with
 
 `HealingSlime` persists its bag, work command, rest state, cooldown and search origin. Searches inspect loaded entities and chunk block entities on a staggered interval. Live treatment uses Minecraft's healing event path; broken companions use the same transactional revival helper as player interactions, with owner permissions and Forge block protection checked before removal. Costs and activity commit only after success. Failed targets receive a short retry exclusion. Revival retains the common one-health rule.
 
-`WarehouseSlime` extends transport behavior with a capacity multiplier of 8 and a 216-slot backing inventory. Shared `TransportBag` data preserves existing cargo during specialization; the recipe clears the prior profession command so the warehouse initially waits. `WorkStorage` resolves loaded same-owner warehouse entities and accessible Slime Chests, sorting warehouses first. UUID/block-position targets are revalidated on every transfer; full endpoints are skipped and unreachable endpoints are temporarily excluded. Warehouses collect and supply without the normal deposit phase, avoiding cargo circulation. Storage endpoints remain accessible while following or waiting. The shared work model adds Heal/Store orders and a slimeball supply request without reordering existing enum values. The saved-data schema remains 1; network protocol is **12**.
+`WarehouseSlime` extends transport behavior with a capacity multiplier of 8 and a 216-slot backing inventory. Shared `TransportBag` data preserves existing cargo during specialization; the recipe clears the prior profession command so the warehouse initially waits. `WorkStorage` resolves loaded same-owner warehouse entities and accessible Slime Chests, sorting warehouses first. UUID/block-position targets are revalidated on every transfer; full endpoints are skipped and unreachable endpoints are temporarily excluded. Warehouses collect and supply without the normal deposit phase, avoiding cargo circulation. Storage endpoints remain accessible while following or waiting. The shared work model adds Heal/Store orders and a slimeball supply request without reordering existing enum values. The saved-data schema remains 1; network protocol is **13**.
 
 ## Loaded routes and support boundaries
 

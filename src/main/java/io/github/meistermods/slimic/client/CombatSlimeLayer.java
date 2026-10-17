@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -15,10 +16,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 
@@ -59,8 +62,9 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
       float age,
       float headYaw,
       float headPitch) {
-    if (!(slime instanceof CombatSlime fighter) || slime.isInvisible()) return;
-    ItemStack gear = fighter.getEquipment(2);
+    if (!(slime instanceof CombatSlime || slime instanceof SaddleSlime) || slime.isInvisible())
+      return;
+    ItemStack gear = slime.getItemBySlot(EquipmentSlot.CHEST);
     if (gear.getItem() instanceof SlimeArmorItem) {
       String block =
           new String[] {
@@ -79,10 +83,13 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
               : 0xffffff;
       armor.render(
           pose,
-          buffers.getBuffer(
-              RenderType.entityCutoutNoCull(
+          ItemRenderer.getArmorFoilBuffer(
+              buffers,
+              RenderType.armorCutoutNoCull(
                   ResourceLocation.fromNamespaceAndPath(
-                      "minecraft", "textures/block/" + block + ".png"))),
+                      "minecraft", "textures/block/" + block + ".png")),
+              false,
+              gear.hasFoil()),
           light,
           OverlayTexture.NO_OVERLAY,
           ((color >> 16) & 255) / 255F,
@@ -90,9 +97,11 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
           (color & 255) / 255F,
           1);
     }
-    SlimeEquipmentRenderer.held(
-        context, pose, buffers, light, fighter, fighter.getMainHandItem(), false);
-    SlimeEquipmentRenderer.held(
-        context, pose, buffers, light, fighter, fighter.getOffhandItem(), true);
+    if (slime instanceof CombatSlime fighter) {
+      SlimeEquipmentRenderer.held(
+          context, pose, buffers, light, fighter, fighter.getMainHandItem(), false);
+      SlimeEquipmentRenderer.held(
+          context, pose, buffers, light, fighter, fighter.getOffhandItem(), true);
+    }
   }
 }

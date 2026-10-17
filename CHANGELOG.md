@@ -4,6 +4,23 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.25] - 2026-10-17
+
+### Changed
+
+- Saddle flight uses diminishing Movement Speed gains and explicit cruise and boost limits. Ctrl retains its faster movement and higher stamina cost; exhaustion retains controlled descent.
+- Saddle Slimes accept Slime Armor alongside the saddle and elytra. Armor supplies native defense, enchantments and durability; legacy chest-slot elytra move intact to the independent wing slot.
+- Cleaning Slimes wear blue work caps, Combat Slimes wear metal bands with red crests, Saddle Slimes have bridles, and Soggy Slimes carry slime droplets even without optional equipment.
+- Friendly summon items show a plain gold plate; Soggy summon crests use Slime Slag. Every profession retains the shared summon base.
+- Network protocol is 13; saved-data schema remains 1 with an explicit saddle equipment layout marker.
+
+### Validation
+
+- All 424 native regressions pass both with and without JEI, including bounded flight, armor damage, equipment migration, exact slot transfers and companion cooperation.
+- Korean with JEI and English without JEI pass all seven client stages, including actual Survival riding and simultaneous armor, saddle and wing rendering.
+- A world saved by 0.1.24 loads with all thirteen professions retaining identities, owners, health, all nine stats, orders, names, colors, cargo, reserves and equipment.
+- Twenty-nine independent interaction scenarios are repeatedly validated for over two real hours. A separate continuous movement run completes 288 logistics and treatment cycles in 7,212 seconds, preserving cargo and all three mount equipment items through stamina recovery and partial unloading.
+
 ## [0.1.24] - 2026-10-17
 
 ### Fixed

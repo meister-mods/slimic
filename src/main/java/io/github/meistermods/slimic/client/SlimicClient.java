@@ -50,6 +50,7 @@ public final class SlimicClient {
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
     event.registerLayerDefinition(HealingSlimeLayer.BAND, HealingSlimeLayer::createLayer);
+    event.registerLayerDefinition(ProfessionSlimeLayer.DETAILS, ProfessionSlimeLayer::createLayer);
     event.registerLayerDefinition(
         GuardianAngelSlimeLayer.HALO, GuardianAngelSlimeLayer::createHalo);
     event.registerLayerDefinition(FieldSlimeLayer.HATS, FieldSlimeLayer::createLayer);

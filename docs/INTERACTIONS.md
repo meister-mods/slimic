@@ -1,0 +1,43 @@
+# Companion interactions
+
+[한국어](INTERACTIONS.kr.md) · [Gameplay](GAMEPLAY.md) · [Development](DEVELOPMENT.md)
+
+Companions cooperate through ownership, orders and work requests. Follow and Wait withdraw work requests. Transport checks same-owner requests and actual storage capacity; Healing treats only eligible same-owner patients. Guardians protect nearby owners, and Combat Slimes exclude same-owner companions.
+
+The following scenarios have independent native game regressions. Transfers check exact quantities and original tags, durability, equipment and current health.
+
+| ID | Participants | Expected behavior |
+| --- | --- | --- |
+| I01 | Transport / Mining | Unload a full mining bag and resume mining. |
+| I02 | Transport / Mining | Supply the exact spare tool, retaining its data. |
+| I03 | Transport / Mining | Deliver one bucket and resume fluid removal. |
+| I04 | Transport / Mining | Limit cobblestone delivery to one requested stack. |
+| I05 | Transport / Farming / Lumberjack | Match hoes and axes to each worker. |
+| I06 | Transport / Combat | Replace a missing sword without replacing other gear. |
+| I07 | Transport / Cleaning | Unload a full cleaner and resume collection. |
+| I08 | Transport / Healing / Warehouse | Use an owned waiting warehouse as a supply source. |
+| I09 | Warehouse / worker | Collect requested cargo without a Slime Chest. |
+| I10 | Transport / Warehouse | Prefer an eligible owned warehouse over a nearer chest. |
+| I11 | Transport / Warehouse | Fall back to a chest when warehouse storage is full. |
+| I12 | Transport / Warehouse | Deposit a remainder after a partial warehouse transfer. |
+| I13 | Transport / Warehouse | Exclude storage belonging to another owner. |
+| I14 | Transport / Warehouse | Revalidate ownership immediately before transfer. |
+| I15 | Healing / patient | Charge only the healer that completes treatment. |
+| I16 | Healing / Herald | Retain blocked duration across failed approaches. |
+| I17 | Healing / stored companion | Reject duplicate identity revival without costs. |
+| I18 | Healing / Warehouse | Revive with tuned capacity and final-slot cargo intact. |
+| I19 | Workers / Transport / Warehouse | Conserve exact cargo and source tags under competition. |
+| I20 | Transport / Healing | Concurrent deliveries cannot exceed the request limit. |
+| I21 | Guardian / owner | Held totems act first; one rescue consumes one reserve. |
+| I22 | Healing / Saddle | Heal without changing armor, wings, saddle or Wait. |
+| I23 | Healing / Saddle | Revive at one health with all three exact gear items. |
+| I24 | Guardian / Saddle / owner | Protect a mounted owner without removing rider or gear. |
+| I25 | Combat / all thirteen professions | Same-owner companions remain excluded with all filters enabled. |
+| I26 | Transport / worker | Competing carriers cannot duplicate spare tools. |
+| I27 | Herald / worker | A signal callback cannot continue a cancelled monitoring order. |
+| I28 | Warehouse / worker | Use a real loaded detour to reach cargo. |
+| I29 | Healing / Soggy | Keep Roam and its fixed origin during treatment. |
+
+Endurance validation runs for at least two hours of real elapsed server time. It repeats obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
+
+Version 0.1.25 passes all 424 regressions both with and without JEI. The 29-scenario matrix runs repeatedly for over two real hours; a separate continuous movement run completes 288 cycles in 7,212 seconds. All thirteen professions retain their saved traits when a 0.1.24 world loads, and both Korean with JEI and English without JEI pass the client checks.

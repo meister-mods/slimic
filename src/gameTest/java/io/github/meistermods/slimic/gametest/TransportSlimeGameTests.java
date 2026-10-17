@@ -442,32 +442,62 @@ public final class TransportSlimeGameTests {
         .thenSucceed();
   }
 
-  @GameTest(template = "empty", timeoutTicks = 300)
+  @GameTest(template = "empty", timeoutTicks = 1000)
   public static void twoCarriersDoNotDuplicateSpareTools(GameTestHelper helper) {
-    TransportSlime first = carrier(helper);
-    TransportSlime second = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), CARRIER.south(2));
-    second.setWorking(true);
-    second.setOwnerUUID(first.getOwnerUUID());
-    second.setTame(true);
-    second.onReleased();
-    MiningSlime miner = miner(helper, first, ItemStack.EMPTY);
-    SlimeChestBlockEntity chest = chest(helper, CHEST);
+    var area = new LoadedWorkArea(helper);
+    var owner = helper.makeMockSurvivalPlayer();
+    var first = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    var second = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    for (var carrier : java.util.List.of(first, second)) {
+      carrier.tame(owner);
+      carrier.moveTo(area.point(6.5, 101, carrier == first ? 6.5 : 8.5));
+      carrier.onReleased();
+      carrier.setWorking(true);
+    }
+    var miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.tame(owner);
+    miner.moveTo(area.point(4.5, 101, 6.5));
+    miner.onReleased();
+    miner.setWorking(true);
+    var chest = area.chest(9, 101, 6);
     chest.setItem(0, new ItemStack(Items.IRON_PICKAXE));
     chest.setItem(1, new ItemStack(Items.IRON_PICKAXE));
-    helper.runAfterDelay(
-        180,
-        () -> {
-          helper.assertTrue(
-              miner.getPickaxe().is(Items.IRON_PICKAXE), "A carrier must supply the stopped miner");
-          helper.assertTrue(
-              count(chest.inventory(), Items.IRON_PICKAXE)
-                      + count(first.getBag(), Items.IRON_PICKAXE)
-                      + count(second.getBag(), Items.IRON_PICKAXE)
-                      + miner.getPickaxe().getCount()
-                  == 2,
-              "Concurrent supply jobs must preserve both tools exactly");
-          helper.succeed();
-        });
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    helper.getLevel().isPositionEntityTicking(miner.blockPosition()),
+                    "Concurrent supply arena ticks"))
+        .thenExecute(
+            () -> {
+              helper.getLevel().addFreshEntity(miner);
+              helper.getLevel().addFreshEntity(first);
+              helper.getLevel().addFreshEntity(second);
+            })
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    miner.getPickaxe().is(Items.IRON_PICKAXE),
+                    "A carrier must supply the stopped miner"))
+        // Keep the fulfilled request stable while both carriers finish queued work.
+        .thenExecute(() -> miner.setNoAi(true))
+        .thenIdle(80)
+        .thenExecute(
+            () -> {
+              helper.assertTrue(
+                  count(chest.inventory(), Items.IRON_PICKAXE)
+                          + count(first.getBag(), Items.IRON_PICKAXE)
+                          + count(second.getBag(), Items.IRON_PICKAXE)
+                          + miner.getPickaxe().getCount()
+                      == 2,
+                  "Concurrent supply jobs must preserve both tools exactly");
+              first.discard();
+              second.discard();
+              miner.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty")

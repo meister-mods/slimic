@@ -2,10 +2,13 @@ package io.github.meistermods.slimic.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.entity.CleaningSlime;
+import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SoggySlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,6 +33,7 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
     addLayer(new SaddleSlimeLayer(this, context));
     addLayer(new TransportSlimeLayer(this, context));
     addLayer(new HealingSlimeLayer(this, context));
+    addLayer(new ProfessionSlimeLayer(this, context));
     addLayer(new HeraldSlimeLayer(this));
   }
 
@@ -59,7 +63,11 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
   protected void renderNameTag(
       FriendlySlime slime, Component name, PoseStack pose, MultiBufferSource buffers, int light) {
     pose.pushPose();
-    if (slime instanceof MiningSlime || slime instanceof FieldSlime) pose.translate(0.0, 0.4, 0.0);
+    if (slime instanceof MiningSlime
+        || slime instanceof FieldSlime
+        || slime instanceof CleaningSlime
+        || slime instanceof CombatSlime) pose.translate(0.0, 0.4, 0.0);
+    if (slime instanceof SoggySlime) pose.translate(0.0, 0.5, 0.0);
     if (slime instanceof HeraldSlime) pose.translate(0.0, 0.8, 0.0);
     super.renderNameTag(slime, name, pose, buffers, light);
     pose.popPose();

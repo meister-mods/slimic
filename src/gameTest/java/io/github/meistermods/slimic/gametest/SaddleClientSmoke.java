@@ -24,6 +24,7 @@ public final class SaddleClientSmoke {
   private static int ticks;
   private static Vec3 start;
   private static boolean jumped;
+  private static double normalFlightDistance;
   private static final AtomicBoolean serverConfirmed = new AtomicBoolean();
 
   private SaddleClientSmoke() {}
@@ -159,10 +160,10 @@ public final class SaddleClientSmoke {
       if (!(client.screen instanceof SlimeScreen screen) || !screen.getMenu().isSynchronized())
         return;
       check(
-          screen.getMenu().slots.size() == 38,
-          "The saddle menu has two equipment slots and no hidden bag");
+          screen.getMenu().slots.size() == 39,
+          "The saddle menu has three equipment slots and no hidden bag");
       client.gameMode.handleInventoryMouseClick(
-          screen.getMenu().containerId, 2, 0, ClickType.QUICK_MOVE, client.player);
+          screen.getMenu().containerId, 3, 0, ClickType.QUICK_MOVE, client.player);
       next();
     } else if (phase == 7) {
       if (!(client.screen instanceof SlimeScreen screen)
@@ -215,14 +216,17 @@ public final class SaddleClientSmoke {
       next();
     } else if (phase == 12) {
       if (++ticks < 10) return;
-      check(mount.getZ() > start.z + 1, "W must steer forward while airborne");
+      normalFlightDistance = mount.getZ() - start.z;
+      check(normalFlightDistance > 1, "W must steer forward while airborne");
       SaddleSlimeControls.BOOST.setDown(true);
       start = mount.position();
       next();
     } else if (phase == 13) {
       if (++ticks < 10) return;
       check(
-          mount.getZ() > start.z + 6 && Math.abs(mount.getY() - start.y) < .2,
+          mount.getZ() > start.z + normalFlightDistance * 1.3
+              && mount.getZ() < start.z + 6
+              && Math.abs(mount.getY() - start.y) < .2,
           "Ctrl must boost forward flight without forcing descent");
       SaddleSlimeControls.BOOST.setDown(false);
       client.player.setXRot(-30);

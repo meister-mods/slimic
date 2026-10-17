@@ -63,7 +63,9 @@ Friendly Slimes hop after their owner. Work specializations initially wait and f
 
 Companions retain the original slime texture with a dye color filter. Summon icons use 16×16 pixel textures with slime-ball silhouettes, a shared Friendly Slime base, and framed profession symbols. See [CREDITS.txt](../CREDITS.txt).
 
-All thirteen summoning items share the Friendly Slime base and carry a small framed profession crest: a blue heart, pickaxe, bundle, firework, sword, brush, saddle, hoe, axe, nether star, water bucket, golden carrot, or chest minecart. The base stays consistent while the crests distinguish each specialization.
+All thirteen summoning items share the Friendly Slime base and carry a small framed profession crest: a plain gold plate for Friendly Slimes, then a pickaxe, bundle, firework, sword, brush, saddle, hoe, axe, nether star, Slime Slag, golden carrot, or chest minecart. The base stays consistent while the crests distinguish each specialization.
+
+Permanent profession details remain visible without optional equipment: Cleaning Slimes wear blue work caps, Combat Slimes wear metal headbands with red crests, Saddle Slimes have brown bridles with gold buckles, and Soggy Slimes carry three slime droplets. Armor, saddles, and wings remain visible with these details.
 
 ## Shared stats and growth
 
@@ -238,7 +240,7 @@ The owner, the owner's other tamed companions, allies, spectators, and Creative 
 
 Craft any chestplate with **one slimeball**, without a fixed shape, to make **Slime Armor**. Leather, chainmail, iron, gold, diamond, and netherite variants appear in the Slimic creative tab; other registered chestplates can also be converted. Helmets, leggings, boots, and already converted armor do not qualify.
 
-The result stores the original chestplate and retains its material attributes, maximum and current durability, enchantments, custom name, leather color, and other item data. Wear and enchantment changes remain authoritative after conversion. Place it in a combat slime's armor slot. Ordinary chestplates are crafting ingredients and do not fit that slot directly. Material-specific models and the green slime badge distinguish the item variants.
+The result stores the original chestplate and retains its material attributes, maximum and current durability, enchantments, custom name, leather color, and other item data. Wear and enchantment changes remain authoritative after conversion. Place it in a Combat or Saddle Slime's armor slot. Ordinary chestplates are crafting ingredients and do not fit that slot directly. Material-specific models and the green slime badge distinguish the item variants.
 
 ## Cleaning slimes
 
@@ -254,21 +256,21 @@ After **three minutes** of attempting to acquire the same item without success, 
 
 ## Saddle slimes
 
-Craft a Friendly Slime item with **one saddle**, without a fixed shape, to make a **Saddle Slime**. Stored companion traits and the exact input saddle are retained; the saddle is equipped on release. The Creative entry starts with empty equipment. The management screen has two equipment slots: saddle and elytra, with no cargo bag. Equipment also accepts Shift-click transfers.
+Craft a Friendly Slime item with **one saddle**, without a fixed shape, to make a **Saddle Slime**. Stored companion traits and the exact input saddle are retained; the saddle is equipped on release. The Creative entry starts with empty equipment. The management screen has three equipment slots: saddle, elytra, and Slime Armor, with no cargo bag. All three can be equipped together. Equipment also accepts Shift-click transfers.
 
-The owner can apply a saddle or elytra directly by right-clicking with it when the corresponding slot is empty. Survival consumes the applied item. An equipped saddle appears as a leather seat with side straps and stirrups. Equipped elytra show a white feathered wing texture independently of the slime's dye color.
+The owner can apply a saddle, elytra, or Slime Armor directly by right-clicking with it when the corresponding slot is empty. Survival consumes the applied item. An equipped saddle appears as a leather seat with side straps and stirrups. Equipped elytra show a white feathered wing texture independently of the slime's dye color.
 
 Ordinary right-click rides a saddled companion while holding any item that has no dedicated companion interaction. Use a **Slime Tuner** for management or its **Ride** button. Only the owner may equip, manage, or ride it, and it carries one player. Riding takes priority over Follow/Wait and releases a waiting order. Without a rider, it follows its normal companion order.
 
-| Control | Ground | With usable elytra |
+| Control | Ground without elytra | With usable elytra |
 | --- | --- | --- |
 | WASD | Steer relative to the rider's view | Fly forward/backward and strafe; forward flight follows view pitch |
 | Space | Jump | Ascend |
-| Left Ctrl | Double-speed sprint | Double-speed flight boost; rebind **Slime Sprint** in Minecraft's controls |
+| Left Ctrl | Double-speed sprint | 1.75× flight boost; rebind **Slime Sprint** in Minecraft's controls |
 | No movement input | Stop | Hover |
 | Shift | Dismount | Dismount |
 
-Movement Speed shortens ground-hop intervals while retaining fixed launch speed, and scales normal flight speed. Sprinting increases launch speed separately from the Movement Speed stat. Normal airborne flight spends two stamina per second. Ctrl doubles movement speed on both the ground and in the air: ground sprint spends ten stamina per second, and boosted flight spends fifteen. Airborne flight and sprinting prevent recovery. At zero stamina the wings remain open, ascent is disabled, and the companion slowly descends at about 2.4 blocks per second with limited horizontal steering and no fall damage. It recovers after landing; flight and sprinting resume at 25% stamina. Aim downward and move forward for an ordinary controlled descent. Flight requires an equipped saddle, usable elytra, and the owner as rider; rockets and Creative flight are unnecessary. Removing the saddle dismounts the rider. Removing the wings, wearing unusable wings, or dismounting restores normal gravity. Equipment, current health, stats, dye, and ownership survive saves and Shift-right-click recovery. Passengers and transient flight controls are not stored.
+Movement Speed shortens ground-hop intervals while retaining fixed launch speed. Flight gains diminish as Movement Speed rises: normal flight starts at about 4.8 blocks per second and reaches about 6.8 after all twenty ordinary Movement Speed upgrades. Normal flight is capped at 9 blocks per second; Ctrl raises the cap to 15.75. Sprinting increases launch speed separately from the Movement Speed stat. Normal airborne flight spends two stamina per second. Ctrl doubles ground-hop speed without elytra and multiplies winged movement speed by 1.75: ground sprint spends ten stamina per second, and boosted flight spends fifteen. Airborne flight and sprinting prevent recovery. At zero stamina the wings remain open, ascent is disabled, and the companion slowly descends at about 2.4 blocks per second with limited horizontal steering and no fall damage. It recovers after landing; flight and sprinting resume at 25% stamina. Aim downward and move forward for an ordinary controlled descent. Flight requires an equipped saddle, usable elytra, and the owner as rider; rockets and Creative flight are unnecessary. Removing the saddle dismounts the rider. Removing the wings, wearing unusable wings, or dismounting restores normal gravity. Equipment, current health, stats, dye, and ownership survive saves and Shift-right-click recovery. Passengers and transient flight controls are not stored.
 
 Equipped wings form two side-mounted wings, fold down while grounded, and flap during mounted flight, faster while boosting.
 
@@ -334,7 +336,7 @@ Removing a tree clears its obsolete sapling requirement. Unreachable or pickup-p
 
 ## Soggy slimes
 
-Craft a **Friendly Slime** item with a **slimeball**, without a fixed shape, to make a **Soggy Slime**. Stored companion traits are retained. Its summon item shares the common base with a water-bucket crest; the companion sheds water droplets. It has no bag or equipment slots.
+Craft a **Friendly Slime** item with a **slimeball**, without a fixed shape, to make a **Soggy Slime**. Stored companion traits are retained. Its summon item shares the common base with a Slime Slag crest; the companion carries three slime droplets on its head and sheds water droplets. It has no bag or equipment slots.
 
 While following or roaming and standing on solid ground, it leaves a one-sixteenth-block-high **Slime Trail** in empty space beneath itself. Wait suspends trail placement. Each placed trail costs one stamina and grants one activity unit; existing blocks and trails are preserved. Work Speed shortens the placement interval from ten ticks, while Stamina increases the available stamina. Stamina recovers at the common rate when trail production pauses. Placement respects Forge permissions and `mobGriefing`, without loading neighbouring chunks.
 

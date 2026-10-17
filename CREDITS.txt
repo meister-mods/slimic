@@ -69,7 +69,8 @@ Slimic artwork
 
 The companion texture uses Minecraft slime artwork by Mojang Studios.
 Summoning items share a slime-ball base with framed profession symbols drawn
-from Minecraft item textures. Slimic includes dedicated 16x16 item, Slime Chest,
+from Minecraft textures and Slimic Slime Slag artwork. Slimic includes
+dedicated 16x16 item, Slime Chest,
 herald-hat, saddle, and feathered-wing artwork. Equipment rendering also
 references Minecraft textures. The Survival Slime Tuner and Slime Slag use
 artwork created for Slimic and exported as 16x16 item icons.

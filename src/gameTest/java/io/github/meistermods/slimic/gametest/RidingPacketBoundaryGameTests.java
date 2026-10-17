@@ -54,7 +54,7 @@ public final class RidingPacketBoundaryGameTests {
   private static void legalFlight(GameTestHelper h, double speed, boolean boost) {
     try (var ride = new Ride(h, speed, boost)) {
       var start = ride.slime.position();
-      var target = start.add(0, 0, ride.speed() * 1.5);
+      var target = start.add(0, 0, ride.speed());
       ride.packet(target);
       h.assertTrue(
           ride.slime.position().distanceToSqr(target) < .000001 && !ride.corrected(),
@@ -105,7 +105,8 @@ public final class RidingPacketBoundaryGameTests {
       var start = ride.slime.position();
       for (int i = 0; i < 10; i++) ride.slime.tick();
       h.assertTrue(
-          ride.slime.position().equals(start) && ride.slime.getDeltaMovement().lengthSqr() > 800,
+          ride.slime.position().equals(start)
+              && Math.abs(ride.slime.getDeltaMovement().length() - ride.speed()) < .000001,
           "Server predicts velocity without applying a second movement step");
       var worldData = ride.slime.saveWithoutId(new CompoundTag());
       var stored = FriendlySlimeItem.fromSlime(ride.slime);

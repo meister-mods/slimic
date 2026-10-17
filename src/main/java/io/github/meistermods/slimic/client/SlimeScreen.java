@@ -270,9 +270,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.health",
             menu.data(SlimeMenu.HEALTH) / 10.0F,
             (int) menu.value(SlimeStat.HEALTH)),
-        menu.slime() instanceof CombatSlime
+        (menu.slime() instanceof CombatSlime || menu.slime() instanceof SaddleSlime)
             ? 252
-            : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
+            : menu.slime() instanceof MiningSlime
                 ? 234
                 : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
                     ? 216
@@ -286,9 +286,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.stamina",
             menu.data(SlimeMenu.STAMINA) / 10,
             (int) menu.value(SlimeStat.STAMINA)),
-        menu.slime() instanceof CombatSlime
+        (menu.slime() instanceof CombatSlime || menu.slime() instanceof SaddleSlime)
             ? 252
-            : (menu.slime() instanceof MiningSlime || menu.slime() instanceof SaddleSlime)
+            : menu.slime() instanceof MiningSlime
                 ? 234
                 : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
                     ? 216

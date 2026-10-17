@@ -203,9 +203,11 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
   private static int equipmentSlots(FriendlySlime slime) {
     if (slime instanceof GuardianAngelSlime) return 1;
-    return slime instanceof MiningSlime || slime instanceof SaddleSlime
+    return slime instanceof MiningSlime
         ? 2
-        : slime instanceof CombatSlime ? 3 : slime instanceof FieldSlime ? 1 : 0;
+        : slime instanceof CombatSlime || slime instanceof SaddleSlime
+            ? 3
+            : slime instanceof FieldSlime ? 1 : 0;
   }
 
   private static boolean matchesEquipment(FriendlySlime slime, int slot, ItemStack stack) {
