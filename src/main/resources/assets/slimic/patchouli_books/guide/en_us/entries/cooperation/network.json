@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Carriers prefer eligible same-owner warehouses over Slime Chests. Full or unsuitable stores are skipped; partial deposits keep the remainder in cargo. If all stores are full, nothing is discarded."
+      "text": "Carriers prefer eligible same-owner or mutually shared warehouses over Slime Chests. Full or unsuitable stores are skipped; partial deposits keep the remainder in cargo. If all stores are full, nothing is discarded."
     },
     {
       "type": "patchouli:text",

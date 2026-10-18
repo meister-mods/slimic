@@ -1,0 +1,40 @@
+{
+  "name": "Commander Slime",
+  "icon": "slimic:commander_slime",
+  "category": "slimic:companions",
+  "sortnum": 51,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:book",
+      "result": "slimic:commander_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + a book. Starts waiting and wears a mustache with a baton."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click to open Companions or Players. The tuner opens ordinary stats and also has a roster button. Companion rows show last-known health, orders, work state, location, and whether the entity is loaded, stored, broken, or removed. Hover a row for its position."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Select a companion, type a tag, and choose Save tag. Gather uses the typed tag, even without a selected row. Tags have at most 24 characters and ignore letter case. A blank tag selects untagged companions."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Gather spends 25 stamina and processes living released companions one at a time, including recorded unloaded chunks and other dimensions. They arrive in safe loaded spaces around the commander and wait. Stored, broken, removed, mounted, and passenger companions are excluded."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "One temporary source chunk is kept ticking at a time; unavailable or unsafe destinations are skipped. Each source has a five-second wait limit and commands have a five-second cooldown. Recovery or a restart cancels an unfinished gather. Other traits remain intact."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The primary owner controls shared owners and enemies in Players. Shared owners may manage companions; changing player relationships remains with the primary owner. Records are discovered when companions or stored items load. See $(l:cooperation/ownership)Shared ownership$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:commander_slime": 0
+  }
+}

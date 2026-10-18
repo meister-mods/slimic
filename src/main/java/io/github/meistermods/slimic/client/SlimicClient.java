@@ -29,7 +29,20 @@ public final class SlimicClient {
   private SlimicClient() {}
 
   @SubscribeEvent
+  public static void particles(
+      net.minecraftforge.client.event.RegisterParticleProvidersEvent event) {
+    event.registerSpriteSet(
+        io.github.meistermods.slimic.registry.ModParticles.FIREFLY.get(),
+        FireflyParticle.Provider::new);
+  }
+
+  @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(ModEntities.GLOW_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.COMMANDER_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.ENDER_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.ATTENTION_SLIME.get(), FriendlySlimeRenderer::new);
+
     event.registerEntityRenderer(ModEntities.FISHING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ABUNDANCE_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.TUNNEL_SLIME.get(), FriendlySlimeRenderer::new);
@@ -70,6 +83,7 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void clientSetup(FMLClientSetupEvent event) {
+    event.enqueueWork(() -> MenuScreens.register(ModMenus.COMMANDER.get(), CommanderScreen::new));
     event.enqueueWork(() -> MenuScreens.register(ModMenus.SLIME.get(), SlimeScreen::new));
     event.enqueueWork(
         () -> MenuScreens.register(ModMenus.CREATIVE_TUNER.get(), CreativeSlimeTunerScreen::new));
@@ -85,10 +99,16 @@ public final class SlimicClient {
   public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
     event.register(
         (stack, tint) -> {
+          if (tint != 0) return -1;
           var base = SlimeArmorItem.baseArmor(stack);
-          return tint == 0 && base.getItem() instanceof DyeableLeatherItem leather
-              ? leather.getColor(base)
-              : -1;
+          if (base.getItem() instanceof DyeableLeatherItem leather) return leather.getColor(base);
+          return switch (SlimeArmorItem.materialIndex(stack)) {
+            case 1 -> 0xA2A2A2;
+            case 3 -> 0xFFC83D;
+            case 4 -> 0x45E4DF;
+            case 5 -> 0x52464F;
+            default -> -1;
+          };
         },
         ModItems.SLIME_ARMOR.get(),
         ModItems.LEATHER_SLIME_ARMOR.get(),

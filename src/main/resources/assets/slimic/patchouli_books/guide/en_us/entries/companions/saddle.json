@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Starts waiting. Only the owner may equip and ride it. Its three slots hold a saddle, elytra, and Slime Armor; it has no cargo bag. Apply gear by right-clicking an empty slot or use the tuner."
+      "text": "Starts waiting. Primary and shared owners may equip and ride it. Its three slots hold a saddle, elytra, and Slime Armor; it has no cargo bag. Apply gear by right-clicking an empty slot or use the tuner."
     },
     {
       "type": "patchouli:text",

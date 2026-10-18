@@ -173,7 +173,7 @@ public class TransportSlime extends BagSlime {
         && !worker.isRemoved()
         && worker.level() == level()
         && getOwnerUUID() != null
-        && getOwnerUUID().equals(worker.getOwnerUUID())
+        && canCooperateWith(worker)
         && worker.position().distanceToSqr(Vec3.atCenterOf(getWorkOrigin())) <= range * range;
   }
 

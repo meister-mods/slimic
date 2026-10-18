@@ -34,7 +34,7 @@ final class WorkStorage {
         WarehouseSlime slime = entity(level);
         return slime != null
                 && slime != actor
-                && actor.getOwnerUUID().equals(slime.getOwnerUUID())
+                && actor.canCooperateWith(slime)
                 && slime.position().distanceToSqr(Vec3.atCenterOf(origin)) <= range * range
             ? slime.getBag()
             : null;

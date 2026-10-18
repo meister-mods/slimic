@@ -1,0 +1,24 @@
+{
+  "name": "Shared ownership",
+  "icon": "slimic:commander_slime",
+  "category": "slimic:cooperation",
+  "sortnum": 54,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Shared ownership is configured through a $(l:companions/commander)Commander Slime$(). The original owner UUID remains the primary identity in worlds and stored items. Only that player may change shared owners or enemies. Giving someone a stored item does not grant ownership."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Shared owners may tune, name, dye, heal, recover, revive, equip, ride, link, and command these companions. Follow uses the player who issued it; unavailable choices fall back to an available owner. Removing shared access takes effect on the server immediately."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Shared owners can use guardian protection. Automatic transport, monitoring, healing, and marked-item collection across different primary owners require each primary owner to share with the other. A one-sided invitation never authorizes the inviter to access the other team’s stores."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "An assigned enemy is treated by fighting companions as Hostile. Player combat still respects the server PvP setting, Creative immunity, teams, and target filters. Shared owners cannot be enemies; sharing removes an existing enemy assignment."
+    }
+  ]
+}

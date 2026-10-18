@@ -58,6 +58,8 @@ public final class BrokenSlimeBlock extends BaseEntityBlock {
       if (recovery != null && recovery.getY() < level.getMinBuildHeight())
         recovery.setPos(recovery.getX(), level.getMinBuildHeight() + .5, recovery.getZ());
     }
+    io.github.meistermods.slimic.entity.CompanionRegistry.get(level.getServer())
+        .mark(slime, io.github.meistermods.slimic.entity.CompanionRegistry.Location.BROKEN);
     slime.ejectPassengers();
     slime.dropLeash(true, true);
     slime.playSound(SoundEvents.SLIME_DEATH, .6F, 1);
@@ -119,7 +121,8 @@ public final class BrokenSlimeBlock extends BaseEntityBlock {
     if (!(stored.getItem() instanceof FriendlySlimeItem item)
         || !stored.hasTag()
         || !stored.getTag().getCompound("SlimeData").hasUUID("Owner")
-        || !player.getUUID().equals(stored.getTag().getCompound("SlimeData").getUUID("Owner")))
+        || !io.github.meistermods.slimic.entity.CompanionOwnership.owns(
+            level, stored.getTag().getCompound("SlimeData").getUUID("Owner"), player.getUUID()))
       return false;
     BlockState state = level.getBlockState(pos);
     CompoundTag backup = broken.saveWithFullMetadata();

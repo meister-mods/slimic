@@ -30,6 +30,10 @@ import net.minecraftforge.gametest.*;
 public final class InitialWorkOrderGameTests {
   private static List<EntityType<? extends FriendlySlime>> workers() {
     return List.of(
+        ModEntities.GLOW_SLIME.get(),
+        ModEntities.COMMANDER_SLIME.get(),
+        ModEntities.ENDER_SLIME.get(),
+        ModEntities.ATTENTION_SLIME.get(),
         ModEntities.FISHING_SLIME.get(),
         ModEntities.ABUNDANCE_SLIME.get(),
         ModEntities.TUNNEL_SLIME.get(),

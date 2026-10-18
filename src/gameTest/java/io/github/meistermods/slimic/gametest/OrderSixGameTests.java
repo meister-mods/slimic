@@ -264,12 +264,16 @@ public final class OrderSixGameTests {
     List<LoadedWorkArea> areas = new ArrayList<>();
     List<Mob> enemies = new ArrayList<>();
     List<FriendlySlime> pets = new ArrayList<>();
-    for (int i = 0; i < types().size(); i++) {
+    var allTypes = ModEntities.ENTITY_TYPES.getEntries().stream().map(r -> r.get()).toList();
+    boolean[] acquired = new boolean[allTypes.size()];
+    for (int i = 0; i < allTypes.size(); i++) {
       LoadedWorkArea a = new LoadedWorkArea(h);
       areas.add(a);
-      var pet = types().get(i).create(h.getLevel());
+      var pet = (FriendlySlime) allTypes.get(i).create(h.getLevel());
       pet.moveTo(a.point(8, 101, 8));
       pet.setNoAi(true);
+      pet.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
+      pet.setHealth(1000);
       h.getLevel().addFreshEntity(pet);
       pets.add(pet);
       Mob enemy =
@@ -277,6 +281,9 @@ public final class OrderSixGameTests {
               .create(h.getLevel());
       enemy.moveTo(a.point(8, 101, 12));
       enemy.setPersistenceRequired();
+      enemy.getRandom().setSeed(7919L + i);
+      enemy.setItemSlot(
+          net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
       h.getLevel().addFreshEntity(enemy);
       enemies.add(enemy);
     }
@@ -289,12 +296,27 @@ public final class OrderSixGameTests {
     var creeper = EntityType.CREEPER.create(h.getLevel());
     creeper.moveTo(ca.point(8, 101, 10));
     h.getLevel().addFreshEntity(creeper);
+    // Acquisition is the behavior under test; native attacks may later drop an acquired target.
+    h.onEachTick(
+        () -> {
+          for (int i = 0; i < enemies.size(); i++)
+            acquired[i] |= enemies.get(i).getTarget() == pets.get(i);
+        });
     h.succeedWhen(
         () -> {
           for (int i = 0; i < enemies.size(); i++)
             h.assertTrue(
-                enemies.get(i).getTarget() == pets.get(i),
-                "Zombie, skeleton and spider goals must recognize every companion specialization");
+                acquired[i],
+                "Native monster must acquire each living specialization: monster="
+                    + enemies.get(i).getType()
+                    + " companion="
+                    + pets.get(i).getType()
+                    + " target="
+                    + enemies.get(i).getTarget()
+                    + " alive="
+                    + enemies.get(i).isAlive()
+                    + " companionHealth="
+                    + pets.get(i).getHealth());
           h.assertTrue(
               creeper.getTarget() == null && creeper.getSwellDir() < 1,
               "Creepers receive no companion targeting or swelling");

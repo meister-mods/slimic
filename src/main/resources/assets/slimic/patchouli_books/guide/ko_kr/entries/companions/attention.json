@@ -1,0 +1,28 @@
+{
+  "name": "관심 슬라임",
+  "icon": "slimic:attention_slime",
+  "category": "slimic:companions",
+  "sortnum": 53,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:redstone",
+      "result": "slimic:attention_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 레드스톤 가루. 처음에는 대기하며 가방과 장비 칸은 없습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "강화·회수 데이터에 관계없이 같은 기본 이동 속도의 동료보다 50% 빠릅니다. 자유 이동을 선택하면 접속 중인 주인 근처를 계속 돌아다닙니다. 가까운 플레이어 옆을 지나거나 살짝 밀 수 있지만 공격하지 않습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "따라오기와 대기는 자유 이동을 끝냅니다. 주인이 없으면 주위의 로드된 공간을 움직이며 청크를 불러오지 않습니다. 이동으로 농지를 훼손하지 않습니다. 실제 자유 이동은 따라오기와 같은 주기로 활동 진행도를 얻고 대기는 성장하지 않습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:attention_slime": 0
+  }
+}

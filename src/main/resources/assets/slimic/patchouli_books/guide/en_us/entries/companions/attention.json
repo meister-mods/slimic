@@ -1,0 +1,28 @@
+{
+  "name": "Attention Slime",
+  "icon": "slimic:attention_slime",
+  "category": "slimic:companions",
+  "sortnum": 53,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:redstone",
+      "result": "slimic:attention_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + redstone dust. Starts waiting. It has no bag or equipment."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It moves 50% faster than a companion with the same base Movement Speed, including upgrades and stored specialization. Select Roam to keep it bustling near the available owner. It can brush past and nudge nearby players without attacking."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Follow and Wait stop roaming. Without an available owner it wanders in nearby loaded space, without loading chunks. Its movement does not trample farmland. Actual roaming movement earns activity at the common following interval; waiting grants no growth."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:attention_slime": 0
+  }
+}

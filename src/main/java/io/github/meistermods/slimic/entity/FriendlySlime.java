@@ -60,6 +60,13 @@ public class FriendlySlime extends TamableAnimal {
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
   private static final EntityDataAccessor<Integer> DYE_COLOR =
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.INT);
+  private static final EntityDataAccessor<CompoundTag> OWNER_ACCESS =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private static final EntityDataAccessor<java.util.Optional<java.util.UUID>> FOLLOWING_OWNER =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.OPTIONAL_UUID);
+  private String companionTag = "";
+  private long lastAccessRevision = -1;
+  private java.util.UUID lastAccessOwner;
   private int blockedWorkTicks;
   private long blockedEpisode;
   private int statPoints;
@@ -123,6 +130,99 @@ public class FriendlySlime extends TamableAnimal {
     entityData.define(STAT_LEVELS, new CompoundTag());
     entityData.define(TUNED_STATS, new CompoundTag());
     entityData.define(DYE_COLOR, -1);
+    entityData.define(OWNER_ACCESS, new CompoundTag());
+    entityData.define(FOLLOWING_OWNER, java.util.Optional.empty());
+  }
+
+  public void setFollowingOwner(Player player) {
+    if (canManage(player)) entityData.set(FOLLOWING_OWNER, java.util.Optional.of(player.getUUID()));
+  }
+
+  @Override
+  @Nullable
+  public LivingEntity getOwner() {
+    var chosen = entityData.get(FOLLOWING_OWNER);
+    if (chosen.isPresent()) {
+      var player = level().getPlayerByUUID(chosen.get());
+      if (player != null && player.isAlive() && canManage(player) && !player.isSpectator())
+        return player;
+    }
+    var primary = super.getOwner();
+    if (primary != null && primary.isAlive() && !primary.isSpectator()) return primary;
+    return level().players().stream()
+        .filter(p -> p.isAlive() && canManage(p) && !p.isSpectator())
+        .min(java.util.Comparator.comparingDouble(this::distanceToSqr))
+        .orElse(null);
+  }
+
+  public final boolean canManage(Player player) {
+    return player != null
+        && (player.getUUID().equals(getOwnerUUID())
+            || (level().isClientSide
+                ? entityData.get(OWNER_ACCESS).contains(player.getUUID().toString())
+                : CompanionOwnership.owns(level(), getOwnerUUID(), player.getUUID())));
+  }
+
+  @Override
+  public boolean isOwnedBy(LivingEntity entity) {
+    return entity instanceof Player player ? canManage(player) : super.isOwnedBy(entity);
+  }
+
+  @Override
+  public boolean isAlliedTo(Entity other) {
+    if (other instanceof Player player && canManage(player)) return true;
+    var primary = super.getOwner();
+    if (primary != null && primary.isAlliedTo(other)) return true;
+    if (other instanceof net.minecraft.world.entity.TamableAnimal pet
+        && CompanionOwnership.shares(level(), getOwnerUUID(), pet.getOwnerUUID())) return true;
+    if (other instanceof net.minecraft.world.entity.animal.horse.AbstractHorse horse
+        && CompanionOwnership.shares(level(), getOwnerUUID(), horse.getOwnerUUID())) return true;
+    return super.isAlliedTo(other);
+  }
+
+  public final boolean canCooperateWith(FriendlySlime other) {
+    return other != null
+        && CompanionOwnership.cooperates(level(), getOwnerUUID(), other.getOwnerUUID());
+  }
+
+  public void refreshOwnerAccess() {
+    if (!(level() instanceof ServerLevel level)) return;
+    var registry = CompanionRegistry.get(level.getServer());
+    if (lastAccessRevision == registry.relationshipRevision()
+        && java.util.Objects.equals(lastAccessOwner, getOwnerUUID())) return;
+    var access = new CompoundTag();
+    if (getOwnerUUID() != null)
+      for (var id : registry.coOwners(getOwnerUUID())) access.putBoolean(id.toString(), true);
+    if (!access.equals(entityData.get(OWNER_ACCESS))) entityData.set(OWNER_ACCESS, access);
+    lastAccessOwner = getOwnerUUID();
+    lastAccessRevision = registry.relationshipRevision();
+  }
+
+  public final String getLocalCompanionTag() {
+    return companionTag;
+  }
+
+  public final String getCompanionTag() {
+    if (level() instanceof ServerLevel level) {
+      var entry = CompanionRegistry.get(level.getServer()).find(getUUID());
+      if (entry != null && java.util.Objects.equals(entry.owner(), getOwnerUUID()))
+        return entry.tag();
+    }
+    return companionTag;
+  }
+
+  public static boolean isUtilityItem(ItemStack stack) {
+    return stack.getItem() instanceof SlimeTunerItem
+        || stack.getItem() instanceof CreativeSlimeTunerItem
+        || stack.getItem() instanceof DyeItem
+        || stack.is(Items.SLIME_BALL)
+        || stack.is(Items.WATER_BUCKET)
+        || stack.is(Items.LEAD)
+        || stack.is(Items.NAME_TAG);
+  }
+
+  protected final void refundStamina(float amount) {
+    if (Float.isFinite(amount) && amount > 0) recoverStamina(amount);
   }
 
   public int getDyeColorId() {
@@ -130,9 +230,7 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public boolean dye(Player player, ItemStack stack) {
-    if (!player.getUUID().equals(getOwnerUUID())
-        || !(stack.getItem() instanceof DyeItem dye)
-        || !isAlive()) return false;
+    if (!canManage(player) || !(stack.getItem() instanceof DyeItem dye) || !isAlive()) return false;
     if (!level().isClientSide) {
       entityData.set(DYE_COLOR, dye.getDyeColor().getId());
       if (!player.getAbilities().instabuild) stack.shrink(1);
@@ -234,7 +332,7 @@ public class FriendlySlime extends TamableAnimal {
         && isAlive()
         && !isRemoved()
         && worker.level() == level()
-        && worker.getUUID().equals(getOwnerUUID());
+        && canManage(worker);
   }
 
   protected void recoverStamina(float amount) {
@@ -247,6 +345,10 @@ public class FriendlySlime extends TamableAnimal {
 
   public void onReleased() {
     workDimension = level().dimension().location();
+    if (level() instanceof ServerLevel level) {
+      CompanionRegistry.get(level.getServer()).observe(this);
+      refreshOwnerAccess();
+    }
   }
 
   protected final boolean hasChangedWorkDimension() {
@@ -305,9 +407,7 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public boolean rename(Player player, String name) {
-    if (!player.getUUID().equals(getOwnerUUID())
-        || !isAlive()
-        || player.distanceToSqr(this) > 64.0D) return false;
+    if (!canManage(player) || !isAlive() || player.distanceToSqr(this) > 64.0D) return false;
     String clean = SharedConstants.filterText(name).strip();
     if (clean.codePointCount(0, clean.length()) > 32) {
       clean = clean.substring(0, clean.offsetByCodePoints(0, 32));
@@ -331,6 +431,8 @@ public class FriendlySlime extends TamableAnimal {
     tag.putFloat("Stamina", stamina);
     tag.put("TunedStats", entityData.get(TUNED_STATS).copy());
     tag.putInt("SlimeDyeColor", getDyeColorId());
+    entityData.get(FOLLOWING_OWNER).ifPresent(id -> tag.putUUID("FollowingOwner", id));
+    tag.putString("CompanionTag", getCompanionTag());
     tag.putInt("BlockedWorkTicks", blockedWorkTicks);
     tag.putLong("BlockedEpisode", blockedEpisode);
     tag.putString(
@@ -342,6 +444,17 @@ public class FriendlySlime extends TamableAnimal {
   public void readAdditionalSaveData(CompoundTag saved) {
     CompoundTag tag = SlimeData.migrate(saved);
     super.readAdditionalSaveData(tag);
+    try {
+      companionTag = CompanionRegistry.normalizeTag(tag.getString("CompanionTag"));
+    } catch (IllegalArgumentException invalid) {
+      companionTag = "";
+    }
+    entityData.set(
+        FOLLOWING_OWNER,
+        tag.hasUUID("FollowingOwner")
+            ? java.util.Optional.of(tag.getUUID("FollowingOwner"))
+            : java.util.Optional.empty());
+    lastAccessRevision = -1;
     if (!tag.contains("Sitting")) setWaiting(true);
     followingActivityTicks =
         Mth.clamp(
@@ -411,7 +524,28 @@ public class FriendlySlime extends TamableAnimal {
             return !FriendlySlime.this.isWorking() && super.canUse();
           }
         });
-    goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.2D, 4.0F, 2.0F, false));
+    goalSelector.addGoal(
+        2,
+        new FollowOwnerGoal(this, 1.2D, 4.0F, 2.0F, false) {
+          private LivingEntity followed;
+
+          @Override
+          public void start() {
+            followed = FriendlySlime.this.getOwner();
+            super.start();
+          }
+
+          @Override
+          public boolean canContinueToUse() {
+            return followed == FriendlySlime.this.getOwner() && super.canContinueToUse();
+          }
+
+          @Override
+          public void stop() {
+            followed = null;
+            super.stop();
+          }
+        });
     goalSelector.addGoal(
         5,
         new WaterAvoidingRandomStrollGoal(this, 1.0D) {
@@ -437,6 +571,11 @@ public class FriendlySlime extends TamableAnimal {
     oldSquish = squish;
     squish += (targetSquish - squish) * 0.5F;
     super.tick();
+    if (level() instanceof ServerLevel server && getOwnerUUID() != null && isAlive()) {
+      if (tickCount % 20 == 0) refreshOwnerAccess();
+      if (tickCount % 100 == Math.floorMod(getUUID().hashCode(), 100))
+        CompanionRegistry.get(server.getServer()).observe(this);
+    }
     if (!level().isClientSide) {
       if (isWorking() && isWorkBlocked()) {
         if (blockedWorkTicks == 0) blockedEpisode++;
@@ -510,7 +649,7 @@ public class FriendlySlime extends TamableAnimal {
     if (held.getItem() instanceof CreativeSlimeTunerItem)
       return CreativeSlimeTunerItem.open(player, this);
     if (held.getItem() instanceof SlimeTunerItem) return SlimeTunerItem.open(player, this);
-    if (player.getUUID().equals(getOwnerUUID()) && isAlive() && held.is(Items.SLIME_BALL)) {
+    if (canManage(player) && isAlive() && held.is(Items.SLIME_BALL)) {
       if (getHealth() >= getMaxHealth())
         return InteractionResult.sidedSuccess(level().isClientSide);
       if (!level().isClientSide) {
@@ -525,7 +664,7 @@ public class FriendlySlime extends TamableAnimal {
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
     }
-    if (player.getUUID().equals(getOwnerUUID()) && isAlive() && held.is(Items.WATER_BUCKET)) {
+    if (canManage(player) && isAlive() && held.is(Items.WATER_BUCKET)) {
       if (getDyeColorId() < 0) return InteractionResult.sidedSuccess(level().isClientSide);
       if (!level().isClientSide) {
         entityData.set(DYE_COLOR, -1);
@@ -543,10 +682,7 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public InteractionResult capture(Player player) {
-    if (!isAlive()
-        || isRemoved()
-        || player.isSpectator()
-        || !player.getUUID().equals(getOwnerUUID())) {
+    if (!isAlive() || isRemoved() || player.isSpectator() || !canManage(player)) {
       return InteractionResult.FAIL;
     }
     if (level().isClientSide) {
@@ -564,6 +700,7 @@ public class FriendlySlime extends TamableAnimal {
     player.getInventory().setChanged();
     dropLeash(true, true);
     gameEvent(GameEvent.ENTITY_INTERACT, player);
+    CompanionRegistry.get(level().getServer()).mark(this, CompanionRegistry.Location.ITEM);
     discard();
     player.displayClientMessage(
         Component.translatable("message.slimic.friendly_slime.captured"), true);

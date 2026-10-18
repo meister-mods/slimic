@@ -4,6 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public final class SlimicConfig {
   public static final ForgeConfigSpec SPEC;
+  public static final ForgeConfigSpec.IntValue ENDER_ANCHORS;
   public static final ForgeConfigSpec.IntValue HERALD_DELAY_MINUTES;
   public static final ForgeConfigSpec.IntValue TRANSPORT_ACTIVITY;
   public static final ForgeConfigSpec.IntValue FOLLOW_ACTIVITY_INTERVAL;
@@ -33,6 +34,10 @@ public final class SlimicConfig {
                 "Ticks monitoring an active or blocked worker with the same owner per activity"
                     + " unit.")
             .defineInRange("monitoringActivityIntervalTicks", 100, 20, 1200);
+    ENDER_ANCHORS =
+        builder
+            .comment("Maximum pinned Ender Slimes per primary owner. Each keeps one chunk ticking.")
+            .defineInRange("enderAnchorsPerOwner", 8, 1, 128);
     SPEC = builder.build();
   }
 

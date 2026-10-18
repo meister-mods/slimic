@@ -4,6 +4,48 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.33] - 2026-10-18
+
+### Changed
+
+- All six Slime Armor variants share one silhouette and an untinted slime badge. Material colors and leather dye remain distinct.
+- Friendly Slime summon items display a flat, unmarked gold plate.
+
+### Validation
+
+- Native client renders have identical silhouettes for all six armor materials and two dyed leather examples. The exposed slime badges retain the same colors, and the Friendly Slime plate renders as one flat color.
+- Google Java Format, the Java 17 build, English and Korean client checks, bilingual documentation, release contents, and runtime references pass verification.
+
+## [0.1.32] - 2026-10-18
+
+### Added
+
+- Glow Slimes with independent torch-strength lighting and stamina-powered temporary fireflies.
+- Commander Slimes with persistent companion records, tags, player relationships, and stamina-powered gatherings.
+- Ender Slimes with fixed, ticking destination chunks and identity-bound Slime Teleporters.
+- Attention Slimes with faster movement and an optional playful roaming order.
+
+### Changed
+
+- Shared owners can manage companions, ride, and receive protection. Automatic cooperation across primary owners requires mutual sharing. Primary owners control shared ownership and enemy relationships.
+- All twenty-two companion types initially wait. Network protocol is 15; companion payload schema remains 1.
+
+### Fixed
+
+- Gathered workers arrive in Wait even when relocation changes their working chunk.
+- Ender chunk tickets release correctly when an endpoint is unpinned or removed before its first tick after a restart. Restoring a stored pinned endpoint respects the owner’s anchor limit without changing or consuming its saved traits.
+- Attention roaming reports the correct management mode and uses local ground when its owner is airborne or far away, with bounded route retries. Commander menus tolerate entity removal before their opening packet arrives.
+- Primary-owner team alliances survive delegated Follow commands and unavailable Follow targets. Commander rosters fit the minimum 320×240 GUI size.
+
+### Validation
+
+- Independent review continued for over two hours after the four professions were implemented.
+- All 516 native regressions pass in each of the four independent Patchouli/JEI configurations. Native hostile acquisition covers all twenty-two companion types with deterministic actors and exact target observations.
+- Independent checks gather every profession from actually unloaded terrain, restore two-dimensional Ender anchors and original tokens across cold restarts, and verify real shared healing, monitoring, totem rescue, and permission revocation.
+- A 0.1.31 world preserves eighteen professions and their stored summon items, including identity, ownership, health, equipment, cargo, and growth. A 10,000-record roster retains bounded six-row packets and save/load fidelity.
+- Native clients verify the shared summon crests, profession models, real roster/tag/relation packets, minimum-size English and Korean screens, light controls, fireflies, teleporters, and roaming. The guidebook covers 44 entries and 137 pages per language, including English fallback.
+- Google Java Format, the Java 17 build, bilingual links, release contents, source archives, and runtime member references pass verification.
+
 ## [0.1.31] - 2026-10-18
 
 ### Fixed

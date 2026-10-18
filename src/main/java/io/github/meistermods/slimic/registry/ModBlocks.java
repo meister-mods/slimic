@@ -37,6 +37,29 @@ public final class ModBlocks {
               BlockEntityType.Builder.of(SlimeChestBlockEntity::new, SLIME_CHEST.get())
                   .build(null));
 
+  public static final RegistryObject<Block> SLIME_LIGHT =
+      BLOCKS.register(
+          "slime_light",
+          () ->
+              new io.github.meistermods.slimic.block.SlimeLightBlock(
+                  BlockBehaviour.Properties.of()
+                      .noCollission()
+                      .noOcclusion()
+                      .replaceable()
+                      .air()
+                      .noLootTable()
+                      .lightLevel(state -> 14)));
+  public static final RegistryObject<
+          BlockEntityType<io.github.meistermods.slimic.block.SlimeLightBlockEntity>>
+      SLIME_LIGHT_ENTITY =
+          BLOCK_ENTITIES.register(
+              "slime_light",
+              () ->
+                  BlockEntityType.Builder.of(
+                          io.github.meistermods.slimic.block.SlimeLightBlockEntity::new,
+                          SLIME_LIGHT.get())
+                      .build(null));
+
   private ModBlocks() {}
 
   public static final RegistryObject<Block> SLIME_TRAIL =

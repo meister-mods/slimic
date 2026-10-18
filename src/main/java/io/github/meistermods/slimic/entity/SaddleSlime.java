@@ -136,7 +136,7 @@ public final class SaddleSlime extends FriendlySlime {
         || !isSaddled()
         || !isTame()
         || player.isSpectator()
-        || !player.getUUID().equals(getOwnerUUID())
+        || !canManage(player)
         || player.level() != level()
         || player.distanceToSqr(this) > 64
         || isVehicle()
@@ -154,7 +154,7 @@ public final class SaddleSlime extends FriendlySlime {
         && !isVehicle()
         && passenger instanceof Player player
         && !player.isSpectator()
-        && player.getUUID().equals(getOwnerUUID());
+        && canManage(player);
   }
 
   @Nullable
@@ -163,7 +163,7 @@ public final class SaddleSlime extends FriendlySlime {
     return isSaddled()
             && getFirstPassenger() instanceof Player player
             && !player.isSpectator()
-            && player.getUUID().equals(getOwnerUUID())
+            && canManage(player)
         ? player
         : null;
   }
@@ -209,8 +209,7 @@ public final class SaddleSlime extends FriendlySlime {
   @Override
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
     if (player.isShiftKeyDown()) return super.mobInteract(player, hand);
-    if (player.isSpectator() || !player.getUUID().equals(getOwnerUUID()))
-      return InteractionResult.FAIL;
+    if (player.isSpectator() || !canManage(player)) return InteractionResult.FAIL;
     ItemStack held = player.getItemInHand(hand);
     int slot =
         held.is(Items.SADDLE)

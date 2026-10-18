@@ -35,6 +35,7 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.items.SlotItemHandler;
 
 public final class SlimeMenu extends AbstractContainerMenu {
+  public static final int ROSTER = 52;
   public static final int TARGET_TOGGLE = 40, TARGET_PAGE_BUTTON = 46;
   public static final int FILTERS = 18, TARGET_PAGE = 19;
   public static final int FIRE_SIGNAL = 28, ROAM = 29, DIRECTION = 50, ACTIVE = 51;
@@ -103,6 +104,11 @@ public final class SlimeMenu extends AbstractContainerMenu {
                           ? WAIT
                           : (slime instanceof SoggySlime soggy && soggy.isRoaming())
                                   || (slime instanceof MeowSlime cat && cat.isRoaming())
+                                  || (slime
+                                          instanceof
+                                          io.github.meistermods.slimic.entity.AttentionSlime
+                                              attention
+                                      && attention.isRoaming())
                               ? ROAM
                               : slime.isWorking() ? WORK : FOLLOW;
                   case STATUS ->
@@ -271,13 +277,25 @@ public final class SlimeMenu extends AbstractContainerMenu {
         && slime.isAlive()
         && !slime.isRemoved()
         && player.level() == slime.level()
-        && player.getUUID().equals(slime.getOwnerUUID())
+        && slime.canManage(player)
         && player.distanceToSqr(slime) <= 64.0;
   }
 
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (button == ROSTER
+        && slime instanceof io.github.meistermods.slimic.entity.CommanderSlime commander)
+      return commander.open(player).consumesAction();
+    if (button == ACTIVE && slime instanceof io.github.meistermods.slimic.entity.GlowSlime glow) {
+      glow.setActive(!glow.isActive());
+      return true;
+    }
+    if (button == ROAM
+        && slime instanceof io.github.meistermods.slimic.entity.AttentionSlime attention) {
+      attention.setRoaming(true);
+      return true;
+    }
     if (button == ACTIVE && slime instanceof MeowSlime cat) {
       cat.setActive(!cat.isActive());
       return true;
@@ -329,6 +347,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     if (button >= 0 && button < SlimeStat.values().length)
       return slime.upgradeStat(SlimeStat.values()[button]);
     if (button != FOLLOW && button != WAIT && button != WORK) return false;
+    if (button == FOLLOW) slime.setFollowingOwner(player);
     if (button == WORK && !(slime instanceof BagSlime) && !(slime instanceof HeraldSlime))
       return false;
     if (slime instanceof SoggySlime soggy) soggy.setRoaming(false);
@@ -484,9 +503,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-      return SlimeTunerItem.isHolding(player)
-          && slime.isAlive()
-          && player.getUUID().equals(slime.getOwnerUUID());
+      return SlimeTunerItem.isHolding(player) && slime.isAlive() && slime.canManage(player);
     }
 
     @Override

@@ -134,7 +134,7 @@ public final class SoggySlime extends FriendlySlime {
         || !isTame()
         || !isAlive()
         || isRemoved()
-        || !player.getUUID().equals(getOwnerUUID())) {
+        || !canManage(player)) {
       snapshot.restore(true, false);
       trailCooldown = 20;
       return;

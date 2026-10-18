@@ -60,8 +60,9 @@ public final class FriendlySlimeInteractions {
 
   @SubscribeEvent
   public static void preserveFarmland(BlockEvent.FarmlandTrampleEvent event) {
-    if (event.getEntity() instanceof FarmerSlime || event.getEntity() instanceof AbundanceSlime)
-      event.setCanceled(true);
+    if (event.getEntity() instanceof FarmerSlime
+        || event.getEntity() instanceof AbundanceSlime
+        || event.getEntity() instanceof AttentionSlime) event.setCanceled(true);
   }
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -76,10 +77,8 @@ public final class FriendlySlimeInteractions {
               .getEntitiesOfClass(
                   GuardianAngelSlime.class,
                   owner.getBoundingBox().inflate(16),
-                  g ->
-                      g.isAlive()
-                          && owner.getUUID().equals(g.getOwnerUUID())
-                          && g.distanceToSqr(owner) <= 256)) guard.defendAgainst(attacker);
+                  g -> g.isAlive() && g.canManage(owner) && g.distanceToSqr(owner) <= 256))
+        guard.defendAgainst(attacker);
   }
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -91,10 +90,7 @@ public final class FriendlySlimeInteractions {
               .getEntitiesOfClass(
                   GuardianAngelSlime.class,
                   player.getBoundingBox().inflate(16),
-                  g ->
-                      g.isAlive()
-                          && player.getUUID().equals(g.getOwnerUUID())
-                          && g.distanceToSqr(player) <= 256);
+                  g -> g.isAlive() && g.canManage(player) && g.distanceToSqr(player) <= 256);
       guardians.sort(java.util.Comparator.comparingDouble(player::distanceToSqr));
       for (var guard : guardians)
         if (guard.protect(player, event.getSource())) {

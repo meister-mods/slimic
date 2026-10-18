@@ -225,6 +225,11 @@ public final class SlimicJeiPlugin implements IModPlugin {
                     .filter(io.github.meistermods.slimic.entity.FishingSlime::isRod)
                     .toList();
             case ABUNDANCE -> List.of(new ItemStack(Items.BONE_MEAL));
+            case GLOW -> List.of(new ItemStack(Items.GLOWSTONE_DUST));
+            case COMMANDER -> List.of(new ItemStack(Items.BOOK));
+            case ENDER -> List.of(new ItemStack(Items.ENDER_PEARL));
+            case ATTENTION -> List.of(new ItemStack(Items.REDSTONE));
+
             case TUNNEL -> List.of(new ItemStack(Items.NETHER_STAR));
             case DRAGON -> List.of(new ItemStack(Items.DRAGON_HEAD));
             case MEOW ->

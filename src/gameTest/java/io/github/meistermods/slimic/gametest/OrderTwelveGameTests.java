@@ -144,6 +144,11 @@ public final class OrderTwelveGameTests {
               switch (kind) {
                 case FISHING -> Items.FISHING_ROD;
                 case ABUNDANCE -> Items.BONE_MEAL;
+                case GLOW -> Items.GLOWSTONE_DUST;
+                case COMMANDER -> Items.BOOK;
+                case ENDER -> Items.ENDER_PEARL;
+                case ATTENTION -> Items.REDSTONE;
+
                 case TUNNEL -> Items.NETHER_STAR;
                 case DRAGON -> Items.DRAGON_HEAD;
                 case MEOW -> Items.COD;

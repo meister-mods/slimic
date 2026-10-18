@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Only the owner may manage or recover a companion. Giving a recovered item to someone else does not change ownership. Workers, healers, and carriers normally cooperate with the same owner’s team."
+      "text": "Primary and shared owners may manage or recover a companion. Giving a recovered item to someone else does not change ownership. Workers, healers, and carriers cooperate within the same owner’s team or between mutually shared owners."
     }
   ]
 }
