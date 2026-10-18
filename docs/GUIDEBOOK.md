@@ -2,7 +2,7 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its six categories contain 39 entries and 116 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its six categories contain 44 entries and 137 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
 The links below open the corresponding web instructions. Item diagrams show specialization ingredients. Equipment and stored companion traits follow the preservation rules described in the gameplay guide.
 
@@ -46,11 +46,16 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Tunnel Slime | [Tunnel slimes](GAMEPLAY.md#tunnel-slimes) |
 | Dragon Slime | [Dragon slimes](GAMEPLAY.md#dragon-slimes) |
 | Meow Slime | [Meow slimes](GAMEPLAY.md#meow-slimes) |
+| Glow Slime | [Glow Slime](GAMEPLAY.md#glow-slimes) |
+| Commander Slime | [Commander Slime](GAMEPLAY.md#commander-slimes) |
+| Ender Slime | [Ender Slime](GAMEPLAY.md#ender-slimes) |
+| Attention Slime | [Attention Slime](GAMEPLAY.md#attention-slimes) |
 
 ## Working together
 
 | Entry | Web guide |
 | --- | --- |
+| Shared ownership | [Shared ownership](GAMEPLAY.md#shared-owners-and-enemies) |
 | Slime Chests | [Slime Chests](GAMEPLAY.md#slime-chests) |
 | Storage and delivery | [Warehouse slimes and storage priority](GAMEPLAY.md#warehouse-slimes-and-storage-priority) |
 | Tools and supplies | [Work orders and support requests](GAMEPLAY.md#work-orders-and-support-requests) |

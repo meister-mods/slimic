@@ -179,7 +179,7 @@ public class HealingSlime extends BagSlime {
         && slime.level() == level()
         && slime.isTame()
         && getOwnerUUID() != null
-        && getOwnerUUID().equals(slime.getOwnerUUID())
+        && canCooperateWith(slime)
         && slime.getHealth() < slime.getMaxHealth()
         && inArea(slime.position())
         && level().hasChunkAt(slime.blockPosition());
@@ -194,7 +194,7 @@ public class HealingSlime extends BagSlime {
     CompoundTag data = stack.getTag().getCompound("SlimeData");
     return getOwnerUUID() != null
         && data.hasUUID("Owner")
-        && getOwnerUUID().equals(data.getUUID("Owner"));
+        && CompanionOwnership.cooperates(level(), getOwnerUUID(), data.getUUID("Owner"));
   }
 
   private boolean stillNeedsTreatment(ServerLevel server, Object target) {

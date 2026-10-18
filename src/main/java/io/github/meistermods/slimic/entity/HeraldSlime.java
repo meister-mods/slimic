@@ -89,7 +89,7 @@ public final class HeraldSlime extends FriendlySlime {
         || held.getItem() instanceof DyeItem
         || held.is(Items.SLIME_BALL)
         || held.is(Items.WATER_BUCKET)) return super.mobInteract(player, hand);
-    if (!player.getUUID().equals(getOwnerUUID())) return InteractionResult.FAIL;
+    if (!canManage(player)) return InteractionResult.FAIL;
     if (!level().isClientSide) {
       if (held.is(Items.FIREWORK_ROCKET)) {
         setFirework(held);
@@ -140,7 +140,7 @@ public final class HeraldSlime extends FriendlySlime {
           || !worker.isAlive()
           || !worker.isWorking()
           || getOwnerUUID() == null
-          || !getOwnerUUID().equals(worker.getOwnerUUID())
+          || !canCooperateWith(worker)
           || distanceToSqr(worker) > range * range) continue;
       WorkStatus state = worker.getWorkStatus();
       if (!(worker instanceof BagSlime)

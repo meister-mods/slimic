@@ -146,10 +146,10 @@ public final class GuardianAngelSlime extends FriendlySlime {
             || !level().getServer().isPvpAllowed()
             || (owner instanceof Player playerOwner && !playerOwner.canHarmPlayer(player))))
       return false;
-    if (attacker instanceof TamableAnimal pet && getOwnerUUID().equals(pet.getOwnerUUID()))
-      return false;
+    if (attacker instanceof TamableAnimal pet
+        && CompanionOwnership.shares(level(), getOwnerUUID(), pet.getOwnerUUID())) return false;
     return !(attacker instanceof AbstractHorse horse
-        && getOwnerUUID().equals(horse.getOwnerUUID()));
+        && CompanionOwnership.shares(level(), getOwnerUUID(), horse.getOwnerUUID()));
   }
 
   public void defendAgainst(LivingEntity attacker) {
@@ -184,7 +184,7 @@ public final class GuardianAngelSlime extends FriendlySlime {
         && isTame()
         && !getTotems().isEmpty()
         && player.level() == level()
-        && player.getUUID().equals(getOwnerUUID())
+        && canManage(player)
         && distanceToSqr(player) <= 256
         && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
   }

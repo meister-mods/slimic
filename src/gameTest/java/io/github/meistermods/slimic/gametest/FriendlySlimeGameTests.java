@@ -222,6 +222,7 @@ public final class FriendlySlimeGameTests {
     helper.getLevel().addNewPlayer(owner);
     FriendlySlime slime = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), new BlockPos(3, 2, 5));
     slime.tame(owner);
+    slime.setWaiting(false);
     AtomicBoolean hopped = new AtomicBoolean();
     helper.onEachTick(
         () -> {

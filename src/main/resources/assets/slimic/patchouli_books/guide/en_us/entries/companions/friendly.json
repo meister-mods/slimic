@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A Friendly Slime follows its owner and can be ordered to Wait. Raise its stats, give it a name, and later specialize its item. Specialization retains saved traits. New workers initially wait."
+      "text": "A Friendly Slime starts in Wait. Select Follow in its management screen to have it hop after you. Raise its stats, name it, and specialize its item later. First specialization also waits and retains saved traits."
     }
   ],
   "extra_recipe_mappings": {

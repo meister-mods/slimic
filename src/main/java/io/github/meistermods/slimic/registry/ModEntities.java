@@ -2,12 +2,16 @@ package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.AbundanceSlime;
+import io.github.meistermods.slimic.entity.AttentionSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.CommanderSlime;
 import io.github.meistermods.slimic.entity.DragonSlime;
+import io.github.meistermods.slimic.entity.EnderSlime;
 import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
+import io.github.meistermods.slimic.entity.GlowSlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
@@ -172,6 +176,39 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":meow_slime"));
 
+  public static final RegistryObject<EntityType<GlowSlime>> GLOW_SLIME =
+      ENTITY_TYPES.register(
+          "glow_slime",
+          () ->
+              EntityType.Builder.of(GlowSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":glow_slime"));
+  public static final RegistryObject<EntityType<CommanderSlime>> COMMANDER_SLIME =
+      ENTITY_TYPES.register(
+          "commander_slime",
+          () ->
+              EntityType.Builder.of(CommanderSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":commander_slime"));
+  public static final RegistryObject<EntityType<EnderSlime>> ENDER_SLIME =
+      ENTITY_TYPES.register(
+          "ender_slime",
+          () ->
+              EntityType.Builder.of(EnderSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":ender_slime"));
+  public static final RegistryObject<EntityType<AttentionSlime>> ATTENTION_SLIME =
+      ENTITY_TYPES.register(
+          "attention_slime",
+          () ->
+              EntityType.Builder.of(AttentionSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":attention_slime"));
+
   private ModEntities() {}
 
   public static final RegistryObject<EntityType<SoggySlime>> SOGGY_SLIME =
@@ -194,6 +231,11 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(GLOW_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(COMMANDER_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(ENDER_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(ATTENTION_SLIME.get(), FriendlySlime.createAttributes().build());
+
     event.put(FISHING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ABUNDANCE_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(TUNNEL_SLIME.get(), FriendlySlime.createAttributes().build());

@@ -21,6 +21,7 @@ public final class SaddleSlimeItem extends FriendlySlimeItem {
   protected void initializeSlime(FriendlySlime slime, ItemStack stack) {
     // Recovered equipment is authoritative; new specialization items provide the input saddle.
     if (stack.hasTag() && stack.getTag().contains("InitialSaddle")) {
+      slime.setWaiting(true);
       ItemStack saddle = ItemStack.of(stack.getTag().getCompound("InitialSaddle"));
       if (saddle.is(Items.SADDLE)) ((SaddleSlime) slime).setEquipment(0, saddle.copyWithCount(1));
     }

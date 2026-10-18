@@ -15,6 +15,12 @@ public final class ModMenus {
   public static final RegistryObject<MenuType<SlimeMenu>> SLIME =
       MENUS.register("slime", () -> IForgeMenuType.create(SlimeMenu::new));
 
+  public static final RegistryObject<MenuType<io.github.meistermods.slimic.menu.CommanderMenu>>
+      COMMANDER =
+          MENUS.register(
+              "commander",
+              () -> IForgeMenuType.create(io.github.meistermods.slimic.menu.CommanderMenu::new));
+
   private ModMenus() {}
 
   public static final RegistryObject<MenuType<CreativeSlimeTunerMenu>> CREATIVE_TUNER =

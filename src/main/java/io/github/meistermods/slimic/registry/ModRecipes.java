@@ -164,6 +164,63 @@ public final class ModRecipes {
                               io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
                                   .MEOW)));
 
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      GLOW_SLIME =
+          SERIALIZERS.register(
+              "glow_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .GLOW)));
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      COMMANDER_SLIME =
+          SERIALIZERS.register(
+              "commander_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .COMMANDER)));
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      ENDER_SLIME =
+          SERIALIZERS.register(
+              "ender_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .ENDER)));
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      ATTENTION_SLIME =
+          SERIALIZERS.register(
+              "attention_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .ATTENTION)));
+
   private ModRecipes() {}
 
   public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> SOGGY_SLIME =

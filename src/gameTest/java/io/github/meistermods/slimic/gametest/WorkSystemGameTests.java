@@ -260,6 +260,7 @@ public final class WorkSystemGameTests {
     var pet = ModEntities.FRIENDLY_SLIME.get().create(h.getLevel());
     pet.moveTo(arena.point(4, 101, 8));
     pet.tame(owner);
+    pet.setWaiting(false);
     CompoundTag saved = pet.saveWithoutId(new CompoundTag());
     saved.putInt("FollowingActivityTicks", SlimicConfig.FOLLOW_ACTIVITY_INTERVAL.get() - 1);
     pet.load(saved);

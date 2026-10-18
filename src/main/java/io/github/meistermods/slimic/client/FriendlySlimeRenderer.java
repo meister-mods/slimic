@@ -48,6 +48,13 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
   }
 
   @Override
+  protected int getBlockLightLevel(FriendlySlime slime, net.minecraft.core.BlockPos pos) {
+    return slime instanceof io.github.meistermods.slimic.entity.GlowSlime glow && glow.isActive()
+        ? Math.max(14, super.getBlockLightLevel(slime, pos))
+        : super.getBlockLightLevel(slime, pos);
+  }
+
+  @Override
   public ResourceLocation getTextureLocation(FriendlySlime slime) {
     return TEXTURE;
   }

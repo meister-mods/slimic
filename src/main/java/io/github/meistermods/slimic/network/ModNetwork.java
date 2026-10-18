@@ -14,7 +14,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ModNetwork {
-  private static final String PROTOCOL_VERSION = "14";
+  private static final String PROTOCOL_VERSION = "15";
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "main"),
@@ -25,6 +25,20 @@ public final class ModNetwork {
   private ModNetwork() {}
 
   public static void register() {
+    CHANNEL.registerMessage(
+        3,
+        CommanderPackets.Action.class,
+        CommanderPackets.Action::encode,
+        CommanderPackets.Action::decode,
+        CommanderPackets.Action::handle,
+        Optional.of(NetworkDirection.PLAY_TO_SERVER));
+    CHANNEL.registerMessage(
+        4,
+        CommanderPackets.Page.class,
+        CommanderPackets.Page::encode,
+        CommanderPackets.Page::decode,
+        CommanderPackets.Page::handle,
+        Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     CHANNEL.registerMessage(
         2,
         RideSlime.class,

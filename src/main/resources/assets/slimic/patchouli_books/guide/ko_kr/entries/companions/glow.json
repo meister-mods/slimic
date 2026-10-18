@@ -1,0 +1,28 @@
+{
+  "name": "발광 슬라임",
+  "icon": "slimic:glow_slime",
+  "category": "slimic:companions",
+  "sortnum": 50,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:glowstone_dust",
+      "result": "slimic:glow_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 발광석 가루. 광원을 켠 대기로 시작합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "광원은 횃불과 같은 밝기이며 기력을 쓰지 않고 슬라임을 따릅니다. 관리 화면의 광원은 따라오기·대기와 별도로 켜고 끕니다. 기존 블록과 유체는 유지합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "우클릭하면 기력 10으로 주위 빈 공간에 6초간 반딧불을 남깁니다. 사용 간격은 1초입니다. 임시 광원은 보이지 않고 다른 블록으로 덮을 수 있으며 수집할 수 없습니다. 겹친 광원은 마지막 효과가 끝날 때 꺼집니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:glow_slime": 0
+  }
+}

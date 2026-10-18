@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Breaking the recovery block yields one block item carrying the saved companion. A $(l:companions/healing)Healing Slime$() can also revive same-owner blocks with its own slimeballs, then heal the revived companion further."
+      "text": "Breaking the recovery block yields one block item carrying the saved companion. A $(l:companions/healing)Healing Slime$() can also revive same-owner or mutually shared blocks with its own slimeballs, then heal the revived companion further."
     }
   ],
   "extra_recipe_mappings": {

@@ -1,0 +1,28 @@
+{
+  "name": "Glow Slime",
+  "icon": "slimic:glow_slime",
+  "category": "slimic:companions",
+  "sortnum": 50,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:glowstone_dust",
+      "result": "slimic:glow_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + glowstone dust. Starts in Wait with its light on."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Light has the same strength as a torch and follows the slime without spending stamina. Toggle Light in management independently of Follow and Wait. Existing blocks and fluids are preserved."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click to spend 10 stamina and leave fireflies in nearby open air for six seconds. Bursts have a one-second interval. Expiring light nodes are invisible, replaceable, and cannot be collected. Shared light sources remain lit until their final lease ends."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:glow_slime": 0
+  }
+}

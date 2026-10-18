@@ -24,7 +24,11 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     ABUNDANCE,
     TUNNEL,
     DRAGON,
-    MEOW
+    MEOW,
+    GLOW,
+    COMMANDER,
+    ENDER,
+    ATTENTION
   }
 
   private final Kind kind;
@@ -50,6 +54,10 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case TUNNEL -> ModItems.TUNNEL_SLIME.get();
       case DRAGON -> ModItems.DRAGON_SLIME.get();
       case MEOW -> ModItems.MEOW_SLIME.get();
+      case GLOW -> ModItems.GLOW_SLIME.get();
+      case COMMANDER -> ModItems.COMMANDER_SLIME.get();
+      case ENDER -> ModItems.ENDER_SLIME.get();
+      case ATTENTION -> ModItems.ATTENTION_SLIME.get();
     };
   }
 
@@ -57,6 +65,11 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     return switch (kind) {
       case FISHING -> FishingSlime.isRod(stack);
       case ABUNDANCE -> stack.is(Items.BONE_MEAL);
+      case GLOW -> stack.is(Items.GLOWSTONE_DUST);
+      case COMMANDER -> stack.is(Items.BOOK);
+      case ENDER -> stack.is(Items.ENDER_PEARL);
+      case ATTENTION -> stack.is(Items.REDSTONE);
+
       case TUNNEL -> stack.is(Items.NETHER_STAR);
       case DRAGON -> stack.is(Items.DRAGON_HEAD);
       case MEOW ->
@@ -131,6 +144,10 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case TUNNEL -> ModRecipes.TUNNEL_SLIME.get();
       case DRAGON -> ModRecipes.DRAGON_SLIME.get();
       case MEOW -> ModRecipes.MEOW_SLIME.get();
+      case GLOW -> ModRecipes.GLOW_SLIME.get();
+      case COMMANDER -> ModRecipes.COMMANDER_SLIME.get();
+      case ENDER -> ModRecipes.ENDER_SLIME.get();
+      case ATTENTION -> ModRecipes.ATTENTION_SLIME.get();
     };
   }
 }

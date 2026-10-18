@@ -50,7 +50,10 @@ public enum SlimeStat {
       case HEALTH, DEFENSE, MOVEMENT_SPEED -> true;
       case ATTACK -> slime instanceof CombatSlime || slime instanceof GuardianAngelSlime;
       case STAMINA ->
-          slime instanceof BagSlime
+          slime instanceof GlowSlime
+              || slime instanceof CommanderSlime
+              || slime instanceof EnderSlime
+              || slime instanceof BagSlime
               || slime instanceof SaddleSlime
               || slime instanceof SoggySlime
               || slime instanceof GuardianAngelSlime;

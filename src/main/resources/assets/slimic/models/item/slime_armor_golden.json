@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "slimic:item/slime_armor_golden"
-  }
+  "parent": "slimic:item/slime_armor_base"
 }

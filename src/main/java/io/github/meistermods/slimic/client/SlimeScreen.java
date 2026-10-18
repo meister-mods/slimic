@@ -41,6 +41,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   private Button previousPage;
   private Button nextPage;
   private Button directionButton;
+  private Button lightButton;
 
   public SlimeScreen(SlimeMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
@@ -57,6 +58,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   protected void init() {
     super.init();
     directionButton = null;
+    lightButton = null;
     upgrades.clear();
     filters.clear();
     targetPageButton = null;
@@ -87,6 +89,23 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     addOrder(SlimeMenu.FOLLOW, "follow", 194);
     addOrder(SlimeMenu.WAIT, "wait", 250);
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.GlowSlime)
+      lightButton =
+          addRenderableWidget(
+              Button.builder(
+                      Component.translatable("screen.slimic.light"),
+                      b -> sendButton(SlimeMenu.ACTIVE))
+                  .bounds(leftPos + 194, topPos + 89, 100, 18)
+                  .build());
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.CommanderSlime)
+      addRenderableWidget(
+          Button.builder(
+                  Component.translatable("screen.slimic.roster.open"),
+                  b -> sendButton(SlimeMenu.ROSTER))
+              .bounds(leftPos + 194, topPos + 89, 150, 18)
+              .build());
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.AttentionSlime)
+      addOrder(SlimeMenu.ROAM, "roam", 306);
     if (menu.slime() instanceof MeowSlime cat) {
       addOrder(SlimeMenu.ROAM, "roam", 306);
       addRenderableWidget(
@@ -206,6 +225,10 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     if (!menu.isSynchronized()) return;
     name.tick();
+    if (lightButton != null
+        && menu.slime() instanceof io.github.meistermods.slimic.entity.GlowSlime glow)
+      lightButton.setMessage(
+          Component.translatable("screen.slimic.light_" + (glow.isActive() ? "on" : "off")));
     upgrades.forEach(
         (stat, button) ->
             button.active =

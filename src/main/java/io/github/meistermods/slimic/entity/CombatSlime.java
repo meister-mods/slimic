@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -149,13 +150,19 @@ public class CombatSlime extends BagSlime {
     }
     if (candidate instanceof TamableAnimal tame
         && getOwnerUUID() != null
-        && getOwnerUUID().equals(tame.getOwnerUUID())) return false;
+        && CompanionOwnership.shares(level(), getOwnerUUID(), tame.getOwnerUUID())) return false;
     if (candidate instanceof AbstractHorse horse
         && getOwnerUUID() != null
-        && getOwnerUUID().equals(horse.getOwnerUUID())) return false;
+        && CompanionOwnership.shares(level(), getOwnerUUID(), horse.getOwnerUUID())) return false;
     // Only actual mobs and players are targets; armor stands and decorative entities are excluded.
     return (candidate instanceof Mob || candidate instanceof Player)
-        && allows(targetKind(candidate));
+        && allows(
+            candidate instanceof Player player
+                    && level() instanceof ServerLevel server
+                    && CompanionRegistry.get(server.getServer())
+                        .enemy(getOwnerUUID(), player.getUUID())
+                ? CombatTarget.HOSTILE
+                : targetKind(candidate));
   }
 
   @Override
@@ -216,7 +223,8 @@ public class CombatSlime extends BagSlime {
         && !item.hasPickUpDelay()
         && item.getPersistentData().hasUUID(LOOT_COLLECTOR)
         && getUUID().equals(item.getPersistentData().getUUID(LOOT_COLLECTOR))
-        && (!data.hasUUID("Owner") || data.getUUID("Owner").equals(getOwnerUUID()))
+        && (!data.hasUUID("Owner")
+            || CompanionOwnership.cooperates(level(), data.getUUID("Owner"), getOwnerUUID()))
         && ItemHandlerHelper.insertItemStacked(getBag(), item.getItem().copy(), true).getCount()
             < item.getItem().getCount();
   }

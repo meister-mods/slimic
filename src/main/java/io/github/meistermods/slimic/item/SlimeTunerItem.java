@@ -24,7 +24,7 @@ public final class SlimeTunerItem extends Item {
     if (!isHolding(player)
         || player.isSpectator()
         || !target.isAlive()
-        || !player.getUUID().equals(target.getOwnerUUID())
+        || !target.canManage(player)
         || player.distanceToSqr(target) > 64) return InteractionResult.FAIL;
     if (player instanceof ServerPlayer server)
       NetworkHooks.openScreen(

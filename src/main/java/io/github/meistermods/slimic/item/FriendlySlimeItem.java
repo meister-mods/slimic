@@ -229,11 +229,19 @@ public class FriendlySlimeItem extends Item {
                     entity.setCustomName(stack.getHoverName());
                   }
                   initializeSlime(entity, stack);
+                  if (!restoring) entity.setWaiting(true);
                 },
                 position,
                 MobSpawnType.SPAWN_EGG,
                 alignToSurface,
                 offsetUp);
+    if (slime instanceof io.github.meistermods.slimic.entity.EnderSlime ender
+        && ender.isPinned()
+        && !ender.hasAnchorCapacity()) {
+      player.displayClientMessage(
+          Component.translatable("message.slimic.ender_anchor_limit"), true);
+      return false;
+    }
     if (slime == null
         || slime.isSpawnCancelled()
         || !level.noCollision(slime)

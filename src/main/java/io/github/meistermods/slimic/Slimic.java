@@ -26,6 +26,10 @@ public final class Slimic {
     ModRecipes.SERIALIZERS.register(bus);
     ModCreativeTabs.TABS.register(bus);
     context.registerConfig(ModConfig.Type.SERVER, SlimicConfig.SPEC);
+    io.github.meistermods.slimic.registry.ModParticles.PARTICLES.register(bus);
+    bus.addListener(
+        (net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent event) ->
+            event.enqueueWork(io.github.meistermods.slimic.entity.CompanionChunks::register));
     ModNetwork.register();
   }
 }

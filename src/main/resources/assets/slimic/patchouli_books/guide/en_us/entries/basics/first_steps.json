@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Craft a $(l:basics/tuner)Slime Tuner$() to manage it. New work specializations start in Wait. Give their work order explicitly before expecting a job to begin."
+      "text": "Craft a $(l:basics/tuner)Slime Tuner$() to manage it. Every new companion starts in Wait. Choose Follow or a profession command before expecting movement or work."
     }
   ]
 }

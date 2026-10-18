@@ -8,7 +8,7 @@ Slimic is a Minecraft Forge mod about raising friendly slimes and directing them
 
 ## Overview
 
-Build a team of companions to gather resources, move supplies, care for crops and trees, fight, and travel. Different slime types support one another: carriers collect a worker's cargo and bring supplies, while heralds signal when work cannot continue.
+Build a team of companions to gather resources, move supplies, care for crops and trees, fight, illuminate paths, coordinate teams, and travel. Different slime types support one another: carriers collect a worker's cargo and bring supplies, while heralds signal when work cannot continue.
 
 Companions grow through activity and stat upgrades. Name and manage them with a Slime Tuner, then recover them as items with their saved traits. A Creative Slime Tuner allows direct stat editing. Optional JEI integration provides recipes and companion information, while Patchouli adds an in-game guidebook.
 

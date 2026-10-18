@@ -121,6 +121,23 @@ public final class AdvancedSlimeLayer
             .addBox(-3.5F, 13.5F, 0, .8F, 2.5F, .8F)
             .addBox(2.7F, 13.5F, 0, .8F, 2.5F, .8F),
         PartPose.ZERO);
+    parts.addOrReplaceChild(
+        "mustache",
+        CubeListBuilder.create()
+            .texOffs(0, 0)
+            .addBox(-2.2F, 20.1F, -4.7F, 2.1F, .65F, .4F)
+            .addBox(.1F, 20.1F, -4.7F, 2.1F, .65F, .4F)
+            .addBox(-2.7F, 19.6F, -4.7F, .65F, .9F, .4F)
+            .addBox(2.05F, 19.6F, -4.7F, .65F, .9F, .4F),
+        PartPose.ZERO);
+    parts.addOrReplaceChild(
+        "baton",
+        CubeListBuilder.create().texOffs(0, 0).addBox(0, 0, 0, .55F, 6.5F, .55F),
+        PartPose.offsetAndRotation(-5, 17, -4.3F, 0, 0, -.6F));
+    parts.addOrReplaceChild(
+        "baton_tip",
+        CubeListBuilder.create().texOffs(0, 0).addBox(-.15F, -.8F, -.15F, .85F, .8F, .85F),
+        PartPose.offsetAndRotation(-5, 17, -4.3F, 0, 0, -.6F));
     return LayerDefinition.create(mesh, 16, 16);
   }
 
@@ -150,6 +167,11 @@ public final class AdvancedSlimeLayer
       float yaw,
       float pitch) {
     if (slime.isInvisible()) return;
+    if (slime instanceof io.github.meistermods.slimic.entity.CommanderSlime) {
+      part("mustache", "black_wool", pose, buffers, light);
+      part("baton", "dark_oak_planks", pose, buffers, light);
+      part("baton_tip", "gold_block", pose, buffers, light);
+    }
     if (slime instanceof FishingSlime fisher) {
       part("overalls", "blue_wool", pose, buffers, light);
       part("buttons", "gold_block", pose, buffers, light);

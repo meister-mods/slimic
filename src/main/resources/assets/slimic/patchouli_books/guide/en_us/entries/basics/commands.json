@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Follow moves after the owner; Wait pauses ordinary work. New workers wait, including Creative defaults and specialization of a recovered Friendly Slime. Stored companions retain their saved order."
+      "text": "Follow moves after the owner; Wait pauses ordinary work. All new companions wait, including Creative defaults and first specialization. Recovered companions retain their saved order."
     },
     {
       "type": "patchouli:text",
@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Only the owner may manage or recover a companion. Giving a recovered item to someone else does not change ownership. Workers, healers, and carriers normally cooperate with the same owner’s team."
+      "text": "Primary and shared owners may manage or recover a companion. Giving a recovered item to someone else does not change ownership. Workers, healers, and carriers cooperate within the same owner’s team or between mutually shared owners."
     }
   ]
 }

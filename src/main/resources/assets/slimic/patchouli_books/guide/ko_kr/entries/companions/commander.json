@@ -1,0 +1,40 @@
+{
+  "name": "지휘 슬라임",
+  "icon": "slimic:commander_slime",
+  "category": "slimic:companions",
+  "sortnum": 51,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:book",
+      "result": "slimic:commander_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 책. 처음에는 대기하며 콧수염과 지휘봉이 보입니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "우클릭하면 동료·플레이어 목록을 엽니다. 튜너는 기본 관리 화면을 열며 동료 목록 버튼도 제공합니다. 목록은 마지막 생명력·명령·작업 상태·위치와 활동·보관·망가짐·제거 여부를 표시합니다. 행 위에 커서를 올리면 좌표를 볼 수 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "동료를 선택하고 태그를 입력한 뒤 태그 저장을 누릅니다. 집합은 선택한 행이 아니라 입력한 태그를 사용합니다. 태그는 최대 24자이고 영문 대소문자를 구분하지 않습니다. 빈 입력은 태그 없는 동료를 뜻합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "집합은 기력 25로 살아 있는 소환 동료를 차례로 부릅니다. 기록된 비활성 청크와 다른 차원도 포함합니다. 지휘 슬라임 주변의 안전한 로드 구역에 도착하면 대기합니다. 보관·망가짐·제거·탑승 상태는 제외합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "집합 중에는 원본 청크 하나만 임시로 유지합니다. 원본을 찾을 수 없거나 도착 지점이 위험하면 건너뜁니다. 원본 대기 한도와 명령 재사용 간격은 각각 5초입니다. 회수·재시작은 진행 중인 집합을 취소하며 다른 특성은 유지합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "원래 주인은 플레이어 목록에서 공동 소유자와 적대 대상을 정합니다. 공동 소유자는 동료를 관리할 수 있지만 플레이어 관계 변경은 원래 주인만 가능합니다. 동료나 보관 아이템이 로드되면 기록합니다. $(l:cooperation/ownership)공동 소유$()도 확인하세요."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:commander_slime": 0
+  }
+}

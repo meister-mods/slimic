@@ -141,6 +141,37 @@ public final class ModItems {
               new io.github.meistermods.slimic.item.SpecializedSlimeItem(
                   new Item.Properties(), ModEntities.MEOW_SLIME));
 
+  public static final RegistryObject<Item> GLOW_SLIME =
+      ITEMS.register(
+          "glow_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.GLOW_SLIME));
+  public static final RegistryObject<Item> COMMANDER_SLIME =
+      ITEMS.register(
+          "commander_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.COMMANDER_SLIME));
+  public static final RegistryObject<Item> ENDER_SLIME =
+      ITEMS.register(
+          "ender_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.ENDER_SLIME));
+  public static final RegistryObject<Item> ATTENTION_SLIME =
+      ITEMS.register(
+          "attention_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.ATTENTION_SLIME));
+  public static final RegistryObject<Item> SLIME_TELEPORTER =
+      ITEMS.register(
+          "slime_teleporter",
+          () ->
+              new io.github.meistermods.slimic.item.SlimeTeleporterItem(
+                  new Item.Properties().stacksTo(1)));
+
   private ModItems() {}
 
   public static final RegistryObject<Item> SOGGY_SLIME =

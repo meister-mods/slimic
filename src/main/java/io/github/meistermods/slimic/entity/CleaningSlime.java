@@ -131,7 +131,7 @@ public final class CleaningSlime extends BagSlime {
     CompoundTag data = item.saveWithoutId(new CompoundTag());
     return !data.hasUUID("Owner")
         || item.lifespan - item.getAge() <= 200
-        || data.getUUID("Owner").equals(getOwnerUUID());
+        || CompanionOwnership.cooperates(level(), data.getUUID("Owner"), getOwnerUUID());
   }
 
   private boolean fits(ItemEntity item) {
