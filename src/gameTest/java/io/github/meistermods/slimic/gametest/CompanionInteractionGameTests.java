@@ -194,7 +194,7 @@ public final class CompanionInteractionGameTests {
             ModEntities.ABUNDANCE_SLIME.get(),
             ModEntities.TUNNEL_SLIME.get(),
             ModEntities.DRAGON_SLIME.get(),
-            ModEntities.NYAN_CAT_SLIME.get(),
+            ModEntities.MEOW_SLIME.get(),
             ModEntities.FRIENDLY_SLIME.get(),
             ModEntities.MINING_SLIME.get(),
             ModEntities.TRANSPORT_SLIME.get(),

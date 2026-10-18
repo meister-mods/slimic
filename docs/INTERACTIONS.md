@@ -41,7 +41,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I31 | Transport / Fishing | Unload fishing cargo and supply replacement rods with their item data intact. |
 | I32 | Transport / Tunnel | Supply at most one stack of actual selected lining material; retain the ghost template. |
 | I33 | Abundance / plants / Healing | Apply growth with stamina, retain patient care, and respect cancelled bonemeal events. |
-| I34 | Nyan Cat / Creeper | Use native cat avoidance while active, independently of Wait or Roam. |
+| I34 | Meow / Creeper | Use native cat avoidance while active, independently of Wait or Roam. |
 | I35 | Combat / Dragon / Transport | Collect own kill loot and request unloading without stopping full-bag combat. |
 | I36 | Fishing / recovery | Preserve pending catches through recovery and successive partial unloadings. |
 
@@ -51,4 +51,4 @@ Version 0.1.25 passes all 424 regressions both with and without JEI. The 29-scen
 
 Version 0.1.26 adds fourteen cooperative-quarry regressions for I30. Three miners starting at different heights complete one chunk while preserving its stairs and exact cargo; a native world restart retains a repaired step after its builder is recovered. All 438 regressions pass with and without JEI. Work-area preparation waits for native entity ticks before spawning actors, with action deadlines unchanged.
 
-Version 0.1.28 adds I31–I36 and 33 profession and boundary regressions. All 479 native regressions pass with Patchouli and JEI independently enabled or disabled. Client checks confirm profession equipment, lining templates, and independent Nyan Cat controls with and without JEI; guidebook checks cover both languages, English fallback, and default and uniform fonts.
+Version 0.1.28 adds I31–I36 and 33 profession and boundary regressions. All 479 native regressions pass with Patchouli and JEI independently enabled or disabled. Client checks confirm profession equipment, lining templates, and independent Meow controls with and without JEI; guidebook checks cover both languages, English fallback, and default and uniform fonts.

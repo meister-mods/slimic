@@ -68,7 +68,7 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
         || slime instanceof FieldSlime
         || slime instanceof CleaningSlime
         || slime instanceof CombatSlime
-        || slime instanceof io.github.meistermods.slimic.entity.NyanCatSlime)
+        || slime instanceof io.github.meistermods.slimic.entity.MeowSlime)
       pose.translate(0.0, 0.4, 0.0);
     if (slime instanceof SoggySlime) pose.translate(0.0, 0.5, 0.0);
     if (slime instanceof HeraldSlime) pose.translate(0.0, 0.8, 0.0);

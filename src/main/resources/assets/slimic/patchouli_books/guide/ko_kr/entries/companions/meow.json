@@ -1,6 +1,6 @@
 {
-  "name": "냥캣 슬라임",
-  "icon": "slimic:nyan_cat_slime",
+  "name": "냥냥 슬라임",
+  "icon": "slimic:meow_slime",
   "category": "slimic:companions",
   "sortnum": 44,
   "pages": [
@@ -9,7 +9,7 @@
       "title": "모양 없는 조합",
       "input1": "slimic:friendly_slime",
       "input2": "minecraft:cod",
-      "result": "slimic:nyan_cat_slime",
+      "result": "slimic:meow_slime",
       "label": "조합 → 1개",
       "text": "친근한 슬라임 + 생대구·생연어·열대어·복어 중 하나. 익힌 생선은 사용할 수 없습니다. 고양이 머리를 달고 활성 + 대기 상태로 시작합니다."
     },
@@ -23,6 +23,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "slimic:nyan_cat_slime": 0
+    "slimic:meow_slime": 0
   }
 }

@@ -16,13 +16,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Slimic.MOD_ID)
-public final class NyanCatSlime extends FriendlySlime {
+public final class MeowSlime extends FriendlySlime {
   private static final EntityDataAccessor<Boolean> ACTIVE =
-      SynchedEntityData.defineId(NyanCatSlime.class, EntityDataSerializers.BOOLEAN);
+      SynchedEntityData.defineId(MeowSlime.class, EntityDataSerializers.BOOLEAN);
   private static final EntityDataAccessor<Boolean> ROAMING =
-      SynchedEntityData.defineId(NyanCatSlime.class, EntityDataSerializers.BOOLEAN);
+      SynchedEntityData.defineId(MeowSlime.class, EntityDataSerializers.BOOLEAN);
 
-  public NyanCatSlime(EntityType<? extends NyanCatSlime> type, Level level) {
+  public MeowSlime(EntityType<? extends MeowSlime> type, Level level) {
     super(type, level);
     setWaiting(true);
   }
@@ -123,8 +123,8 @@ public final class NyanCatSlime extends FriendlySlime {
           3,
           new AvoidEntityGoal<>(
               creeper,
-              NyanCatSlime.class,
-              slime -> slime instanceof NyanCatSlime cat && cat.isActive() && cat.isTame(),
+              MeowSlime.class,
+              slime -> slime instanceof MeowSlime cat && cat.isActive() && cat.isTame(),
               6,
               1,
               1.2,
@@ -138,21 +138,21 @@ public final class NyanCatSlime extends FriendlySlime {
 
   @Override
   public ItemStack getPickResult() {
-    return new ItemStack(ModItems.NYAN_CAT_SLIME.get());
+    return new ItemStack(ModItems.MEOW_SLIME.get());
   }
 
   @Override
   public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
-    tag.putBoolean("NyanActive", isActive());
-    tag.putBoolean("NyanRoaming", isRoaming());
+    tag.putBoolean("MeowActive", isActive());
+    tag.putBoolean("MeowRoaming", isRoaming());
   }
 
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
     super.readAdditionalSaveData(tag);
-    setActive(!tag.contains("NyanActive") || tag.getBoolean("NyanActive"));
-    entityData.set(ROAMING, tag.getBoolean("NyanRoaming") && !isOrderedToSit());
-    if (!tag.contains("NyanActive")) setWaiting(true);
+    setActive(!tag.contains("MeowActive") || tag.getBoolean("MeowActive"));
+    entityData.set(ROAMING, tag.getBoolean("MeowRoaming") && !isOrderedToSit());
+    if (!tag.contains("MeowActive")) setWaiting(true);
   }
 }

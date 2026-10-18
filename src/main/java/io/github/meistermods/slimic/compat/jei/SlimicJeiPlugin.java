@@ -227,7 +227,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             case ABUNDANCE -> List.of(new ItemStack(Items.BONE_MEAL));
             case TUNNEL -> List.of(new ItemStack(Items.NETHER_STAR));
             case DRAGON -> List.of(new ItemStack(Items.DRAGON_HEAD));
-            case NYAN_CAT ->
+            case MEOW ->
                 List.of(
                     new ItemStack(Items.COD),
                     new ItemStack(Items.SALMON),

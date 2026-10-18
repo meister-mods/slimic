@@ -152,9 +152,9 @@ public final class ModRecipes {
   public static final RegistryObject<
           SimpleCraftingRecipeSerializer<
               io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
-      NYAN_CAT_SLIME =
+      MEOW_SLIME =
           SERIALIZERS.register(
-              "nyan_cat_slime",
+              "meow_slime",
               () ->
                   new SimpleCraftingRecipeSerializer<>(
                       (id, category) ->
@@ -162,7 +162,7 @@ public final class ModRecipes {
                               id,
                               category,
                               io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
-                                  .NYAN_CAT)));
+                                  .MEOW)));
 
   private ModRecipes() {}
 

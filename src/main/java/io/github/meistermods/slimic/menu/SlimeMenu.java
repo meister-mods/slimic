@@ -10,8 +10,8 @@ import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
+import io.github.meistermods.slimic.entity.MeowSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
-import io.github.meistermods.slimic.entity.NyanCatSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.SoggySlime;
@@ -102,7 +102,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
                       slime.isOrderedToSit()
                           ? WAIT
                           : (slime instanceof SoggySlime soggy && soggy.isRoaming())
-                                  || (slime instanceof NyanCatSlime cat && cat.isRoaming())
+                                  || (slime instanceof MeowSlime cat && cat.isRoaming())
                               ? ROAM
                               : slime.isWorking() ? WORK : FOLLOW;
                   case STATUS ->
@@ -278,11 +278,11 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
-    if (button == ACTIVE && slime instanceof NyanCatSlime cat) {
+    if (button == ACTIVE && slime instanceof MeowSlime cat) {
       cat.setActive(!cat.isActive());
       return true;
     }
-    if (button == ROAM && slime instanceof NyanCatSlime cat) {
+    if (button == ROAM && slime instanceof MeowSlime cat) {
       cat.setRoaming(true);
       return true;
     }
@@ -332,7 +332,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     if (button == WORK && !(slime instanceof BagSlime) && !(slime instanceof HeraldSlime))
       return false;
     if (slime instanceof SoggySlime soggy) soggy.setRoaming(false);
-    if (slime instanceof NyanCatSlime cat) cat.setRoaming(false);
+    if (slime instanceof MeowSlime cat) cat.setRoaming(false);
     if (slime instanceof BagSlime worker) worker.setWorking(button == WORK);
     if (slime instanceof HeraldSlime herald) herald.setMonitoring(button == WORK);
     slime.setWaiting(button == WAIT);

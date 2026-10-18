@@ -5,7 +5,7 @@ import io.github.meistermods.slimic.entity.AbundanceSlime;
 import io.github.meistermods.slimic.entity.DragonSlime;
 import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
-import io.github.meistermods.slimic.entity.NyanCatSlime;
+import io.github.meistermods.slimic.entity.MeowSlime;
 import io.github.meistermods.slimic.entity.TunnelSlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -171,7 +171,7 @@ public final class AdvancedSlimeLayer
       part("bat_right", "purple_wool", pose, buffers, light);
       part("horns", "black_concrete", pose, buffers, light);
     }
-    if (slime instanceof NyanCatSlime)
+    if (slime instanceof MeowSlime)
       catHead.render(
           pose,
           buffers.getBuffer(

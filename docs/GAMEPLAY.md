@@ -2,7 +2,7 @@
 
 English | [한국어](GAMEPLAY.kr.md) · [Project overview](../README.md)
 
-Slimic provides friendly companions with upgradeable stats, mining, transport, herald, combat, cleaning, riding, farming, lumberjack, guardian, soggy, healing, warehouse, fishing, abundance, tunnel, dragon, and Nyan Cat specializations.
+Slimic provides friendly companions with upgradeable stats, mining, transport, herald, combat, cleaning, riding, farming, lumberjack, guardian, soggy, healing, warehouse, fishing, abundance, tunnel, dragon, and Meow specializations.
 
 ## Installation
 
@@ -420,7 +420,7 @@ Combine a Combat Slime and a dragon head. The original sword, shield, Slime Armo
 
 The slime flies with bat-shaped wings, uses its sword in melee, and periodically sends a visible flame breath at an enabled target in Detection Range. The breath costs **four stamina**, uses Attack, and can ignite the target; Work Speed shortens its interval. It applies the same owner, ally, PvP, and target-filter checks as ordinary combat. The targeted flame does not ignite terrain or damage an allied bystander. Its equipment and loot logistics follow Combat Slime behavior.
 
-## Nyan Cat slimes
+## Meow slimes
 
 Combine a Friendly Slime with one raw cod, salmon, tropical fish, or pufferfish. Cooked fish does not work. The slime wears a cat head and starts **Active + Wait**.
 

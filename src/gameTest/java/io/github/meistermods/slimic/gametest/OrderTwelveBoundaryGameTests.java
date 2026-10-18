@@ -291,11 +291,11 @@ public final class OrderTwelveBoundaryGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_twelve_boundaries", timeoutTicks = 250)
-  public static void activeWaitingNyanUsesNativeCreeperAvoidanceAndDisablingStopsIt(
+  public static void activeWaitingMeowUsesNativeCreeperAvoidanceAndDisablingStopsIt(
       GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var owner = h.makeMockSurvivalPlayer();
-    var cat = pet(h, a, ModEntities.NYAN_CAT_SLIME.get(), owner, 6.5, 101, 8.5);
+    var cat = pet(h, a, ModEntities.MEOW_SLIME.get(), owner, 6.5, 101, 8.5);
     cat.setNoAi(true);
     for (int dx = -16; dx < 32; dx++)
       for (int dz = -16; dz < 32; dz++) {
@@ -315,7 +315,7 @@ public final class OrderTwelveBoundaryGameTests {
               .anyMatch(
                   g ->
                       g.getGoal() instanceof AvoidEntityGoal<?>
-                          && g.getGoal().getClass().getEnclosingClass() == NyanCatSlime.class))
+                          && g.getGoal().getClass().getEnclosingClass() == MeowSlime.class))
             observed[0] = true;
         });
     h.startSequence()
@@ -323,7 +323,7 @@ public final class OrderTwelveBoundaryGameTests {
             () ->
                 h.assertTrue(
                     observed[0] && creeper.distanceToSqr(cat) > 9,
-                    "Waiting active Nyan makes the native goal move the creeper away; active="
+                    "Waiting active Meow makes the native goal move the creeper away; active="
                         + cat.isActive()
                         + ", distance="
                         + creeper.distanceToSqr(cat)
@@ -344,8 +344,7 @@ public final class OrderTwelveBoundaryGameTests {
                       .noneMatch(
                           g ->
                               g.getGoal() instanceof AvoidEntityGoal<?>
-                                  && g.getGoal().getClass().getEnclosingClass()
-                                      == NyanCatSlime.class),
+                                  && g.getGoal().getClass().getEnclosingClass() == MeowSlime.class),
                   "Inactive aura releases native avoidance");
               cat.discard();
               creeper.discard();

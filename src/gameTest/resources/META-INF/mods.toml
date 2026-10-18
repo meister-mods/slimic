@@ -4,5 +4,5 @@ license="MIT"
 
 [[mods]]
 modId="slimic_tests"
-version="0.1.28"
+version="0.1.30"
 displayName="Slimic GameTests"

@@ -12,8 +12,8 @@ import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
+import io.github.meistermods.slimic.entity.MeowSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
-import io.github.meistermods.slimic.entity.NyanCatSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.SoggySlime;
@@ -87,13 +87,13 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     addOrder(SlimeMenu.FOLLOW, "follow", 194);
     addOrder(SlimeMenu.WAIT, "wait", 250);
-    if (menu.slime() instanceof NyanCatSlime cat) {
+    if (menu.slime() instanceof MeowSlime cat) {
       addOrder(SlimeMenu.ROAM, "roam", 306);
       addRenderableWidget(
           Button.builder(
                   Component.translatable("screen.slimic.active"), b -> sendButton(SlimeMenu.ACTIVE))
               .bounds(leftPos + 194, topPos + 89, 100, 18)
-              .tooltip(Tooltip.create(Component.translatable("screen.slimic.nyan_help")))
+              .tooltip(Tooltip.create(Component.translatable("screen.slimic.meow_help")))
               .build());
     }
     if (menu.slime() instanceof TunnelSlime)
@@ -404,11 +404,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
-    } else if (menu.slime() instanceof NyanCatSlime cat) {
+    } else if (menu.slime() instanceof MeowSlime cat) {
       graphics.drawWordWrap(
           font,
           Component.translatable(
-              "screen.slimic.nyan_state",
+              "screen.slimic.meow_state",
               Component.translatable(
                   cat.isActive() ? "screen.slimic.enabled" : "screen.slimic.disabled")),
           194,

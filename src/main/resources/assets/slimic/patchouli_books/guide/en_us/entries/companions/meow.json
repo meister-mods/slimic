@@ -1,6 +1,6 @@
 {
-  "name": "Nyan Cat Slime",
-  "icon": "slimic:nyan_cat_slime",
+  "name": "Meow Slime",
+  "icon": "slimic:meow_slime",
   "category": "slimic:companions",
   "sortnum": 44,
   "pages": [
@@ -9,7 +9,7 @@
       "title": "Shapeless recipe",
       "input1": "slimic:friendly_slime",
       "input2": "minecraft:cod",
-      "result": "slimic:nyan_cat_slime",
+      "result": "slimic:meow_slime",
       "label": "Combine → one result",
       "text": "Friendly Slime + any raw fish. Starts Active + Wait; cooked fish does not work."
     },
@@ -23,6 +23,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "slimic:nyan_cat_slime": 0
+    "slimic:meow_slime": 0
   }
 }
