@@ -43,7 +43,7 @@ public final class OrderTwelveGameTests {
         ModEntities.ABUNDANCE_SLIME.get(),
         ModEntities.TUNNEL_SLIME.get(),
         ModEntities.DRAGON_SLIME.get(),
-        ModEntities.NYAN_CAT_SLIME.get());
+        ModEntities.MEOW_SLIME.get());
   }
 
   private static TransientCraftingContainer grid(int size) {
@@ -146,7 +146,7 @@ public final class OrderTwelveGameTests {
                 case ABUNDANCE -> Items.BONE_MEAL;
                 case TUNNEL -> Items.NETHER_STAR;
                 case DRAGON -> Items.DRAGON_HEAD;
-                case NYAN_CAT -> Items.COD;
+                case MEOW -> Items.COD;
               });
       for (int first = 0; first < 4; first++)
         for (int other = 0; other < 4; other++) {
@@ -184,7 +184,7 @@ public final class OrderTwelveGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_twelve")
-  public static void fishingUsesExactEnchantedRodAndNyanRejectsCookedFish(GameTestHelper h) {
+  public static void fishingUsesExactEnchantedRodAndMeowRejectsCookedFish(GameTestHelper h) {
     var rod = new ItemStack(Items.FISHING_ROD);
     rod.enchant(Enchantments.FISHING_LUCK, 3);
     rod.enchant(Enchantments.FISHING_SPEED, 2);
@@ -211,7 +211,7 @@ public final class OrderTwelveGameTests {
               .getRecipeFor(RecipeType.CRAFTING, grid, h.getLevel())
               .orElseThrow()
               .assemble(grid, h.getLevel().registryAccess())
-              .is(ModItems.NYAN_CAT_SLIME.get()),
+              .is(ModItems.MEOW_SLIME.get()),
           "Every raw fish accepted");
     }
     for (var fish : new Item[] {Items.COOKED_COD, Items.COOKED_SALMON, Items.INK_SAC}) {
@@ -354,9 +354,9 @@ public final class OrderTwelveGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_twelve")
-  public static void nyanActivationAndMovementAreIndependentAndOwnerOnly(GameTestHelper h) {
+  public static void meowActivationAndMovementAreIndependentAndOwnerOnly(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
-    var cat = ModEntities.NYAN_CAT_SLIME.get().create(h.getLevel());
+    var cat = ModEntities.MEOW_SLIME.get().create(h.getLevel());
     cat.tame(owner);
     cat.moveTo(owner.position());
     var menu = TestMenus.create(3, owner.getInventory(), cat);

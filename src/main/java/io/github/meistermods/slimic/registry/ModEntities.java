@@ -12,8 +12,8 @@ import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
+import io.github.meistermods.slimic.entity.MeowSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
-import io.github.meistermods.slimic.entity.NyanCatSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
@@ -163,14 +163,14 @@ public final class ModEntities {
                   .sized(1.04F, 1.04F)
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":dragon_slime"));
-  public static final RegistryObject<EntityType<NyanCatSlime>> NYAN_CAT_SLIME =
+  public static final RegistryObject<EntityType<MeowSlime>> MEOW_SLIME =
       ENTITY_TYPES.register(
-          "nyan_cat_slime",
+          "meow_slime",
           () ->
-              EntityType.Builder.of(NyanCatSlime::new, MobCategory.CREATURE)
+              EntityType.Builder.of(MeowSlime::new, MobCategory.CREATURE)
                   .sized(1.04F, 1.04F)
                   .clientTrackingRange(10)
-                  .build(Slimic.MOD_ID + ":nyan_cat_slime"));
+                  .build(Slimic.MOD_ID + ":meow_slime"));
 
   private ModEntities() {}
 
@@ -200,7 +200,7 @@ public final class ModEntities {
     event.put(
         DRAGON_SLIME.get(),
         FriendlySlime.createAttributes().add(Attributes.FLYING_SPEED, .3).build());
-    event.put(NYAN_CAT_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(MEOW_SLIME.get(), FriendlySlime.createAttributes().build());
 
     event.put(WAREHOUSE_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(HEALING_SLIME.get(), FriendlySlime.createAttributes().build());

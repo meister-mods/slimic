@@ -34,7 +34,7 @@ public final class SlimicClient {
     event.registerEntityRenderer(ModEntities.ABUNDANCE_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.TUNNEL_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.DRAGON_SLIME.get(), FriendlySlimeRenderer::new);
-    event.registerEntityRenderer(ModEntities.NYAN_CAT_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.MEOW_SLIME.get(), FriendlySlimeRenderer::new);
 
     event.registerEntityRenderer(ModEntities.WAREHOUSE_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.HEALING_SLIME.get(), FriendlySlimeRenderer::new);

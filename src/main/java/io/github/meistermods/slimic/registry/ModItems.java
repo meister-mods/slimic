@@ -134,12 +134,12 @@ public final class ModItems {
           () ->
               new io.github.meistermods.slimic.item.SpecializedSlimeItem(
                   new Item.Properties(), ModEntities.DRAGON_SLIME));
-  public static final RegistryObject<Item> NYAN_CAT_SLIME =
+  public static final RegistryObject<Item> MEOW_SLIME =
       ITEMS.register(
-          "nyan_cat_slime",
+          "meow_slime",
           () ->
               new io.github.meistermods.slimic.item.SpecializedSlimeItem(
-                  new Item.Properties(), ModEntities.NYAN_CAT_SLIME));
+                  new Item.Properties(), ModEntities.MEOW_SLIME));
 
   private ModItems() {}
 

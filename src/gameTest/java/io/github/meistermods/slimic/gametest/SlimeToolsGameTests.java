@@ -59,7 +59,7 @@ public final class SlimeToolsGameTests {
           ModEntities.ABUNDANCE_SLIME.get(),
           ModEntities.TUNNEL_SLIME.get(),
           ModEntities.DRAGON_SLIME.get(),
-          ModEntities.NYAN_CAT_SLIME.get()
+          ModEntities.MEOW_SLIME.get()
         }) {
       FriendlySlime slime = (FriendlySlime) type.create(helper.getLevel());
       slime.tame(owner);

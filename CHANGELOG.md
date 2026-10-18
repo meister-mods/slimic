@@ -4,6 +4,30 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.30] - 2026-10-18
+
+### Changed
+
+- Meow Slime uses only its current entity, item, recipe, and saved-state names. Previous-name registry remapping and state conversion have been removed along with their migration tests.
+
+### Validation
+
+- Seventeen native profession and initial-order regressions pass. Java formatting, the Java 17 build, bilingual documentation, and runtime member references pass verification.
+- Current sources, resources, documentation, compiled classes, release JAR, and source archive contain no previous companion name.
+
+## [0.1.29] - 2026-10-18
+
+### Changed
+
+- The cat companion is named Meow Slime in English and 냥냥 슬라임 in Korean. Entity classes, registry IDs, recipe serializers, resources, translation keys, tests, documentation, and guidebook entries use the same name.
+- Existing world registries and companion state migrate to the new names while preserving identity, ownership, health, growth, activation, and movement orders. Companion schema 1 and network protocol 14 remain unchanged.
+
+### Validation
+
+- Forty focused profession, initial-order, and migration regressions pass with both optional integrations enabled and with both absent.
+- Loading the previous release's saved registry remaps entity and item IDs; native entity loading and stored-item release retain companion identity, ownership, health, activation, and roaming. Migration preserves current fields, remains idempotent, and leaves future schemas intact.
+- Native clients verify the renamed models and controls, and all guidebook pages pass English, Korean, and English-fallback checks. Formatting, the Java 17 build, document links, release resources, and runtime member references pass verification.
+
 ## [0.1.28] - 2026-10-18
 
 ### Added
@@ -12,7 +36,7 @@ This project follows [Semantic Versioning](https://semver.org/).
 - Abundance Slimes with healing and revival plus stamina-powered bonemeal effects, a lyre, and a laurel.
 - Tunnel Slimes with horizontal 3×3 excavation, a nonconsumable lining template, direction selection, perimeter reinforcement, and carrier material requests.
 - Dragon Slimes with flying combat, bat-shaped wings, and periodic targeted flame breath.
-- Nyan Cat Slimes with a cat head and independently controlled creeper deterrence and roaming.
+- Meow Slimes with a cat head and independently controlled creeper deterrence and roaming.
 - English and Korean gameplay, development, and guidebook coverage for all eighteen companions, including 39 guide entries and 116 content pages per language.
 
 ### Fixed
@@ -24,7 +48,7 @@ This project follows [Semantic Versioning](https://semver.org/).
 - Specialized recovery uses each entity's own summon item, preserving subclass identity.
 - Tunnel swimming maintains its working height and progresses through returning water without repeatedly spending stamina on the same flow. Blocked approaches report their state to heralds.
 - Tunnel lining templates cannot be extracted through native inventory shortcuts.
-- Waiting flying companions remain stationary, and Nyan Cat movement controls stay synchronized on clients.
+- Waiting flying companions remain stationary, and Meow movement controls stay synchronized on clients.
 
 ### Changed
 

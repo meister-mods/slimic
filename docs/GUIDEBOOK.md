@@ -45,7 +45,7 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Abundance Slime | [Abundance slimes](GAMEPLAY.md#abundance-slimes) |
 | Tunnel Slime | [Tunnel slimes](GAMEPLAY.md#tunnel-slimes) |
 | Dragon Slime | [Dragon slimes](GAMEPLAY.md#dragon-slimes) |
-| Nyan Cat Slime | [Nyan Cat slimes](GAMEPLAY.md#nyan-cat-slimes) |
+| Meow Slime | [Meow slimes](GAMEPLAY.md#meow-slimes) |
 
 ## Working together
 

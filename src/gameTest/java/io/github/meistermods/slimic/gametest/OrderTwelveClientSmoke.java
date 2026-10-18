@@ -19,7 +19,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 
-/** Native render, menu synchronization, ghost-slot and independent Nyan controls. */
+/** Native render, menu synchronization, ghost-slot and independent Meow controls. */
 public final class OrderTwelveClientSmoke {
   private static int phase, ticks, menuIndex, pendingMenu = -1, openTicks;
   private static CompletableFuture<Void> reload;
@@ -29,7 +29,7 @@ public final class OrderTwelveClientSmoke {
           ModEntities.ABUNDANCE_SLIME.get(),
           ModEntities.TUNNEL_SLIME.get(),
           ModEntities.DRAGON_SLIME.get(),
-          ModEntities.NYAN_CAT_SLIME.get(),
+          ModEntities.MEOW_SLIME.get(),
           ModEntities.HEALING_SLIME.get());
 
   private static void shot(Minecraft c, String name) {
@@ -242,7 +242,7 @@ public final class OrderTwelveClientSmoke {
     }
     if (phase == 7) {
       if (!(c.screen instanceof SlimeScreen screen)
-          || !(screen.getMenu().slime() instanceof NyanCatSlime)
+          || !(screen.getMenu().slime() instanceof MeowSlime)
           || !screen.getMenu().isSynchronized()
           || ++ticks < 15) return false;
       c.gameMode.handleInventoryButtonClick(screen.getMenu().containerId, SlimeMenu.ACTIVE);
@@ -252,11 +252,11 @@ public final class OrderTwelveClientSmoke {
     }
     if (phase == 8) {
       if (!(c.screen instanceof SlimeScreen screen)
-          || !(screen.getMenu().slime() instanceof NyanCatSlime cat)
+          || !(screen.getMenu().slime() instanceof MeowSlime cat)
           || cat.isActive()
           || !cat.isRoaming()
           || ++ticks < 20) return false;
-      shot(c, "nyan-independent-controls");
+      shot(c, "meow-independent-controls");
       c.player.closeContainer();
       menuIndex = 0;
       openMenu(c, menuIndex);
@@ -319,7 +319,7 @@ public final class OrderTwelveClientSmoke {
       System.out.println(
           "SLIMIC ORDER TWELVE CLIENT SMOKE PASSED: five profession models and crests, four"
               + " synchronized menu layouts, ghost template preservation, direction update,"
-              + " independent Nyan controls, six close-up renders");
+              + " independent Meow controls, six close-up renders");
       next();
       return true;
     }

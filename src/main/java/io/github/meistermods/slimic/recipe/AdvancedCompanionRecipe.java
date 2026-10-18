@@ -24,7 +24,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     ABUNDANCE,
     TUNNEL,
     DRAGON,
-    NYAN_CAT
+    MEOW
   }
 
   private final Kind kind;
@@ -49,7 +49,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case ABUNDANCE -> ModItems.ABUNDANCE_SLIME.get();
       case TUNNEL -> ModItems.TUNNEL_SLIME.get();
       case DRAGON -> ModItems.DRAGON_SLIME.get();
-      case NYAN_CAT -> ModItems.NYAN_CAT_SLIME.get();
+      case MEOW -> ModItems.MEOW_SLIME.get();
     };
   }
 
@@ -59,7 +59,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case ABUNDANCE -> stack.is(Items.BONE_MEAL);
       case TUNNEL -> stack.is(Items.NETHER_STAR);
       case DRAGON -> stack.is(Items.DRAGON_HEAD);
-      case NYAN_CAT ->
+      case MEOW ->
           stack.is(Items.COD)
               || stack.is(Items.SALMON)
               || stack.is(Items.TROPICAL_FISH)
@@ -130,7 +130,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case ABUNDANCE -> ModRecipes.ABUNDANCE_SLIME.get();
       case TUNNEL -> ModRecipes.TUNNEL_SLIME.get();
       case DRAGON -> ModRecipes.DRAGON_SLIME.get();
-      case NYAN_CAT -> ModRecipes.NYAN_CAT_SLIME.get();
+      case MEOW -> ModRecipes.MEOW_SLIME.get();
     };
   }
 }
