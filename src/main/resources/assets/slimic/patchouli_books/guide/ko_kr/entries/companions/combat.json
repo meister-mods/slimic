@@ -1,0 +1,32 @@
+{
+  "name": "전투 슬라임",
+  "icon": "slimic:combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_sword",
+      "result": "slimic:combat_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 아무 검. 소환하면 원본 검을 장착합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처음에는 대기하며 전투 명령으로 시작합니다. 검·방패·$(l:care/armor)슬라임 갑옷$()을 장착할 수 있고 일반 적재량 가방을 사용합니다. 기본 근접 전투·방패 규칙을 따르며 명중마다 기력 1을 씁니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "대상 필터는 6종을 따로 설정합니다. 기본값은 적대만 켜져 있고 중립·비적대·플레이어·길들임·크리퍼는 꺼져 있습니다. 주인·아군·같은 주인 동료는 제외합니다. 살아 있는 동료를 공격 중인 엔더맨은 적대로 봅니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처치한 적의 전리품을 가방에 담습니다. 가방이 차도 전투를 계속하며 운반자가 짐을 비울 수 있습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:combat_slime": 0
+  }
+}

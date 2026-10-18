@@ -1,0 +1,29 @@
+{
+  "name": "가디언 엔젤 슬라임",
+  "icon": "slimic:guardian_angel_slime",
+  "category": "slimic:companions",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:nether_star",
+      "input3": "minecraft:totem_of_undying",
+      "result": "slimic:guardian_angel_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 네더의 별 + 불사의 토템. 원본 토템을 초기 보관량으로 사용합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처음에는 대기하며 따라오기를 선택하면 주인을 날아서 따릅니다. 대기 중에도 자신이나 가까운 주인을 지킬 수 있습니다. 반격 광선은 공격력·작업 속도·도달 거리·기력을 사용하고 먼 적을 찾지는 않습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "생명력은 일반의 10배로 처음 160, 강화마다 40씩 증가합니다. 같은 데이터의 토템을 최대 64개 보관합니다. 16블록 안의 주인이 치명상을 입으면 토템 하나로 보호하며, 주인이 손에 든 토템이 우선입니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:guardian_angel_slime": 0
+  }
+}

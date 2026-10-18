@@ -1,0 +1,6 @@
+{
+  "name": "성장과 능력치",
+  "description": "활동으로 얻은 포인트를 쓰고 능력치의 역할을 알아봅니다.",
+  "icon": "minecraft:experience_bottle",
+  "sortnum": 1
+}

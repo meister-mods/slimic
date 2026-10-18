@@ -1,0 +1,28 @@
+{
+  "name": "드래곤 슬라임",
+  "icon": "slimic:dragon_slime",
+  "category": "slimic:companions",
+  "sortnum": 43,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "모양 없는 조합",
+      "input1": "slimic:combat_slime",
+      "input2": "minecraft:dragon_head",
+      "result": "slimic:dragon_slime",
+      "label": "조합 → 1개",
+      "text": "전투 슬라임 + 드래곤 머리. 기존 검·방패·갑옷·가방·대상 필터·성장을 보존하고 대기 상태로 시작합니다. 박쥐 모양 날개와 검은 뿔로 구분할 수 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "검을 장착하고 전투 명령을 선택합니다. 허용된 적에게 날아가 검으로 공격하고, 탐지 범위 안의 보이는 대상에게 주기적으로 원거리 화염 브레스를 보냅니다. 작업 속도가 브레스 간격을 줄입니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "브레스는 기력 4와 공격력 능력치를 사용하며 대상을 불태울 수 있습니다. 근접 공격과 같은 소유권·대상 필터를 따릅니다. 지형에 불을 붙이지 않습니다. 처치 전리품은 전투 가방에 담고, 가방이 차도 계속 싸우며 운반자가 짐을 비울 수 있습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:dragon_slime": 0
+  }
+}

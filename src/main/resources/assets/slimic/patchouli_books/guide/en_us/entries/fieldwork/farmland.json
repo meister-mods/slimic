@@ -1,0 +1,20 @@
+{
+  "name": "Registered plots",
+  "icon": "minecraft:wheat_seeds",
+  "category": "slimic:fieldwork",
+  "sortnum": 27,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Prepare farmland before selecting Farm. Registration is a snapshot, not a scan that expands with every later field. Reissue Farm to include new plots. Supply seeds, carrots, potatoes, or other suitable planting stock."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The farmer harvests mature crops and replants the same crop from its bag. Registered soil can be tilled back after reverting to supported dirt. Air, stone, or other non-soil removes a plot until Farm is selected again."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A missing hoe, seed shortage, blocked planting, exhaustion, or full cargo needs attention. Releasing at another block clears old plot registration and waits for a new Farm order."
+    }
+  ]
+}

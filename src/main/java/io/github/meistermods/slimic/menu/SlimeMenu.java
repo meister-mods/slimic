@@ -5,15 +5,18 @@ import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.FieldSlime;
+import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.NyanCatSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.entity.TunnelSlime;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.registry.ModMenus;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,7 +37,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public final class SlimeMenu extends AbstractContainerMenu {
   public static final int TARGET_TOGGLE = 40, TARGET_PAGE_BUTTON = 46;
   public static final int FILTERS = 18, TARGET_PAGE = 19;
-  public static final int FIRE_SIGNAL = 28, ROAM = 29;
+  public static final int FIRE_SIGNAL = 28, ROAM = 29, DIRECTION = 50, ACTIVE = 51;
   public static final int FOLLOW = 20, WAIT = 21, WORK = 22;
   public static final int PREVIOUS_PAGE = 23, NEXT_PAGE = 24;
   public static final int DELAY_DOWN = 25, DELAY_UP = 26, RIDE = 27;
@@ -98,23 +101,28 @@ public final class SlimeMenu extends AbstractContainerMenu {
                   case MODE ->
                       slime.isOrderedToSit()
                           ? WAIT
-                          : slime instanceof SoggySlime soggy && soggy.isRoaming()
+                          : (slime instanceof SoggySlime soggy && soggy.isRoaming())
+                                  || (slime instanceof NyanCatSlime cat && cat.isRoaming())
                               ? ROAM
                               : slime.isWorking() ? WORK : FOLLOW;
                   case STATUS ->
-                      slime instanceof HealingSlime healer
-                          ? healer.getHealingStatus().ordinal()
-                          : slime instanceof FieldSlime field
-                              ? field.getFieldStatus().ordinal()
-                              : slime instanceof MiningSlime miner
-                                  ? miner.getMiningStatus().ordinal()
-                                  : slime instanceof TransportSlime carrier
-                                      ? carrier.getTransportStatus().ordinal()
-                                      : slime instanceof CombatSlime fighter
-                                          ? fighter.getCombatStatus().ordinal()
-                                          : slime instanceof CleaningSlime cleaner
-                                              ? cleaner.getCleaningStatus().ordinal()
-                                              : 0;
+                      slime instanceof FishingSlime fisher
+                          ? fisher.getFishingStatus().ordinal()
+                          : slime instanceof TunnelSlime tunnel
+                              ? tunnel.getTunnelStatus().ordinal()
+                              : slime instanceof HealingSlime healer
+                                  ? healer.getHealingStatus().ordinal()
+                                  : slime instanceof FieldSlime field
+                                      ? field.getFieldStatus().ordinal()
+                                      : slime instanceof MiningSlime miner
+                                          ? miner.getMiningStatus().ordinal()
+                                          : slime instanceof TransportSlime carrier
+                                              ? carrier.getTransportStatus().ordinal()
+                                              : slime instanceof CombatSlime fighter
+                                                  ? fighter.getCombatStatus().ordinal()
+                                                  : slime instanceof CleaningSlime cleaner
+                                                      ? cleaner.getCleaningStatus().ordinal()
+                                                      : 0;
                   case FILTERS -> {
                     int mask = 0;
                     if (slime instanceof CombatSlime fighter)
@@ -148,6 +156,11 @@ public final class SlimeMenu extends AbstractContainerMenu {
             @Override
             public boolean mayPlace(ItemStack stack) {
               return matchesEquipment(slime, equipment, stack);
+            }
+
+            @Override
+            public boolean mayPickup(Player player) {
+              return !(slime instanceof TunnelSlime && equipment == 2) && super.mayPickup(player);
             }
 
             @Override
@@ -202,7 +215,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private static int equipmentSlots(FriendlySlime slime) {
-    if (slime instanceof GuardianAngelSlime) return 1;
+    if (slime instanceof TunnelSlime) return 3;
+    if (slime instanceof FishingSlime || slime instanceof GuardianAngelSlime) return 1;
     return slime instanceof MiningSlime
         ? 2
         : slime instanceof CombatSlime || slime instanceof SaddleSlime
@@ -211,6 +225,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private static boolean matchesEquipment(FriendlySlime slime, int slot, ItemStack stack) {
+    if (slime instanceof TunnelSlime && slot == 2) return false;
+    if (slime instanceof FishingSlime) return slot == 0 && FishingSlime.isRod(stack);
     if (slime instanceof GuardianAngelSlime) return slot == 0 && stack.is(Items.TOTEM_OF_UNDYING);
     return slime instanceof FieldSlime field
         ? slot == 0 && field.matchesTool(stack)
@@ -262,6 +278,20 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (button == ACTIVE && slime instanceof NyanCatSlime cat) {
+      cat.setActive(!cat.isActive());
+      return true;
+    }
+    if (button == ROAM && slime instanceof NyanCatSlime cat) {
+      cat.setRoaming(true);
+      return true;
+    }
+    if (button == DIRECTION && slime instanceof TunnelSlime tunnel) {
+      tunnel.setWorking(false);
+      tunnel.setWaiting(true);
+      tunnel.setTunnelDirection(tunnel.getTunnelDirection().getClockWise());
+      return true;
+    }
     if (button == ROAM && slime instanceof SoggySlime soggy) {
       soggy.setRoaming(true);
       return true;
@@ -302,6 +332,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     if (button == WORK && !(slime instanceof BagSlime) && !(slime instanceof HeraldSlime))
       return false;
     if (slime instanceof SoggySlime soggy) soggy.setRoaming(false);
+    if (slime instanceof NyanCatSlime cat) cat.setRoaming(false);
     if (slime instanceof BagSlime worker) worker.setWorking(button == WORK);
     if (slime instanceof HeraldSlime herald) herald.setMonitoring(button == WORK);
     slime.setWaiting(button == WAIT);
@@ -315,6 +346,11 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public void clicked(int slot, int button, ClickType type, Player player) {
     if (!stillValid(player)) return;
+    if (slot == 2 && slime instanceof TunnelSlime tunnel) {
+      if (type == ClickType.PICKUP && (getCarried().isEmpty() || tunnel.validLining(getCarried())))
+        tunnel.setLiningTemplate(getCarried());
+      return;
+    }
     if (slot == 0
         && slime instanceof GuardianAngelSlime guardian
         && type == ClickType.SWAP
@@ -325,6 +361,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public ItemStack quickMoveStack(Player player, int index) {
     if (!stillValid(player) || index < 0 || index >= slots.size()) return ItemStack.EMPTY;
+    if (slime instanceof TunnelSlime && index == 2) return ItemStack.EMPTY;
     Slot slot = slots.get(index);
     if (!slot.isActive() || !slot.hasItem() || !slot.mayPickup(player)) return ItemStack.EMPTY;
     ItemStack original = slot.getItem();
@@ -398,6 +435,9 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack getItem(int slot) {
+      if (slime instanceof TunnelSlime tunnel && slot == 2)
+        return tunnel.getLiningTemplate().copy();
+      if (slime instanceof FishingSlime fisher) return fisher.getRod();
       if (slime instanceof GuardianAngelSlime guardian) return guardian.getTotems();
       return slime instanceof FieldSlime field
           ? field.getTool()
@@ -410,6 +450,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack removeItem(int slot, int count) {
+      if (slime instanceof TunnelSlime && slot == 2) return ItemStack.EMPTY;
       ItemStack result =
           getItem(slot).split(slime instanceof GuardianAngelSlime ? Math.min(1, count) : count);
       setChanged();
@@ -418,6 +459,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack removeItemNoUpdate(int slot) {
+      if (slime instanceof TunnelSlime && slot == 2) return ItemStack.EMPTY;
       ItemStack result = getItem(slot);
       setItem(slot, ItemStack.EMPTY);
       return result;
@@ -425,7 +467,10 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-      if (slime instanceof GuardianAngelSlime guardian) guardian.setTotems(stack);
+      if (slime instanceof TunnelSlime tunnel && slot == 2) {
+        if (slime.level().isClientSide) tunnel.setLiningTemplate(stack);
+      } else if (slime instanceof FishingSlime fisher) fisher.setRod(stack);
+      else if (slime instanceof GuardianAngelSlime guardian) guardian.setTotems(stack);
       else if (slime instanceof FieldSlime field) field.setTool(stack);
       else if (slime instanceof MiningSlime miner) miner.setTool(slot, stack);
       else if (slime instanceof SaddleSlime mount) mount.setEquipment(slot, stack);

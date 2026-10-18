@@ -10,6 +10,7 @@ import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.core.BlockPos;
@@ -41,6 +42,16 @@ public final class WorkSystemGameTests {
   @GameTest(template = "empty", batch = "work_system", timeoutTicks = 300)
   public static void newMinersWaitUntilTheOwnerExplicitlyStartsMining(GameTestHelper h) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
+    // Isolate command activation from natural side fluids and unrelated cave-lining jobs.
+    for (int edge = -1; edge <= 16; edge++)
+      for (int y = 101; y < h.getLevel().getMaxBuildHeight(); y++)
+        for (var point :
+            List.of(
+                arena.point(-1, y, edge),
+                arena.point(16, y, edge),
+                arena.point(edge, y, -1),
+                arena.point(edge, y, 16)))
+          h.getLevel().setBlock(BlockPos.containing(point), Blocks.BEDROCK.defaultBlockState(), 2);
     Player owner = h.makeMockSurvivalPlayer();
     var original = ModEntities.FRIENDLY_SLIME.get().create(h.getLevel());
     original.tame(owner);

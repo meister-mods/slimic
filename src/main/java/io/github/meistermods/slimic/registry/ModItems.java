@@ -110,6 +110,37 @@ public final class ModItems {
   public static final RegistryObject<Item> WAREHOUSE_SLIME =
       ITEMS.register("warehouse_slime", () -> new WarehouseSlimeItem(new Item.Properties()));
 
+  public static final RegistryObject<Item> FISHING_SLIME =
+      ITEMS.register(
+          "fishing_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.FISHING_SLIME));
+  public static final RegistryObject<Item> ABUNDANCE_SLIME =
+      ITEMS.register(
+          "abundance_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.ABUNDANCE_SLIME));
+  public static final RegistryObject<Item> TUNNEL_SLIME =
+      ITEMS.register(
+          "tunnel_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.TUNNEL_SLIME));
+  public static final RegistryObject<Item> DRAGON_SLIME =
+      ITEMS.register(
+          "dragon_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.DRAGON_SLIME));
+  public static final RegistryObject<Item> NYAN_CAT_SLIME =
+      ITEMS.register(
+          "nyan_cat_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.NYAN_CAT_SLIME));
+
   private ModItems() {}
 
   public static final RegistryObject<Item> SOGGY_SLIME =

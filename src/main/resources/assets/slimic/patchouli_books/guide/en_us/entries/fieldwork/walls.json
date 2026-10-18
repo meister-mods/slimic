@@ -1,0 +1,20 @@
+{
+  "name": "Walls and supports",
+  "icon": "minecraft:cobblestone",
+  "category": "slimic:fieldwork",
+  "sortnum": 26,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A miner seals side fluid inlets and underground gaps at least 2×2 wide and tall. Walls line the outside of the work chunk, preserving its two-block-wide stairs. Ordinary open air above the entrance is left open."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Each wall cell uses one cobblestone from its own bag and one stamina. Missing cobblestone pauses work; transport supplies up to one stack. Walls need no bucket, but remaining fluid removal still does."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Missing stair treads use common full, non-falling blocks such as cobblestone, stone, dirt, or deepslate. Placement respects protected blocks and entities. An unreachable repair pauses without spending material."
+    }
+  ]
+}

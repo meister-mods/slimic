@@ -1,0 +1,28 @@
+{
+  "name": "파발 슬라임",
+  "icon": "slimic:herald_slime",
+  "category": "slimic:companions",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:firework_rocket",
+      "result": "slimic:herald_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 아무 폭죽 로켓. 폭죽 디자인 전체를 유지합니다. 크리에이티브 기본 폭죽은 하얀 작은 구형입니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처음에는 대기하며 감시 명령으로 시작합니다. 범위 안의 같은 주인 작업자를 지켜봅니다. 정체가 설정한 시간만큼 지속되면 피해 없는 신호를 보내며, 계속 정체되면 10초마다 반복합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "지연은 1~60분이며 기본 5분입니다. 수동 대기와 완료된 작업은 정체로 세지 않습니다. 일반 우클릭으로 신호를 보내고 폭죽으로 디자인을 바꿉니다. 치료·염색·세척·튜너 사용이 우선합니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:herald_slime": 0
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "첫 동료",
+  "icon": "slimic:friendly_slime",
+  "category": "slimic:basics",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:friendly_slime",
+      "text": "작업대에서 영혼 모래나 영혼 흙 하나를 슬라임볼 8개로 둘러쌉니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "블록이나 물 근원에 사용하면 자신에게 길들여진 동료가 나옵니다. 서바이벌에서는 아이템을 소비합니다. 새 아이템은 크리에이티브에서 재사용하며, 모루로 붙인 이름도 반영됩니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l:basics/tuner)슬라임 튜너$()로 관리 화면을 여세요. 새 작업 슬라임은 대기 상태로 시작합니다. 해당 작업 명령을 직접 내려야 일을 시작합니다."
+    }
+  ]
+}

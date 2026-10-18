@@ -1,0 +1,29 @@
+{
+  "name": "Guardian Angel Slime",
+  "icon": "slimic:guardian_angel_slime",
+  "category": "slimic:companions",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:nether_star",
+      "input3": "minecraft:totem_of_undying",
+      "result": "slimic:guardian_angel_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + nether star + totem of undying. The exact totem becomes the initial reserve."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting. Follow lets it fly after its owner. It can defend itself or its nearby owner even while waiting. Retaliatory beams use Attack, Work Speed, Reach, and stamina; they do not seek distant enemies."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Health is ten times the common value: initially 160, +40 per Health point. A reserve slot holds up to 64 matching totems. One guardian can spend one to save its owner from lethal damage within 16 blocks; held totems act first."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:guardian_angel_slime": 0
+  }
+}

@@ -32,15 +32,23 @@ The following scenarios have independent native game regressions. Transfers chec
 | I22 | Healing / Saddle | Heal without changing armor, wings, saddle or Wait. |
 | I23 | Healing / Saddle | Revive at one health with all three exact gear items. |
 | I24 | Guardian / Saddle / owner | Protect a mounted owner without removing rider or gear. |
-| I25 | Combat / all thirteen professions | Same-owner companions remain excluded with all filters enabled. |
+| I25 | Combat / all eighteen professions | Same-owner companions remain excluded with all filters enabled. |
 | I26 | Transport / worker | Competing carriers cannot duplicate spare tools. |
 | I27 | Herald / worker | A signal callback cannot continue a cancelled monitoring order. |
 | I28 | Warehouse / worker | Use a real loaded detour to reach cargo. |
 | I29 | Healing / Soggy | Keep Roam and its fixed origin during treatment. |
 | I30 | Mining / Mining | Share one chunk staircase across start heights; preserve legacy floors, queued protection, exact repair costs and loot. |
+| I31 | Transport / Fishing | Unload fishing cargo and supply replacement rods with their item data intact. |
+| I32 | Transport / Tunnel | Supply at most one stack of actual selected lining material; retain the ghost template. |
+| I33 | Abundance / plants / Healing | Apply growth with stamina, retain patient care, and respect cancelled bonemeal events. |
+| I34 | Nyan Cat / Creeper | Use native cat avoidance while active, independently of Wait or Roam. |
+| I35 | Combat / Dragon / Transport | Collect own kill loot and request unloading without stopping full-bag combat. |
+| I36 | Fishing / recovery | Preserve pending catches through recovery and successive partial unloadings. |
 
 Endurance validation runs for at least two hours of real elapsed server time. It repeats obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 
 Version 0.1.25 passes all 424 regressions both with and without JEI. The 29-scenario matrix runs repeatedly for over two real hours; a separate continuous movement run completes 288 cycles in 7,212 seconds. All thirteen professions retain their saved traits when a 0.1.24 world loads, and both Korean with JEI and English without JEI pass the client checks.
 
 Version 0.1.26 adds fourteen cooperative-quarry regressions for I30. Three miners starting at different heights complete one chunk while preserving its stairs and exact cargo; a native world restart retains a repaired step after its builder is recovered. All 438 regressions pass with and without JEI. Work-area preparation waits for native entity ticks before spawning actors, with action deadlines unchanged.
+
+Version 0.1.28 adds I31–I36 and 33 profession and boundary regressions. All 479 native regressions pass with Patchouli and JEI independently enabled or disabled. Client checks confirm profession equipment, lining templates, and independent Nyan Cat controls with and without JEI; guidebook checks cover both languages, English fallback, and default and uniform fonts.

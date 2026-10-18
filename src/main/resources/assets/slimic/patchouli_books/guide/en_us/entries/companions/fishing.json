@@ -1,0 +1,28 @@
+{
+  "name": "Fishing Slime",
+  "icon": "slimic:fishing_slime",
+  "category": "slimic:companions",
+  "sortnum": 40,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:fishing_rod",
+      "result": "slimic:fishing_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + any fishing rod. The exact rod is equipped and the slime starts waiting."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The rod keeps its enchantments, wear, name, and data. Choose Fish to find a nearby shore in its fixed area. Catches enter its bag. Five minutes without a catch makes it seek another spot. Lure shortens waiting; Luck of the Sea affects the native fishing loot table. Open water is required for treasure."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Each catch costs one stamina and wears the rod normally. Unbreaking reduces wear; Mending uses catch experience to repair the rod. Work Speed shortens fishing waits. Full cargo and broken rods request carrier support."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:fishing_slime": 0
+  }
+}

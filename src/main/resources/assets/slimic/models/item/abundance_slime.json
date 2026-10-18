@@ -1,0 +1,6 @@
+{
+  "parent": "slimic:item/slime_summon_base",
+  "textures": {
+    "crest": "minecraft:item/bone_meal"
+  }
+}

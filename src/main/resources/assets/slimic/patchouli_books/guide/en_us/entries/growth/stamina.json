@@ -1,0 +1,16 @@
+{
+  "name": "Stamina and rest",
+  "icon": "minecraft:bread",
+  "category": "slimic:growth",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Recovery restores 2% of maximum stamina per second: 2 at 100, 4 at 200, or 10 at 500. Larger pools allow longer work bursts and proportionally faster recovery."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Most workers rest after exhaustion until reaching 25% stamina, roughly thirteen seconds from zero at normal tick speed. Recovery opportunities depend on the job. Flight and sprinting have their own costs; see $(l:care/flight)Mounted flight$()."
+    }
+  ]
+}

@@ -56,7 +56,8 @@ public final class HealingSlimeLayer extends RenderLayer<FriendlySlime, SlimeMod
             CubeListBuilder.create()
                 .texOffs(0, 0)
                 .addBox(-.5F, 15, -4.65F, 1, 2.8F, .3F)
-                .addBox(-1.4F, 15.9F, -4.65F, 2.8F, 1, .3F),
+                .addBox(-1.4F, 15.9F, -4.65F, .9F, 1, .3F)
+                .addBox(.5F, 15.9F, -4.65F, .9F, 1, .3F),
             PartPose.ZERO);
     return LayerDefinition.create(mesh, 16, 16);
   }

@@ -1,0 +1,28 @@
+{
+  "name": "Cleaning Slime",
+  "icon": "slimic:cleaning_slime",
+  "category": "slimic:companions",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:rotten_flesh",
+      "result": "slimic:cleaning_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + one rotten flesh."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting; select Clean. It collects eligible dropped items in a fixed spherical area, then returns home after each successful pickup. Detection Range is five times the common base: initially 40 blocks."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It respects pickup delays, ownership, bag space, and protection. Full cargo requests unloading. After three minutes stuck on one item, it tries another eligible item; otherwise it retries the same item."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:cleaning_slime": 0
+  }
+}

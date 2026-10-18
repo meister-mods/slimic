@@ -28,7 +28,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public final class HealingSlime extends BagSlime {
+public class HealingSlime extends BagSlime {
   public enum Status {
     IDLE,
     HEALING,
@@ -38,19 +38,30 @@ public final class HealingSlime extends BagSlime {
     UNREACHABLE,
     WAITING,
     FOLLOWING,
-    FULL
+    FULL,
+    GROWING,
+    DISABLED
   }
 
   private boolean working, resting, treatmentBlocked;
   private BlockPos home, brokenTarget;
   private FriendlySlime patient;
-  private Status status = Status.IDLE;
+  protected Status status = Status.IDLE;
   private int nextSearch, cooldown, stuckTicks;
   private Vec3 lastPosition, pathDestination;
   private final Map<Object, Long> blocked = new HashMap<>();
 
   public HealingSlime(EntityType<? extends HealingSlime> type, Level level) {
     super(type, level, 27);
+  }
+
+  @Override
+  public int detectionMultiplier() {
+    return 2;
+  }
+
+  protected boolean performSecondaryWork(ServerLevel server) {
+    return false;
   }
 
   @Override
@@ -107,6 +118,7 @@ public final class HealingSlime extends BagSlime {
               WorkStatus.Request.CARGO_PICKUP);
       case RESTING -> WorkStatus.blocked(WorkStatus.Order.HEAL, WorkStatus.Reason.EXHAUSTED);
       case UNREACHABLE -> WorkStatus.blocked(WorkStatus.Order.HEAL, WorkStatus.Reason.UNREACHABLE);
+      case DISABLED -> WorkStatus.blocked(WorkStatus.Order.HEAL, WorkStatus.Reason.DISABLED);
       default ->
           WorkStatus.of(
               WorkStatus.Order.HEAL,
@@ -132,7 +144,7 @@ public final class HealingSlime extends BagSlime {
         - ItemHandlerHelper.insertItemStacked(getBag(), offered, false).getCount();
   }
 
-  private int ballSlot() {
+  protected int ballSlot() {
     for (int slot = 0; slot < getCapacity(); slot++)
       if (getBag().getStackInSlot(slot).is(Items.SLIME_BALL)) return slot;
     return -1;
@@ -358,7 +370,8 @@ public final class HealingSlime extends BagSlime {
       }
       resting = false;
       if (ballSlot() < 0) {
-        clearTarget();
+        if (patient != null || brokenTarget != null) clearTarget();
+        if (performSecondaryWork(server)) return;
         status = Status.NO_SLIMEBALLS;
         return;
       }
@@ -366,10 +379,12 @@ public final class HealingSlime extends BagSlime {
       if ((patient != null && !eligible(patient))
           || (brokenTarget != null && !eligible(brokenTarget))) clearTarget();
       if (patient == null && brokenTarget == null) {
-        if (tickCount < nextSearch) return;
-        nextSearch = tickCount + 20 + Math.floorMod(getId(), 5);
-        search(server);
+        if (tickCount >= nextSearch) {
+          nextSearch = tickCount + 20 + Math.floorMod(getId(), 5);
+          search(server);
+        }
         if (patient == null && brokenTarget == null) {
+          if (performSecondaryWork(server)) return;
           if (blocked.isEmpty()) treatmentBlocked = false;
           status = blocked.isEmpty() ? Status.IDLE : Status.UNREACHABLE;
           return;

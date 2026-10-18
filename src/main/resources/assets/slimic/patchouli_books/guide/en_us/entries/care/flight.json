@@ -1,0 +1,20 @@
+{
+  "name": "Mounted flight",
+  "icon": "minecraft:elytra",
+  "category": "slimic:care",
+  "sortnum": 32,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Flight needs a saddle, usable elytra, and the owner as rider. WASD steers, forward movement follows view pitch, Space rises, and Shift dismounts. With no input it hovers. Look downward and move forward to descend."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Left Ctrl is Slime Sprint and can be rebound. Without elytra, ground sprint doubles hop speed and costs 10 stamina per second. Normal airborne flight costs 2; boosted flight is 1.75× speed and costs 15 per second."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Flight and sprinting stop stamina recovery. At zero stamina, ascent stops and the open wings descend slowly with limited steering. Landing allows recovery; flight and sprint resume at 25%. Removing unusable wings restores normal gravity."
+    }
+  ]
+}

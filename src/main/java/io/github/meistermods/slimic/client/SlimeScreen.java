@@ -1,20 +1,24 @@
 package io.github.meistermods.slimic.client;
 
+import io.github.meistermods.slimic.entity.AbundanceSlime;
 import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
 import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
+import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.NyanCatSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.entity.TunnelSlime;
 import io.github.meistermods.slimic.entity.WarehouseSlime;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.network.ModNetwork;
@@ -36,6 +40,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
   private Button previousPage;
   private Button nextPage;
+  private Button directionButton;
 
   public SlimeScreen(SlimeMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
@@ -51,6 +56,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   @Override
   protected void init() {
     super.init();
+    directionButton = null;
     upgrades.clear();
     filters.clear();
     targetPageButton = null;
@@ -81,6 +87,25 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     addOrder(SlimeMenu.FOLLOW, "follow", 194);
     addOrder(SlimeMenu.WAIT, "wait", 250);
+    if (menu.slime() instanceof NyanCatSlime cat) {
+      addOrder(SlimeMenu.ROAM, "roam", 306);
+      addRenderableWidget(
+          Button.builder(
+                  Component.translatable("screen.slimic.active"), b -> sendButton(SlimeMenu.ACTIVE))
+              .bounds(leftPos + 194, topPos + 89, 100, 18)
+              .tooltip(Tooltip.create(Component.translatable("screen.slimic.nyan_help")))
+              .build());
+    }
+    if (menu.slime() instanceof TunnelSlime)
+      directionButton =
+          addRenderableWidget(
+              Button.builder(
+                      Component.translatable("screen.slimic.direction"),
+                      b -> sendButton(SlimeMenu.DIRECTION))
+                  .bounds(leftPos + 280, topPos + 73, 76, 14)
+                  .tooltip(Tooltip.create(Component.translatable("screen.slimic.lining_help")))
+                  .build());
+    if (menu.slime() instanceof FishingSlime) addOrder(SlimeMenu.WORK, "fish", 306);
     if (menu.slime() instanceof SoggySlime) addOrder(SlimeMenu.ROAM, "roam", 306);
     if (menu.slime() instanceof CombatSlime) {
       addOrder(SlimeMenu.WORK, "fight", 306);
@@ -112,11 +137,13 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                   Component.translatable("screen.slimic.ride"), b -> sendButton(SlimeMenu.RIDE))
               .bounds(leftPos + 306, topPos + 25, 50, 18)
               .build());
-    if (menu.slime() instanceof HealingSlime) addOrder(SlimeMenu.WORK, "heal", 306);
+    if (menu.slime() instanceof HealingSlime)
+      addOrder(SlimeMenu.WORK, menu.slime() instanceof AbundanceSlime ? "abundance" : "heal", 306);
     if (menu.slime() instanceof FarmerSlime) addOrder(SlimeMenu.WORK, "farm", 306);
     if (menu.slime() instanceof LumberjackSlime) addOrder(SlimeMenu.WORK, "log", 306);
     if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 306);
-    if (menu.slime() instanceof MiningSlime) addOrder(SlimeMenu.WORK, "mine", 306);
+    if (menu.slime() instanceof MiningSlime)
+      addOrder(SlimeMenu.WORK, menu.slime() instanceof TunnelSlime ? "tunnel" : "mine", 306);
     if (menu.slime() instanceof HeraldSlime) {
       addOrder(SlimeMenu.WORK, "monitor", 306);
       addRenderableWidget(
@@ -199,6 +226,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                 Component.translatable("target.slimic." + kind.key())));
       }
     }
+    if (directionButton != null && menu.slime() instanceof TunnelSlime tunnel)
+      directionButton.setMessage(
+          Component.translatable("direction.slimic." + tunnel.getTunnelDirection().getName()));
     if (previousPage != null) {
       previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;
       nextPage.active = menu.data(SlimeMenu.BAG_PAGE) + 1 < menu.bagPages();
@@ -270,11 +300,15 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.health",
             menu.data(SlimeMenu.HEALTH) / 10.0F,
             (int) menu.value(SlimeStat.HEALTH)),
-        (menu.slime() instanceof CombatSlime || menu.slime() instanceof SaddleSlime)
+        (menu.slime() instanceof CombatSlime
+                || menu.slime() instanceof SaddleSlime
+                || menu.slime() instanceof TunnelSlime)
             ? 252
             : menu.slime() instanceof MiningSlime
                 ? 234
-                : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
+                : menu.slime() instanceof FieldSlime
+                        || menu.slime() instanceof GuardianAngelSlime
+                        || menu.slime() instanceof FishingSlime
                     ? 216
                     : 194,
         49,
@@ -286,11 +320,15 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             "screen.slimic.stamina",
             menu.data(SlimeMenu.STAMINA) / 10,
             (int) menu.value(SlimeStat.STAMINA)),
-        (menu.slime() instanceof CombatSlime || menu.slime() instanceof SaddleSlime)
+        (menu.slime() instanceof CombatSlime
+                || menu.slime() instanceof SaddleSlime
+                || menu.slime() instanceof TunnelSlime)
             ? 252
             : menu.slime() instanceof MiningSlime
                 ? 234
-                : menu.slime() instanceof FieldSlime || menu.slime() instanceof GuardianAngelSlime
+                : menu.slime() instanceof FieldSlime
+                        || menu.slime() instanceof GuardianAngelSlime
+                        || menu.slime() instanceof FishingSlime
                     ? 216
                     : 194,
         62,
@@ -305,17 +343,21 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           0xffe5e9e9,
           false);
       Enum<?>[] statuses =
-          menu.slime() instanceof HealingSlime
-              ? HealingSlime.Status.values()
-              : menu.slime() instanceof FieldSlime
-                  ? FieldSlime.Status.values()
-                  : menu.slime() instanceof TransportSlime
-                      ? TransportSlime.Status.values()
-                      : menu.slime() instanceof CombatSlime
-                          ? CombatSlime.Status.values()
-                          : menu.slime() instanceof CleaningSlime
-                              ? CleaningSlime.Status.values()
-                              : MiningSlime.Status.values();
+          menu.slime() instanceof FishingSlime
+              ? FishingSlime.Status.values()
+              : menu.slime() instanceof TunnelSlime
+                  ? TunnelSlime.Status.values()
+                  : menu.slime() instanceof HealingSlime
+                      ? HealingSlime.Status.values()
+                      : menu.slime() instanceof FieldSlime
+                          ? FieldSlime.Status.values()
+                          : menu.slime() instanceof TransportSlime
+                              ? TransportSlime.Status.values()
+                              : menu.slime() instanceof CombatSlime
+                                  ? CombatSlime.Status.values()
+                                  : menu.slime() instanceof CleaningSlime
+                                      ? CleaningSlime.Status.values()
+                                      : MiningSlime.Status.values();
       String key =
           statuses[Math.min(statuses.length - 1, Math.max(0, menu.data(SlimeMenu.STATUS)))]
               .name()
@@ -331,21 +373,25 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                   logger.getRequiredSaplingCount())
               : Component.translatable(
                   "status.slimic."
-                      + (menu.slime() instanceof HealingSlime
-                          ? "healing."
-                          : menu.slime() instanceof WarehouseSlime
-                              ? "warehouse."
-                              : menu.slime() instanceof FieldSlime
-                                  ? (menu.slime() instanceof FarmerSlime
-                                      ? "farmer."
-                                      : "lumberjack.")
-                                  : menu.slime() instanceof TransportSlime
-                                      ? "transport."
-                                      : menu.slime() instanceof CombatSlime
-                                          ? "combat."
-                                          : menu.slime() instanceof CleaningSlime
-                                              ? "cleaning."
-                                              : "")
+                      + (menu.slime() instanceof FishingSlime
+                          ? "fishing."
+                          : menu.slime() instanceof TunnelSlime
+                              ? "tunnel."
+                              : menu.slime() instanceof HealingSlime
+                                  ? "healing."
+                                  : menu.slime() instanceof WarehouseSlime
+                                      ? "warehouse."
+                                      : menu.slime() instanceof FieldSlime
+                                          ? (menu.slime() instanceof FarmerSlime
+                                              ? "farmer."
+                                              : "lumberjack.")
+                                          : menu.slime() instanceof TransportSlime
+                                              ? "transport."
+                                              : menu.slime() instanceof CombatSlime
+                                                  ? "combat."
+                                                  : menu.slime() instanceof CleaningSlime
+                                                      ? "cleaning."
+                                                      : "")
                       + key),
           10,
           216,
@@ -358,6 +404,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             321,
             77,
             0xffe5e9e9);
+    } else if (menu.slime() instanceof NyanCatSlime cat) {
+      graphics.drawWordWrap(
+          font,
+          Component.translatable(
+              "screen.slimic.nyan_state",
+              Component.translatable(
+                  cat.isActive() ? "screen.slimic.enabled" : "screen.slimic.disabled")),
+          194,
+          112,
+          162,
+          0xffb4c9d1);
     } else if (menu.slime() instanceof SoggySlime) {
       graphics.drawWordWrap(
           font, Component.translatable("screen.slimic.soggy_info"), 194, 84, 162, 0xffb4c9d1);
@@ -400,6 +457,12 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
     renderBackground(graphics);
     super.render(graphics, mouseX, mouseY, partialTick);
-    renderTooltip(graphics, mouseX, mouseY);
+    if (hoveredSlot != null && hoveredSlot.index == 2 && menu.slime() instanceof TunnelSlime)
+      graphics.renderTooltip(
+          font,
+          font.split(Component.translatable("screen.slimic.lining_help"), 220),
+          mouseX,
+          mouseY);
+    else renderTooltip(graphics, mouseX, mouseY);
   }
 }

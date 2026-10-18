@@ -138,9 +138,13 @@ public final class OrderSixGameTests {
               "Each revival consumes exactly one ball");
           h.assertTrue(
               h.getLevel()
-                  .getEntitiesOfClass(ItemEntity.class, new AABB(positions.get(0)).inflate(16))
+                  .getEntitiesOfClass(
+                      ItemEntity.class,
+                      new AABB(
+                          BlockPos.containing(area.point(0, 100, 0)),
+                          BlockPos.containing(area.point(16, 106, 16))))
                   .isEmpty(),
-              "Death cannot duplicate retained equipment or cargo as loot");
+              "Death cannot duplicate retained equipment or cargo within the cleared arena");
           area.close();
           h.succeed();
         });

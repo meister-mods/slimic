@@ -1,0 +1,28 @@
+{
+  "name": "낚시 슬라임",
+  "icon": "slimic:fishing_slime",
+  "category": "slimic:companions",
+  "sortnum": 40,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "모양 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:fishing_rod",
+      "result": "slimic:fishing_slime",
+      "label": "조합 → 1개",
+      "text": "친근한 슬라임 + 낚싯대. 원본 낚싯대의 마법 부여·내구도·이름·데이터를 유지해 장착하고 대기 상태로 시작합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "낚시 명령으로 고정 구역의 가까운 물가를 찾습니다. 어획물은 가방에 보관하며, 5분 동안 잡지 못하면 다른 자리를 찾습니다. 미끼는 대기 시간을 줄이고 바다의 행운은 바닐라 어획 목록에 적용됩니다. 보물에는 열린 수면이 필요합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "어획마다 기력 1과 기본 낚싯대 내구도를 사용합니다. 내구성은 마모를 줄이고 수선은 어획 경험치로 낚싯대를 수리합니다. 작업 속도는 대기 시간을 줄입니다. 가방이 차거나 낚싯대가 부러지면 운반자에게 지원을 요청합니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:fishing_slime": 0
+  }
+}

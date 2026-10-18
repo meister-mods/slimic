@@ -44,12 +44,16 @@ public final class MiningSlimeGameTests {
   private static final BlockPos FLOOR = new BlockPos(5, 1, 5);
   private static final BlockPos ORE = new BlockPos(6, 2, 5);
   private static final Set<BlockPos> DENIED = ConcurrentHashMap.newKeySet();
+  private static final java.util.Map<BlockPos, Integer> DENIALS = new ConcurrentHashMap<>();
 
   private MiningSlimeGameTests() {}
 
   @SubscribeEvent
   public static void denyProtectedTestBlock(BlockEvent.BreakEvent event) {
-    if (DENIED.contains(event.getPos())) event.setCanceled(true);
+    if (DENIED.contains(event.getPos())) {
+      DENIALS.merge(event.getPos(), 1, Integer::sum);
+      event.setCanceled(true);
+    }
   }
 
   @GameTest(template = "empty")
@@ -206,16 +210,25 @@ public final class MiningSlimeGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 100)
   public static void insufficientTierDoesNotDestroyOreOrFarmActivity(GameTestHelper helper) {
-    MiningSlime miner = miner(helper, new ItemStack(Items.WOODEN_PICKAXE));
-    helper.setBlock(ORE, Blocks.DIAMOND_ORE);
+    var area = new LoadedWorkArea(helper);
+    MiningSlime miner = isolatedMiner(helper, area, new ItemStack(Items.WOODEN_PICKAXE));
+    BlockPos ore = BlockPos.containing(area.point(9, 100, 8));
+    helper.getLevel().setBlockAndUpdate(ore, Blocks.DIAMOND_ORE.defaultBlockState());
+    helper.getLevel().addFreshEntity(miner);
     helper.runAfterDelay(
         60,
         () -> {
-          helper.assertBlockPresent(Blocks.DIAMOND_ORE, ORE);
+          helper.assertTrue(
+              helper.getLevel().getBlockState(ore).is(Blocks.DIAMOND_ORE),
+              "An insufficient tool must preserve the ore");
           helper.assertTrue(
               miner.getActivityProgress() == 0 && miner.getPickaxe().getDamageValue() == 0,
               "An insufficient tool must neither wear nor award progress");
-          miner.setWorking(false);
+          helper.assertTrue(
+              miner.getMiningStatus() == MiningSlime.Status.NEEDS_TIER,
+              "The miner must reach the ore and report its tier requirement");
+          miner.discard();
+          area.close();
           helper.succeed();
         });
   }
@@ -272,11 +285,19 @@ public final class MiningSlimeGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 140)
   public static void aBrokenPickaxeStopsFurtherMining(GameTestHelper helper) {
+    var area = new LoadedWorkArea(helper);
     ItemStack tool = new ItemStack(Items.WOODEN_PICKAXE);
     tool.setDamageValue(tool.getMaxDamage() - 1);
-    MiningSlime miner = miner(helper, tool);
-    helper.setBlock(ORE, Blocks.STONE);
-    helper.setBlock(ORE.east(), Blocks.STONE);
+    MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.tame(helper.makeMockSurvivalPlayer());
+    miner.moveTo(area.point(7.5, 101, 8.5));
+    miner.setTool(0, tool);
+    miner.onReleased();
+    miner.setWorking(true);
+    BlockPos ore = BlockPos.containing(area.point(9, 100, 8));
+    helper.getLevel().setBlockAndUpdate(ore, Blocks.STONE.defaultBlockState());
+    helper.getLevel().setBlockAndUpdate(ore.east(), Blocks.STONE.defaultBlockState());
+    helper.getLevel().addFreshEntity(miner);
     helper.runAfterDelay(
         90,
         () -> {
@@ -284,12 +305,22 @@ public final class MiningSlimeGameTests {
               miner.getPickaxe().isEmpty()
                   && miner.getActivityProgress() == 1
                   && count(miner, Items.COBBLESTONE) == 1,
-              "The last durability must produce exactly one harvested block");
-          helper.assertBlockPresent(Blocks.STONE, ORE.east());
+              "Last durability yields exactly one block; tool="
+                  + miner.getPickaxe()
+                  + ", activity="
+                  + miner.getActivityProgress()
+                  + ", cargo="
+                  + count(miner, Items.COBBLESTONE)
+                  + ", status="
+                  + miner.getMiningStatus());
+          helper.assertTrue(
+              helper.getLevel().getBlockState(ore.east()).is(Blocks.STONE),
+              "The second block is intact");
           helper.assertTrue(
               miner.getMiningStatus() == MiningSlime.Status.NO_TOOL,
-              "A broken tool must stop the miner");
-          miner.setWorking(false);
+              "A broken tool stops the miner");
+          miner.discard();
+          area.close();
           helper.succeed();
         });
   }
@@ -435,15 +466,23 @@ public final class MiningSlimeGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 100)
   public static void deniedBreakEventPreservesBlockToolAndProgress(GameTestHelper helper) {
-    MiningSlime miner = miner(helper, new ItemStack(Items.IRON_PICKAXE));
-    helper.setBlock(ORE, Blocks.STONE);
-    BlockPos protectedPosition = helper.absolutePos(ORE);
+    var area = new LoadedWorkArea(helper);
+    MiningSlime miner = isolatedMiner(helper, area, new ItemStack(Items.IRON_PICKAXE));
+    miner.moveTo(area.point(9.5, 101, 8.5));
+    BlockPos protectedPosition = BlockPos.containing(area.point(9, 100, 8));
+    helper.getLevel().setBlockAndUpdate(protectedPosition, Blocks.STONE.defaultBlockState());
     DENIED.add(protectedPosition);
+    helper.getLevel().addFreshEntity(miner);
     helper.runAfterDelay(
         60,
         () -> {
           try {
-            helper.assertBlockPresent(Blocks.STONE, ORE);
+            helper.assertTrue(
+                helper.getLevel().getBlockState(protectedPosition).is(Blocks.STONE),
+                "The protected block must remain intact");
+            helper.assertTrue(
+                DENIALS.getOrDefault(protectedPosition, 0) > 0,
+                "The native break event must actually be denied");
             helper.assertTrue(
                 miner.getPickaxe().getDamageValue() == 0
                     && miner.getActivityProgress() == 0
@@ -452,7 +491,9 @@ public final class MiningSlimeGameTests {
             helper.succeed();
           } finally {
             DENIED.remove(protectedPosition);
-            miner.setWorking(false);
+            DENIALS.remove(protectedPosition);
+            miner.discard();
+            area.close();
           }
         });
   }
@@ -521,6 +562,17 @@ public final class MiningSlimeGameTests {
             rule.set(true, helper.getLevel().getServer());
           }
         });
+  }
+
+  private static MiningSlime isolatedMiner(
+      GameTestHelper helper, LoadedWorkArea area, ItemStack tool) {
+    MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+    miner.tame(helper.makeMockSurvivalPlayer());
+    miner.moveTo(area.point(7.5, 101, 8.5));
+    miner.setTool(0, tool);
+    miner.onReleased();
+    miner.setWorking(true);
+    return miner;
   }
 
   private static MiningSlime miner(GameTestHelper helper, ItemStack tool) {

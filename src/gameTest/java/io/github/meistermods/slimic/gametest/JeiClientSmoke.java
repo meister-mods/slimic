@@ -48,6 +48,10 @@ public final class JeiClientSmoke implements IModPlugin {
     return recipes("slime_chest");
   }
 
+  public static long guidebookRecipes() {
+    return recipes("guide_book");
+  }
+
   public static long heraldRecipes() {
     return recipes("herald_slime/");
   }

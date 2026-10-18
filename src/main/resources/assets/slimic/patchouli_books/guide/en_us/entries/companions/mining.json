@@ -1,0 +1,28 @@
+{
+  "name": "Mining Slime",
+  "icon": "slimic:mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_pickaxe",
+      "result": "slimic:mining_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + any pickaxe. The actual pickaxe keeps its wear, name, and enchantments."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting. Select Mine to excavate the release chunk downward, preserving stairs. Wood, leaves, containers, and unbreakable blocks stay intact. Equip a pickaxe and shovel, and carry repair blocks. Full cargo, missing tools, exhaustion, or protection can pause work."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The held tool determines normal speed and drops. Work Speed only boosts an effective tool: a pickaxe on dirt stays slow without a shovel. Ore tool tiers cannot be bypassed. See $(l:fieldwork/fluids)Fluids$() and $(l:cooperation/shared_quarry)Shared stairs$(). Mending uses ore experience to repair the working tool before leftover orbs spawn."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:mining_slime": 0
+  }
+}

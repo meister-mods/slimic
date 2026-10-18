@@ -1,0 +1,20 @@
+{
+  "name": "슬라임 상자",
+  "icon": "slimic:slime_chest",
+  "category": "slimic:cooperation",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_chest",
+      "text": "슬라임볼 하나를 판자 8개로 둘러쌉니다. 다른 수종의 판자를 섞어도 되며 27칸을 보관합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "화물·예비 도구·빈 양동이·조약돌·슬라임볼을 넣어 운반자가 쓰게 하세요. 잠긴 슬라임 상자는 제외합니다. 일반 상자는 제작 재료이며 자동 물류의 보관소로 사용하지 않습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_chest": 0
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Slime Armor",
+  "icon": "slimic:slime_armor",
+  "category": "slimic:care",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "minecraft:iron_chestplate",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:slime_armor",
+      "label": "Combine → one result",
+      "text": "Any chestplate + one slimeball. The iron chestplate shown is an example; all supported chestplates retain their material and data."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Equip Slime Armor on a Combat or Saddle Slime. Normal chestplates are ingredients, not direct equipment. Conversion retains armor attributes, durability, enchantments, names, and leather color. Helmets, leggings, and boots do not qualify."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_armor": 0,
+    "slimic:leather_slime_armor": 0,
+    "slimic:chainmail_slime_armor": 0,
+    "slimic:golden_slime_armor": 0,
+    "slimic:diamond_slime_armor": 0,
+    "slimic:netherite_slime_armor": 0
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Dragon Slime",
+  "icon": "slimic:dragon_slime",
+  "category": "slimic:companions",
+  "sortnum": 43,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:combat_slime",
+      "input2": "minecraft:dragon_head",
+      "result": "slimic:dragon_slime",
+      "label": "Combine → one result",
+      "text": "Combat Slime + a dragon head. Keeps companion data and equipment, and starts waiting."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Its sword, shield, armor, bag, filters, and growth remain. Bat-shaped wings and dark horns identify it. Choose Fight and equip a sword. It flies toward enabled enemies, attacks with its sword, and periodically sends a ranged flame breath at a visible target in Detection Range. Work Speed shortens the breath interval."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Breath costs four stamina, uses Attack damage, and can ignite its target. It follows the same ownership and target filters as melee. It does not set terrain on fire. Kill drops use the combat bag; full cargo does not stop fighting, and carriers may unload it."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:dragon_slime": 0
+  }
+}

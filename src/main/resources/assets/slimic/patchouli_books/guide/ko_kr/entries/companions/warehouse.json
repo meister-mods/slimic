@@ -1,0 +1,28 @@
+{
+  "name": "창고 슬라임",
+  "icon": "slimic:warehouse_slime",
+  "category": "slimic:companions",
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:transport_slime",
+      "input2": "minecraft:chest#8",
+      "result": "slimic:warehouse_slime",
+      "label": "조합 → 결과 1개",
+      "text": "운반 슬라임 + 일반 상자 8개로 작업대의 9칸을 채웁니다. 저장된 동료와 화물을 유지하며 대기로 시작합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "적재량은 일반 가방의 8배, 운반 가방의 4배입니다. 처음 72칸, 일반 강화로 최대 216칸이며 장비 칸은 없습니다. 관리 화면에서 27칸씩 페이지를 바꿔 사용합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "보관 명령으로 멈춘 작업자의 짐을 모으고 자재를 보급합니다. 화물은 자신에게 보관하며 상자로 비우지 않습니다. 다른 운반자는 창고가 대기·따라오기 중이어도 보관소와 공급원으로 쓸 수 있습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:warehouse_slime": 0
+  }
+}

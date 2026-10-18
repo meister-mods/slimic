@@ -1,0 +1,16 @@
+{
+  "name": "Healing and colors",
+  "icon": "minecraft:lime_dye",
+  "category": "slimic:care",
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Right-click an injured owned companion with a slimeball to heal up to four health. Survival spends it only if healing succeeds. At full health or after cancelled healing, the ball is retained."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click with a dye to recolor the body. Equipment keeps its colors. A water bucket removes existing dye; Survival returns an empty bucket only when washing succeeds. Shift-right-click still recovers first."
+    }
+  ]
+}

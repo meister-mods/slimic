@@ -22,6 +22,7 @@ The runnable artifact is `build/libs/slimic-1.20.1-<version>.jar`. The `-sources
 | `./gradlew runServer` | Launch a local development server. |
 | `./gradlew runGameTestServer` | Run the dedicated Forge GameTest server. |
 | `./gradlew runData` | Run configured data generators. |
+| `./gradlew verifyGuidebook` | Check bilingual guide resources, links, recipes, and optional conditions. |
 
 GameTests run in `build/game-test-server`, separate from the normal development world under `run`. Their Java sources and fixtures live in `src/gameTest` and are excluded from release artifacts. The build compiles the GameTests; `runGameTestServer` executes them.
 
@@ -65,7 +66,7 @@ Tests use a structure loaded one block above its marker, so the fixture floor is
 
 Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
 
-Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 13 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
+Menu opening data includes the companion type so a missing client entity can retain the exact slot layout until the screen closes. Network protocol 14 requires compatible client and server builds. Hidden bag pages reject transfers, Capacity changes clamp the current page, and in-place slot mutations notify the bag so partially unloaded miners resume.
 
 Mining state, bag contents, stamina, and activity progress use the standard entity save/load hooks. The equipped pickaxe and shovel use the native main-hand and off-hand equipment slots, keeping client rendering and item damage synchronized. Ordinary mining is bounded by one completed solid block per tick, searches process a limited number of chunk positions, and no neighbouring chunk is loaded for target discovery.
 
@@ -93,7 +94,19 @@ Client rendering applies a brightness-preserving dye shader to the original slim
 
 Quarry navigation uses a bounded 4,096-node search with a 128-block route budget inside the already-loaded work chunk. The route budget is independent of Detection Range; tool actions retain their actual range and sight checks. Candidate standing positions are searched together using the actual body footprint for support. Valid paths survive hops, and tight waypoint tolerance prevents clipping staircase corners. Travel timers reset on movement, and failed support routes retry after a short cooldown. Regression coverage includes default-stat staircase navigation, wall detours, blocked repairs, and resumption after clearance.
 
-`QuarryStaircaseData` stores dimension-local, persistent staircase profiles in `slimic_quarry_staircases.dat`. Each worked chunk retains one shared origin and at most 28 top-height bounds; protection lookup is constant time and does not acquire chunks. Unstarted plans adopt the shared origin while keeping their own starting height and layer. Started legacy plans retain their original phase, and their profiles are merged before work. Fresh waiting summons do not register a worksite. `MiningQuarry.RampOrigin` is optional in older entity data; absent values derive from `TopFloor`. Registered protection outlives entities. Join callbacks skip stale work anchors from another dimension until release initializes the destination. Final breaking checks revalidate protection after Forge callbacks. Repair checks preserve two blocks of headroom above other protected floors. The common companion schema remains 1 and the network protocol remains 13.
+`QuarryStaircaseData` stores dimension-local, persistent staircase profiles in `slimic_quarry_staircases.dat`. Each worked chunk retains one shared origin and at most 28 top-height bounds; protection lookup is constant time and does not acquire chunks. Unstarted plans adopt the shared origin while keeping their own starting height and layer. Started legacy plans retain their original phase, and their profiles are merged before work. Fresh waiting summons do not register a worksite. `MiningQuarry.RampOrigin` is optional in older entity data; absent values derive from `TopFloor`. Registered protection outlives entities. Join callbacks skip stale work anchors from another dimension until release initializes the destination. Final breaking checks revalidate protection after Forge callbacks. Repair checks preserve two blocks of headroom above other protected floors. The common companion schema remains 1 and the network protocol remains 14.
+
+## Patchouli guidebook
+
+Development runs use optional runtime dependency Patchouli `1.20.1-84.1-FORGE`. Disable it with `-PenablePatchouli=false`, independently of `-PenableJei=false`. Common game logic has no Patchouli Java API dependency, and the release JAR does not bundle the library.
+
+The definition is `data/slimic/patchouli_books/guide/book.json`; contents live in `assets/slimic/patchouli_books/guide/{en_us,ko_kr}`. The guide uses the [Patchouli resource book format](https://vazkiimods.github.io/Patchouli/docs/reference/book-json/). Locale folders translate the body; `i18n` stays disabled so literal percentages are not interpreted as translation format strings. The standard language files translate the book name, landing text, and subtitle. Book `version` is `0` so the localized subtitle appears instead of an edition number.
+
+The one-book, one-slimeball recipe and its recipe-book unlock share a `forge:mod_loaded` condition. Dynamic companion recipes retain their normal ingredients and saved data; the guide displays them through shared item diagrams. Ordinary recipes use native crafting pages.
+
+`verifyGuidebook` checks matching locale paths and page structures, categories, templates, internal links, recipe references, and optional conditions; `check` and `build` include it.
+
+For native validation, create a test world named `slimic-smoke` in the normal development client, save and quit, then copy `run/saves/slimic-smoke` to `build/guidebook-client/saves/slimic-smoke`. Run `./gradlew runClient -PclientSmoke=true -PguidebookSmoke=true`. The separate world checks Survival 2×2 crafting, consumption, unlocks, Creative placement, language/resource reloads, every page, text bounds, item lookups, links, and localized search. It changes the copied player inventory and game mode.
 
 ## Combat and cleaning
 
@@ -137,7 +150,7 @@ Herald warning history keeps the latest signaled episode for each worker UUID wi
 
 Player target selection checks the server PVP flag and the loaded owner's player-damage permissions before both target acquisition and melee damage. Native team/alliance exclusions remain in effect. Tests restore server PVP and scoreboard fixtures after checking each rule.
 
-Native container-data packets carry signed 16-bit values. `IntContainerData` encodes each logical integer as two halves and appends an initial-snapshot marker. Management and tuner menus share this transport, retaining large effective attributes and clearing old high bits after a smaller update. Editors wait for the marker before loading initial values. Protocol 13 includes this layout, riding controls and the current management types. Validation covers real native packet serialization, both menus, large cleaning range modifiers, value reductions, and native clients with and without JEI.
+Native container-data packets carry signed 16-bit values. `IntContainerData` encodes each logical integer as two halves and appends an initial-snapshot marker. Management and tuner menus share this transport, retaining large effective attributes and clearing old high bits after a smaller update. Editors wait for the marker before loading initial values. Protocol 14 includes this layout, riding controls and the current management types. Validation covers real native packet serialization, both menus, large cleaning range modifiers, value reductions, and native clients with and without JEI.
 
 ## Saddle equipment and riding
 
@@ -149,7 +162,7 @@ Only the owning player can occupy and control the single seat. A priority moveme
 
 Winged riding supplies transient no-gravity for movement and native vehicle validation. Saving removes that computed flag while preserving explicit native gravity overrides, so recovered mounts do not hover unattended. The saddle has a dedicated model and leather atlas; paired side-wing geometry uses a dedicated opaque feather texture and animates independently while flying.
 
-Protocol 13 carries ascent and boost in the riding input message. Validation includes crafting and actual release, owner checks, equipment Shift transfers, mounted recovery, unusable wings, explicit versus transient gravity, and native Survival client steering, jumping, ascent, hover, boost, pitch, server vehicle synchronization, and Shift dismount with and without JEI.
+Protocol 14 carries ascent and boost in the riding input message. Validation includes crafting and actual release, owner checks, equipment Shift transfers, mounted recovery, unusable wings, explicit versus transient gravity, and native Survival client steering, jumping, ascent, hover, boost, pitch, server vehicle synchronization, and Shift dismount with and without JEI.
 
 ## Growth thresholds and quarry consistency
 
@@ -163,7 +176,7 @@ Regressions cover the initial growth thresholds for all companion types, convers
 
 ## Threats, collapse, and active growth
 
-The entity-join hook adds a companion target goal to hostile `Enemy` mobs, excluding creepers. Their native attack goals retain damage and projectile behavior. A higher-priority escape goal responds to a real attacker for non-combat companions and yields to rider control. Hop propulsion stays at a common base while the movement attribute sets the grounded delay; ridden ground travel uses the same principle.
+The entity-join hook adds a companion target goal to hostile `Enemy` mobs, excluding creepers and Endermen. Their native attack goals retain damage and projectile behavior. A higher-priority escape goal responds to a real attacker for non-combat companions and yields to rider control. Hop propulsion stays at a common base while the movement attribute sets the grounded delay; ridden ground travel uses the same principle.
 
 A lowest-priority uncancelled `LivingDeathEvent` preserves the companion before native equipment, bag, or experience drops. `BrokenSlimeBlockEntity` stores its specialized recovery stack under `Slime`. A replaceable death cell becomes a block; an occupied cell produces its block item without overwriting terrain. Native block loot copies this payload to `BlockEntityTag.Slime`, retaining it through mining and placement. Revival uses the normal spawn validation and UUID checks, sets current health to 1, clears death/fire/motion state, and consumes the block and ball only on success. Failed spawning restores the block entity.
 
@@ -175,7 +188,7 @@ Riding input carries ascent and boost. Boost state is synchronized; the server s
 
 ## Surface workers
 
-`FieldSlime` shares a single native main-hand tool, normal bag, stamina recovery, loaded-area checks, protected harvesting/placement, and FARM/LOG work orders. Full inventories request CARGO_PICKUP; an empty broken-tool slot requests TOOL_SUPPLY. Missing seeds use SEEDS_MISSING without creating a tool request. Successful actions award activity only after the world edit succeeds. Networking uses protocol 13.
+`FieldSlime` shares a single native main-hand tool, normal bag, stamina recovery, loaded-area checks, protected harvesting/placement, and FARM/LOG work orders. Full inventories request CARGO_PICKUP; an empty broken-tool slot requests TOOL_SUPPLY. Missing seeds use SEEDS_MISSING without creating a tool request. Successful actions award activity only after the world edit succeeds. Networking uses protocol 14.
 
 `BlockSurvey` copies palettes of matching loaded chunk sections, then inspects at most 512 cells per worker tick. Farming activation freezes the existing farmland selection; serialization finishes any pending snapshot so recovery never loses recognized plots. Plot coordinates and crop identities are persistent. Tilling uses the equipped hoe's Forge tool action and native placement cancellation; block removal uses owner-attributed survival break events and simulates all drops before changing terrain.
 
@@ -183,11 +196,11 @@ Lumberjack discovery inspects at most 64 connected candidates per tick, limits t
 
 Mangrove discovery follows raised trunks through central roots and air or water gaps to valid planting soil. Only the planned central root blocks join the harvest queue. The optional `LoggingRootColumns` coordinate array identifies those root entries separately from logs, so replacing a planned log with a root does not authorize harvesting that replacement. Loading accepts at most 512 entries that still belong to the saved queue; absent data means an empty set and retains schema 1 compatibility. Replanting uses native planted propagule age and waterlogs only existing source water.
 
-Native regressions cover exact specialization tools, frozen plots, same-crop replanting, soil restoration/exclusion, farmland trampling, tall-tree felling and replanting, decorative leaves, seed requirements, full inventories, cancelled edits, tool requests, and recovery. Client checks cover hats, held tools, management layouts, both JEI recipe families, and all thirteen profession crests with JEI enabled and disabled.
+Native regressions cover exact specialization tools, frozen plots, same-crop replanting, soil restoration/exclusion, farmland trampling, tall-tree felling and replanting, decorative leaves, seed requirements, full inventories, cancelled edits, tool requests, and recovery. Client checks cover hats, held tools, management layouts, both JEI recipe families, and all eighteen profession crests with JEI enabled and disabled.
 
 ## Companion care, tools, guardians, and animated storage
 
-`SlimeTunerItem` is the Survival management tool; its shapeless recipe uses a slimeball and an iron ingot. `CreativeSlimeTunerItem`, `CreativeSlimeTunerMenu`, `CreativeSlimeTunerScreen`, `creative_slime_tuner`, and `creative_tuner` identify the Creative editor. Protocol 13 carries its renamed packet and adds the guardian menu layout and herald manual-fire command. Management validates ownership, alive state, dimension, distance and a held ordinary tuner on the server. Healing and washing consume items only on an actual change; capture retains priority.
+`SlimeTunerItem` is the Survival management tool; its shapeless recipe uses a slimeball and an iron ingot. `CreativeSlimeTunerItem`, `CreativeSlimeTunerMenu`, `CreativeSlimeTunerScreen`, `creative_slime_tuner`, and `creative_tuner` identify the Creative editor. Protocol 14 carries its renamed packet and adds the guardian menu layout and herald manual-fire command. Management validates ownership, alive state, dimension, distance and a held ordinary tuner on the server. Healing and washing consume items only on an actual change; capture retains priority.
 
 `GuardianAngelSlimeRecipe` preserves the input companion payload and exact totem in `InitialGuardianTotem`. The guardian stores `GuardianTotems` and its attack cooldown. A stable permanent maximum-health multiplier applies tenfold scaling without compounding on reload. The native health limit bounds Creative base input to 102.4. Flying navigation and move control use a dedicated flying-speed attribute derived from common Movement Speed. Retaliation targets and beams are transient. A lowest-priority damage event selects the owner's attacker; sight, alliance, range and resource checks gate beams. A lowest-priority uncancelled death event selects one nearby owned guardian, invokes Forge totem-use permission, consumes one reserve and restores native-style effects. Held native totems resolve before death. Beam ribbons emit both windings for the native lightning render type.
 
@@ -207,7 +220,7 @@ Lumberjacks defer unreachable or pickup-protected material entities for 200 tick
 
 Recovery fixtures wait for the destination chunk to become entity-ticking before interaction, observe the restored UUID at the join event, and verify identity, health, order, and schema through the server's entity lookup. Verification and fixture cleanup run in separate sequence steps.
 
-Work arenas clear complete columns above their floor and remove existing non-player entities. This prevents overhanging mountain terrain and falling gravel from changing the test inputs. Asynchronous worker tests wait for the required work state before changing resources or terrain instead of assuming discovery finishes after a fixed delay.
+Work arenas clear complete columns above their floor and remove non-player entities before and after terrain preparation, including drops from cleared vegetation. This prevents natural terrain and preparation drops from changing the test inputs. Placement-accounting fixtures register only their prepared plot and wait for valid native planting conditions; loot checks remain inside the cleared arena. Asynchronous worker tests wait for the required work state before changing resources or terrain instead of assuming discovery finishes after a fixed delay.
 
 ## Fluid work, trails, and step movement
 
@@ -221,7 +234,7 @@ Ground hop control caps propulsion throughout native `JUMPING` as well as moveme
 
 Regression coverage includes all ground roles in the jumping state, actual fall/lava/drowning/fire deaths, offline guardian retaliation, trail costs/loot/cancellation, stored soggy traits, fluid protection rollback, unchanged bucket data, waterlogged inventories, and transport unloading followed by bucket delivery. Native clients verify the new models, trail rendering, management screen, and optional JEI recipes.
 
-All work-specialization constructors start waiting. Missing profession order data also selects Wait, including Friendly Slime specialization, while explicit saved orders remain authoritative. Job tests issue their starting commands explicitly. Native item-use tests cover defaults, specialization, and command-preserving recovery for all nine work roles.
+All work-specialization constructors start waiting. Missing profession order data also selects Wait, including Friendly Slime specialization, while explicit saved orders remain authoritative. Job tests issue their starting commands explicitly. Native item-use tests cover defaults, specialization, and command-preserving recovery for all sixteen autonomous work specializations.
 
 Guardian retaliation also recognizes damage absorbed by temporary absorption health. Untamed guardians safely reject owner-dependent target checks; native regressions cover both boundaries.
 
@@ -239,7 +252,7 @@ Copy changes retain translation keys and persistent data identifiers. Check matc
 
 `COBBLESTONE_MISSING` with `COBBLESTONE_SUPPLY` pauses mining; lack of bag space also requests `CARGO_PICKUP`. `BagSlime.workSupplyLimit` and `receiveWorkSupply` retain one-item defaults for tools and buckets. A miner requesting wall material accepts up to 64, with live request/ownership/capacity validation before transfer; transport extracts only the accepted count. Successfully placed cobblestone costs one material and stamina and grants one activity unit. Forge placement cancellation restores the snapshot and spends nothing. Unreplaceable and occupied cells are preserved.
 
-`SoggyRoaming` and `SoggyRoamHome` store the optional ROAM order and its origin without changing schema version 1. Missing fields retain previous Follow/Wait behavior. Roaming reserves MOVE/LOOK, chooses bounded random supported destinations, and uses a path region only after every intersecting chunk is confirmed loaded. It remains independent of the owner's presence and yields to fleeing. Follow and Wait clear the roaming flag; release reanchors it. Terrain changes release roaming paths for local reselection, avoiding reuse of an earlier Follow destination. Its recovery override permits trail stamina to recover while ROAM is active. The menu synchronizes ROAM through the existing mode field; protocol 13 requires matching clients.
+`SoggyRoaming` and `SoggyRoamHome` store the optional ROAM order and its origin without changing schema version 1. Missing fields retain previous Follow/Wait behavior. Roaming reserves MOVE/LOOK, chooses bounded random supported destinations, and uses a path region only after every intersecting chunk is confirmed loaded. It remains independent of the owner's presence and yields to fleeing. Follow and Wait clear the roaming flag; release reanchors it. Terrain changes release roaming paths for local reselection, avoiding reuse of an earlier Follow destination. Its recovery override permits trail stamina to recover while ROAM is active. The menu synchronizes ROAM through the existing mode field; protocol 14 requires matching clients.
 
 Native regressions cover inlet replacement, cave lining across recovery, exact placement costs, protected placements, material shortages, stack-limited and partial-stock delivery, menu permissions, actual owner-independent roaming, trail production, command changes, saved traits, and exhausted-roamer recovery.
 
@@ -260,7 +273,7 @@ Native regressions measure actual break-attempt ticks at maximum Work Speed with
 
 `HealingSlime` persists its bag, work command, rest state, cooldown and search origin. Searches inspect loaded entities and chunk block entities on a staggered interval. Live treatment uses Minecraft's healing event path; broken companions use the same transactional revival helper as player interactions, with owner permissions and Forge block protection checked before removal. Costs and activity commit only after success. Failed targets receive a short retry exclusion. Revival retains the common one-health rule.
 
-`WarehouseSlime` extends transport behavior with a capacity multiplier of 8 and a 216-slot backing inventory. Shared `TransportBag` data preserves existing cargo during specialization; the recipe clears the prior profession command so the warehouse initially waits. `WorkStorage` resolves loaded same-owner warehouse entities and accessible Slime Chests, sorting warehouses first. UUID/block-position targets are revalidated on every transfer; full endpoints are skipped and unreachable endpoints are temporarily excluded. Warehouses collect and supply without the normal deposit phase, avoiding cargo circulation. Storage endpoints remain accessible while following or waiting. The shared work model adds Heal/Store orders and a slimeball supply request without reordering existing enum values. The saved-data schema remains 1; network protocol is **13**.
+`WarehouseSlime` extends transport behavior with a capacity multiplier of 8 and a 216-slot backing inventory. Shared `TransportBag` data preserves existing cargo during specialization; the recipe clears the prior profession command so the warehouse initially waits. `WorkStorage` resolves loaded same-owner warehouse entities and accessible Slime Chests, sorting warehouses first. UUID/block-position targets are revalidated on every transfer; full endpoints are skipped and unreachable endpoints are temporarily excluded. Warehouses collect and supply without the normal deposit phase, avoiding cargo circulation. Storage endpoints remain accessible while following or waiting. The shared work model adds Heal/Store orders and a slimeball supply request without reordering existing enum values. The saved-data schema remains 1; network protocol is **14**.
 
 ## Loaded routes and support boundaries
 
@@ -295,3 +308,27 @@ Mounted flight shares one movement calculation between client travel and server 
 When a miner remains active outside an unloaded quarry, its work tick clears the retained route before native navigation can inspect retained path nodes. The quarry plan and inventory are retained. A native regression unloads the actual source chunk, verifies no re-acquisition, and rebuilds a route after terrain becomes available.
 
 Accepted placement-event adjustments remain completed field actions, including altered crop age, farmland moisture and immediate sapling growth. Costs commit once after the event, while cancellation retains snapshot rollback. Quarry reinforcement accepts a converted block only when it forms a solid, non-fluid barrier; ineffective conversions restore the inlet and use the ordinary blocked retry delay.
+
+## Additional companion professions
+
+`FishingSlime`, `AbundanceSlime`, `TunnelSlime`, `DragonSlime`, and `NyanCatSlime` add five professions. All new summon items reuse the shared summon model and have a profession crest. Entity layers render overalls, lyre and laurel, a minecart shell, bat-shaped wings, and a native cat head. The Healing cross has nonoverlapping front faces to avoid depth fighting.
+
+`AdvancedCompanionRecipe` validates shapeless recipes, consumes every ingredient once, and retains stored companion data. Conversion pauses the new profession without discarding shared health, identity, inventory, or equipment. `FriendlySlimeItem.fromSlime` uses the entity's pick result so subclasses recover into their own registered item. Schema version remains 1; protocol 14 requires matching client and server builds.
+
+Fishing generates loot through the native fishing table and a hook context, including native open-water treasure checks, Luck of the Sea, Lure, the Forge fishing event, normal rod wear, Unbreaking, and catch-experience Mending. Survey work is bounded across ticks and reads loaded terrain. Pending catches are serialized separately until usable bag space is available. Five minutes without a catch triggers another shore search.
+
+Abundance inherits healing and revival and uses a secondary growth action after patient search. Growth uses native bonemeal target and chance checks and the Forge bonemeal hook, revalidating command and ownership before changing terrain. It needs no bone meal inventory. Both healing types return detection multiplier 2. Growth requires surrounding tree-feature terrain to be loaded.
+
+Tunnel inherits mining equipment and the bag but disables the quarry goal, quarry navigation, chunk motion clamp, and quarry fluid-source registration. It clears horizontal 3×3 planes and fills replaceable perimeter cells from the bag. The lining template is a synchronized one-item sample; menu clicks copy the cursor type without transferring items. Extraction, Shift transfers, number-key swaps, cloning, and throwing do not turn the sample into inventory. Template or direction changes pause work. `MATERIAL_SUPPLY` requests use the normal same-owner logistics transaction and a maximum stack-sized delivery. Shared quarry-stair protection is checked before breaking.
+
+Dragon inherits sword, shield, armor, filters, cargo and logistics from combat and uses loaded flying navigation. Its targeted flame follows the same permissions as melee and never creates burning terrain. Work Speed changes its interval. Kill-drop markers let combat workers collect their own loot and request unloading while their execution state remains active; full cargo does not become a combat blocker.
+
+Nyan Cat keeps independently synchronized and saved activation and roaming flags. Creepers receive the native `AvoidEntityGoal` with the same six-block radius and speeds as cat avoidance, restricted to active tamed Nyan Cat companions. Wait remains compatible with the active deterrent. Roaming reserves movement independently of owner following and uses loaded paths.
+
+`SlimeToolExperience` applies work-earned Mending before remaining experience orbs spawn. The working stack retains normal Unbreaking wear and uses Forge's repair ratio; spent XP follows native integer durability-to-XP conversion. Experience-free work and already broken tools cannot repair. Abundance finishes its bounded palette scan before committing a target, prioritizing crops and saplings before grass so early survey sections cannot starve a nearby crop.
+
+Tunnel swimming holds the bore's working height and suspends horizontal travel while clearing, resting, or awaiting supplies. A saved nine-bit `TunnelDrainedFluidMask` tracks cleared cells on the current face, avoiding repeated removal of returning flowing water; new source blocks still require removal. Face advancement and reanchoring clear the mask. Fluid changes use block snapshots and the native placement-protection event, with live command and bucket revalidation before commit. Failed approaches count once per game tick and report `UNREACHABLE` after 400 ticks without distance improvement; this blocked state survives recovery.
+
+Default random strolling respects the waiting order for flying companions as well as ground companions. Dragon movement control clears its target and motion when ordered to wait. Client-side Nyan Cat roaming uses the synchronized sitting pose rather than the server-only ordered-to-sit field. The lining template returns copies and denies ordinary slot extraction, including pickup-all initiated from another slot.
+
+Profession regressions cover shapeless recipes, original equipment and identity, waiting defaults, fishing loot and open water, Mending, pending catches, five-minute relocation, growth priority and cancellation, tunnel geometry and protected placement, bucket and lining delivery, flooded travel at default stamina, dragon flight and filtered breath, native creeper avoidance, and combat cargo. Tool-tier and break-cancellation fixtures use isolated quarry chunks; cancellation starts directly above its target and requires an actual denied native event as well as unchanged terrain, equipment, and activity. Client checks exercise profession models, crests, synchronized slot layouts, direction and template changes, and independent Nyan Cat controls.

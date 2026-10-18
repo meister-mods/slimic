@@ -1,0 +1,29 @@
+{
+  "name": "슬라임 갑옷",
+  "icon": "slimic:slime_armor",
+  "category": "slimic:care",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "minecraft:iron_chestplate",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:slime_armor",
+      "label": "조합 → 결과 1개",
+      "text": "아무 흉갑 + 슬라임볼 1개. 철 흉갑은 예시이며, 지원하는 흉갑의 재질과 데이터를 유지합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "전투·안장 슬라임에 장착합니다. 일반 흉갑은 재료이며 직접 끼우는 장비가 아닙니다. 변환하면 방어 속성·내구도·마법 부여·이름·가죽 염색을 유지합니다. 투구·레깅스·부츠는 변환하지 않습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_armor": 0,
+    "slimic:leather_slime_armor": 0,
+    "slimic:chainmail_slime_armor": 0,
+    "slimic:golden_slime_armor": 0,
+    "slimic:diamond_slime_armor": 0,
+    "slimic:netherite_slime_armor": 0
+  }
+}

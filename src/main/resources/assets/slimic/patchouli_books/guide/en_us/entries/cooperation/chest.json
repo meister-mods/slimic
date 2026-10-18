@@ -1,0 +1,20 @@
+{
+  "name": "Slime Chests",
+  "icon": "slimic:slime_chest",
+  "category": "slimic:cooperation",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_chest",
+      "text": "Surround one slimeball with eight planks. Mixed plank types work. Open it for 27 slots."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Store cargo, spare tools, empty buckets, cobblestone, and slimeballs for carriers. Locked Slime Chests are excluded. Regular chests are crafting ingredients, not automatic storage endpoints."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_chest": 0
+  }
+}

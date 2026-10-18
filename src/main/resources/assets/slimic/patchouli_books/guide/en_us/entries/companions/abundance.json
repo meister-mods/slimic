@@ -1,0 +1,29 @@
+{
+  "name": "Abundance Slime",
+  "icon": "slimic:abundance_slime",
+  "category": "slimic:companions",
+  "sortnum": 41,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "Shapeless recipe",
+      "input1": "slimic:healing_slime",
+      "input2": "minecraft:bone_meal",
+      "result": "slimic:abundance_slime",
+      "label": "Combine → one result",
+      "text": "Healing Slime + bone meal + a nether star. Keeps companion data and starts waiting.",
+      "input3": "minecraft:nether_star"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It retains equipment and cargo and carries a golden lyre. Choose Nurture. It retains healing and revival, prioritizing companions before applying native bonemeal effects to nearby growable crops, saplings, and other plants. Its fixed detection area is twice the common base, initially 16 blocks. Crops and saplings take priority over grass."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A growth application uses two stamina and no bone meal item. Native random growth chances remain. Healing still needs slimeballs. Growth respects mobGriefing, bonemeal protection events, and loaded terrain. Carriers supply slimeballs and unload blocked bags."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:abundance_slime": 0
+  }
+}

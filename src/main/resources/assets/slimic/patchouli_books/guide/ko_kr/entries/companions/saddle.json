@@ -1,0 +1,28 @@
+{
+  "name": "안장 슬라임",
+  "icon": "slimic:saddle_slime",
+  "category": "slimic:companions",
+  "sortnum": 14,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:saddle",
+      "result": "slimic:saddle_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 안장 1개. 원본 안장을 처음 장비로 사용합니다. 크리에이티브 기본 개체의 장비는 비어 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "주인만 장착·탑승할 수 있습니다. 안장·겉날개·슬라임 갑옷을 세 칸에 함께 장착할 수 있고 화물 가방은 없습니다. 비어 있는 칸은 장비를 든 우클릭이나 튜너로 채울 수 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "안장을 씌운 동료를 우클릭하면 탑승합니다. Shift는 내리기, Shift+우클릭은 회수입니다. 장착한 안장과 날개가 외형에 보입니다. 조작과 기력은 $(l:care/flight)탑승 비행$()을 확인하세요."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:saddle_slime": 0
+  }
+}

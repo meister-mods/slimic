@@ -1,0 +1,21 @@
+{
+  "name": "안내서 사용법",
+  "icon": "minecraft:book",
+  "category": "slimic:basics",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:guide_book",
+      "text": "책 1개와 슬라임볼 1개를 모양 없이 조합합니다. 2×2 조합 칸에서도 만들 수 있습니다. Patchouli가 필요합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "분류를 고르거나 검색을 사용하세요. 아이콘에 마우스를 올리면 아이템 정보를 볼 수 있습니다. 링크로 관련 항목을 열며, 모든 항목은 처음부터 볼 수 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "게임 언어에 따라 한국어와 영어를 표시합니다. 다른 언어에서는 영어로 표시합니다. $(l:basics/first_steps)첫 동료$()와 $(l:basics/tuner)슬라임 튜너$()부터 읽어 보세요."
+    }
+  ]
+}

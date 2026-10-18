@@ -56,6 +56,8 @@ public final class PlacementAccountingGameTests {
     var farmer = ModEntities.FARMER_SLIME.get().create(level);
     farmer.tame(h.makeMockSurvivalPlayer());
     farmer.moveTo(a.point(7.5, 101, 8.5));
+    // Keep this transaction fixture inside its cleared chunk, away from natural village plots.
+    SlimeStat.DETECTION_RANGE.tune(farmer, 2);
     farmer.onReleased();
     farmer.setTool(new ItemStack(Items.IRON_HOE));
     farmer.setWorking(true);
@@ -77,38 +79,52 @@ public final class PlacementAccountingGameTests {
           level.setBlock(event.getPos(), state, 18);
           if (cancel) event.setCanceled(true);
         };
-    MinecraftForge.EVENT_BUS.addListener(adjust);
-    try {
-      invoke(farmer, level);
-      h.assertTrue(calls[0] == 1, "One native placement event is observed");
-      h.assertTrue(
-          farmer.getBag().getStackInSlot(0).getCount() == (kind == 2 || cancel ? 1 : 0)
-              && farmer.getTool().getDamageValue() == (kind == 2 && !cancel ? 1 : 0)
-              && farmer.getActivityProgress() == (cancel ? 0 : 1)
-              && farmer.getStamina() == (cancel ? 100 : 99),
-          "Accepted event adjustments charge the committed native action exactly once; kind="
-              + kind
-              + ", seed="
-              + farmer.getBag().getStackInSlot(0)
-              + ", tool="
-              + farmer.getTool().getDamageValue()
-              + ", activity="
-              + farmer.getActivityProgress());
-      h.assertTrue(
-          cancel
-              ? level.getBlockState(pos).isAir()
-              : kind == 2
-                  ? level.getBlockState(soil).getValue(FarmBlock.MOISTURE) == 7
-                  : kind == 1
-                      ? level.getBlockState(pos).is(Blocks.CARROTS)
-                      : level.getBlockState(pos).getValue(CropBlock.AGE) == 3,
-          "Successful adjustments survive; cancelled changes roll back");
-    } finally {
-      MinecraftForge.EVENT_BUS.unregister(adjust);
-      farmer.discard();
-      a.close();
-    }
-    h.succeed();
+    h.assertTrue(
+        farmer.getFarmPlots().equals(java.util.Set.of(soil)),
+        "The transaction fixture registers exactly its prepared plot");
+    h.startSequence()
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    kind == 2 || Blocks.WHEAT.defaultBlockState().canSurvive(level, pos),
+                    "The prepared crop has valid native soil and lighting"))
+        .thenExecute(
+            () -> {
+              MinecraftForge.EVENT_BUS.addListener(adjust);
+              try {
+                invoke(farmer, level);
+                h.assertTrue(
+                    calls[0] == 1, "One native placement event is observed: calls=" + calls[0]);
+                h.assertTrue(
+                    farmer.getBag().getStackInSlot(0).getCount() == (kind == 2 || cancel ? 1 : 0)
+                        && farmer.getTool().getDamageValue() == (kind == 2 && !cancel ? 1 : 0)
+                        && farmer.getActivityProgress() == (cancel ? 0 : 1)
+                        && farmer.getStamina() == (cancel ? 100 : 99),
+                    "Accepted event adjustments charge the committed native action exactly once;"
+                        + " kind="
+                        + kind
+                        + ", seed="
+                        + farmer.getBag().getStackInSlot(0)
+                        + ", tool="
+                        + farmer.getTool().getDamageValue()
+                        + ", activity="
+                        + farmer.getActivityProgress());
+                h.assertTrue(
+                    cancel
+                        ? level.getBlockState(pos).isAir()
+                        : kind == 2
+                            ? level.getBlockState(soil).getValue(FarmBlock.MOISTURE) == 7
+                            : kind == 1
+                                ? level.getBlockState(pos).is(Blocks.CARROTS)
+                                : level.getBlockState(pos).getValue(CropBlock.AGE) == 3,
+                    "Successful adjustments survive; cancelled changes roll back");
+              } finally {
+                MinecraftForge.EVENT_BUS.unregister(adjust);
+                farmer.discard();
+                a.close();
+              }
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", batch = "placement_accounting")

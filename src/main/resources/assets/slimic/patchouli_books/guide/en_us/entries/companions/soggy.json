@@ -1,0 +1,31 @@
+{
+  "name": "Soggy Slime",
+  "icon": "slimic:soggy_slime",
+  "category": "slimic:companions",
+  "sortnum": 18,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:soggy_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + one slimeball. It has no bag or equipment."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Starts waiting. Follow or Roam places thin Slime Trails on solid ground, costing one stamina per new trail. Wait stops placement. Roam stays within Detection Range around the chosen origin, without requiring the owner online."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_ball_from_slag",
+      "text": "Break a Slime Trail for one Slime Slag. Four slag make one slimeball, without a fixed shape. Trails preserve existing blocks and respect protection."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:soggy_slime": 0,
+    "slimic:slime_trail": 1,
+    "slimic:slime_slag": 2
+  }
+}

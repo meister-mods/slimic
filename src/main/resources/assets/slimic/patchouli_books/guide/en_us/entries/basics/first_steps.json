@@ -1,0 +1,21 @@
+{
+  "name": "First steps",
+  "icon": "slimic:friendly_slime",
+  "category": "slimic:basics",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:friendly_slime",
+      "text": "Surround one soul sand or soul soil with eight slimeballs in a crafting table."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Use the item on a block or water source to summon a companion tamed to you. Survival consumes it. A newly crafted item can be reused in Creative. An anvil name becomes its name."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Craft a $(l:basics/tuner)Slime Tuner$() to manage it. New work specializations start in Wait. Give their work order explicitly before expecting a job to begin."
+    }
+  ]
+}

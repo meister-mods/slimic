@@ -1,21 +1,8 @@
 package io.github.meistermods.slimic.item;
 
-import io.github.meistermods.slimic.entity.CleaningSlime;
-import io.github.meistermods.slimic.entity.CombatSlime;
-import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
-import io.github.meistermods.slimic.entity.GuardianAngelSlime;
-import io.github.meistermods.slimic.entity.HealingSlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
-import io.github.meistermods.slimic.entity.LumberjackSlime;
-import io.github.meistermods.slimic.entity.MiningSlime;
-import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SlimeData;
-import io.github.meistermods.slimic.entity.SoggySlime;
-import io.github.meistermods.slimic.entity.TransportSlime;
-import io.github.meistermods.slimic.entity.WarehouseSlime;
 import io.github.meistermods.slimic.registry.ModEntities;
-import io.github.meistermods.slimic.registry.ModItems;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,32 +44,7 @@ public class FriendlySlimeItem extends Item {
   }
 
   public static ItemStack fromSlime(FriendlySlime slime) {
-    if (slime instanceof HealingSlime) return storedSlime(slime, ModItems.HEALING_SLIME.get());
-    if (slime instanceof WarehouseSlime) return storedSlime(slime, ModItems.WAREHOUSE_SLIME.get());
-    ItemStack stack =
-        new ItemStack(
-            slime instanceof SoggySlime
-                ? ModItems.SOGGY_SLIME.get()
-                : slime instanceof GuardianAngelSlime
-                    ? ModItems.GUARDIAN_ANGEL_SLIME.get()
-                    : slime instanceof FarmerSlime
-                        ? ModItems.FARMER_SLIME.get()
-                        : slime instanceof LumberjackSlime
-                            ? ModItems.LUMBERJACK_SLIME.get()
-                            : slime instanceof SaddleSlime
-                                ? ModItems.SADDLE_SLIME.get()
-                                : slime instanceof CombatSlime
-                                    ? ModItems.COMBAT_SLIME.get()
-                                    : slime instanceof CleaningSlime
-                                        ? ModItems.CLEANING_SLIME.get()
-                                        : slime instanceof HeraldSlime
-                                            ? ModItems.HERALD_SLIME.get()
-                                            : slime instanceof TransportSlime
-                                                ? ModItems.TRANSPORT_SLIME.get()
-                                                : slime instanceof MiningSlime
-                                                    ? ModItems.MINING_SLIME.get()
-                                                    : ModItems.FRIENDLY_SLIME.get());
-    return storedSlime(slime, stack.getItem());
+    return storedSlime(slime, slime.getPickResult().getItem());
   }
 
   private static ItemStack storedSlime(FriendlySlime slime, Item item) {

@@ -1,0 +1,18 @@
+{
+  "name": "book.slimic.guide.name",
+  "landing_text": "book.slimic.guide.landing",
+  "subtitle": "book.slimic.guide.subtitle",
+  "version": "0",
+  "use_resource_pack": true,
+  "model": "patchouli:book_green",
+  "book_texture": "patchouli:textures/gui/book_green.png",
+  "creative_tab": "slimic:slimic",
+  "i18n": false,
+  "show_progress": false,
+  "show_toasts": false,
+  "use_blocky_font": true,
+  "text_overflow_mode": "resize",
+  "header_color": "245436",
+  "link_color": "285c22",
+  "link_hover_color": "408435"
+}

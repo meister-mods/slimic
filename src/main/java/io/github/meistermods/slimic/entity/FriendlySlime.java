@@ -396,7 +396,14 @@ public class FriendlySlime extends TamableAnimal {
   @Override
   protected void registerGoals() {
     goalSelector.addGoal(-1, new FleeGoal());
-    goalSelector.addGoal(0, new FloatGoal(this));
+    goalSelector.addGoal(
+        0,
+        new FloatGoal(this) {
+          @Override
+          public boolean canUse() {
+            return allowsFloating() && super.canUse();
+          }
+        });
     goalSelector.addGoal(
         1,
         new SitWhenOrderedToGoal(this) {
@@ -407,7 +414,19 @@ public class FriendlySlime extends TamableAnimal {
           }
         });
     goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.2D, 4.0F, 2.0F, false));
-    goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+    goalSelector.addGoal(
+        5,
+        new WaterAvoidingRandomStrollGoal(this, 1.0D) {
+          @Override
+          public boolean canUse() {
+            return !isOrderedToSit() && !isWorking() && super.canUse();
+          }
+
+          @Override
+          public boolean canContinueToUse() {
+            return !isOrderedToSit() && !isWorking() && super.canContinueToUse();
+          }
+        });
     goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
     goalSelector.addGoal(7, new RandomLookAroundGoal(this));
   }
@@ -581,6 +600,10 @@ public class FriendlySlime extends TamableAnimal {
 
   protected boolean canRecoverStamina() {
     return !isWorking() && !isFleeing();
+  }
+
+  protected boolean allowsFloating() {
+    return true;
   }
 
   public boolean isFleeing() {

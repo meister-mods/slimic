@@ -1,0 +1,20 @@
+{
+  "name": "Recovery and travel",
+  "icon": "minecraft:bundle",
+  "category": "slimic:basics",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Shift-right-click your living companion to recover it. You need one empty main-inventory slot. It keeps its identity, owner, current health, stats, growth, dye, equipment, cargo, and job data."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Releasing a recovered item consumes it even in Creative. Blocked placement leaves the item intact. Effects and saved timers pause in item form. Leashes and passengers are detached."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A miner released in the same chunk keeps its layer and order. A different chunk or dimension starts a new quarry automatically. Other fixed work areas rebase as documented for each job."
+    }
+  ]
+}

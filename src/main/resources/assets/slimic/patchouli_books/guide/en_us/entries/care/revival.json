@@ -1,0 +1,23 @@
+{
+  "name": "Fallen companions",
+  "icon": "slimic:broken_slime",
+  "category": "slimic:care",
+  "sortnum": 31,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A fallen companion leaves a Broken Slime Block containing its identity and saved traits, including gear and cargo. If the position is occupied, its recovery block item is dropped without replacing the existing block."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The owner can use one slimeball on the block to revive it at $(bold)one health$(). Clear enough space first. Successful Survival revival consumes one ball. Blocked placement, invalid data, or a loaded matching identity leaves everything intact."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Breaking the recovery block yields one block item carrying the saved companion. A $(l:companions/healing)Healing Slime$() can also revive same-owner blocks with its own slimeballs, then heal the revived companion further."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:broken_slime": 0
+  }
+}

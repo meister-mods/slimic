@@ -1,0 +1,31 @@
+{
+  "name": "눅눅 슬라임",
+  "icon": "slimic:soggy_slime",
+  "category": "slimic:companions",
+  "sortnum": 18,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "순서 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:soggy_slime",
+      "label": "조합 → 결과 1개",
+      "text": "친근한 슬라임 + 슬라임볼 1개. 가방과 장비 칸은 없습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "처음에는 대기합니다. 따라오기나 자유 이동 중 단단한 땅 위에 얇은 슬라임 흔적을 남기며 설치마다 기력 1을 씁니다. 대기는 생성을 멈춥니다. 자유 이동은 주인의 접속 없이도 지정 중심의 탐지 범위 안을 움직입니다."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_ball_from_slag",
+      "text": "흔적을 부수면 슬라임 슬래그 하나를 얻습니다. 슬래그 4개를 모양 없이 조합하면 슬라임볼 하나가 됩니다. 흔적은 기존 블록과 보호 설정을 보존합니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:soggy_slime": 0,
+    "slimic:slime_trail": 1,
+    "slimic:slime_slag": 2
+  }
+}

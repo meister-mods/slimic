@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -27,6 +28,13 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Slimic.MOD_ID)
 public final class FriendlySlimeInteractions {
   private FriendlySlimeInteractions() {}
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void markCombatLoot(LivingDropsEvent event) {
+    if (event.getSource().getEntity() instanceof CombatSlime slime && slime.isAlive())
+      for (var drop : event.getDrops())
+        drop.getPersistentData().putUUID(CombatSlime.LOOT_COLLECTOR, slime.getUUID());
+  }
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public static void preventQuarryWaterRegeneration(BlockEvent.CreateFluidSourceEvent event) {
@@ -52,7 +60,8 @@ public final class FriendlySlimeInteractions {
 
   @SubscribeEvent
   public static void preserveFarmland(BlockEvent.FarmlandTrampleEvent event) {
-    if (event.getEntity() instanceof FarmerSlime) event.setCanceled(true);
+    if (event.getEntity() instanceof FarmerSlime || event.getEntity() instanceof AbundanceSlime)
+      event.setCanceled(true);
   }
 
   @SubscribeEvent(priority = EventPriority.LOWEST)

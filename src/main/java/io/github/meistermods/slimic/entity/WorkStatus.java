@@ -16,7 +16,9 @@ public record WorkStatus(Order order, State state, Reason reason, Set<Request> r
     LOG,
     ROAM,
     HEAL,
-    STORE
+    STORE,
+    FISH,
+    TUNNEL
   }
 
   public enum State {
@@ -40,7 +42,8 @@ public record WorkStatus(Order order, State state, Reason reason, Set<Request> r
     SEEDS_MISSING,
     BUCKET_MISSING,
     COBBLESTONE_MISSING,
-    SLIMEBALLS_MISSING
+    SLIMEBALLS_MISSING,
+    MATERIAL_MISSING
   }
 
   public enum Request {
@@ -48,7 +51,8 @@ public record WorkStatus(Order order, State state, Reason reason, Set<Request> r
     TOOL_SUPPLY,
     BUCKET_SUPPLY,
     COBBLESTONE_SUPPLY,
-    SLIMEBALL_SUPPLY
+    SLIMEBALL_SUPPLY,
+    MATERIAL_SUPPLY
   }
 
   public WorkStatus {

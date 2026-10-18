@@ -1,18 +1,23 @@
 package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.entity.AbundanceSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
+import io.github.meistermods.slimic.entity.DragonSlime;
 import io.github.meistermods.slimic.entity.FarmerSlime;
+import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.NyanCatSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
+import io.github.meistermods.slimic.entity.TunnelSlime;
 import io.github.meistermods.slimic.entity.WarehouseSlime;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -126,6 +131,47 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":warehouse_slime"));
 
+  public static final RegistryObject<EntityType<FishingSlime>> FISHING_SLIME =
+      ENTITY_TYPES.register(
+          "fishing_slime",
+          () ->
+              EntityType.Builder.of(FishingSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":fishing_slime"));
+  public static final RegistryObject<EntityType<AbundanceSlime>> ABUNDANCE_SLIME =
+      ENTITY_TYPES.register(
+          "abundance_slime",
+          () ->
+              EntityType.Builder.of(AbundanceSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":abundance_slime"));
+  public static final RegistryObject<EntityType<TunnelSlime>> TUNNEL_SLIME =
+      ENTITY_TYPES.register(
+          "tunnel_slime",
+          () ->
+              EntityType.Builder.of(TunnelSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":tunnel_slime"));
+  public static final RegistryObject<EntityType<DragonSlime>> DRAGON_SLIME =
+      ENTITY_TYPES.register(
+          "dragon_slime",
+          () ->
+              EntityType.Builder.of(DragonSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":dragon_slime"));
+  public static final RegistryObject<EntityType<NyanCatSlime>> NYAN_CAT_SLIME =
+      ENTITY_TYPES.register(
+          "nyan_cat_slime",
+          () ->
+              EntityType.Builder.of(NyanCatSlime::new, MobCategory.CREATURE)
+                  .sized(1.04F, 1.04F)
+                  .clientTrackingRange(10)
+                  .build(Slimic.MOD_ID + ":nyan_cat_slime"));
+
   private ModEntities() {}
 
   public static final RegistryObject<EntityType<SoggySlime>> SOGGY_SLIME =
@@ -148,6 +194,14 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(FISHING_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(ABUNDANCE_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(TUNNEL_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(
+        DRAGON_SLIME.get(),
+        FriendlySlime.createAttributes().add(Attributes.FLYING_SPEED, .3).build());
+    event.put(NYAN_CAT_SLIME.get(), FriendlySlime.createAttributes().build());
+
     event.put(WAREHOUSE_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(HEALING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(SOGGY_SLIME.get(), FriendlySlime.createAttributes().build());
