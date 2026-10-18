@@ -37,6 +37,11 @@ public final class MiningAuditGameTests {
         ModEntities.LUMBERJACK_SLIME.get(),
         ModEntities.GUARDIAN_ANGEL_SLIME.get(),
         ModEntities.SOGGY_SLIME.get(),
+        ModEntities.FISHING_SLIME.get(),
+        ModEntities.ABUNDANCE_SLIME.get(),
+        ModEntities.TUNNEL_SLIME.get(),
+        ModEntities.DRAGON_SLIME.get(),
+        ModEntities.NYAN_CAT_SLIME.get(),
         ModEntities.HEALING_SLIME.get(),
         ModEntities.WAREHOUSE_SLIME.get());
   }

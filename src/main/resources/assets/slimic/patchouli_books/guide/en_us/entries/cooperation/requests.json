@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Miner fluid removal requests one empty bucket. Wall reinforcement requests up to 64 cobblestone. Healers request up to 64 slimeballs. Supply is limited by stock and usable space; full bags need unloading first."
+      "text": "Miner fluid removal requests one empty bucket. Wall reinforcement requests up to 64 cobblestone. Healers request up to 64 slimeballs. Supply is limited by stock and usable space; full bags need unloading first. Fishers request rods; tunnel workers request up to one stack of the selected real lining block."
     },
     {
       "type": "patchouli:text",

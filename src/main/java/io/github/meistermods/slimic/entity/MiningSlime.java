@@ -28,7 +28,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -58,7 +57,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
-public final class MiningSlime extends BagSlime {
+public class MiningSlime extends BagSlime {
   public enum Status {
     IDLE,
     MOVING,
@@ -126,7 +125,11 @@ public final class MiningSlime extends BagSlime {
   @Override
   protected void registerGoals() {
     super.registerGoals();
-    goalSelector.addGoal(1, new MiningGoal());
+    if (usesQuarry()) goalSelector.addGoal(1, new MiningGoal());
+  }
+
+  protected boolean usesQuarry() {
+    return true;
   }
 
   @Override
@@ -141,7 +144,7 @@ public final class MiningSlime extends BagSlime {
 
   @Override
   public void move(MoverType type, Vec3 movement) {
-    if (isWorking() && quarry != null) {
+    if (usesQuarry() && isWorking() && quarry != null) {
       double radius = getBbWidth() / 2.0;
       double minX = chunkX * 16 + radius, maxX = chunkX * 16 + 16 - radius;
       double minZ = chunkZ * 16 + radius, maxZ = chunkZ * 16 + 16 - radius;
@@ -349,6 +352,10 @@ public final class MiningSlime extends BagSlime {
 
   @Override
   public void onReleased() {
+    if (!usesQuarry()) {
+      super.onReleased();
+      return;
+    }
     ChunkPos chunk = chunkPosition();
     boolean changed =
         hasAnchor && (chunk.x != chunkX || chunk.z != chunkZ || hasChangedWorkDimension());
@@ -382,7 +389,7 @@ public final class MiningSlime extends BagSlime {
   @Override
   public void tick() {
     super.tick();
-    if (!level().isClientSide) {
+    if (!level().isClientSide && usesQuarry()) {
       if (!hasAnchor || quarry == null) onReleased();
       refreshFluidSourceGuard();
       if (isWorking() && status != Status.MINING && tickCount % 20 == 0)
@@ -402,7 +409,7 @@ public final class MiningSlime extends BagSlime {
     getNavigation().stop();
   }
 
-  private void restockTools() {
+  protected void restockTools() {
     for (int tool = 0; tool < 2; tool++) {
       if (!getTool(tool).isEmpty()) continue;
       for (int slot = 0; slot < getBag().getSlots(); slot++) {
@@ -417,7 +424,8 @@ public final class MiningSlime extends BagSlime {
   }
 
   public void shareStaircase() {
-    if (level() instanceof ServerLevel server
+    if (usesQuarry()
+        && level() instanceof ServerLevel server
         && !hasChangedWorkDimension()
         && quarry != null
         && (isWorking() || quarry.layer() <= quarry.topFloor()))
@@ -444,7 +452,7 @@ public final class MiningSlime extends BagSlime {
         && state.getDestroySpeed(level(), pos) >= 0;
   }
 
-  private int toolFor(BlockState state) {
+  protected int toolFor(BlockState state) {
     int preferred = state.is(BlockTags.MINEABLE_WITH_SHOVEL) ? 1 : 0;
     ItemStack tool = getTool(preferred);
     if (matchesToolSlot(preferred, tool)
@@ -534,6 +542,7 @@ public final class MiningSlime extends BagSlime {
   }
 
   public void refreshFluidSourceGuard() {
+    if (!usesQuarry()) return;
     if (!(level() instanceof ServerLevel server)) return;
     long chunk =
         isAlive() && isWorking() && quarry != null && drainedWaterLayer == quarry.layer()
@@ -1206,7 +1215,7 @@ public final class MiningSlime extends BagSlime {
       travelBlocked = false;
       server.levelEvent(2001, mined, Block.getId(state));
       if (experience > 0 && server.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
-        ExperienceOrb.award(server, Vec3.atCenterOf(mined), experience);
+        SlimeToolExperience.award(server, Vec3.atCenterOf(mined), tool, experience);
       clearTarget();
       status = Status.IDLE;
     } finally {

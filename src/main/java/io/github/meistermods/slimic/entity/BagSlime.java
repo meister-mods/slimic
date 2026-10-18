@@ -54,7 +54,8 @@ public abstract class BagSlime extends FriendlySlime {
   }
 
   public boolean needsWorkSupply() {
-    return getWorkStatus().requests(WorkStatus.Request.SLIMEBALL_SUPPLY)
+    return getWorkStatus().requests(WorkStatus.Request.MATERIAL_SUPPLY)
+        || getWorkStatus().requests(WorkStatus.Request.SLIMEBALL_SUPPLY)
         || needsReplacementTool()
         || getWorkStatus().requests(WorkStatus.Request.BUCKET_SUPPLY)
         || getWorkStatus().requests(WorkStatus.Request.COBBLESTONE_SUPPLY);

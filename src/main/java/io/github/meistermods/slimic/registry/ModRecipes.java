@@ -93,6 +93,77 @@ public final class ModRecipes {
               "warehouse_slime",
               () -> new SimpleCraftingRecipeSerializer<>(WarehouseSlimeRecipe::new));
 
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      FISHING_SLIME =
+          SERIALIZERS.register(
+              "fishing_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .FISHING)));
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      ABUNDANCE_SLIME =
+          SERIALIZERS.register(
+              "abundance_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .ABUNDANCE)));
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      TUNNEL_SLIME =
+          SERIALIZERS.register(
+              "tunnel_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .TUNNEL)));
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      DRAGON_SLIME =
+          SERIALIZERS.register(
+              "dragon_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .DRAGON)));
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      NYAN_CAT_SLIME =
+          SERIALIZERS.register(
+              "nyan_cat_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .NYAN_CAT)));
+
   private ModRecipes() {}
 
   public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> SOGGY_SLIME =

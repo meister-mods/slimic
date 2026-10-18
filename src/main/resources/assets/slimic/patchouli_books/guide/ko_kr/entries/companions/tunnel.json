@@ -1,0 +1,32 @@
+{
+  "name": "터널 슬라임",
+  "icon": "slimic:tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 42,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "모양 없는 조합",
+      "input1": "slimic:mining_slime",
+      "input2": "minecraft:nether_star",
+      "result": "slimic:tunnel_slime",
+      "label": "조합 → 1개",
+      "text": "채굴 슬라임 + 네더의 별. 기존 도구·가방·생명력·성장을 보존합니다. 처음에는 대기하며 마인카트 모양의 외장을 착용합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "관리 화면에서 수평 방향과 테두리 블록을 정한 뒤 터널 명령을 선택합니다. 3×3 통로를 뚫으며 바닥·천장·양옆의 설치 가능한 구멍과 유체를 메웁니다. 청크 전체를 굴착하지 않습니다. 침수 구역에서도 터널 높이를 유지하고 되흐르는 물을 반복해서 퍼내지 않습니다. 접근 중 20초간 진전이 없으면 접근 불가로 표시합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "커서에 단단한 건축 블록을 든 채 견본 칸을 클릭하면 블록 하나의 견본만 지정합니다. 들고 있는 수량은 줄지 않습니다. 빈 커서로 클릭하면 지웁니다. 견본이나 방향을 바꾸면 작업이 멈춥니다. 기본 견본은 조약돌입니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "실제 자재는 가방에서 사용합니다. 부족하면 운반자에게 최대 한 세트를 요청하며 보관함에도 없으면 정지합니다. 견본은 소비하지 않습니다. 곡괭이·삽·도구 등급·바닐라 마법 부여·양동이 유체 제거·가방 공간·공동 채굴 계단 보호도 적용됩니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:tunnel_slime": 0
+  }
+}

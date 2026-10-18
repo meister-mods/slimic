@@ -18,7 +18,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Stamina starts at 100 and gains 20 per point. Reach starts at 3 blocks and gains 0.25. Detection Range starts at 8 and gains 1; farming/logging multiply it by 2, cleaning by 5."
+      "text": "Stamina starts at 100 and gains 20 per point. Reach starts at 3 blocks and gains 0.25. Detection Range starts at 8 and gains 1; farming, logging, healing, and abundance multiply it by 2, cleaning by 5."
     },
     {
       "type": "patchouli:text",

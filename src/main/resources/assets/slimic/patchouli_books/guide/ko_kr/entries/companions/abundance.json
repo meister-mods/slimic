@@ -1,0 +1,29 @@
+{
+  "name": "풍요 슬라임",
+  "icon": "slimic:abundance_slime",
+  "category": "slimic:companions",
+  "sortnum": 41,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "모양 없는 조합",
+      "input1": "slimic:healing_slime",
+      "input2": "minecraft:bone_meal",
+      "result": "slimic:abundance_slime",
+      "label": "조합 → 1개",
+      "text": "치유 슬라임 + 뼛가루 + 네더의 별. 원래 동료의 특성·장비·가방을 보존하고 대기 상태로 시작하며 황금 리라를 듭니다.",
+      "input3": "minecraft:nether_star"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "풍요 명령으로 시작합니다. 치유·부활 기능을 유지하며, 동료를 먼저 돌본 뒤 주변의 성장 가능한 작물·묘목·식물에 바닐라 뼛가루 효과를 부여합니다. 고정 탐지 구역은 일반의 2배로 처음 16블록입니다. 풀밭보다 작물·묘목을 우선합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "성장 효과 적용에는 기력 2를 쓰며 뼛가루 아이템은 필요하지 않습니다. 바닐라의 무작위 성장 확률을 유지합니다. 치료에는 여전히 슬라임볼이 필요합니다. 성장은 mobGriefing·뼛가루 보호 이벤트·로드된 지형을 따릅니다. 운반자는 슬라임볼 보급과 가방 수거를 돕습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:abundance_slime": 0
+  }
+}

@@ -4,6 +4,39 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.28] - 2026-10-18
+
+### Added
+
+- Fishing Slimes with shore selection, five-minute relocation, native fishing loot and rod enchantments, cargo storage, and replacement-rod requests.
+- Abundance Slimes with healing and revival plus stamina-powered bonemeal effects, a lyre, and a laurel.
+- Tunnel Slimes with horizontal 3×3 excavation, a nonconsumable lining template, direction selection, perimeter reinforcement, and carrier material requests.
+- Dragon Slimes with flying combat, bat-shaped wings, and periodic targeted flame breath.
+- Nyan Cat Slimes with a cat head and independently controlled creeper deterrence and roaming.
+- English and Korean gameplay, development, and guidebook coverage for all eighteen companions, including 39 guide entries and 116 content pages per language.
+
+### Fixed
+
+- Combat companions collect their kill drops and request unloading without stopping combat when their bags fill.
+- Healing Slime detection stays twice the common value across upgrades and tuning.
+- Healing tiara cross faces no longer overlap and flicker.
+- Work-earned mining and fishing experience applies Mending to the working tool before remaining orbs spawn.
+- Specialized recovery uses each entity's own summon item, preserving subclass identity.
+- Tunnel swimming maintains its working height and progresses through returning water without repeatedly spending stamina on the same flow. Blocked approaches report their state to heralds.
+- Tunnel lining templates cannot be extracted through native inventory shortcuts.
+- Waiting flying companions remain stationary, and Nyan Cat movement controls stay synchronized on clients.
+
+### Changed
+
+- Network protocol is 14; companion save-data schema remains 1.
+
+### Validation
+
+- All 479 native regressions pass in each of the four independent Patchouli/JEI configurations.
+- Profession and boundary checks cover crafting and recovery, original equipment, fishing loot and Mending, growth protection, tunnel lining and flooded travel, supply transactions, dragon combat, creeper avoidance, and full combat bags.
+- Native clients verify profession models and synchronized controls with and without JEI. Guidebook checks cover all 116 pages per language, English fallback, item lookups, links, search, default and uniform fonts, and multiple UI scales.
+- Google Java Format, the Java 17 build, bilingual document links, packaged resources, source archives, and runtime member references pass verification. Mining protection fixtures require an actual denied native event while preserving exact terrain, equipment, and activity assertions.
+
 ## [0.1.27] - 2026-10-18
 
 ### Added

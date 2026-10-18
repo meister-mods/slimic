@@ -216,6 +216,53 @@ public final class SlimicJeiPlugin implements IModPlugin {
         new ItemStack(ModItems.SLIME_TUNER.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.slime_tuner"));
+    for (var kind : io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind.values()) {
+      List<ItemStack> secondary =
+          switch (kind) {
+            case FISHING ->
+                ForgeRegistries.ITEMS.getValues().stream()
+                    .map(ItemStack::new)
+                    .filter(io.github.meistermods.slimic.entity.FishingSlime::isRod)
+                    .toList();
+            case ABUNDANCE -> List.of(new ItemStack(Items.BONE_MEAL));
+            case TUNNEL -> List.of(new ItemStack(Items.NETHER_STAR));
+            case DRAGON -> List.of(new ItemStack(Items.DRAGON_HEAD));
+            case NYAN_CAT ->
+                List.of(
+                    new ItemStack(Items.COD),
+                    new ItemStack(Items.SALMON),
+                    new ItemStack(Items.TROPICAL_FISH),
+                    new ItemStack(Items.PUFFERFISH));
+          };
+      for (var ingredient : secondary) {
+        var ingredients = NonNullList.<Ingredient>create();
+        ingredients.add(
+            Ingredient.of(
+                io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.source(kind)));
+        ingredients.add(Ingredient.of(ingredient));
+        if (kind == io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind.ABUNDANCE)
+          ingredients.add(Ingredient.of(Items.NETHER_STAR));
+        String role = kind.name().toLowerCase(java.util.Locale.ROOT) + "_slime";
+        var key = ForgeRegistries.ITEMS.getKey(ingredient.getItem());
+        recipes.add(
+            new ShapelessRecipe(
+                ResourceLocation.fromNamespaceAndPath(
+                    Slimic.MOD_ID, role + "/" + key.getNamespace() + "/" + key.getPath()),
+                "slimic:" + role,
+                CraftingBookCategory.MISC,
+                io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.specialize(
+                    kind,
+                    new ItemStack(
+                        io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.source(kind)),
+                    ingredient),
+                ingredients));
+      }
+      var item = io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.result(kind);
+      registration.addIngredientInfo(
+          new ItemStack(item),
+          VanillaTypes.ITEM_STACK,
+          Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
+    }
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
     registration.addIngredientInfo(
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),

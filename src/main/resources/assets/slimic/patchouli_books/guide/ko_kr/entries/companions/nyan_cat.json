@@ -1,0 +1,28 @@
+{
+  "name": "냥캣 슬라임",
+  "icon": "slimic:nyan_cat_slime",
+  "category": "slimic:companions",
+  "sortnum": 44,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "모양 없는 조합",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:cod",
+      "result": "slimic:nyan_cat_slime",
+      "label": "조합 → 1개",
+      "text": "친근한 슬라임 + 생대구·생연어·열대어·복어 중 하나. 익힌 생선은 사용할 수 없습니다. 고양이 머리를 달고 활성 + 대기 상태로 시작합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "활성 중에는 주변 크리퍼가 고양이와 같은 6블록 회피 행동을 사용합니다. 활성/비활성과 대기/자유 이동은 독립적입니다. 활성 전환은 이동 명령을 바꾸지 않으며 이동 명령도 활성 상태를 바꾸지 않습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "일반 동료의 능력치·이름·염색·치료·소유권·회수 기능을 유지합니다. 가방과 장비 칸은 없습니다. 바닐라 회피는 이미 점화된 크리퍼의 폭발 방지를 보장하지는 않습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:nyan_cat_slime": 0
+  }
+}

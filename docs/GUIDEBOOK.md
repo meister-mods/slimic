@@ -2,7 +2,7 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its six categories contain 34 entries and 99 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its six categories contain 39 entries and 116 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
 The links below open the corresponding web instructions. Item diagrams show specialization ingredients. Equipment and stored companion traits follow the preservation rules described in the gameplay guide.
 
@@ -41,6 +41,11 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Soggy Slime | [Soggy slimes](GAMEPLAY.md#soggy-slimes) |
 | Healing Slime | [Healing slimes](GAMEPLAY.md#healing-slimes) |
 | Warehouse Slime | [Warehouse slimes and storage priority](GAMEPLAY.md#warehouse-slimes-and-storage-priority) |
+| Fishing Slime | [Fishing slimes](GAMEPLAY.md#fishing-slimes) |
+| Abundance Slime | [Abundance slimes](GAMEPLAY.md#abundance-slimes) |
+| Tunnel Slime | [Tunnel slimes](GAMEPLAY.md#tunnel-slimes) |
+| Dragon Slime | [Dragon slimes](GAMEPLAY.md#dragon-slimes) |
+| Nyan Cat Slime | [Nyan Cat slimes](GAMEPLAY.md#nyan-cat-slimes) |
 
 ## Working together
 

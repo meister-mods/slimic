@@ -1,0 +1,32 @@
+{
+  "name": "Tunnel Slime",
+  "icon": "slimic:tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 42,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:mining_slime",
+      "input2": "minecraft:nether_star",
+      "result": "slimic:tunnel_slime",
+      "label": "Combine → one result",
+      "text": "Mining Slime + a nether star. Its original tools, bag, health, and growth remain. It starts waiting and wears a minecart-shaped shell."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Choose a horizontal direction and a lining block in management, then select Tunnel. It advances through a 3×3 passage, filling replaceable gaps and fluids around the floor, ceiling, and sides. It does not excavate an entire chunk. In flooded passages it holds the tunnel height and avoids repeatedly draining returning flow. An unreachable approach is reported after 20 seconds without progress."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Click the template slot with a solid building block on your cursor. This only copies a one-block sample; the held stack is unchanged. An empty cursor clears it. Changing the template or direction pauses work. Cobblestone is the default template."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Actual lining blocks come from its bag. Missing stock requests up to one stack from carriers; missing stock at storage leaves it stopped. The template is never consumed. Pickaxe/shovel, tool tier, native enchantments, bucket-only fluid removal, cargo space, and shared quarry-stair protection still apply."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:tunnel_slime": 0
+  }
+}

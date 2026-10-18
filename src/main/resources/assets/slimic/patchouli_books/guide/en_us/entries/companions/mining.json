@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The held tool determines normal speed and drops. Work Speed only boosts an effective tool: a pickaxe on dirt stays slow without a shovel. Ore tool tiers cannot be bypassed. See $(l:fieldwork/fluids)Fluids$() and $(l:cooperation/shared_quarry)Shared stairs$()."
+      "text": "The held tool determines normal speed and drops. Work Speed only boosts an effective tool: a pickaxe on dirt stays slow without a shovel. Ore tool tiers cannot be bypassed. See $(l:fieldwork/fluids)Fluids$() and $(l:cooperation/shared_quarry)Shared stairs$(). Mending uses ore experience to repair the working tool before leftover orbs spawn."
     }
   ],
   "extra_recipe_mappings": {

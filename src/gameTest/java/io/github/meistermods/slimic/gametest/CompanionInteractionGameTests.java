@@ -190,6 +190,11 @@ public final class CompanionInteractionGameTests {
     int checked = 0;
     for (var type :
         List.of(
+            ModEntities.FISHING_SLIME.get(),
+            ModEntities.ABUNDANCE_SLIME.get(),
+            ModEntities.TUNNEL_SLIME.get(),
+            ModEntities.DRAGON_SLIME.get(),
+            ModEntities.NYAN_CAT_SLIME.get(),
             ModEntities.FRIENDLY_SLIME.get(),
             ModEntities.MINING_SLIME.get(),
             ModEntities.TRANSPORT_SLIME.get(),
@@ -213,7 +218,7 @@ public final class CompanionInteractionGameTests {
     var foreign = ModEntities.SADDLE_SLIME.get().create(h.getLevel());
     foreign.tame(h.makeMockSurvivalPlayer());
     h.assertTrue(
-        checked == 13 && fighter.mayAttack(foreign),
+        checked == 18 && fighter.mayAttack(foreign),
         "A different owner's tame mount remains controlled by the enabled Tamed filter");
     foreign.discard();
     fighter.discard();

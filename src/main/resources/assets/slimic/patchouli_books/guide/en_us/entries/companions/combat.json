@@ -20,6 +20,10 @@
     {
       "type": "patchouli:text",
       "text": "Targets has six independent filters. Hostile is enabled initially; Neutral, Passive, Players, Tamed, and Creepers are disabled. Owners, allies, and same-owner companions stay excluded. An Enderman attacking a living companion counts as Hostile until it disengages."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It collects loot from its kills. Full cargo does not stop combat; carriers can unload it while its combat order remains active."
     }
   ],
   "extra_recipe_mappings": {

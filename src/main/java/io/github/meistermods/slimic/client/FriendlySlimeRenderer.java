@@ -32,6 +32,7 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
     addLayer(new CombatSlimeLayer(this, context));
     addLayer(new SaddleSlimeLayer(this, context));
     addLayer(new TransportSlimeLayer(this, context));
+    addLayer(new AdvancedSlimeLayer(this, context));
     addLayer(new HealingSlimeLayer(this, context));
     addLayer(new ProfessionSlimeLayer(this, context));
     addLayer(new HeraldSlimeLayer(this));
@@ -66,7 +67,9 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
     if (slime instanceof MiningSlime
         || slime instanceof FieldSlime
         || slime instanceof CleaningSlime
-        || slime instanceof CombatSlime) pose.translate(0.0, 0.4, 0.0);
+        || slime instanceof CombatSlime
+        || slime instanceof io.github.meistermods.slimic.entity.NyanCatSlime)
+      pose.translate(0.0, 0.4, 0.0);
     if (slime instanceof SoggySlime) pose.translate(0.0, 0.5, 0.0);
     if (slime instanceof HeraldSlime) pose.translate(0.0, 0.8, 0.0);
     super.renderNameTag(slime, name, pose, buffers, light);

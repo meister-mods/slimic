@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Starts waiting; select Search. It approaches same-owner injured companions and Broken Slime Blocks in its fixed area, prioritizing revival. It can also heal itself. Supply slimeballs in its own usable bag."
+      "text": "Starts waiting; select Search. It approaches same-owner injured companions and Broken Slime Blocks in its fixed area, prioritizing revival. It can also heal itself. Supply slimeballs in its own usable bag. Detection Range is always twice the common value, initially 16 blocks."
     },
     {
       "type": "patchouli:text",

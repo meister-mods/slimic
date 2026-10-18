@@ -1,0 +1,28 @@
+{
+  "name": "Nyan Cat Slime",
+  "icon": "slimic:nyan_cat_slime",
+  "category": "slimic:companions",
+  "sortnum": 44,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Shapeless recipe",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:cod",
+      "result": "slimic:nyan_cat_slime",
+      "label": "Combine → one result",
+      "text": "Friendly Slime + any raw fish. Starts Active + Wait; cooked fish does not work."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Raw cod, salmon, tropical fish, and pufferfish work. Its cat head marks the profession. While active, nearby creepers use the same six-block avoidance goal used for cats. Activation and movement are independent: Active/Inactive does not change Wait/Roam, and changing movement does not change activation."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It retains normal companion stats, naming, dyeing, healing, ownership, and recovery. It has no bag or equipment. Native avoidance is not a guarantee against a creeper that has already ignited."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:nyan_cat_slime": 0
+  }
+}

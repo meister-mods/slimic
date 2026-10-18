@@ -18,6 +18,7 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Enemy;
@@ -27,8 +28,11 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolActions;
+import net.minecraftforge.items.ItemHandlerHelper;
 
-public final class CombatSlime extends BagSlime {
+public class CombatSlime extends BagSlime {
+  public static final String LOOT_COLLECTOR = "SlimicCombatCollector";
+
   public enum Status {
     IDLE,
     MOVING,
@@ -183,17 +187,75 @@ public final class CombatSlime extends BagSlime {
   @Override
   protected WorkStatus describeWork() {
     var order = WorkStatus.Order.FIGHT;
-    if (getMainHandItem().isEmpty())
-      return WorkStatus.blocked(
-          order, WorkStatus.Reason.TOOL_MISSING, WorkStatus.Request.TOOL_SUPPLY);
-    return switch (status) {
-      case NO_SWORD -> WorkStatus.blocked(order, WorkStatus.Reason.TOOL_MISSING);
-      case RESTING -> WorkStatus.blocked(order, WorkStatus.Reason.EXHAUSTED);
-      case UNREACHABLE -> WorkStatus.blocked(order, WorkStatus.Reason.UNREACHABLE);
-      default ->
-          WorkStatus.of(
-              order, status == Status.IDLE ? WorkStatus.State.IDLE : WorkStatus.State.ACTIVE);
-    };
+    WorkStatus result =
+        getMainHandItem().isEmpty()
+            ? WorkStatus.blocked(
+                order, WorkStatus.Reason.TOOL_MISSING, WorkStatus.Request.TOOL_SUPPLY)
+            : switch (status) {
+              case NO_SWORD -> WorkStatus.blocked(order, WorkStatus.Reason.TOOL_MISSING);
+              case RESTING -> WorkStatus.blocked(order, WorkStatus.Reason.EXHAUSTED);
+              case UNREACHABLE -> WorkStatus.blocked(order, WorkStatus.Reason.UNREACHABLE);
+              default ->
+                  WorkStatus.of(
+                      order,
+                      status == Status.IDLE ? WorkStatus.State.IDLE : WorkStatus.State.ACTIVE);
+            };
+    if (!hasCargo()) return result;
+    var requests = new java.util.HashSet<>(result.requests());
+    requests.add(WorkStatus.Request.CARGO_PICKUP);
+    return new WorkStatus(result.order(), result.state(), result.reason(), requests);
+  }
+
+  protected boolean mayNavigate() {
+    return onGround();
+  }
+
+  private boolean ownLoot(ItemEntity item) {
+    CompoundTag data = item.saveWithoutId(new CompoundTag());
+    return item.isAlive()
+        && !item.hasPickUpDelay()
+        && item.getPersistentData().hasUUID(LOOT_COLLECTOR)
+        && getUUID().equals(item.getPersistentData().getUUID(LOOT_COLLECTOR))
+        && (!data.hasUUID("Owner") || data.getUUID("Owner").equals(getOwnerUUID()))
+        && ItemHandlerHelper.insertItemStacked(getBag(), item.getItem().copy(), true).getCount()
+            < item.getItem().getCount();
+  }
+
+  private boolean collectLoot(boolean move) {
+    double range = SlimeStat.DETECTION_RANGE.value(this);
+    ItemEntity nearest = null;
+    double distance = range * range;
+    for (var item : level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(range))) {
+      if (!ownLoot(item) || !hasLineOfSight(item)) continue;
+      double next = distanceToSqr(item);
+      if (next <= SlimeStat.REACH.value(this) * SlimeStat.REACH.value(this)) {
+        var player =
+            net.minecraftforge.common.util.FakePlayerFactory.get(
+                (net.minecraft.server.level.ServerLevel) level(),
+                new com.mojang.authlib.GameProfile(getOwnerUUID(), "SlimeCollector"));
+        player.moveTo(position());
+        if (net.minecraftforge.event.ForgeEventFactory.onItemPickup(item, player) < 0
+            || !canContinueWork(player)
+            || !ownLoot(item)) continue;
+        var before = item.getItem().copy();
+        var remaining = ItemHandlerHelper.insertItemStacked(getBag(), before.copy(), false);
+        int moved = before.getCount() - remaining.getCount();
+        if (moved > 0) {
+          take(item, moved);
+          item.setItem(remaining);
+          net.minecraftforge.event.ForgeEventFactory.firePlayerItemPickupEvent(
+              player, item, before.copyWithCount(moved));
+        }
+        if (remaining.isEmpty()) item.discard();
+        else item.setItem(remaining);
+      } else if (next < distance) {
+        distance = next;
+        nearest = item;
+      }
+    }
+    if (move && nearest != null && mayNavigate() && tickCount % 10 == 0)
+      getNavigation().moveTo(nearest, 1);
+    return nearest != null;
   }
 
   @Override
@@ -278,6 +340,7 @@ public final class CombatSlime extends BagSlime {
   public void tick() {
     super.tick();
     if (!level().isClientSide) {
+      if (isWorking() && isTame() && getTarget() != null && tickCount % 5 == 0) collectLoot(false);
       if (attackCooldown > 0) attackCooldown--;
       if (shieldCooldown > 0) shieldCooldown--;
       if (isWorking() && tickCount % 20 == 0 && status != Status.FIGHTING)
@@ -397,7 +460,7 @@ public final class CombatSlime extends BagSlime {
         resetTravel();
         status = Status.IDLE;
         stopUsingItem();
-        getNavigation().stop();
+        if (!collectLoot(true)) getNavigation().stop();
         return;
       }
       getLookControl().setLookAt(victim, 30, 30);
@@ -428,7 +491,7 @@ public final class CombatSlime extends BagSlime {
         } else travelTicks++;
         status = travelTicks > 400 ? Status.UNREACHABLE : Status.MOVING;
         if (tickCount % 10 == 0
-            && onGround()
+            && mayNavigate()
             && (getNavigation().isDone()
                 || pathDestination == null
                 || pathDestination.distanceToSqr(victim.position()) > 1)) {

@@ -45,7 +45,21 @@ public final class SlimeToolsGameTests {
           ModEntities.FRIENDLY_SLIME.get(),
           ModEntities.MINING_SLIME.get(),
           ModEntities.TRANSPORT_SLIME.get(),
-          ModEntities.HERALD_SLIME.get()
+          ModEntities.HERALD_SLIME.get(),
+          ModEntities.COMBAT_SLIME.get(),
+          ModEntities.CLEANING_SLIME.get(),
+          ModEntities.SADDLE_SLIME.get(),
+          ModEntities.FARMER_SLIME.get(),
+          ModEntities.LUMBERJACK_SLIME.get(),
+          ModEntities.GUARDIAN_ANGEL_SLIME.get(),
+          ModEntities.SOGGY_SLIME.get(),
+          ModEntities.HEALING_SLIME.get(),
+          ModEntities.WAREHOUSE_SLIME.get(),
+          ModEntities.FISHING_SLIME.get(),
+          ModEntities.ABUNDANCE_SLIME.get(),
+          ModEntities.TUNNEL_SLIME.get(),
+          ModEntities.DRAGON_SLIME.get(),
+          ModEntities.NYAN_CAT_SLIME.get()
         }) {
       FriendlySlime slime = (FriendlySlime) type.create(helper.getLevel());
       slime.tame(owner);
