@@ -658,6 +658,7 @@ public final class OrderSixGameTests {
     boolean[] airborne = {false, false};
     for (int i = 0; i < 2; i++) {
       pets[i].moveTo(a.point(3, 101, 4 + i * 6));
+      pets[i].setWaiting(false);
       pets[i].setOnGround(true);
       SlimeStat.MOVEMENT_SPEED.tune(pets[i], i == 0 ? .15 : .6);
       h.getLevel().addFreshEntity(pets[i]);

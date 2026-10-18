@@ -4,6 +4,20 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.31] - 2026-10-18
+
+### Fixed
+
+- All eighteen companion types, including Friendly and Saddle Slimes, initially select Wait. Fresh summon items and entity data without an order use the same default.
+- First Saddle Slime specialization pauses a stored Follow order while retaining identity, resources, and the original saddle. Ordinary recovery retains saved commands.
+- English and Korean gameplay, development, and guidebook instructions consistently describe the shared initial Wait state.
+
+### Validation
+
+- Six initial-order regressions cover all eighteen companion types, commandless entity loading, native summon items, initial specialization, command-preserving recovery, and waiting near an online owner. Twenty-five command and recovery checks pass with both optional integrations present and with both absent.
+- Thirteen movement and lifecycle checks pass with the hop-frequency probe explicitly selecting Follow before measuring movement.
+- Google Java Format, the Java 17 build, bilingual document links, release contents, and runtime member references pass verification. The native guidebook checks cover all 116 pages per language, English fallback, links, search, and item lookups.
+
 ## [0.1.30] - 2026-10-18
 
 ### Changed

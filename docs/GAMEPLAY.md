@@ -39,7 +39,7 @@ An anvil name on the item becomes the slime's custom name.
 | Owner Shift-right-clicks | Recover the slime into an inventory item, even while holding another item. |
 | Use a recovered item on a block or water source | Release the same companion with its saved traits. |
 
-All newly created work specializations start in **Wait**, including Creative defaults and specialization of a stored Friendly Slime. Start Mine, Haul, Watch, Fight, Clean, Farm, Chop, Search, Store, Fish, Nurture, or Tunnel explicitly in management. Select Follow or Roam for Soggy Slime trails, or Follow for guardian movement. Recovered companions retain their saved commands; miners retain the documented relocation behavior. Missing job data defaults to Wait.
+All newly created companions start in **Wait**, including Friendly and Saddle Slimes, Creative defaults, and first specialization of a stored companion. Start Mine, Haul, Watch, Fight, Clean, Farm, Chop, Search, Store, Fish, Nurture, or Tunnel explicitly in management. Select Follow or Roam for Soggy Slime trails, or Follow for guardian movement. Recovered companions retain their saved commands; miners retain the documented relocation behavior. Missing job data defaults to Wait.
 
 Ordinary use of a saddled Saddle Slime mounts it, including while holding an item. Use a Slime Tuner for management. Ordinary Herald Slime use launches its saved firework.
 
@@ -67,7 +67,7 @@ The slime appears at the selected destination. Old motion and fall distance are 
 
 ## Companion behavior
 
-Friendly Slimes hop after their owner. Work specializations initially wait and follow after receiving Follow. Ownership and orders persist across saves. They persist in Peaceful difficulty and do not split on death. Combat slimes attack enabled target types while assigned to Fight; Guardian Angel Slimes retaliate against attackers of their owner or themselves.
+All eighteen companion types start in Wait, including Friendly and Saddle Slimes. Choose Follow or a profession command in the management screen to begin movement or work; mounting a Saddle Slime enables riding. First specialization also starts in Wait. Recovered companions retain their saved orders. Ownership and orders persist across saves. They persist in Peaceful difficulty and do not split on death. Combat slimes attack enabled target types while assigned to Fight; Guardian Angel Slimes retaliate against attackers of their owner or themselves.
 
 Companions retain the original slime texture with a dye color filter. Summon icons use 16×16 pixel textures with slime-ball silhouettes, a shared Friendly Slime base, and framed profession symbols. See [CREDITS.txt](../CREDITS.txt).
 

@@ -229,6 +229,7 @@ public class FriendlySlimeItem extends Item {
                     entity.setCustomName(stack.getHoverName());
                   }
                   initializeSlime(entity, stack);
+                  if (!restoring) entity.setWaiting(true);
                 },
                 position,
                 MobSpawnType.SPAWN_EGG,

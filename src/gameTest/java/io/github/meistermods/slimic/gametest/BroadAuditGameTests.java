@@ -208,7 +208,9 @@ public final class BroadAuditGameTests {
     var pet = pet(h, owner);
     owner.moveTo(pet.position());
     var menu = TestMenus.create(1, owner.getInventory(), pet);
-    h.assertTrue(menu.stillValid(owner), "Initial management available");
+    h.assertTrue(
+        menu.stillValid(owner) && menu.clickMenuButton(owner, SlimeMenu.FOLLOW),
+        "Initial management permits an explicit Follow order");
     spectator[0] = true;
     h.assertTrue(
         !menu.stillValid(owner) && !menu.clickMenuButton(owner, SlimeMenu.WAIT),

@@ -82,6 +82,8 @@ public class FriendlySlime extends TamableAnimal {
   public FriendlySlime(EntityType<? extends FriendlySlime> type, Level level) {
     super(type, level);
     moveControl = new HopMoveControl(this);
+    setOrderedToSit(true);
+    setInSittingPose(true);
     setPersistenceRequired();
   }
 
@@ -340,11 +342,7 @@ public class FriendlySlime extends TamableAnimal {
   public void readAdditionalSaveData(CompoundTag saved) {
     CompoundTag tag = SlimeData.migrate(saved);
     super.readAdditionalSaveData(tag);
-    if (!tag.contains("Sitting")
-        && (this instanceof BagSlime
-            || this instanceof HeraldSlime
-            || this instanceof SoggySlime
-            || this instanceof GuardianAngelSlime)) setWaiting(true);
+    if (!tag.contains("Sitting")) setWaiting(true);
     followingActivityTicks =
         Mth.clamp(
             tag.getInt("FollowingActivityTicks"),
