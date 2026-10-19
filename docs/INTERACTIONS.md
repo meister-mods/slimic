@@ -50,8 +50,11 @@ The following scenarios have independent native game regressions. Transfers chec
 | I40 | Ender / player | Retain identity-bound tokens and exact pinned chunks across cold restarts; reject unsafe or revoked travel without costs. |
 | I41 | Glow / Glow | Share temporary light leases without deleting another companion’s light or changing fluids and containers. |
 | I42 | Shared owners / Saddle / Combat | Eject revoked riders; enemy assignments retain PvP, team, Creative, and ally protection. |
+| I43 | Recovery / all twenty-two professions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
+| I44 | Tuner / workers | Preview bounded current or planned areas without starting work, loading chunks, or recovering the companion; enforce current access and range. |
+| I45 | Herald / blocked worker / owners | Report type, custom name, and cause to authorized online owners, including other dimensions; respect cooldowns and revoked access. |
 
-Endurance validation runs for at least two hours of real elapsed server time. It repeats obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
+Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 
 Version 0.1.25 passes all 424 regressions both with and without JEI. The 29-scenario matrix runs repeatedly for over two real hours; a separate continuous movement run completes 288 cycles in 7,212 seconds. All thirteen professions retain their saved traits when a 0.1.24 world loads, and both Korean with JEI and English without JEI pass the client checks.
 

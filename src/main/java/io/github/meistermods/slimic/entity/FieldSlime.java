@@ -127,6 +127,14 @@ public abstract class FieldSlime extends BagSlime {
     return home == null ? blockPosition() : home;
   }
 
+  public final BlockPos getWorkTarget() {
+    return target;
+  }
+
+  public final BlockPos getPreviewWorkHome() {
+    return getWorkHome();
+  }
+
   protected final boolean inArea(BlockPos pos) {
     double r = SlimeStat.DETECTION_RANGE.value(this);
     return pos.distSqr(getWorkHome()) <= r * r;

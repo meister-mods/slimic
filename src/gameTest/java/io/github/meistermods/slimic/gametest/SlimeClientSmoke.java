@@ -61,6 +61,7 @@ public final class SlimeClientSmoke {
     if (!Boolean.getBoolean("slimic.clientSmoke") || event.phase != TickEvent.Phase.END) return;
     Minecraft client = Minecraft.getInstance();
     int timeout = 3600;
+    if (Boolean.getBoolean("slimic.workAreaOnly")) timeout = WorkAreaClientSmoke.maximumTicks();
     if (Boolean.getBoolean("slimic.accessoryTexturesOnly"))
       timeout +=
           400
@@ -70,6 +71,10 @@ public final class SlimeClientSmoke {
       throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.workAreaOnly")) {
+      if (WorkAreaClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.companionTooltipsOnly")) {
       if (CompanionTooltipClientSmoke.tick(client)) client.stop();
       return;

@@ -4,6 +4,7 @@ import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.block.BrokenSlimeBlock;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -110,7 +111,14 @@ public final class FriendlySlimeInteractions {
       mob.targetSelector.addGoal(
           3,
           new NearestAttackableTargetGoal<>(
-              mob, FriendlySlime.class, 10, true, false, slime -> slime.isAlive()));
+              mob,
+              FriendlySlime.class,
+              10,
+              true,
+              false,
+              slime ->
+                  slime.isAlive()
+                      && (mob.getType() != EntityType.SLIME || mob.getLastHurtByMob() == slime)));
   }
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -126,7 +134,10 @@ public final class FriendlySlimeInteractions {
   public static void captureOnSneakInteract(PlayerInteractEvent.EntityInteract event) {
     if (event.getTarget() instanceof FriendlySlime slime && event.getEntity().isShiftKeyDown()) {
       // Run before vanilla consumes leads, name tags, or other held items.
-      event.setCancellationResult(slime.capture(event.getEntity()));
+      event.setCancellationResult(
+          io.github.meistermods.slimic.item.SlimeTunerItem.isHoldingPreviewTool(event.getEntity())
+              ? io.github.meistermods.slimic.item.SlimeTunerItem.preview(event.getEntity(), slime)
+              : slime.capture(event.getEntity()));
       event.setCanceled(true);
     }
   }

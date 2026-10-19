@@ -261,7 +261,7 @@ public class FriendlySlimeItem extends Item {
                     entity.setCustomName(stack.getHoverName());
                   }
                   initializeSlime(entity, stack);
-                  if (!restoring) entity.setWaiting(true);
+                  entity.setWaiting(true);
                 },
                 position,
                 MobSpawnType.SPAWN_EGG,
@@ -286,6 +286,7 @@ public class FriendlySlimeItem extends Item {
       return false;
     }
     slime.onReleased();
+    slime.setWaiting(true);
     if (!restoring) {
       slime.tame(player);
       level.broadcastEntityEvent(slime, (byte) 7);

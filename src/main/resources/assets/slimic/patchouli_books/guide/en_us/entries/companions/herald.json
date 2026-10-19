@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Starts waiting; select Watch. It monitors same-owner or mutually shared workers in range. After the chosen continuous blocked delay, it launches a harmless signal, repeating every ten seconds while the worker stays blocked."
+      "text": "Select Watch to monitor same-owner or mutually shared workers. After the chosen continuous blocked delay, it launches a harmless firework and messages the worker’s online owners with its type, name, and cause. While blocked, alerts repeat every ten seconds."
     },
     {
       "type": "patchouli:text",

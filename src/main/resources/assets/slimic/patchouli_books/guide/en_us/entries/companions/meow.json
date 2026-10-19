@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "It retains normal companion stats, naming, dyeing, healing, ownership, and recovery. It has no bag or equipment. Native avoidance is not a guarantee against a creeper that has already ignited."
+      "text": "It retains normal companion stats, naming, dyeing, healing, ownership, and recovery. It has no bag or equipment. Native avoidance is not a guarantee against a creeper that has already ignited. Activation survives recovery, but re-release starts in Wait; choose Roam again to wander."
     }
   ],
   "extra_recipe_mappings": {

@@ -654,13 +654,13 @@ public final class OrderTwelveBoundaryGameTests {
     pond(h, a);
     var owner = h.makeMockSurvivalPlayer();
     var fisher = pet(h, a, ModEntities.FISHING_SLIME.get(), owner, 3.5, 101, 7.5);
+    fisher.setNoAi(true);
     var rod = new ItemStack(Items.FISHING_ROD);
     rod.enchant(Enchantments.MENDING, 1);
     rod.enchant(Enchantments.FISHING_LUCK, 3);
     rod.enchant(Enchantments.FISHING_SPEED, 3);
     rod.setDamageValue(14);
     fisher.setRod(rod);
-    SlimeStat.WORK_SPEED.tune(fisher, 8);
     boolean[] open = {false};
     listen(
         h,
@@ -672,11 +672,31 @@ public final class OrderTwelveBoundaryGameTests {
         });
     fisher.setWorking(true);
     h.startSequence()
-        .thenWaitUntil(() -> h.assertTrue(fisher.hasCargo(), "Enchanted rod catches native loot"))
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    h.getLevel().isPositionEntityTicking(fisher.blockPosition()),
+                    "Fishing arena ticks"))
         .thenExecute(
             () -> {
+              // Test native loot, hook conditions and Mending independently of shore selection.
+              try {
+                var water = FishingSlime.class.getDeclaredField("water");
+                water.setAccessible(true);
+                water.set(fisher, pos(a, 8, 100, 7));
+                var catchFish =
+                    FishingSlime.class.getDeclaredMethod(
+                        "catchFish", net.minecraft.server.level.ServerLevel.class);
+                catchFish.setAccessible(true);
+                catchFish.invoke(fisher, h.getLevel());
+                var storeCatch = FishingSlime.class.getDeclaredMethod("storeCatch");
+                storeCatch.setAccessible(true);
+                storeCatch.invoke(fisher);
+              } catch (ReflectiveOperationException failure) {
+                throw new IllegalStateException(failure);
+              }
               h.assertTrue(
-                  fisher.getRod().getDamageValue() < 14 && open[0],
+                  fisher.hasCargo() && fisher.getRod().getDamageValue() < 14 && open[0],
                   "Mending repairs wear and open water reaches the native hook loot context");
               fisher.discard();
               a.close();

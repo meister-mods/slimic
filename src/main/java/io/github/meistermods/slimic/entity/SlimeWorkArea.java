@@ -1,0 +1,137 @@
+package io.github.meistermods.slimic.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+/** A small, read-only snapshot; requesting a preview never surveys or loads terrain. */
+public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
+  public static final int MAX_SHAPES = 8;
+
+  public record Shape(AABB bounds, boolean radial, boolean next) {
+    public Shape {
+      for (double value :
+          new double[] {
+            bounds.minX, bounds.minY, bounds.minZ, bounds.maxX, bounds.maxY, bounds.maxZ
+          })
+        if (!Double.isFinite(value) || Math.abs(value) > 30_100_000)
+          throw new IllegalArgumentException("Invalid work-area coordinate");
+      if (bounds.getXsize() > 65536 || bounds.getYsize() > 65536 || bounds.getZsize() > 65536)
+        throw new IllegalArgumentException("Oversized work area");
+    }
+  }
+
+  public SlimeWorkArea {
+    shapes = List.copyOf(shapes);
+    if (shapes.size() > MAX_SHAPES) throw new IllegalArgumentException("Too many work-area shapes");
+  }
+
+  private static Shape range(Vec3 center, double radius) {
+    return new Shape(new AABB(center, center).inflate(Math.max(0, radius)), true, false);
+  }
+
+  private static AABB tunnelPlane(BlockPos front, Direction direction) {
+    return direction.getAxis() == Direction.Axis.X
+        ? new AABB(
+            front.getX(),
+            front.getY(),
+            front.getZ() - 1,
+            front.getX() + 1,
+            front.getY() + 3,
+            front.getZ() + 2)
+        : new AABB(
+            front.getX() - 1,
+            front.getY(),
+            front.getZ(),
+            front.getX() + 2,
+            front.getY() + 3,
+            front.getZ() + 1);
+  }
+
+  public static SlimeWorkArea of(FriendlySlime slime) {
+    List<Shape> shapes = new ArrayList<>();
+    double radius = SlimeStat.DETECTION_RANGE.value(slime);
+    if (slime instanceof TunnelSlime tunnel) {
+      var front = tunnel.getTunnelFront();
+      var direction = tunnel.getTunnelDirection();
+      var plane = tunnelPlane(front, direction);
+      shapes.add(
+          new Shape(
+              plane.minmax(tunnelPlane(front.relative(direction, 7), direction)), false, false));
+      shapes.add(new Shape(plane, false, true));
+    } else if (slime instanceof MiningSlime miner) {
+      var plan = miner.getQuarryPlan();
+      boolean existingPlan =
+          plan != null
+              && (miner.getMiningChunk().equals(slime.chunkPosition()) || slime.isWorking());
+      ChunkPos chunk = existingPlan ? miner.getMiningChunk() : slime.chunkPosition();
+      int topFloor = existingPlan ? plan.topFloor() : miner.getQuarryStartFloor();
+      int nextLayer = existingPlan ? plan.layer() : topFloor + 2;
+      int layer = nextLayer;
+      layer =
+          Math.max(
+              slime.level().getMinBuildHeight(),
+              Math.min(slime.level().getMaxBuildHeight() - 1, layer));
+      int top = Math.max(layer + 1, topFloor + 3);
+      shapes.add(
+          new Shape(
+              new AABB(
+                  chunk.getMinBlockX(),
+                  slime.level().getMinBuildHeight(),
+                  chunk.getMinBlockZ(),
+                  chunk.getMinBlockX() + 16,
+                  top,
+                  chunk.getMinBlockZ() + 16),
+              false,
+              false));
+      if (nextLayer >= slime.level().getMinBuildHeight())
+        shapes.add(
+            new Shape(
+                new AABB(
+                    chunk.getMinBlockX(),
+                    layer,
+                    chunk.getMinBlockZ(),
+                    chunk.getMinBlockX() + 16,
+                    layer + 1,
+                    chunk.getMinBlockZ() + 16),
+                false,
+                true));
+    } else if (slime instanceof FieldSlime field) {
+      BlockPos center = field.getPreviewWorkHome();
+      if (slime instanceof FarmerSlime && !slime.isWorking()) center = slime.blockPosition();
+      shapes.add(range(Vec3.atCenterOf(center), radius));
+      if (slime instanceof FarmerSlime farmer && slime.isWorking()) {
+        AABB plots = null;
+        for (var plot : farmer.getFarmPlots())
+          plots = plots == null ? new AABB(plot) : plots.minmax(new AABB(plot));
+        if (plots != null) shapes.add(new Shape(plots, false, true));
+      }
+      if (slime.isWorking() && field.getWorkTarget() != null)
+        shapes.add(new Shape(new AABB(field.getWorkTarget()), false, true));
+    } else if (slime instanceof CleaningSlime cleaner) {
+      shapes.add(range(cleaner.getCleaningHome(), radius));
+    } else if (slime instanceof TransportSlime transport) {
+      shapes.add(range(Vec3.atCenterOf(transport.getWorkOrigin()), radius));
+    } else if (slime instanceof HealingSlime healer) {
+      shapes.add(range(Vec3.atCenterOf(healer.getWorkOrigin()), radius));
+    } else if (slime instanceof FishingSlime fishing) {
+      shapes.add(range(Vec3.atCenterOf(fishing.getWorkOrigin()), radius));
+      if (slime.isWorking() && fishing.getFishingWater() != null)
+        shapes.add(new Shape(new AABB(fishing.getFishingWater()), false, true));
+    } else if (slime instanceof GuardianAngelSlime) {
+      shapes.add(range(slime.position(), Math.min(radius, 4 * SlimeStat.REACH.value(slime))));
+    } else if (slime instanceof HeraldSlime || slime instanceof CombatSlime) {
+      shapes.add(range(slime.position(), radius));
+    } else if (slime instanceof SoggySlime soggy) {
+      shapes.add(
+          range(
+              Vec3.atCenterOf(soggy.isRoaming() ? soggy.getRoamHome() : slime.blockPosition()),
+              radius));
+    }
+    return new SlimeWorkArea(!slime.isWorking(), shapes);
+  }
+}

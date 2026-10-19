@@ -12,7 +12,7 @@ Build a team of companions to gather resources, move supplies, care for crops an
 
 Companions grow through activity and stat upgrades. Name and manage them with a Slime Tuner, then recover them as items with their saved traits. A Creative Slime Tuner allows direct stat editing. Optional JEI integration provides recipes and companion information, while Patchouli adds an in-game guidebook.
 
-Slimic is in early development within the `0.1.x` series.
+Slimic is in early development within the `0.2.x` series.
 
 ## Platform
 

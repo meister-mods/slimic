@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Shift-right-click your living companion to recover it. You need one empty main-inventory slot. It keeps its identity, owner, current health, stats, growth, dye, equipment, cargo, and job data."
+      "text": "Shift-right-click your living companion without holding a tuner to recover it. You need one empty main-inventory slot. Identity, owner, current health, stats, growth, dye, equipment, cargo, and applicable plans are retained."
     },
     {
       "type": "patchouli:text",
@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A miner released in the same chunk keeps its layer and order. A different chunk or dimension starts a new quarry automatically. Other fixed work areas rebase as documented for each job."
+      "text": "Every recovered release and revival starts in Wait. A miner keeps its layer in the same chunk; a different chunk or dimension creates a new quarry. Select a command to resume. Ordinary world reloads retain saved commands."
     }
   ]
 }

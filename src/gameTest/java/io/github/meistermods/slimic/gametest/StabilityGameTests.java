@@ -55,11 +55,11 @@ public final class StabilityGameTests {
     restored.moveTo(origin.getX() + .5, 75, origin.getZ() + .5);
     restored.onReleased();
     h.assertTrue(
-        restored.isWorking()
-            && !restored.isOrderedToSit()
+        !restored.isWorking()
+            && restored.isOrderedToSit()
             && restored.getQuarryPlan().topFloor() == 74
             && restored.getQuarryPlan().layer() == 76,
-        "A different dimension is a different quarry even at the same X/Z chunk coordinates");
+        "A different dimension creates a new quarry while a saved Wait order stays paused");
     h.assertTrue(
         restored.getUUID().equals(miner.getUUID())
             && restored.getOwnerUUID().equals(miner.getOwnerUUID())

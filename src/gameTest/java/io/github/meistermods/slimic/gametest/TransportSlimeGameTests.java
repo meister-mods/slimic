@@ -719,22 +719,45 @@ public final class TransportSlimeGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 200)
   public static void workSpeedScalesTheIntervalBetweenTransferActions(GameTestHelper helper) {
-    TransportSlime slow = carrier(helper);
-    TransportSlime fast = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), CARRIER.south(2));
-    fast.setWorking(true);
-    fast.tame(helper.makeMockSurvivalPlayer());
-    fast.onReleased();
+    var area = new LoadedWorkArea(helper);
+    var slow = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    var fast = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    var carriers = java.util.List.of(slow, fast);
+    var workers = new java.util.ArrayList<MiningSlime>();
+    for (int i = 0; i < carriers.size(); i++) {
+      var carrier = carriers.get(i);
+      carrier.tame(helper.makeMockSurvivalPlayer());
+      carrier.moveTo(area.point(7 + i * 2, 101, 7));
+      carrier.setWorking(true);
+      SlimeStat.MOVEMENT_SPEED.tune(carrier, 0);
+      helper.getLevel().addFreshEntity(carrier);
+      carrier.onReleased();
+      var worker = ModEntities.MINING_SLIME.get().create(helper.getLevel());
+      worker.setOwnerUUID(carrier.getOwnerUUID());
+      worker.setTame(true);
+      worker.moveTo(area.point(7 + i * 2, 101, 9));
+      worker.setWorking(true);
+      SlimeStat.MOVEMENT_SPEED.tune(worker, 0);
+      helper.getLevel().addFreshEntity(worker);
+      worker.onReleased();
+      workers.add(worker);
+      helper
+          .getLevel()
+          .setBlock(
+              net.minecraft.core.BlockPos.containing(area.point(7 + i * 2, 101, 10)),
+              Blocks.STONE.defaultBlockState(),
+              2);
+    }
     seed(fast, 20, 0, 100);
     for (int point = 0; point < 20; point++) fast.upgradeStat(SlimeStat.WORK_SPEED);
-    MiningSlime slowWorker = miner(helper, slow, ItemStack.EMPTY);
-    MiningSlime fastWorker = helper.spawn(ModEntities.MINING_SLIME.get(), MINER.south(2));
-    fastWorker.setWorking(true);
-    fastWorker.setOwnerUUID(fast.getOwnerUUID());
-    fastWorker.setTame(true);
-    fastWorker.onReleased();
-    SlimeChestBlockEntity chest = chest(helper, new BlockPos(6, 2, 6));
+    var slowWorker = workers.get(0);
+    var fastWorker = workers.get(1);
+    var chestPos = net.minecraft.core.BlockPos.containing(area.point(8, 101, 8));
+    helper.getLevel().setBlock(chestPos, ModBlocks.SLIME_CHEST.get().defaultBlockState(), 2);
+    var chest = (SlimeChestBlockEntity) helper.getLevel().getBlockEntity(chestPos);
     chest.setItem(0, new ItemStack(Items.IRON_PICKAXE));
     chest.setItem(1, new ItemStack(Items.IRON_PICKAXE));
+    // Keep each transfer in reach so this measures action cooldowns rather than travel or terrain.
     long[] times = new long[4];
     helper.succeedWhen(
         () -> {
@@ -748,7 +771,11 @@ public final class TransportSlimeGameTests {
               "Both carriers must fetch and supply a tool");
           helper.assertTrue(
               times[2] - times[0] == 20 && times[3] - times[1] == 7,
-              "Transfers must respect 20 ticks at 1x speed and ceil(20/3) ticks at 3x speed");
+              "Transfers must respect 20 ticks at 1x speed and ceil(20/3) ticks at 3x speed: slow="
+                  + (times[2] - times[0])
+                  + ", fast="
+                  + (times[3] - times[1]));
+          area.close();
         });
   }
 

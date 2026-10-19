@@ -171,7 +171,8 @@ public final class QuarryGameTests {
   }
 
   @GameTest(template = "empty")
-  public static void sameChunkKeepsProgressAndNewChunkRestartsWork(GameTestHelper helper) {
+  public static void sameChunkKeepsProgressAndNewChunkResetsPlanWhileWaiting(
+      GameTestHelper helper) {
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
     miner.setWorking(true);
     miner.moveTo(helper.absoluteVec(Vec3.atCenterOf(PET)));
@@ -196,11 +197,11 @@ public final class QuarryGameTests {
     miner.moveTo((old.x + 1) * 16 + 8, miner.getY(), old.z * 16 + 8);
     miner.onReleased();
     helper.assertTrue(
-        miner.isWorking()
-            && !miner.isOrderedToSit()
+        !miner.isWorking()
+            && miner.isOrderedToSit()
             && miner.getMiningChunk().equals(miner.chunkPosition())
             && miner.getQuarryPlan().layer() == miner.getQuarryPlan().topFloor() + 2,
-        "A different chunk must start a new quarry automatically");
+        "A different chunk creates a new quarry without resuming a paused command");
     helper.assertTrue(
         miner.getHealth() == 7
             && miner.getBag().getStackInSlot(0).getCount() == 7
@@ -212,8 +213,9 @@ public final class QuarryGameTests {
   @GameTest(template = "empty", batch = "quarry_integration", timeoutTicks = 30000)
   public static void excavatesWholeChunkAndLeavesAnExitRamp(GameTestHelper helper) {
     var level = helper.getLevel();
-    BlockPos marker = helper.absolutePos(BlockPos.ZERO);
-    int chunkX = (marker.getX() + 1024) >> 4, chunkZ = (marker.getZ() + 1024) >> 4;
+    var area = new LoadedWorkArea(helper, 31000);
+    BlockPos marker = BlockPos.containing(area.point(8, 100, 8));
+    int chunkX = marker.getX() >> 4, chunkZ = marker.getZ() >> 4;
     int minX = chunkX * 16, minZ = chunkZ * 16;
     forceRegion(level, chunkX, chunkZ, true);
     level
@@ -221,7 +223,7 @@ public final class QuarryGameTests {
             MiningSlime.class,
             new net.minecraft.world.phys.AABB(minX - 64, -64, minZ - 64, minX + 80, 320, minZ + 80))
         .forEach(MiningSlime::discard);
-    helper.runAfterDelay(29990, () -> forceRegion(level, chunkX, chunkZ, false));
+    helper.runAfterDelay(29990, area::close);
     for (int x = 0; x < 16; x++)
       for (int z = 0; z < 16; z++) {
         for (int y = 96; y <= 104; y++)
@@ -236,7 +238,7 @@ public final class QuarryGameTests {
       }
     // This fixture tests excavation and stairs; separate wall fixtures provide cave openings.
     for (int i = 0; i < 16; i++)
-      for (int y = 96; y <= 101; y++)
+      for (int y = 96; y < level.getMaxBuildHeight(); y++)
         for (var pos :
             java.util.List.of(
                 new BlockPos(minX - 1, y, minZ + i), new BlockPos(minX + 16, y, minZ + i),
@@ -293,7 +295,8 @@ public final class QuarryGameTests {
               path != null && path.canReach(),
               "The finished quarry must have a navigable exit to its top landing");
           miner.setWorking(false);
-          forceRegion(level, chunkX, chunkZ, false);
+          miner.discard();
+          area.close();
         });
   }
 

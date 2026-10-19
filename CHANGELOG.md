@@ -4,6 +4,54 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-19
+
+### Fixed
+
+- Planned quarry previews use the same starting-floor calculation as actual quarry initialization, including relocation at the world's minimum build height.
+- Rebased farming and logging previews remain centered on the registered work area when the worker moves.
+- Missing-storage herald messages cover both Slime Chests and Warehouse Slimes.
+- Fishing alerts distinguish a missing suitable fishing spot from an unreachable route.
+- Bilingual version guidance uses the 0.2.x series. Meow Slime guidance distinguishes retained activation from movement orders, which return to Wait on item release.
+
+### Validation
+
+- All 547 native server regressions pass in each of the four JEI/Patchouli combinations. Previous-version world and recovered-item data retain their companion traits, and all twenty-two types pass repeated recovery and release checks.
+- Focused server regressions reproduce and verify corrected quarry heights, rebased farming/logging origins, missing fishing spots, shared-access revocation, cross-dimension warning delivery, and read-only previews without chunk loading or survey advancement.
+- A native client completes sixty English/Korean resource-reload cycles and 600 Shift previews. Latest-client checks cover rebased fields, GUI scales 2–4, armored Combat/Dragon previews, existing management and equipment, 528 tooltips, and 26 synchronized inventory screens.
+- Both guidebook fonts render all 44 entries and 137 pages in English, Korean, and English fallback, including updated recovery guidance.
+- Seventy minutes of real server time complete 170 obstacle-route, delivery, treatment, and collection cycles while preserving exact cargo, supply costs, and mount equipment.
+
+## [0.2.0] - 2026-10-19
+
+### Added
+
+- Shift-right-click a companion with a Slime Tuner to preview its current or planned work area in the world for fifteen seconds. Quarry bounds, the next tunnel section, field areas, and search ranges use compact outlines visible only to the requesting owner.
+- Herald firework alerts also send authorized online owners a localized message identifying the blocked companion, its custom name, and the specific cause, including missing tools and supplies, full bags, storage issues, exhaustion, and unreachable work.
+
+### Changed
+
+- All item-based releases and revivals start in Wait, including recovered companions. Identity, growth, equipment, cargo, and applicable work plans remain intact. Recovery retains health; revival still restores one health. Work resumes through an explicit command.
+- Tuner previews take precedence over Shift-right-click recovery. Recovery remains available without a held tuner. Network protocol 16 carries bounded server-provided area snapshots.
+
+### Validation
+
+- Server audits cover 540 regression scenarios in both optional-integration environments. Focused rechecks pass for the updated Wait and preview rules, all twenty-two releases and revivals, bounded read-only areas, packet validation, named warning delivery to primary/shared owners, and isolated logistics action intervals.
+- Native clients with and without JEI and Patchouli verify English/Korean Survival interactions, five work-area displays, tool-change clearing, fifteen-second expiry, and localized herald chat. Guidebook rendering passes all 44 entries and 137 pages in English, Korean, and English fallback.
+- Bilingual documentation, release contents, runtime references, Google Java Format, and the Java 17 build pass verification.
+
+## [0.1.40] - 2026-10-19
+
+### Fixed
+
+- Vanilla Slimes no longer acquire nearby companions first; their added companion-target goal only selects a companion that attacked them. Magma Cubes and other hostile mobs retain their existing targeting.
+- Combat and Dragon Slimes still initiate attacks on vanilla Slimes under their Hostile target filter.
+
+### Validation
+
+- Seven native server regressions pass with optional integrations present and absent, covering all twenty-two companion types, attacker-only targeting, Magma Cube and Husk aggression, Combat and Dragon first strikes, and existing Enderman behavior. The previous build reproduces both companion-targeting failures.
+- Bilingual documentation and guidebook resource checks, Google Java Format, and the Java 17 build pass.
+
 ## [0.1.39] - 2026-10-19
 
 ### Fixed
