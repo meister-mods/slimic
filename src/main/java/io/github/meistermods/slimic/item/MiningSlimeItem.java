@@ -44,8 +44,6 @@ public final class MiningSlimeItem extends FriendlySlimeItem {
   public void appendHoverText(
       ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
     super.appendHoverText(stack, level, tooltip, flag);
-    tooltip.add(
-        Component.translatable("item.slimic.mining_slime.tooltip").withStyle(ChatFormatting.GRAY));
     if (stack.hasTag() && stack.getTag().contains(INITIAL_PICKAXE)) {
       ItemStack pickaxe = ItemStack.of(stack.getTag().getCompound(INITIAL_PICKAXE));
       if (!pickaxe.isEmpty())

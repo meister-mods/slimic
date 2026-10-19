@@ -13,11 +13,13 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 public final class CreativeSlimeTunerScreen
     extends AbstractContainerScreen<CreativeSlimeTunerMenu> {
+  private static final ResourceLocation BACKGROUND = SlimeTextures.gui("creative_tuner");
   private final List<EditBox> fields = new ArrayList<>();
   private Button apply;
   private boolean loaded;
@@ -123,8 +125,8 @@ public final class CreativeSlimeTunerScreen
 
   @Override
   protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-    graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xff181f26);
-    graphics.fill(leftPos + 1, topPos + 1, leftPos + imageWidth - 1, topPos + 20, 0xff304338);
+    graphics.blit(
+        BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
   }
 
   @Override

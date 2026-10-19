@@ -77,6 +77,10 @@ All twenty-two summoning items share the Friendly Slime base. Friendly Slimes ha
 
 Permanent profession details remain visible without optional equipment: Cleaning Slimes wear blue work caps, Combat Slimes wear metal headbands with red crests, Saddle Slimes have brown bridles with gold buckles, and Soggy Slimes carry three slime droplets. Armor, saddles, and wings remain visible with these details.
 
+Profession accessories have their own texture files, keeping their colors when the body is dyed. Resource packs can replace the accessory and management-screen artwork; see [Texture editing](TEXTURES.md).
+
+Every summoning item shows its own profession summary, followed by shared release, recovery, and management instructions. Fresh items explain the initial Wait order; recovered items describe restoring the saved companion.
+
 ## Shared stats and growth
 
 Use a **Slime Tuner** on an owned slime to open its management screen. The name field sets a visible name above the slime, like a name tag. Follow and Wait buttons change its order. Mining slimes have a Mine button, separate pickaxe and shovel slots, and a bag. Transport slimes have a Haul button and a larger bag, with no equipment slot.
@@ -201,7 +205,7 @@ Ordinary right-click launches a manual signal without consuming rockets. Right-c
 
 ## Slime Tuners
 
-Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within eight blocks to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. Keep it in either hand while using management. The ordinary tuner does not edit base stats. Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. Dark cells are locked by Capacity and cannot hold items. Paging controls appear only when the bag spans multiple pages.
+Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within eight blocks to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. Keep it in either hand while using management. The ordinary tuner does not edit base stats. Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. Dark cells are locked by Capacity and cannot hold items. Paging controls appear only when the bag spans multiple pages. The management panel is 368×240 GUI units; lower Minecraft's GUI Scale if it extends beyond the window.
 
 The **Creative Slime Tuner** is available in the Slimic creative tab and has no Survival recipe. Hold it and right-click to open a separate stat editor for the companion under the crosshair within 16 blocks, falling back to the nearest companion in that range. Right-clicking a companion directly also opens it. The editor requires Creative mode and a held tuner throughout use.
 

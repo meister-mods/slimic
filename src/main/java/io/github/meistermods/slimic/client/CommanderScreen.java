@@ -7,10 +7,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu> {
+  private static final ResourceLocation BACKGROUND = SlimeTextures.gui("commander");
   private EditBox tag;
   private final List<Button> rows = new ArrayList<>(),
       shares = new ArrayList<>(),
@@ -168,8 +170,7 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
 
   @Override
   protected void renderBg(GuiGraphics g, float partial, int mx, int my) {
-    g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xff182026);
-    g.fill(leftPos + 1, topPos + 1, leftPos + imageWidth - 1, topPos + 22, 0xff304338);
+    g.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
   }
 
   @Override

@@ -60,9 +60,24 @@ public final class SlimeClientSmoke {
   public static void tick(TickEvent.ClientTickEvent event) {
     if (!Boolean.getBoolean("slimic.clientSmoke") || event.phase != TickEvent.Phase.END) return;
     Minecraft client = Minecraft.getInstance();
-    if (++ticks > 3600) throw new IllegalStateException("Client smoke timed out in phase " + phase);
+    int timeout = 3600;
+    if (Boolean.getBoolean("slimic.accessoryTexturesOnly"))
+      timeout +=
+          400
+              * (Math.max(1, Math.min(100, Integer.getInteger("slimic.textureReloadCycles", 1)))
+                  - 1);
+    if (++ticks > timeout)
+      throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.companionTooltipsOnly")) {
+      if (CompanionTooltipClientSmoke.tick(client)) client.stop();
+      return;
+    }
+    if (Boolean.getBoolean("slimic.accessoryTexturesOnly")) {
+      if (AccessoryTextureClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.inventoryLayoutOnly")) {
       if (InventoryLayoutClientSmoke.tick(client)) client.stop();
       return;
@@ -536,9 +551,19 @@ public final class SlimeClientSmoke {
                               .getKey(stack.getItem())
                               .toString())
                   .toList());
-      if (items.size() != 30 + (ModList.get().isLoaded("patchouli") ? 1 : 0)
-          || items.stream().noneMatch(stack -> stack.is(ModItems.CREATIVE_SLIME_TUNER.get())))
-        throw new IllegalStateException("Creative tab entries");
+      var registeredItems =
+          ModItems.ITEMS.getEntries().stream()
+              .map(value -> value.get())
+              .collect(java.util.stream.Collectors.toSet());
+      var displayedItems =
+          items.stream()
+              .map(ItemStack::getItem)
+              .filter(registeredItems::contains)
+              .collect(java.util.stream.Collectors.toSet());
+      if (!displayedItems.equals(registeredItems)
+          || items.size() != registeredItems.size() + (ModList.get().isLoaded("patchouli") ? 1 : 0))
+        throw new IllegalStateException(
+            "Creative tab must contain every registered item exactly once");
       ItemStack miner =
           items.stream()
               .filter(stack -> stack.is(ModItems.MINING_SLIME.get()))

@@ -20,6 +20,47 @@ public final class JeiClientSmoke implements IModPlugin {
     runtime = value;
   }
 
+  public static boolean companionInformationReady() {
+    if (runtime == null) return false;
+    var found = new java.util.HashSet<net.minecraft.resources.ResourceLocation>();
+    runtime
+        .getRecipeManager()
+        .createRecipeLookup(RecipeTypes.INFORMATION)
+        .get()
+        .forEach(
+            recipe -> {
+              for (var ingredient : recipe.getIngredients()) {
+                var stack =
+                    ingredient.getIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK);
+                if (stack.isEmpty()
+                    || !(stack.get().getItem()
+                        instanceof io.github.meistermods.slimic.item.FriendlySlimeItem)) continue;
+                var id =
+                    net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(
+                        stack.get().getItem());
+                var expected =
+                    net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
+                        .getString();
+                var text =
+                    recipe.getDescription().stream()
+                        .map(net.minecraft.network.chat.FormattedText::getString)
+                        .collect(java.util.stream.Collectors.joining());
+                if (!text.replaceAll("\\s+", "").equals(expected.replaceAll("\\s+", "")))
+                  throw new IllegalStateException(
+                      "Wrong JEI profession information "
+                          + id
+                          + ": actual="
+                          + text
+                          + "; expected="
+                          + expected);
+                found.add(id);
+              }
+            });
+    if (found.size() != 22)
+      throw new IllegalStateException("Missing JEI profession information: " + found);
+    return true;
+  }
+
   public static long healingRecipes() {
     return recipes("healing_slime/");
   }

@@ -301,10 +301,12 @@ public class FriendlySlimeItem extends Item {
   public void appendHoverText(
       ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
     tooltip.add(
+        Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+    tooltip.add(
         Component.translatable(
                 hasStoredSlime(stack)
                     ? "item.slimic.friendly_slime.stored_tooltip"
-                    : "item.slimic.friendly_slime.tooltip")
+                    : "item.slimic.companion.summon_tooltip")
             .withStyle(ChatFormatting.GRAY));
     tooltip.add(
         Component.translatable("item.slimic.friendly_slime.capture_tooltip")

@@ -31,10 +31,13 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
+  private static final ResourceLocation BACKGROUND = SlimeTextures.gui("slime");
+  private static final ResourceLocation SLOTS = SlimeTextures.gui("slots");
   private EditBox name;
   private final Map<SlimeStat, Button> upgrades = new EnumMap<>(SlimeStat.class);
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
@@ -274,21 +277,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   @Override
   protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
     int x = leftPos, y = topPos;
-    graphics.fill(x, y, x + imageWidth, y + imageHeight, 0xff181f26);
-    graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + 21, 0xff304338);
-    graphics.fill(x + 190, y + 45, x + 362, y + 237, 0xff293139);
+    graphics.blit(BACKGROUND, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
     if (menu.isBagVisible())
       for (int row = 0; row < SlimeMenu.BAG_ROWS; row++)
         for (int column = 0; column < SlimeMenu.SLOT_COLUMNS; column++) {
           int cellX = x + SlimeMenu.SLOTS_X + column * SlimeMenu.SLOT_SPACING;
           int cellY = y + SlimeMenu.BAG_Y + row * SlimeMenu.SLOT_SPACING;
-          graphics.fill(cellX - 1, cellY - 1, cellX + 17, cellY + 17, 0xff11171b);
-          graphics.fill(cellX, cellY, cellX + 16, cellY + 16, 0xff20272d);
+          graphics.blit(SLOTS, cellX - 1, cellY - 1, 18, 0, 18, 18, 36, 18);
         }
     for (var slot : menu.slots) {
       if (!slot.isActive()) continue;
-      graphics.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, 0xff11171b);
-      graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, 0xff586066);
+      graphics.blit(SLOTS, x + slot.x - 1, y + slot.y - 1, 0, 0, 18, 18, 36, 18);
     }
   }
 

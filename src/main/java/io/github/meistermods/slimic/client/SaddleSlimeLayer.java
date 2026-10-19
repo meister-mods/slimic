@@ -24,10 +24,7 @@ public final class SaddleSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
   public static final ModelLayerLocation SADDLE =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "slime_saddle"), "main");
-  private static final ResourceLocation LEATHER =
-      ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "textures/entity/slime_saddle.png");
-  private static final ResourceLocation METAL =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/iron_block.png");
+  private static final ResourceLocation TEXTURE = SlimeTextures.accessory("saddle");
   private static final ResourceLocation WINGS =
       ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "textures/entity/slime_wings.png");
   private final ModelPart saddle;
@@ -57,22 +54,27 @@ public final class SaddleSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
         .addOrReplaceChild(
             "saddle",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(1, 1)
                 .addBox(-4.3F, 15.1F, -4.3F, 8.6F, 1.2F, 8.6F)
+                .texOffs(38, 1)
                 .addBox(-4, 13.9F, -4, 8, 1.4F, 1.5F)
+                .texOffs(1, 13)
                 .addBox(-4, 13.9F, 2.5F, 8, 1.4F, 1.5F)
+                .texOffs(22, 13)
                 .addBox(-4.6F, 16, -1, .7F, 5.5F, 2)
+                .texOffs(30, 13)
                 .addBox(3.9F, 16, -1, .7F, 5.5F, 2),
             PartPose.ZERO);
     mesh.getRoot()
         .addOrReplaceChild(
             "stirrups",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(38, 13)
                 .addBox(-5.1F, 21, -1.6F, 1.4F, .6F, 3.2F)
+                .texOffs(50, 13)
                 .addBox(3.7F, 21, -1.6F, 1.4F, .6F, 3.2F),
             PartPose.ZERO);
-    return LayerDefinition.create(mesh, 16, 16);
+    return LayerDefinition.create(mesh, 64, 64);
   }
 
   public static LayerDefinition createWings() {
@@ -105,12 +107,12 @@ public final class SaddleSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
     if (mount.isSaddled()) {
       saddle.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(LEATHER)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
       stirrups.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(METAL)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
     }

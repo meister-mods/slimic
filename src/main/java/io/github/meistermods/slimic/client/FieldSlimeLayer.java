@@ -25,10 +25,8 @@ public final class FieldSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel
   public static final ModelLayerLocation HATS =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "field_hats"), "main");
-  private static final ResourceLocation STRAW =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/hay_block_side.png");
-  private static final ResourceLocation LEATHER =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/brown_terracotta.png");
+  private static final ResourceLocation FARMER_TEXTURE = SlimeTextures.accessory("farmer");
+  private static final ResourceLocation LUMBERJACK_TEXTURE = SlimeTextures.accessory("lumberjack");
   private final ModelPart straw, cap, band;
   private final EntityRendererProvider.Context context;
 
@@ -49,26 +47,26 @@ public final class FieldSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel
         .addOrReplaceChild(
             "straw",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(1, 1)
                 .addBox(-6, 15, -6, 12, 1, 12)
-                .texOffs(0, 0)
+                .texOffs(1, 16)
                 .addBox(-3.5F, 12, -3.5F, 7, 3, 7),
             PartPose.ZERO);
     mesh.getRoot()
         .addOrReplaceChild(
             "band",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-3.6F, 14, -3.6F, 7.2F, .7F, 7.2F),
+            CubeListBuilder.create().texOffs(31, 16).addBox(-3.6F, 14, -3.6F, 7.2F, .7F, 7.2F),
             PartPose.ZERO);
     mesh.getRoot()
         .addOrReplaceChild(
             "cap",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(1, 1)
                 .addBox(-4, 12.5F, -4, 8, 3.5F, 8)
-                .texOffs(0, 0)
+                .texOffs(35, 1)
                 .addBox(-4.5F, 15, -6, 9, 1, 3),
             PartPose.ZERO);
-    return LayerDefinition.create(mesh, 16, 16);
+    return LayerDefinition.create(mesh, 64, 64);
   }
 
   @Override
@@ -87,18 +85,18 @@ public final class FieldSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel
     if (field instanceof FarmerSlime) {
       straw.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(STRAW)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(FARMER_TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
       band.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(LEATHER)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(FARMER_TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
     } else
       cap.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(LEATHER)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(LUMBERJACK_TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
     SlimeEquipmentRenderer.held(context, pose, buffers, light, field, field.getTool(), false);

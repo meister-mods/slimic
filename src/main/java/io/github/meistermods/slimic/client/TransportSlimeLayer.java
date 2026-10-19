@@ -25,10 +25,7 @@ public final class TransportSlimeLayer
   public static final ModelLayerLocation PACK =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "transport_pack"), "main");
-  private static final ResourceLocation WOOD =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/oak_planks.png");
-  private static final ResourceLocation STRAPS =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/brown_concrete.png");
+  private static final ResourceLocation TEXTURE = SlimeTextures.accessory("transport");
   private final ModelPart pack;
   private final ModelPart straps;
 
@@ -47,19 +44,22 @@ public final class TransportSlimeLayer
     mesh.getRoot()
         .addOrReplaceChild(
             "pack",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, 17, 4.4F, 7, 6, 4),
+            CubeListBuilder.create().texOffs(1, 1).addBox(-3.5F, 17, 4.4F, 7, 6, 4),
             PartPose.ZERO);
     mesh.getRoot()
         .addOrReplaceChild(
             "straps",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(25, 1)
                 .addBox(-4.65F, 15.8F, -4.2F, 0.5F, 7.2F, 8.8F)
+                .texOffs(1, 19)
                 .addBox(4.15F, 15.8F, -4.2F, 0.5F, 7.2F, 8.8F)
+                .texOffs(22, 19)
                 .addBox(-4.65F, 17.2F, 4.15F, 1.3F, 5.6F, 0.5F)
+                .texOffs(28, 19)
                 .addBox(3.35F, 17.2F, 4.15F, 1.3F, 5.6F, 0.5F),
             PartPose.ZERO);
-    return LayerDefinition.create(mesh, 16, 16);
+    return LayerDefinition.create(mesh, 64, 64);
   }
 
   @Override
@@ -82,13 +82,13 @@ public final class TransportSlimeLayer
     }
     pack.render(
         pose,
-        buffers.getBuffer(RenderType.entityCutoutNoCull(WOOD)),
+        buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
         light,
         OverlayTexture.NO_OVERLAY);
     pose.popPose();
     straps.render(
         pose,
-        buffers.getBuffer(RenderType.entityCutoutNoCull(STRAPS)),
+        buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
         light,
         OverlayTexture.NO_OVERLAY);
   }

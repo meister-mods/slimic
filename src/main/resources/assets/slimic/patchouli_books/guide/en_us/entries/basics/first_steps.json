@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Use the item on a block or water source to summon a companion tamed to you. Survival consumes it. A newly crafted item can be reused in Creative. An anvil name becomes its name."
+      "text": "Use the item on a block or water source to summon a companion tamed to you. Survival consumes it. A newly crafted item can be reused in Creative. An anvil name becomes its name. Hover over a summoning item to read its profession summary and release or recovery instructions."
     },
     {
       "type": "patchouli:text",
