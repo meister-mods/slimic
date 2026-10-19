@@ -11,7 +11,7 @@
       "input2": "minecraft:book",
       "result": "slimic:commander_slime",
       "label": "Combine → one result",
-      "text": "Friendly Slime + a book. Starts waiting and has a mustache and carries a baton."
+      "text": "Friendly Slime + a book. Starts waiting with a mustache and baton. Each shared-owner group may release one commander."
     },
     {
       "type": "patchouli:text",
@@ -23,15 +23,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Starting Gather spends 25 stamina. It processes living released companions one at a time, including recorded unloaded chunks and other dimensions. They arrive in safe loaded spaces around the commander and wait. Stored, broken, removed, mounted, and passenger companions are excluded."
+      "text": "Starting Gather spends 25 stamina. It processes living released companions one at a time, including recorded unloaded chunks and other dimensions. They arrive in safe loaded spaces around the commander and wait. Stored, broken, removed, mounted, and passenger companions are excluded. A gathered commander also cancels its own unfinished gather."
     },
     {
       "type": "patchouli:text",
-      "text": "One temporary source chunk is kept ticking at a time; unavailable or unsafe destinations are skipped. Each source has a five-second wait limit and commands have a five-second cooldown. Recovery or a restart cancels an unfinished gather. Other traits remain intact."
+      "text": "One temporary source chunk is kept ticking at a time; unavailable or unsafe destinations are skipped. Each source has a five-second wait limit and commands have a five-second cooldown. Recovery or a restart cancels an unfinished gather. Other traits remain intact. Stored and broken commanders do not occupy the group’s slot."
     },
     {
       "type": "patchouli:text",
-      "text": "The primary owner controls shared owners and enemies in Players. Shared owners may manage companions; changing player relationships remains with the primary owner. Records are discovered when companions or stored items load. See $(l:cooperation/ownership)Shared ownership$()."
+      "text": "Only the primary owner sets shared owners and enemies. Direct or indirect shared-access links form one group, including one-way links. Each group may have one living released commander across all dimensions, including unloaded ones. Recover one before merging two occupied groups. See $(l:cooperation/ownership)Shared ownership$()."
     }
   ],
   "extra_recipe_mappings": {

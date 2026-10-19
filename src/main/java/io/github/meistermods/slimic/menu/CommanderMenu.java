@@ -112,6 +112,9 @@ public final class CommanderMenu extends AbstractContainerMenu {
                     ? registry.coOwners(commander.getOwnerUUID())
                     : registry.enemies(commander.getOwnerUUID()))
                 .contains(target);
+        if (shared && enabled && registry.commanderMergeConflict(commander.getOwnerUUID(), target))
+          player.displayClientMessage(
+              Component.translatable("message.slimic.commander_group_merge"), true);
         accepted = registry.setRelation(commander.getOwnerUUID(), target, shared, enabled);
         if (accepted)
           for (var level : player.server.getAllLevels())

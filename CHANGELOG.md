@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.35] - 2026-10-19
+
+### Changed
+
+- Limit released Commander Slimes to one per connected shared-owner group across all dimensions, including unloaded chunks. Direct, indirect, and one-way shared-access links define the population group without expanding management or cooperation permissions.
+- Apply the limit to fresh summons, stored releases, and revivals while preserving items, companion data, broken blocks, and revival materials on failure. Stored and broken commanders do not occupy a world slot.
+- Reject shared-owner changes that would join two groups with released commanders. Existing extra commanders from older saves remain intact and prevent further releases.
+
+### Fixed
+
+- Gathered commanders cancel their own pending Gather commands and release temporary source chunks. Every gathered profession arrives in Wait; rejected teleports retain the original command.
+- Reserve commander capacity through spawn callbacks so recursive releases and relationship changes cannot bypass the limit.
+
+### Validation
+
+- Native servers verify waiting arrivals for all twenty-two professions, rally cancellation and source-ticket release, connected-owner population limits, unloaded and cross-dimension records, stored restoration, revival, and cancelled spawn callbacks with optional integrations present and absent.
+- English, Korean, and English-fallback guidebook rendering passes with default and Unicode fonts. Bilingual documentation, release metadata, runtime references, the Java 17 build, and Google Java Format pass verification.
+
 ## [0.1.34] - 2026-10-18
 
 ### Documentation

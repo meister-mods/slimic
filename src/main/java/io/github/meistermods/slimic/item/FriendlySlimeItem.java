@@ -1,5 +1,7 @@
 package io.github.meistermods.slimic.item;
 
+import io.github.meistermods.slimic.entity.CommanderSlime;
+import io.github.meistermods.slimic.entity.CompanionRegistry;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.SlimeData;
 import io.github.meistermods.slimic.registry.ModEntities;
@@ -153,6 +155,36 @@ public class FriendlySlimeItem extends Item {
       boolean alignToSurface,
       boolean offsetUp,
       boolean reviving) {
+    if (entityType() != ModEntities.COMMANDER_SLIME.get())
+      return spawnWithIdentityGuard(
+          level, player, stack, position, alignToSurface, offsetUp, reviving);
+    var registry = CompanionRegistry.get(level.getServer());
+    var saved = hasStoredSlime(stack) ? stack.getTag().getCompound(SLIME_DATA) : null;
+    UUID owner =
+        saved != null && saved.hasUUID("Owner") ? saved.getUUID("Owner") : player.getUUID();
+    if (!registry.reserveCommander(owner)) {
+      player.displayClientMessage(Component.translatable("message.slimic.commander_limit"), true);
+      return false;
+    }
+    boolean spawned = false;
+    try {
+      spawned =
+          spawnWithIdentityGuard(
+              level, player, stack, position, alignToSurface, offsetUp, reviving);
+      return spawned;
+    } finally {
+      registry.releaseCommanderReservation(owner, spawned);
+    }
+  }
+
+  private boolean spawnWithIdentityGuard(
+      ServerLevel level,
+      Player player,
+      ItemStack stack,
+      BlockPos position,
+      boolean alignToSurface,
+      boolean offsetUp,
+      boolean reviving) {
     if (!hasStoredSlime(stack) || !stack.getTag().getCompound(SLIME_DATA).hasUUID("UUID"))
       return spawnCompanion(level, player, stack, position, alignToSurface, offsetUp, reviving);
     UUID identity = stack.getTag().getCompound(SLIME_DATA).getUUID("UUID");
@@ -235,6 +267,11 @@ public class FriendlySlimeItem extends Item {
                 MobSpawnType.SPAWN_EGG,
                 alignToSurface,
                 offsetUp);
+    if (slime instanceof CommanderSlime commander
+        && !CompanionRegistry.get(level.getServer()).prepareCommanderSpawn(commander)) {
+      player.displayClientMessage(Component.translatable("message.slimic.commander_limit"), true);
+      return false;
+    }
     if (slime instanceof io.github.meistermods.slimic.entity.EnderSlime ender
         && ender.isPinned()
         && !ender.hasAnchorCapacity()) {

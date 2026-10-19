@@ -353,8 +353,8 @@
   "jei.slimic.glow_slime": "Friendly Slime + glowstone dust. Starts waiting with its light on. Light has torch strength and costs no stamina. Right-click to spend 10 stamina on six-second fireflies. Light can be toggled independently in management.",
   "item.slimic.glow_slime.tooltip": "Friendly Slime + glowstone dust. Starts waiting with its light on. Light has torch strength and costs no stamina. Right-click to spend 10 stamina on six-second fireflies. Light can be toggled independently in management.",
   "entity.slimic.commander_slime": "Commander Slime",
-  "jei.slimic.commander_slime": "Friendly Slime + a book. Shows companion records, positions, health, orders, and tags. Primary owners set shared ownership and enemies. Gather spends 25 stamina on matching living companions; they arrive waiting.",
-  "item.slimic.commander_slime.tooltip": "Friendly Slime + a book. Shows companion records, positions, health, orders, and tags. Primary owners set shared ownership and enemies. Gather spends 25 stamina on matching living companions; they arrive waiting.",
+  "jei.slimic.commander_slime": "Friendly Slime + a book. Shows companion records, positions, health, orders, and tags. Primary owners set shared ownership and enemies. Gather spends 25 stamina on matching living companions; they arrive waiting. Only one may be released per connected shared-owner group across all dimensions.",
+  "item.slimic.commander_slime.tooltip": "Friendly Slime + a book. Shows companion records, positions, health, orders, and tags. Primary owners set shared ownership and enemies. Gather spends 25 stamina on matching living companions; they arrive waiting. Only one may be released per connected shared-owner group across all dimensions.",
   "entity.slimic.ender_slime": "Ender Slime",
   "jei.slimic.ender_slime": "Friendly Slime + an ender pearl. A fully rested right-click pins it, spends all its stamina, and gives a bound Slime Teleporter. Teleporting also requires and consumes full destination stamina. A pinned companion keeps its chunk ticking. Follow releases the anchor.",
   "item.slimic.ender_slime.tooltip": "Friendly Slime + an ender pearl. A fully rested right-click pins it, spends all its stamina, and gives a bound Slime Teleporter. Teleporting also requires and consumes full destination stamina. A pinned companion keeps its chunk ticking. Follow releases the anchor.",
@@ -362,5 +362,7 @@
   "jei.slimic.attention_slime": "Friendly Slime + redstone dust. Starts waiting and has 50% higher effective Movement Speed than a companion with the same base stat. Roam keeps it moving playfully near its owner. Follow and Wait stop roaming. It has no bag or equipment.",
   "item.slimic.attention_slime.tooltip": "Friendly Slime + redstone dust. Starts waiting and has 50% higher effective Movement Speed than a companion with the same base stat. Roam keeps it moving playfully near its owner. Follow and Wait stop roaming. It has no bag or equipment.",
   "message.slimic.ender_anchor_limit": "This owner's pinned Ender Slime limit has been reached.",
-  "roster.slimic.reason.saplings_missing": "Saplings missing"
+  "roster.slimic.reason.saplings_missing": "Saplings missing",
+  "message.slimic.commander_limit": "This shared-owner group already has a Commander Slime in the world.",
+  "message.slimic.commander_group_merge": "Recover one Commander Slime before joining these shared-owner groups."
 }

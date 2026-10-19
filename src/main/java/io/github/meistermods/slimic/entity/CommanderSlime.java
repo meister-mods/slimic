@@ -81,6 +81,15 @@ public final class CommanderSlime extends FriendlySlime {
     return true;
   }
 
+  @Override
+  public void setWaiting(boolean waiting) {
+    if (waiting) {
+      rally.clear();
+      releaseSource();
+    }
+    super.setWaiting(waiting);
+  }
+
   private void releaseSource() {
     if (sourceLevel != null && sourceChunk != null)
       ForgeChunkManager.forceChunk(
