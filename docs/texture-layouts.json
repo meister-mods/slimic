@@ -1,0 +1,1508 @@
+{
+  "format": 1,
+  "textures": {
+    "mining": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "MiningSlimeLayer",
+      "boxes": [
+        {
+          "part": "helmet",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.0,
+            1.0,
+            9.0
+          ],
+          "material": "helmet"
+        },
+        {
+          "part": "helmet",
+          "cube": 2,
+          "uv": [
+            1,
+            13
+          ],
+          "size": [
+            7.0,
+            3.0,
+            7.0
+          ],
+          "material": "helmet"
+        },
+        {
+          "part": "lamp",
+          "cube": 1,
+          "uv": [
+            31,
+            13
+          ],
+          "size": [
+            2.0,
+            2.0,
+            1.0
+          ],
+          "material": "lamp"
+        }
+      ]
+    },
+    "transport": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "TransportSlimeLayer",
+      "boxes": [
+        {
+          "part": "pack",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            7.0,
+            6.0,
+            4.0
+          ],
+          "material": "crate"
+        },
+        {
+          "part": "straps",
+          "cube": 1,
+          "uv": [
+            25,
+            1
+          ],
+          "size": [
+            0.5,
+            7.2,
+            8.8
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "straps",
+          "cube": 2,
+          "uv": [
+            1,
+            19
+          ],
+          "size": [
+            0.5,
+            7.2,
+            8.8
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "straps",
+          "cube": 3,
+          "uv": [
+            22,
+            19
+          ],
+          "size": [
+            1.3,
+            5.6,
+            0.5
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "straps",
+          "cube": 4,
+          "uv": [
+            28,
+            19
+          ],
+          "size": [
+            1.3,
+            5.6,
+            0.5
+          ],
+          "material": "leather"
+        }
+      ]
+    },
+    "farmer": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "FieldSlimeLayer",
+      "boxes": [
+        {
+          "part": "straw",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            12.0,
+            1.0,
+            12.0
+          ],
+          "material": "straw"
+        },
+        {
+          "part": "straw",
+          "cube": 2,
+          "uv": [
+            1,
+            16
+          ],
+          "size": [
+            7.0,
+            3.0,
+            7.0
+          ],
+          "material": "straw"
+        },
+        {
+          "part": "band",
+          "cube": 1,
+          "uv": [
+            31,
+            16
+          ],
+          "size": [
+            7.2,
+            0.7,
+            7.2
+          ],
+          "material": "leather"
+        }
+      ]
+    },
+    "lumberjack": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "FieldSlimeLayer",
+      "boxes": [
+        {
+          "part": "cap",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            8.0,
+            3.5,
+            8.0
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "cap",
+          "cube": 2,
+          "uv": [
+            35,
+            1
+          ],
+          "size": [
+            9.0,
+            1.0,
+            3.0
+          ],
+          "material": "leather"
+        }
+      ]
+    },
+    "healing": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "HealingSlimeLayer",
+      "boxes": [
+        {
+          "part": "band",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            8.8,
+            1.8,
+            0.5
+          ],
+          "material": "cloth"
+        },
+        {
+          "part": "band",
+          "cube": 2,
+          "uv": [
+            22,
+            1
+          ],
+          "size": [
+            8.8,
+            1.8,
+            0.5
+          ],
+          "material": "cloth"
+        },
+        {
+          "part": "band",
+          "cube": 3,
+          "uv": [
+            43,
+            1
+          ],
+          "size": [
+            0.5,
+            1.8,
+            7.8
+          ],
+          "material": "cloth"
+        },
+        {
+          "part": "band",
+          "cube": 4,
+          "uv": [
+            1,
+            13
+          ],
+          "size": [
+            0.5,
+            1.8,
+            7.8
+          ],
+          "material": "cloth"
+        },
+        {
+          "part": "emblem",
+          "cube": 1,
+          "uv": [
+            20,
+            13
+          ],
+          "size": [
+            1.0,
+            2.8,
+            0.3
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "emblem",
+          "cube": 2,
+          "uv": [
+            25,
+            13
+          ],
+          "size": [
+            0.9,
+            1.0,
+            0.3
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "emblem",
+          "cube": 3,
+          "uv": [
+            30,
+            13
+          ],
+          "size": [
+            0.9,
+            1.0,
+            0.3
+          ],
+          "material": "gold"
+        }
+      ]
+    },
+    "cleaning": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "ProfessionSlimeLayer",
+      "boxes": [
+        {
+          "part": "cleaning_cap",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.2,
+            1.2,
+            9.2
+          ],
+          "material": "denim"
+        },
+        {
+          "part": "cleaning_cap",
+          "cube": 2,
+          "uv": [
+            40,
+            1
+          ],
+          "size": [
+            7.6,
+            0.45,
+            2.1
+          ],
+          "material": "denim"
+        },
+        {
+          "part": "cleaning_badge",
+          "cube": 1,
+          "uv": [
+            1,
+            14
+          ],
+          "size": [
+            1.5,
+            0.8,
+            0.25
+          ],
+          "material": "iron"
+        }
+      ]
+    },
+    "combat": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "ProfessionSlimeLayer",
+      "boxes": [
+        {
+          "part": "combat_band",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.1,
+            0.8,
+            9.1
+          ],
+          "material": "iron"
+        },
+        {
+          "part": "combat_crest",
+          "cube": 1,
+          "uv": [
+            40,
+            1
+          ],
+          "size": [
+            1.2,
+            2.5,
+            6.2
+          ],
+          "material": "red"
+        }
+      ]
+    },
+    "bridle": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "ProfessionSlimeLayer",
+      "boxes": [
+        {
+          "part": "saddle_bridle",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.4,
+            0.65,
+            0.35
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "saddle_bridle",
+          "cube": 2,
+          "uv": [
+            23,
+            1
+          ],
+          "size": [
+            9.4,
+            0.65,
+            0.35
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "saddle_bridle",
+          "cube": 3,
+          "uv": [
+            1,
+            4
+          ],
+          "size": [
+            0.35,
+            0.65,
+            8.7
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "saddle_bridle",
+          "cube": 4,
+          "uv": [
+            22,
+            4
+          ],
+          "size": [
+            0.35,
+            0.65,
+            8.7
+          ],
+          "material": "leather"
+        },
+        {
+          "part": "saddle_buckle",
+          "cube": 1,
+          "uv": [
+            43,
+            4
+          ],
+          "size": [
+            1.3,
+            1.2,
+            0.3
+          ],
+          "material": "gold"
+        }
+      ]
+    },
+    "soggy": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "ProfessionSlimeLayer",
+      "boxes": [
+        {
+          "part": "soggy_drops",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            2.2,
+            2.6,
+            2.2
+          ],
+          "material": "gel"
+        },
+        {
+          "part": "soggy_drops",
+          "cube": 2,
+          "uv": [
+            12,
+            1
+          ],
+          "size": [
+            1.2,
+            1.0,
+            1.2
+          ],
+          "material": "gel"
+        },
+        {
+          "part": "soggy_drops",
+          "cube": 3,
+          "uv": [
+            19,
+            1
+          ],
+          "size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "material": "gel"
+        },
+        {
+          "part": "soggy_drops",
+          "cube": 4,
+          "uv": [
+            28,
+            1
+          ],
+          "size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "material": "gel"
+        }
+      ]
+    },
+    "fishing": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "AdvancedSlimeLayer",
+      "boxes": [
+        {
+          "part": "overalls",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            8.6,
+            1.8,
+            8.6
+          ],
+          "material": "denim"
+        },
+        {
+          "part": "overalls",
+          "cube": 2,
+          "uv": [
+            38,
+            1
+          ],
+          "size": [
+            5.6,
+            1.5,
+            0.5
+          ],
+          "material": "denim"
+        },
+        {
+          "part": "overalls",
+          "cube": 3,
+          "uv": [
+            53,
+            1
+          ],
+          "size": [
+            0.8,
+            1.5,
+            0.5
+          ],
+          "material": "denim"
+        },
+        {
+          "part": "overalls",
+          "cube": 4,
+          "uv": [
+            58,
+            1
+          ],
+          "size": [
+            0.8,
+            1.5,
+            0.5
+          ],
+          "material": "denim"
+        },
+        {
+          "part": "buttons",
+          "cube": 1,
+          "uv": [
+            1,
+            14
+          ],
+          "size": [
+            0.6,
+            0.6,
+            0.25
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "buttons",
+          "cube": 2,
+          "uv": [
+            5,
+            14
+          ],
+          "size": [
+            0.6,
+            0.6,
+            0.25
+          ],
+          "material": "gold"
+        }
+      ]
+    },
+    "abundance": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "AdvancedSlimeLayer",
+      "boxes": [
+        {
+          "part": "lyre",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            0.7,
+            5.0,
+            0.7
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "lyre",
+          "cube": 2,
+          "uv": [
+            6,
+            1
+          ],
+          "size": [
+            0.7,
+            5.0,
+            0.7
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "lyre",
+          "cube": 3,
+          "uv": [
+            11,
+            1
+          ],
+          "size": [
+            5.0,
+            0.7,
+            0.7
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "lyre",
+          "cube": 4,
+          "uv": [
+            25,
+            1
+          ],
+          "size": [
+            5.0,
+            0.7,
+            0.7
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "strings",
+          "cube": 1,
+          "uv": [
+            39,
+            1
+          ],
+          "size": [
+            0.12,
+            4.2,
+            0.12
+          ],
+          "material": "cloth",
+          "instances": 5
+        },
+        {
+          "part": "laurel",
+          "cube": 1,
+          "uv": [
+            42,
+            1
+          ],
+          "size": [
+            0.7,
+            0.7,
+            5.0
+          ],
+          "material": "laurel"
+        },
+        {
+          "part": "laurel",
+          "cube": 2,
+          "uv": [
+            1,
+            9
+          ],
+          "size": [
+            0.7,
+            0.7,
+            5.0
+          ],
+          "material": "laurel"
+        },
+        {
+          "part": "laurel",
+          "cube": 3,
+          "uv": [
+            15,
+            9
+          ],
+          "size": [
+            7.0,
+            0.7,
+            0.7
+          ],
+          "material": "laurel"
+        }
+      ]
+    },
+    "tunnel": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "AdvancedSlimeLayer",
+      "boxes": [
+        {
+          "part": "cart",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            11.0,
+            0.8,
+            11.0
+          ],
+          "material": "iron"
+        },
+        {
+          "part": "cart",
+          "cube": 2,
+          "uv": [
+            1,
+            15
+          ],
+          "size": [
+            11.0,
+            3.0,
+            0.8
+          ],
+          "material": "iron"
+        },
+        {
+          "part": "cart",
+          "cube": 3,
+          "uv": [
+            27,
+            15
+          ],
+          "size": [
+            11.0,
+            3.0,
+            0.8
+          ],
+          "material": "iron"
+        },
+        {
+          "part": "cart",
+          "cube": 4,
+          "uv": [
+            1,
+            21
+          ],
+          "size": [
+            0.8,
+            3.0,
+            9.4
+          ],
+          "material": "iron"
+        },
+        {
+          "part": "cart",
+          "cube": 5,
+          "uv": [
+            24,
+            21
+          ],
+          "size": [
+            0.8,
+            3.0,
+            9.4
+          ],
+          "material": "iron"
+        },
+        {
+          "part": "wheels",
+          "cube": 1,
+          "uv": [
+            47,
+            21
+          ],
+          "size": [
+            1.0,
+            2.5,
+            2.5
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "wheels",
+          "cube": 2,
+          "uv": [
+            56,
+            21
+          ],
+          "size": [
+            1.0,
+            2.5,
+            2.5
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "wheels",
+          "cube": 3,
+          "uv": [
+            1,
+            36
+          ],
+          "size": [
+            1.0,
+            2.5,
+            2.5
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "wheels",
+          "cube": 4,
+          "uv": [
+            10,
+            36
+          ],
+          "size": [
+            1.0,
+            2.5,
+            2.5
+          ],
+          "material": "charcoal"
+        }
+      ]
+    },
+    "dragon": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "AdvancedSlimeLayer",
+      "boxes": [
+        {
+          "part": "bat_left",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            8.0,
+            0.5,
+            0.6
+          ],
+          "material": "membrane",
+          "shared_with": [
+            "bat_right"
+          ]
+        },
+        {
+          "part": "bat_left",
+          "cube": 2,
+          "uv": [
+            21,
+            1
+          ],
+          "size": [
+            7.0,
+            2.2,
+            0.3
+          ],
+          "material": "membrane",
+          "shared_with": [
+            "bat_right"
+          ]
+        },
+        {
+          "part": "bat_left",
+          "cube": 3,
+          "uv": [
+            38,
+            1
+          ],
+          "size": [
+            5.0,
+            1.5,
+            0.3
+          ],
+          "material": "membrane",
+          "shared_with": [
+            "bat_right"
+          ]
+        },
+        {
+          "part": "bat_left",
+          "cube": 4,
+          "uv": [
+            51,
+            1
+          ],
+          "size": [
+            3.0,
+            1.2,
+            0.3
+          ],
+          "material": "membrane",
+          "shared_with": [
+            "bat_right"
+          ]
+        },
+        {
+          "part": "horns",
+          "cube": 1,
+          "uv": [
+            1,
+            6
+          ],
+          "size": [
+            0.8,
+            2.5,
+            0.8
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "horns",
+          "cube": 2,
+          "uv": [
+            7,
+            6
+          ],
+          "size": [
+            0.8,
+            2.5,
+            0.8
+          ],
+          "material": "charcoal"
+        }
+      ]
+    },
+    "commander": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "AdvancedSlimeLayer",
+      "boxes": [
+        {
+          "part": "mustache",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            2.1,
+            0.65,
+            0.4
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "mustache",
+          "cube": 2,
+          "uv": [
+            8,
+            1
+          ],
+          "size": [
+            2.1,
+            0.65,
+            0.4
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "mustache",
+          "cube": 3,
+          "uv": [
+            15,
+            1
+          ],
+          "size": [
+            0.65,
+            0.9,
+            0.4
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "mustache",
+          "cube": 4,
+          "uv": [
+            20,
+            1
+          ],
+          "size": [
+            0.65,
+            0.9,
+            0.4
+          ],
+          "material": "charcoal"
+        },
+        {
+          "part": "baton",
+          "cube": 1,
+          "uv": [
+            25,
+            1
+          ],
+          "size": [
+            0.55,
+            6.5,
+            0.55
+          ],
+          "material": "dark_oak"
+        },
+        {
+          "part": "baton_tip",
+          "cube": 1,
+          "uv": [
+            30,
+            1
+          ],
+          "size": [
+            0.85,
+            0.8,
+            0.85
+          ],
+          "material": "gold"
+        }
+      ]
+    },
+    "guardian_halo": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "GuardianAngelSlimeLayer",
+      "boxes": [
+        {
+          "part": "ring",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            8.0,
+            0.6,
+            0.7
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "ring",
+          "cube": 2,
+          "uv": [
+            21,
+            1
+          ],
+          "size": [
+            8.0,
+            0.6,
+            0.7
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "ring",
+          "cube": 3,
+          "uv": [
+            41,
+            1
+          ],
+          "size": [
+            0.7,
+            0.6,
+            6.6
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "ring",
+          "cube": 4,
+          "uv": [
+            1,
+            11
+          ],
+          "size": [
+            0.7,
+            0.6,
+            6.6
+          ],
+          "material": "gold"
+        }
+      ]
+    },
+    "saddle": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "SaddleSlimeLayer",
+      "boxes": [
+        {
+          "part": "saddle",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            8.6,
+            1.2,
+            8.6
+          ],
+          "material": "saddle"
+        },
+        {
+          "part": "saddle",
+          "cube": 2,
+          "uv": [
+            38,
+            1
+          ],
+          "size": [
+            8.0,
+            1.4,
+            1.5
+          ],
+          "material": "saddle"
+        },
+        {
+          "part": "saddle",
+          "cube": 3,
+          "uv": [
+            1,
+            13
+          ],
+          "size": [
+            8.0,
+            1.4,
+            1.5
+          ],
+          "material": "saddle"
+        },
+        {
+          "part": "saddle",
+          "cube": 4,
+          "uv": [
+            22,
+            13
+          ],
+          "size": [
+            0.7,
+            5.5,
+            2.0
+          ],
+          "material": "saddle"
+        },
+        {
+          "part": "saddle",
+          "cube": 5,
+          "uv": [
+            30,
+            13
+          ],
+          "size": [
+            0.7,
+            5.5,
+            2.0
+          ],
+          "material": "saddle"
+        },
+        {
+          "part": "stirrups",
+          "cube": 1,
+          "uv": [
+            38,
+            13
+          ],
+          "size": [
+            1.4,
+            0.6,
+            3.2
+          ],
+          "material": "iron"
+        },
+        {
+          "part": "stirrups",
+          "cube": 2,
+          "uv": [
+            50,
+            13
+          ],
+          "size": [
+            1.4,
+            0.6,
+            3.2
+          ],
+          "material": "iron"
+        }
+      ]
+    },
+    "armor_leather": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "CombatSlimeLayer",
+      "boxes": [
+        {
+          "part": "armor",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.0,
+            4.1,
+            9.0
+          ],
+          "material": "cream"
+        }
+      ]
+    },
+    "armor_chainmail": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "CombatSlimeLayer",
+      "boxes": [
+        {
+          "part": "armor",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.0,
+            4.1,
+            9.0
+          ],
+          "material": "chain"
+        }
+      ]
+    },
+    "armor_iron": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "CombatSlimeLayer",
+      "boxes": [
+        {
+          "part": "armor",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.0,
+            4.1,
+            9.0
+          ],
+          "material": "iron"
+        }
+      ]
+    },
+    "armor_golden": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "CombatSlimeLayer",
+      "boxes": [
+        {
+          "part": "armor",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.0,
+            4.1,
+            9.0
+          ],
+          "material": "gold"
+        }
+      ]
+    },
+    "armor_diamond": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "CombatSlimeLayer",
+      "boxes": [
+        {
+          "part": "armor",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.0,
+            4.1,
+            9.0
+          ],
+          "material": "diamond"
+        }
+      ]
+    },
+    "armor_netherite": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "CombatSlimeLayer",
+      "boxes": [
+        {
+          "part": "armor",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.0,
+            4.1,
+            9.0
+          ],
+          "material": "netherite"
+        }
+      ]
+    }
+  }
+}

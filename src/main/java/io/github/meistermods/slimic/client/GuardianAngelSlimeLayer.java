@@ -17,6 +17,7 @@ public final class GuardianAngelSlimeLayer
   public static final ModelLayerLocation HALO =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath("slimic", "guardian_halo"), "main");
+  private static final ResourceLocation HALO_TEXTURE = SlimeTextures.accessory("guardian_halo");
   private final ModelPart halo, left, right;
 
   public GuardianAngelSlimeLayer(
@@ -35,13 +36,16 @@ public final class GuardianAngelSlimeLayer
         .addOrReplaceChild(
             "ring",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(1, 1)
                 .addBox(-4, 10, -4, 8, .6F, .7F)
+                .texOffs(21, 1)
                 .addBox(-4, 10, 3.3F, 8, .6F, .7F)
+                .texOffs(41, 1)
                 .addBox(-4, 10, -3.3F, .7F, .6F, 6.6F)
+                .texOffs(1, 11)
                 .addBox(3.3F, 10, -3.3F, .7F, .6F, 6.6F),
             PartPose.ZERO);
-    return LayerDefinition.create(mesh, 16, 16);
+    return LayerDefinition.create(mesh, 64, 64);
   }
 
   @Override
@@ -59,10 +63,7 @@ public final class GuardianAngelSlimeLayer
     if (!(slime instanceof GuardianAngelSlime) || slime.isInvisible()) return;
     halo.render(
         pose,
-        buffers.getBuffer(
-            RenderType.entityCutoutNoCull(
-                ResourceLocation.fromNamespaceAndPath(
-                    "minecraft", "textures/block/gold_block.png"))),
+        buffers.getBuffer(RenderType.entityCutoutNoCull(HALO_TEXTURE)),
         15728880,
         OverlayTexture.NO_OVERLAY);
     left.zRot = Mth.sin(age * .5F) * .4F;

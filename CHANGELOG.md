@@ -4,6 +4,48 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.39] - 2026-10-19
+
+### Fixed
+
+- Remove the unbound Slime Teleporter from the Creative tab so all twenty-two companion items appear together. Bound teleporters remain available by linking an Ender Slime.
+- Clarify teleporter availability in the English and Korean gameplay guides.
+
+### Validation
+
+- Native clients verify Creative tab contents with JEI and Patchouli present and absent. Existing server regressions confirm Ender linking, authorized teleportation, and destination identity after recovery in both environments. Bilingual documentation checks, Google Java Format, and the Java 17 build pass.
+
+## [0.1.38] - 2026-10-19
+
+### Changed
+
+- Give profession accessories dedicated texture atlases with individual UV regions for hats, packs, overalls, lyres, carts, wings, horns, harnesses, and other permanent details. Surface artwork can be replaced through resource packs while retaining existing geometry, animation, and dye behavior.
+- Use matching armor atlases for all six materials, including leather dye and enchantment rendering, and move management, creative tuner, roster, and slot backgrounds into PNG resources.
+- Document the accessory atlas layout and texture editing workflow in English and Korean.
+
+### Fixed
+
+- Show each of the twenty-two summoning items' own profession help instead of leaving several specializations with only the common companion hints. Fresh and recovered items show the appropriate release instructions, and profession descriptions appear only once.
+- Keep long-form recipe and behavior details in JEI and the guidebook while item tooltips summarize each companion's controls and purpose.
+
+### Validation
+
+- All 531 native server regressions pass with JEI and Patchouli present and absent. Focused tooltip checks also verify each recovered profession item, exact saved data, and the original mining-tool hint.
+- Native clients verify all twenty-two profession models, six armor materials and dyed variants, 564 accessory faces, 26 synchronized English/Korean management layouts, equipment transfers, roster controls, tunneling templates, and Survival riding. Fresh/stored tooltips pass 528 normal/advanced, language, and font combinations in each optional-integration environment.
+- The guidebook renders all 44 entries and 137 pages per language in English, Korean, and English fallback with default and Unicode fonts. Two 100-cycle resource-pack checks with optional integrations present and absent restore the original GPU texture. Bilingual documentation, release contents, runtime references, Google Java Format, and the Java 17 build pass verification.
+
+## [0.1.37] - 2026-10-19
+
+### Changed
+
+- Align companion bags, equipment, player inventory, and hotbar slots on one nine-column grid. Bag pages reserve three rows, distinguish locked cells, and hide page controls when only one page is available.
+- Render the Friendly Slime's flat badge with the complete gold-block texture rather than stretching one gold-colored texel.
+
+### Validation
+
+- Native clients verify 26 synchronized English/Korean screens across ordinary, expanded, and partial bag pages, equipment, combat filters, locked cells, and widget bounds. The baked Friendly badge uses two planar faces spanning the gold-block sprite.
+- Existing capacity, paging, hidden-slot access, Shift-click, recovery, and armor-transfer regressions pass on servers with optional integrations present and absent. Bilingual documentation, release contents, runtime references, Google Java Format, and the Java 17 build pass verification.
+
 ## [0.1.36] - 2026-10-19
 
 ### Changed

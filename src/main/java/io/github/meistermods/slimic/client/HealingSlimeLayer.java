@@ -23,10 +23,7 @@ public final class HealingSlimeLayer extends RenderLayer<FriendlySlime, SlimeMod
   public static final ModelLayerLocation BAND =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "healing_band"), "main");
-  private static final ResourceLocation WHITE =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/white_wool.png");
-  private static final ResourceLocation GOLD =
-      ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/gold_block.png");
+  private static final ResourceLocation TEXTURE = SlimeTextures.accessory("healing");
   private final ModelPart band, emblem;
 
   public HealingSlimeLayer(
@@ -44,22 +41,27 @@ public final class HealingSlimeLayer extends RenderLayer<FriendlySlime, SlimeMod
         .addOrReplaceChild(
             "band",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(1, 1)
                 .addBox(-4.4F, 15.5F, -4.4F, 8.8F, 1.8F, .5F)
+                .texOffs(22, 1)
                 .addBox(-4.4F, 15.5F, 3.9F, 8.8F, 1.8F, .5F)
+                .texOffs(43, 1)
                 .addBox(-4.4F, 15.5F, -3.9F, .5F, 1.8F, 7.8F)
+                .texOffs(1, 13)
                 .addBox(3.9F, 15.5F, -3.9F, .5F, 1.8F, 7.8F),
             PartPose.ZERO);
     mesh.getRoot()
         .addOrReplaceChild(
             "emblem",
             CubeListBuilder.create()
-                .texOffs(0, 0)
+                .texOffs(20, 13)
                 .addBox(-.5F, 15, -4.65F, 1, 2.8F, .3F)
+                .texOffs(25, 13)
                 .addBox(-1.4F, 15.9F, -4.65F, .9F, 1, .3F)
+                .texOffs(30, 13)
                 .addBox(.5F, 15.9F, -4.65F, .9F, 1, .3F),
             PartPose.ZERO);
-    return LayerDefinition.create(mesh, 16, 16);
+    return LayerDefinition.create(mesh, 64, 64);
   }
 
   @Override
@@ -77,12 +79,12 @@ public final class HealingSlimeLayer extends RenderLayer<FriendlySlime, SlimeMod
     if (!(slime instanceof HealingSlime) || slime.isInvisible()) return;
     band.render(
         pose,
-        buffers.getBuffer(RenderType.entityCutoutNoCull(WHITE)),
+        buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
         light,
         OverlayTexture.NO_OVERLAY);
     emblem.render(
         pose,
-        buffers.getBuffer(RenderType.entityCutoutNoCull(GOLD)),
+        buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
         light,
         OverlayTexture.NO_OVERLAY);
   }

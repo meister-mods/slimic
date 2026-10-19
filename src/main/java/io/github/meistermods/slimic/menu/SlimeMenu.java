@@ -35,6 +35,11 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.items.SlotItemHandler;
 
 public final class SlimeMenu extends AbstractContainerMenu {
+  public static final int SLOT_SPACING = 18, SLOT_COLUMNS = 9, BAG_ROWS = 3;
+  public static final int BAG_PAGE_SIZE = SLOT_COLUMNS * BAG_ROWS;
+  public static final int SLOTS_X = 196, EQUIPMENT_Y = 49, BAG_Y = 90;
+  public static final int INVENTORY_Y = 158, HOTBAR_Y = 216;
+  public static final int BAG_LABEL_Y = 78, INVENTORY_LABEL_Y = 147;
   public static final int ROSTER = 52;
   public static final int TARGET_TOGGLE = 40, TARGET_PAGE_BUTTON = 46;
   public static final int FILTERS = 18, TARGET_PAGE = 19;
@@ -158,7 +163,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     for (int tool = 0; tool < toolSlots; tool++) {
       final int equipment = tool;
       addSlot(
-          new Slot(new ToolContainer(slime), tool, 194 + tool * 18, 49) {
+          new Slot(new ToolContainer(slime), tool, SLOTS_X + tool * SLOT_SPACING, EQUIPMENT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
               return matchesEquipment(slime, equipment, stack);
@@ -185,12 +190,15 @@ public final class SlimeMenu extends AbstractContainerMenu {
         final int slot = index;
         addSlot(
             new SlotItemHandler(
-                carrier.getBag(), index, 194 + index % 9 * 18, 89 + index % 27 / 9 * 18) {
+                carrier.getBag(),
+                index,
+                SLOTS_X + index % SLOT_COLUMNS * SLOT_SPACING,
+                BAG_Y + index % BAG_PAGE_SIZE / SLOT_COLUMNS * SLOT_SPACING) {
               @Override
               public boolean isActive() {
-                return !(slime instanceof CombatSlime && data(TARGET_PAGE) == 1)
+                return isBagVisible()
                     && slot < (int) value(SlimeStat.CAPACITY)
-                    && slot / 27 == data(BAG_PAGE);
+                    && slot / BAG_PAGE_SIZE == data(BAG_PAGE);
               }
 
               @Override
@@ -213,11 +221,16 @@ public final class SlimeMenu extends AbstractContainerMenu {
       petSlots = toolSlots + carrier.getBag().getSlots();
     } else petSlots = toolSlots;
     for (int row = 0; row < 3; row++) {
-      for (int column = 0; column < 9; column++)
-        addSlot(new Slot(inventory, 9 + row * 9 + column, 194 + column * 18, 157 + row * 18));
+      for (int column = 0; column < SLOT_COLUMNS; column++)
+        addSlot(
+            new Slot(
+                inventory,
+                SLOT_COLUMNS + row * SLOT_COLUMNS + column,
+                SLOTS_X + column * SLOT_SPACING,
+                INVENTORY_Y + row * SLOT_SPACING));
     }
-    for (int column = 0; column < 9; column++)
-      addSlot(new Slot(inventory, column, 194 + column * 18, 215));
+    for (int column = 0; column < SLOT_COLUMNS; column++)
+      addSlot(new Slot(inventory, column, SLOTS_X + column * SLOT_SPACING, HOTBAR_Y));
   }
 
   private static int equipmentSlots(FriendlySlime slime) {
@@ -259,14 +272,18 @@ public final class SlimeMenu extends AbstractContainerMenu {
     return data.get(stat.ordinal()) / (double) stat.syncScale();
   }
 
+  public boolean isBagVisible() {
+    return slime instanceof BagSlime && !(slime instanceof CombatSlime && data(TARGET_PAGE) == 1);
+  }
+
   public int bagPages() {
-    return Math.max(1, ((int) value(SlimeStat.CAPACITY) + 26) / 27);
+    return Math.max(1, ((int) value(SlimeStat.CAPACITY) + BAG_PAGE_SIZE - 1) / BAG_PAGE_SIZE);
   }
 
   @Override
   public void broadcastChanges() {
     if (!slime.level().isClientSide)
-      bagPage = Math.min(bagPage, Math.max(0, (slime.getCapacity() - 1) / 27));
+      bagPage = Math.min(bagPage, Math.max(0, (slime.getCapacity() - 1) / BAG_PAGE_SIZE));
     super.broadcastChanges();
   }
 
@@ -419,11 +436,14 @@ public final class SlimeMenu extends AbstractContainerMenu {
       if (!equipped) {
         if (!(slime instanceof BagSlime)) return ItemStack.EMPTY;
         if (slime instanceof CombatSlime && data(TARGET_PAGE) == 1) return ItemStack.EMPTY;
-        int start = equipmentSlots + data(BAG_PAGE) * 27;
+        int start = equipmentSlots + data(BAG_PAGE) * BAG_PAGE_SIZE;
         int end =
             Math.min(
                 petSlots,
-                start + Math.min(27, (int) value(SlimeStat.CAPACITY) - data(BAG_PAGE) * 27));
+                start
+                    + Math.min(
+                        BAG_PAGE_SIZE,
+                        (int) value(SlimeStat.CAPACITY) - data(BAG_PAGE) * BAG_PAGE_SIZE));
         if (!moveItemStackTo(original, start, end, false)) return ItemStack.EMPTY;
       }
     } else return ItemStack.EMPTY;

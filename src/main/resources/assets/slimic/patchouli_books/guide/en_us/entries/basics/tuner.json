@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Use the tuner on your companion within eight blocks. Manage names, points, orders, equipment, and cargo. Keep the tuner in either hand while the screen is open."
+      "text": "Use the tuner on your companion within eight blocks. Manage names, points, orders, equipment, and cargo. Keep the tuner in either hand while the screen is open. Bags align with the player inventory in nine columns. Dark cells are locked. Multi-page bags show page controls."
     },
     {
       "type": "patchouli:text",

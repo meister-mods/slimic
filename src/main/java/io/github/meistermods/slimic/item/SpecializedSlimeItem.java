@@ -4,7 +4,6 @@ import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
-import io.github.meistermods.slimic.registry.ModEntities;
 import java.util.function.Supplier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -23,22 +22,6 @@ public final class SpecializedSlimeItem extends FriendlySlimeItem {
   @Override
   protected EntityType<? extends FriendlySlime> entityType() {
     return type.get();
-  }
-
-  @Override
-  public void appendHoverText(
-      ItemStack stack,
-      @javax.annotation.Nullable net.minecraft.world.level.Level level,
-      java.util.List<net.minecraft.network.chat.Component> tooltip,
-      net.minecraft.world.item.TooltipFlag flag) {
-    super.appendHoverText(stack, level, tooltip, flag);
-    if (entityType() == ModEntities.GLOW_SLIME.get()
-        || entityType() == ModEntities.COMMANDER_SLIME.get()
-        || entityType() == ModEntities.ENDER_SLIME.get()
-        || entityType() == ModEntities.ATTENTION_SLIME.get())
-      tooltip.add(
-          net.minecraft.network.chat.Component.translatable(getDescriptionId() + ".tooltip")
-              .withStyle(net.minecraft.ChatFormatting.GRAY));
   }
 
   @Override

@@ -31,10 +31,13 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
+  private static final ResourceLocation BACKGROUND = SlimeTextures.gui("slime");
+  private static final ResourceLocation SLOTS = SlimeTextures.gui("slots");
   private EditBox name;
   private final Map<SlimeStat, Button> upgrades = new EnumMap<>(SlimeStat.class);
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
@@ -47,8 +50,8 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     super(menu, inventory, title);
     imageWidth = 368;
     imageHeight = 240;
-    inventoryLabelX = 194;
-    inventoryLabelY = 146;
+    inventoryLabelX = SlimeMenu.SLOTS_X;
+    inventoryLabelY = SlimeMenu.INVENTORY_LABEL_Y;
   }
 
   private final java.util.List<Button> filters = new java.util.ArrayList<>();
@@ -87,31 +90,31 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               .build();
       upgrades.put(stat, addRenderableWidget(button));
     }
-    addOrder(SlimeMenu.FOLLOW, "follow", 194);
-    addOrder(SlimeMenu.WAIT, "wait", 250);
+    addOrder(SlimeMenu.FOLLOW, "follow", SlimeMenu.SLOTS_X);
+    addOrder(SlimeMenu.WAIT, "wait", 252);
     if (menu.slime() instanceof io.github.meistermods.slimic.entity.GlowSlime)
       lightButton =
           addRenderableWidget(
               Button.builder(
                       Component.translatable("screen.slimic.light"),
                       b -> sendButton(SlimeMenu.ACTIVE))
-                  .bounds(leftPos + 194, topPos + 89, 100, 18)
+                  .bounds(leftPos + SlimeMenu.SLOTS_X, topPos + 89, 100, 18)
                   .build());
     if (menu.slime() instanceof io.github.meistermods.slimic.entity.CommanderSlime)
       addRenderableWidget(
           Button.builder(
                   Component.translatable("screen.slimic.roster.open"),
                   b -> sendButton(SlimeMenu.ROSTER))
-              .bounds(leftPos + 194, topPos + 89, 150, 18)
+              .bounds(leftPos + SlimeMenu.SLOTS_X, topPos + 89, 150, 18)
               .build());
     if (menu.slime() instanceof io.github.meistermods.slimic.entity.AttentionSlime)
-      addOrder(SlimeMenu.ROAM, "roam", 306);
+      addOrder(SlimeMenu.ROAM, "roam", 308);
     if (menu.slime() instanceof MeowSlime cat) {
-      addOrder(SlimeMenu.ROAM, "roam", 306);
+      addOrder(SlimeMenu.ROAM, "roam", 308);
       addRenderableWidget(
           Button.builder(
                   Component.translatable("screen.slimic.active"), b -> sendButton(SlimeMenu.ACTIVE))
-              .bounds(leftPos + 194, topPos + 89, 100, 18)
+              .bounds(leftPos + SlimeMenu.SLOTS_X, topPos + 89, 100, 18)
               .tooltip(Tooltip.create(Component.translatable("screen.slimic.meow_help")))
               .build());
     }
@@ -121,19 +124,19 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               Button.builder(
                       Component.translatable("screen.slimic.direction"),
                       b -> sendButton(SlimeMenu.DIRECTION))
-                  .bounds(leftPos + 280, topPos + 73, 76, 14)
+                  .bounds(leftPos + 282, topPos + 73, 76, 14)
                   .tooltip(Tooltip.create(Component.translatable("screen.slimic.lining_help")))
                   .build());
-    if (menu.slime() instanceof FishingSlime) addOrder(SlimeMenu.WORK, "fish", 306);
-    if (menu.slime() instanceof SoggySlime) addOrder(SlimeMenu.ROAM, "roam", 306);
+    if (menu.slime() instanceof FishingSlime) addOrder(SlimeMenu.WORK, "fish", 308);
+    if (menu.slime() instanceof SoggySlime) addOrder(SlimeMenu.ROAM, "roam", 308);
     if (menu.slime() instanceof CombatSlime) {
-      addOrder(SlimeMenu.WORK, "fight", 306);
+      addOrder(SlimeMenu.WORK, "fight", 308);
       targetPageButton =
           addRenderableWidget(
               Button.builder(
                       Component.translatable("screen.slimic.targets"),
                       button -> sendButton(SlimeMenu.TARGET_PAGE_BUTTON))
-                  .bounds(leftPos + 294, topPos + 73, 62, 14)
+                  .bounds(leftPos + 296, topPos + 73, 62, 14)
                   .build());
       for (CombatTarget kind : CombatTarget.values()) {
         Button button =
@@ -141,7 +144,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                     Component.empty(),
                     pressed -> sendButton(SlimeMenu.TARGET_TOGGLE + kind.ordinal()))
                 .bounds(
-                    leftPos + 194 + kind.ordinal() % 2 * 82,
+                    leftPos + SlimeMenu.SLOTS_X + kind.ordinal() % 2 * 82,
                     topPos + 89 + kind.ordinal() / 2 * 18,
                     80,
                     16)
@@ -154,17 +157,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
       addRenderableWidget(
           Button.builder(
                   Component.translatable("screen.slimic.ride"), b -> sendButton(SlimeMenu.RIDE))
-              .bounds(leftPos + 306, topPos + 25, 50, 18)
+              .bounds(leftPos + 308, topPos + 25, 50, 18)
               .build());
     if (menu.slime() instanceof HealingSlime)
-      addOrder(SlimeMenu.WORK, menu.slime() instanceof AbundanceSlime ? "abundance" : "heal", 306);
-    if (menu.slime() instanceof FarmerSlime) addOrder(SlimeMenu.WORK, "farm", 306);
-    if (menu.slime() instanceof LumberjackSlime) addOrder(SlimeMenu.WORK, "log", 306);
-    if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 306);
+      addOrder(SlimeMenu.WORK, menu.slime() instanceof AbundanceSlime ? "abundance" : "heal", 308);
+    if (menu.slime() instanceof FarmerSlime) addOrder(SlimeMenu.WORK, "farm", 308);
+    if (menu.slime() instanceof LumberjackSlime) addOrder(SlimeMenu.WORK, "log", 308);
+    if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 308);
     if (menu.slime() instanceof MiningSlime)
-      addOrder(SlimeMenu.WORK, menu.slime() instanceof TunnelSlime ? "tunnel" : "mine", 306);
+      addOrder(SlimeMenu.WORK, menu.slime() instanceof TunnelSlime ? "tunnel" : "mine", 308);
     if (menu.slime() instanceof HeraldSlime) {
-      addOrder(SlimeMenu.WORK, "monitor", 306);
+      addOrder(SlimeMenu.WORK, "monitor", 308);
       addRenderableWidget(
           Button.builder(
                   Component.translatable("screen.slimic.fire_signal"),
@@ -173,26 +176,26 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               .build());
       addRenderableWidget(
           Button.builder(Component.literal("-"), button -> sendButton(SlimeMenu.DELAY_DOWN))
-              .bounds(leftPos + 194, topPos + 112, 24, 18)
+              .bounds(leftPos + SlimeMenu.SLOTS_X, topPos + 112, 24, 18)
               .build());
       addRenderableWidget(
           Button.builder(Component.literal("+"), button -> sendButton(SlimeMenu.DELAY_UP))
-              .bounds(leftPos + 332, topPos + 112, 24, 18)
+              .bounds(leftPos + 334, topPos + 112, 24, 18)
               .build());
     }
     if (menu.slime() instanceof TransportSlime)
-      addOrder(SlimeMenu.WORK, menu.slime() instanceof WarehouseSlime ? "store" : "transport", 306);
+      addOrder(SlimeMenu.WORK, menu.slime() instanceof WarehouseSlime ? "store" : "transport", 308);
     if (menu.slime() instanceof TransportSlime) {
       previousPage =
           addRenderableWidget(
               Button.builder(Component.literal("<"), button -> sendButton(SlimeMenu.PREVIOUS_PAGE))
-                  .bounds(leftPos + 286, topPos + 74, 12, 12)
+                  .bounds(leftPos + 288, topPos + 75, 12, 12)
                   .tooltip(Tooltip.create(Component.translatable("screen.slimic.previous_page")))
                   .build());
       nextPage =
           addRenderableWidget(
               Button.builder(Component.literal(">"), button -> sendButton(SlimeMenu.NEXT_PAGE))
-                  .bounds(leftPos + 344, topPos + 74, 12, 12)
+                  .bounds(leftPos + 346, topPos + 75, 12, 12)
                   .tooltip(Tooltip.create(Component.translatable("screen.slimic.next_page")))
                   .build());
     }
@@ -253,6 +256,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
       directionButton.setMessage(
           Component.translatable("direction.slimic." + tunnel.getTunnelDirection().getName()));
     if (previousPage != null) {
+      previousPage.visible = nextPage.visible = menu.bagPages() > 1;
       previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;
       nextPage.active = menu.data(SlimeMenu.BAG_PAGE) + 1 < menu.bagPages();
     }
@@ -273,13 +277,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   @Override
   protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
     int x = leftPos, y = topPos;
-    graphics.fill(x, y, x + imageWidth, y + imageHeight, 0xff181f26);
-    graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + 21, 0xff304338);
-    graphics.fill(x + 190, y + 45, x + 362, y + 237, 0xff293139);
+    graphics.blit(BACKGROUND, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+    if (menu.isBagVisible())
+      for (int row = 0; row < SlimeMenu.BAG_ROWS; row++)
+        for (int column = 0; column < SlimeMenu.SLOT_COLUMNS; column++) {
+          int cellX = x + SlimeMenu.SLOTS_X + column * SlimeMenu.SLOT_SPACING;
+          int cellY = y + SlimeMenu.BAG_Y + row * SlimeMenu.SLOT_SPACING;
+          graphics.blit(SLOTS, cellX - 1, cellY - 1, 18, 0, 18, 18, 36, 18);
+        }
     for (var slot : menu.slots) {
       if (!slot.isActive()) continue;
-      graphics.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, 0xff11171b);
-      graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, 0xff586066);
+      graphics.blit(SLOTS, x + slot.x - 1, y + slot.y - 1, 0, 0, 18, 18, 36, 18);
     }
   }
 
@@ -326,14 +334,14 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
         (menu.slime() instanceof CombatSlime
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
-            ? 252
+            ? 254
             : menu.slime() instanceof MiningSlime
-                ? 234
+                ? 236
                 : menu.slime() instanceof FieldSlime
                         || menu.slime() instanceof GuardianAngelSlime
                         || menu.slime() instanceof FishingSlime
-                    ? 216
-                    : 194,
+                    ? 218
+                    : SlimeMenu.SLOTS_X,
         49,
         0xffe5e9e9,
         false);
@@ -346,23 +354,25 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
         (menu.slime() instanceof CombatSlime
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
-            ? 252
+            ? 254
             : menu.slime() instanceof MiningSlime
-                ? 234
+                ? 236
                 : menu.slime() instanceof FieldSlime
                         || menu.slime() instanceof GuardianAngelSlime
                         || menu.slime() instanceof FishingSlime
-                    ? 216
-                    : 194,
+                    ? 218
+                    : SlimeMenu.SLOTS_X,
         62,
         0xffe5e9e9,
         false);
     if (menu.slime() instanceof BagSlime) {
       graphics.drawString(
           font,
-          Component.translatable("screen.slimic.bag", (int) menu.value(SlimeStat.CAPACITY)),
-          194,
-          77,
+          menu.isBagVisible()
+              ? Component.translatable("screen.slimic.bag", (int) menu.value(SlimeStat.CAPACITY))
+              : Component.translatable("screen.slimic.targets"),
+          SlimeMenu.SLOTS_X,
+          SlimeMenu.BAG_LABEL_Y,
           0xffe5e9e9,
           false);
       Enum<?>[] statuses =
@@ -420,12 +430,12 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           216,
           174,
           0xffb4c9d1);
-      if (menu.slime() instanceof TransportSlime)
+      if (menu.slime() instanceof TransportSlime && menu.bagPages() > 1)
         graphics.drawCenteredString(
             font,
             Component.literal((menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages()),
-            321,
-            77,
+            323,
+            SlimeMenu.BAG_LABEL_Y,
             0xffe5e9e9);
     } else if (menu.slime() instanceof MeowSlime cat) {
       graphics.drawWordWrap(
@@ -434,13 +444,18 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               "screen.slimic.meow_state",
               Component.translatable(
                   cat.isActive() ? "screen.slimic.enabled" : "screen.slimic.disabled")),
-          194,
+          SlimeMenu.SLOTS_X,
           112,
           162,
           0xffb4c9d1);
     } else if (menu.slime() instanceof SoggySlime) {
       graphics.drawWordWrap(
-          font, Component.translatable("screen.slimic.soggy_info"), 194, 84, 162, 0xffb4c9d1);
+          font,
+          Component.translatable("screen.slimic.soggy_info"),
+          SlimeMenu.SLOTS_X,
+          84,
+          162,
+          0xffb4c9d1);
       graphics.drawWordWrap(
           font,
           Component.translatable(
@@ -455,13 +470,28 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           0xffb4c9d1);
     } else if (menu.slime() instanceof GuardianAngelSlime) {
       graphics.drawWordWrap(
-          font, Component.translatable("screen.slimic.guardian_help"), 194, 84, 162, 0xffb4c9d1);
+          font,
+          Component.translatable("screen.slimic.guardian_help"),
+          SlimeMenu.SLOTS_X,
+          84,
+          162,
+          0xffb4c9d1);
     } else if (menu.slime() instanceof SaddleSlime) {
       graphics.drawWordWrap(
-          font, Component.translatable("screen.slimic.saddle_help"), 194, 84, 162, 0xffb4c9d1);
+          font,
+          Component.translatable("screen.slimic.saddle_help"),
+          SlimeMenu.SLOTS_X,
+          84,
+          162,
+          0xffb4c9d1);
     } else if (menu.slime() instanceof HeraldSlime) {
       graphics.drawWordWrap(
-          font, Component.translatable("screen.slimic.herald_help"), 194, 84, 162, 0xffb4c9d1);
+          font,
+          Component.translatable("screen.slimic.herald_help"),
+          SlimeMenu.SLOTS_X,
+          84,
+          162,
+          0xffb4c9d1);
       graphics.drawCenteredString(
           font,
           Component.translatable("screen.slimic.alert_minutes", menu.data(SlimeMenu.ALERT_MINUTES)),
@@ -470,7 +500,12 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           0xffe5e9e9);
     } else {
       graphics.drawWordWrap(
-          font, Component.translatable("screen.slimic.specialize"), 194, 88, 162, 0xffb4c9d1);
+          font,
+          Component.translatable("screen.slimic.specialize"),
+          SlimeMenu.SLOTS_X,
+          88,
+          162,
+          0xffb4c9d1);
     }
     graphics.drawString(
         font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xffe2e9e9, false);

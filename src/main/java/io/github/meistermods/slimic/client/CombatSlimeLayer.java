@@ -29,6 +29,14 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
   public static final ModelLayerLocation ARMOR =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "combat_armor"), "main");
+  private static final ResourceLocation[] ARMOR_TEXTURES = {
+    SlimeTextures.accessory("armor_leather"),
+    SlimeTextures.accessory("armor_chainmail"),
+    SlimeTextures.accessory("armor_iron"),
+    SlimeTextures.accessory("armor_golden"),
+    SlimeTextures.accessory("armor_diamond"),
+    SlimeTextures.accessory("armor_netherite")
+  };
   private final ModelPart armor;
   private final EntityRendererProvider.Context context;
 
@@ -45,9 +53,9 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
     mesh.getRoot()
         .addOrReplaceChild(
             "armor",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, 20, -4.5F, 9, 4.1F, 9),
+            CubeListBuilder.create().texOffs(1, 1).addBox(-4.5F, 20, -4.5F, 9, 4.1F, 9),
             PartPose.ZERO);
-    return LayerDefinition.create(mesh, 16, 16);
+    return LayerDefinition.create(mesh, 64, 64);
   }
 
   @Override
@@ -66,16 +74,7 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
       return;
     ItemStack gear = slime.getItemBySlot(EquipmentSlot.CHEST);
     if (gear.getItem() instanceof SlimeArmorItem) {
-      String block =
-          new String[] {
-                "white_terracotta",
-                "iron_bars",
-                "iron_block",
-                "gold_block",
-                "diamond_block",
-                "netherite_block"
-              }
-              [SlimeArmorItem.materialIndex(gear)];
+      ResourceLocation texture = ARMOR_TEXTURES[SlimeArmorItem.materialIndex(gear)];
       ItemStack original = SlimeArmorItem.baseArmor(gear);
       int color =
           original.getItem() instanceof DyeableLeatherItem leather
@@ -84,12 +83,7 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
       armor.render(
           pose,
           ItemRenderer.getArmorFoilBuffer(
-              buffers,
-              RenderType.armorCutoutNoCull(
-                  ResourceLocation.fromNamespaceAndPath(
-                      "minecraft", "textures/block/" + block + ".png")),
-              false,
-              gear.hasFoil()),
+              buffers, RenderType.armorCutoutNoCull(texture), false, gear.hasFoil()),
           light,
           OverlayTexture.NO_OVERLAY,
           ((color >> 16) & 255) / 255F,
