@@ -23,7 +23,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "It collects loot from its kills. Full cargo does not stop combat; carriers can unload it while its combat order remains active."
+      "text": "Vanilla Slimes only target companions that attack them. Combat and Dragon Slimes can still attack them first with Hostile enabled. It collects loot from its kills. Full cargo does not stop combat; carriers can unload it while its combat order remains active."
     }
   ],
   "extra_recipe_mappings": {

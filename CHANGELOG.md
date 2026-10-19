@@ -4,6 +4,18 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.40] - 2026-10-19
+
+### Fixed
+
+- Vanilla Slimes no longer acquire nearby companions first; their added companion-target goal only selects a companion that attacked them. Magma Cubes and other hostile mobs retain their existing targeting.
+- Combat and Dragon Slimes still initiate attacks on vanilla Slimes under their Hostile target filter.
+
+### Validation
+
+- Seven native server regressions pass with optional integrations present and absent, covering all twenty-two companion types, attacker-only targeting, Magma Cube and Husk aggression, Combat and Dragon first strikes, and existing Enderman behavior. The previous build reproduces both companion-targeting failures.
+- Bilingual documentation and guidebook resource checks, Google Java Format, and the Java 17 build pass.
+
 ## [0.1.39] - 2026-10-19
 
 ### Fixed
