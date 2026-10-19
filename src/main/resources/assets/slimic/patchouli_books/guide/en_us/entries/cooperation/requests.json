@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "A full working bag requests cargo pickup. Missing tools request one compatible spare; tools retain wear, enchantments, names, and tags. Farm workers need hoes, lumberjacks axes, miners pickaxes/shovels, and combat workers swords."
+      "text": "Full bags request cargo pickup; missing tools request one compatible spare with its item data intact. Farmers use hoes, lumberjacks axes, miners pickaxes/shovels, and fighters swords. Carriers do not supply seeds or saplings."
     },
     {
       "type": "patchouli:text",
-      "text": "Miner fluid removal requests one empty bucket. Wall reinforcement requests up to 64 cobblestone. Healers request up to 64 slimeballs. Supply is limited by stock and usable space; full bags need unloading first. Fishers request rods; tunnel workers request up to one stack of the selected real lining block."
+      "text": "Miner fluid removal requests one empty bucket. Wall reinforcement requests up to 64 cobblestone. Healers request up to 64 slimeballs. Supply is limited by stock and usable space; full bags need unloading first. Fishers request rods; tunnel workers request up to 64 matching lining blocks."
     },
     {
       "type": "patchouli:text",

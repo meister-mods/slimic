@@ -20,7 +20,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A growth application uses two stamina and no bone meal item. Native random growth chances remain. Healing still needs slimeballs. Growth respects mobGriefing, bonemeal protection events, and loaded terrain. Carriers supply slimeballs and unload blocked bags."
+      "text": "Each allowed growth application costs two stamina, uses no bone meal item, and earns one activity. Native chance may leave the plant unchanged. Surrounding terrain must be loaded. Healing still needs slimeballs. Growth respects mobGriefing and protection events; carriers supply slimeballs."
     }
   ],
   "extra_recipe_mappings": {

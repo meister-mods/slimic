@@ -11,11 +11,11 @@
       "input2": "minecraft:book",
       "result": "slimic:commander_slime",
       "label": "Combine → one result",
-      "text": "Friendly Slime + a book. Starts waiting and wears a mustache with a baton."
+      "text": "Friendly Slime + a book. Starts waiting and has a mustache and carries a baton."
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click to open Companions or Players. The tuner opens ordinary stats and also has a roster button. Companion rows show last-known health, orders, work state, location, and whether the entity is loaded, stored, broken, or removed. Hover a row for its position."
+      "text": "Right-click to open Companions or Players. The tuner opens ordinary stats and also has a roster button. Companion rows show last-known health, orders, work state, location, and whether the companion is loaded, unloaded, stored, broken, or removed. Hover a row for its position."
     },
     {
       "type": "patchouli:text",
@@ -23,7 +23,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Gather spends 25 stamina and processes living released companions one at a time, including recorded unloaded chunks and other dimensions. They arrive in safe loaded spaces around the commander and wait. Stored, broken, removed, mounted, and passenger companions are excluded."
+      "text": "Starting Gather spends 25 stamina. It processes living released companions one at a time, including recorded unloaded chunks and other dimensions. They arrive in safe loaded spaces around the commander and wait. Stored, broken, removed, mounted, and passenger companions are excluded."
     },
     {
       "type": "patchouli:text",

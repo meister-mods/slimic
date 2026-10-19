@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "slimic:combination",
-      "title": "모양 없는 조합",
+      "title": "순서 없는 조합",
       "input1": "slimic:combat_slime",
       "input2": "minecraft:dragon_head",
       "result": "slimic:dragon_slime",
-      "label": "조합 → 1개",
+      "label": "조합 → 결과 1개",
       "text": "전투 슬라임 + 드래곤 머리. 기존 검·방패·갑옷·가방·대상 필터·성장을 보존하고 대기 상태로 시작합니다. 박쥐 모양 날개와 검은 뿔로 구분할 수 있습니다."
     },
     {

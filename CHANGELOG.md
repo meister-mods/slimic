@@ -4,6 +4,28 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.34] - 2026-10-18
+
+### Documentation
+
+- Align English and Korean gameplay guides, development notes, guidebook pages, and JEI descriptions with all twenty-two companion types, shared ownership, growth rewards, and current equipment support.
+- Clarify right-click priorities, Wait → Farm plot registration, supported staircase materials, request-based cargo collection, exact supply limits, flight recovery, and Ender linking and travel.
+- Distinguish common stat values from profession multipliers and document Guardian beam range, assigned-enemy target filters, bonemeal chance and costs, and teleport dismounting.
+- Standardize Korean crafting diagrams and status wording, and shorten dense guidebook paragraphs while keeping 44 entries and 137 pages per language.
+
+### Fixed
+
+- Commander rosters display Nurture for Abundance Slimes and missing saplings for Lumberjack Slimes without changing saved order or reason identifiers. Korean roster labels distinguish loaded and unloaded companions.
+- Cargo-collection messages describe actual support requests, including combat cargo before a bag fills. Development test-mod metadata matches the release.
+
+### Validation
+
+- Documentation and context review continued for over two hours, comparing implementation, bilingual wording, and native rendering.
+
+- All 822 rendered page bodies match the current source text across both font profiles and all three language settings. Native guidebook checks cover English, Korean, English fallback, default and Unicode fonts, every page and diagram, links, item lookups, and localized search.
+- Independent servers verify profession-specific roster text through saved records, native menu snapshots, real packet encoding, and both locales with optional integrations present and absent.
+- Native clients verify all twenty-two models and minimum-size English/Korean management and roster screens. Google Java Format and the Java 17 build pass.
+
 ## [0.1.33] - 2026-10-18
 
 ### Changed

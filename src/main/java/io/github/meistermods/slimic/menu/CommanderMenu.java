@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.menu;
 
 import io.github.meistermods.slimic.entity.*;
 import io.github.meistermods.slimic.network.*;
+import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModMenus;
 import java.util.*;
 import net.minecraft.core.registries.Registries;
@@ -186,13 +187,21 @@ public final class CommanderMenu extends AbstractContainerMenu {
                         ? loaded ? "loaded" : "unloaded"
                         : e.location().name().toLowerCase(Locale.ROOT)));
         var order =
-            Component.translatable("roster.slimic.order." + e.order().toLowerCase(Locale.ROOT));
+            Component.translatable(
+                e.order().equals("HEAL")
+                        && e.type().equals(ModEntities.ABUNDANCE_SLIME.getId().toString())
+                    ? "screen.slimic.abundance"
+                    : "roster.slimic.order." + e.order().toLowerCase(Locale.ROOT));
         var status =
             e.reason().equals("NONE")
                 ? Component.translatable(
                     "roster.slimic.state." + e.state().toLowerCase(Locale.ROOT))
                 : Component.translatable(
-                    "roster.slimic.reason." + e.reason().toLowerCase(Locale.ROOT));
+                    "roster.slimic.reason."
+                        + (e.reason().equals("SEEDS_MISSING")
+                                && e.type().equals(ModEntities.LUMBERJACK_SLIME.getId().toString())
+                            ? "saplings_missing"
+                            : e.reason().toLowerCase(Locale.ROOT)));
         var detail =
             Component.translatable(
                 "screen.slimic.roster.detail",

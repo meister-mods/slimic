@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Missing stair treads use common full, non-falling blocks such as cobblestone, stone, dirt, or deepslate. Placement respects protected blocks and entities. An unreachable repair pauses without spending material."
+      "text": "Missing stair treads use supported repair materials such as cobblestone, stone, dirt, or deepslate. Placement respects protected blocks and entities. An unreachable repair pauses without spending material."
     }
   ]
 }

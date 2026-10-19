@@ -6,15 +6,15 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Prepare farmland before selecting Farm. Registration is a snapshot, not a scan that expands with every later field. Reissue Farm to include new plots. Supply seeds, carrots, potatoes, or other suitable planting stock."
+      "text": "Prepare farmland before selecting Farm. The command surveys loaded plots around the slime’s current position. The registered list stays fixed afterward. To include new plots, select Wait, then Farm. Stock suitable seeds or produce in the bag."
     },
     {
       "type": "patchouli:text",
-      "text": "The farmer harvests mature crops and replants the same crop from its bag. Registered soil can be tilled back after reverting to supported dirt. Air, stone, or other non-soil removes a plot until Farm is selected again."
+      "text": "The farmer harvests mature crops and replants the same crop from its bag. Registered soil can be tilled back after reverting to supported dirt. Air, stone, or other non-soil removes a plot; Wait, then Farm registers it again."
     },
     {
       "type": "patchouli:text",
-      "text": "A missing hoe, seed shortage, blocked planting, exhaustion, or full cargo needs attention. Releasing at another block clears old plot registration and waits for a new Farm order."
+      "text": "Check the hoe, seeds, planting space, stamina, and cargo capacity when work stops. Releasing away from the farm center block clears old plots and waits for a new Farm order."
     }
   ]
 }
