@@ -285,9 +285,10 @@ public final class HealingStateGameTests {
                   restored.getHealth() == 1
                       && restored.getStamina() == 44
                       && restored.getCapacity() == 216
-                      && restored.isWorking()
+                      && !restored.isWorking()
+                      && restored.isOrderedToSit()
                       && ItemStack.matches(restored.getBag().getStackInSlot(215), special),
-                  "Revival retains 216-slot capacity, final-slot NBT and command at one health");
+                  "Revival starts in Wait with 216-slot capacity, final-slot NBT and one health");
               restored.discard();
               a.close();
             })

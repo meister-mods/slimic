@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-19
+
+### Added
+
+- Shift-right-click a companion with a Slime Tuner to preview its current or planned work area in the world for fifteen seconds. Quarry bounds, the next tunnel section, field areas, and search ranges use compact outlines visible only to the requesting owner.
+- Herald firework alerts also send authorized online owners a localized message identifying the blocked companion, its custom name, and the specific cause, including missing tools and supplies, full bags, storage issues, exhaustion, and unreachable work.
+
+### Changed
+
+- All item-based releases and revivals start in Wait, including recovered companions. Identity, health, growth, equipment, cargo, and applicable work plans remain intact; work resumes through an explicit command.
+- Tuner previews take precedence over Shift-right-click recovery. Recovery remains available without a held tuner. Network protocol 16 carries bounded server-provided area snapshots.
+
+### Validation
+
+- Server audits cover 540 regression scenarios in both optional-integration environments. Focused rechecks pass for the updated Wait and preview rules, all twenty-two releases and revivals, bounded read-only areas, packet validation, named warning delivery to primary/shared owners, and isolated logistics action intervals.
+- Native clients with and without JEI and Patchouli verify English/Korean Survival interactions, five work-area displays, tool-change clearing, fifteen-second expiry, and localized herald chat. Guidebook rendering passes all 44 entries and 137 pages in English, Korean, and English fallback.
+- Bilingual documentation, release contents, runtime references, Google Java Format, and the Java 17 build pass verification.
+
 ## [0.1.40] - 2026-10-19
 
 ### Fixed

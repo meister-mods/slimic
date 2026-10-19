@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Follow moves after the owner; Wait pauses ordinary work. All new companions wait, including Creative defaults and first specialization. Recovered companions retain their saved order."
+      "text": "Follow moves after the owner; Wait pauses ordinary work. All new, recovered, and revived companions start in Wait. First specialization also waits. Ordinary world reloads retain saved orders."
     },
     {
       "type": "patchouli:text",

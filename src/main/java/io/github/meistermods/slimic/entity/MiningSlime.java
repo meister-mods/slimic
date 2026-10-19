@@ -195,6 +195,10 @@ public class MiningSlime extends BagSlime {
     return quarry;
   }
 
+  public int getRequiredToolSlot() {
+    return requiredTool;
+  }
+
   @Override
   protected String bagTagName() {
     return "MiningBag";
@@ -356,6 +360,7 @@ public class MiningSlime extends BagSlime {
       super.onReleased();
       return;
     }
+    boolean resumeWork = isWorking();
     ChunkPos chunk = chunkPosition();
     boolean changed =
         hasAnchor && (chunk.x != chunkX || chunk.z != chunkZ || hasChangedWorkDimension());
@@ -372,11 +377,11 @@ public class MiningSlime extends BagSlime {
       quarry = new QuarryPlan(chunk, top, top + 2);
       walls = new QuarryWalls(chunk);
       if (changed) {
-        working = true;
+        working = resumeWork;
         travelBlocked = false;
         status = Status.IDLE;
         fullRevision = -1;
-        setWaiting(false);
+        if (resumeWork) setWaiting(false);
       }
     }
     hasAnchor = true;

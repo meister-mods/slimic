@@ -70,6 +70,10 @@ public final class SlimeClientSmoke {
       throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.workAreaOnly")) {
+      if (WorkAreaClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.companionTooltipsOnly")) {
       if (CompanionTooltipClientSmoke.tick(client)) client.stop();
       return;

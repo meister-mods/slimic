@@ -195,7 +195,8 @@ public final class InitialWorkOrderGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_nine", timeoutTicks = 80)
-  public static void newSummonItemsWaitAndRecoveredExplicitCommandsSurvive(GameTestHelper h) {
+  public static void newAndRecoveredSummonItemsWaitWhileRetainingIdentityAndResources(
+      GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     h.startSequence()
         .thenWaitUntil(
@@ -232,13 +233,28 @@ public final class InitialWorkOrderGameTests {
                 var restored = release(h, owner, saved, floor);
                 h.assertTrue(
                     restored.getUUID().equals(id)
-                        && !restored.isOrderedToSit()
-                        && restored.isWorking() == work
+                        && restored.isOrderedToSit()
+                        && !restored.isWorking()
+                        && restored.getWorkStatus().order() == WorkStatus.Order.WAIT
                         && restored.getHealth() == 7
                         && restored.getStamina() == 41
                         && restored.getStatPoints() == 3,
-                    "Recovery preserves explicit command, identity and resources: " + type);
+                    "Recovery starts in Wait while preserving identity and resources: " + type);
+                var revival = FriendlySlimeItem.fromSlime(restored);
                 restored.discard();
+                h.assertTrue(
+                    ((FriendlySlimeItem) revival.getItem())
+                        .revive(h.getLevel(), owner, revival, floor.above()),
+                    "Stored revival succeeds: " + type);
+                var revived = (FriendlySlime) h.getLevel().getEntity(id);
+                h.assertTrue(
+                    revived != null
+                        && revived.isOrderedToSit()
+                        && !revived.isWorking()
+                        && revived.getHealth() == 1
+                        && revived.getStamina() == 41,
+                    "Revival starts in Wait with exact identity and stored stamina: " + type);
+                revived.discard();
               }
               a.close();
             })

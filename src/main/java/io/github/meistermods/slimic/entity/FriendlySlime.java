@@ -644,7 +644,9 @@ public class FriendlySlime extends TamableAnimal {
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
     ItemStack held = player.getItemInHand(hand);
     if (player.isShiftKeyDown()) {
-      return capture(player);
+      return SlimeTunerItem.isHoldingPreviewTool(player)
+          ? SlimeTunerItem.preview(player, this)
+          : capture(player);
     }
     if (held.getItem() instanceof CreativeSlimeTunerItem)
       return CreativeSlimeTunerItem.open(player, this);

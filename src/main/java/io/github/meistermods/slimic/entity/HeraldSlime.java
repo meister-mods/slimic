@@ -156,6 +156,7 @@ public final class HeraldSlime extends FriendlySlime {
       if (!launchSignal()) continue;
       warned.putLong(key, worker.getBlockedEpisode());
       warningCooldowns.putInt(key, 200);
+      if (canCooperateWith(worker)) SlimeWorkWarning.notifyOwners(worker);
     }
     watchingWorkers &= isWorking();
     if (watchingWorkers) {

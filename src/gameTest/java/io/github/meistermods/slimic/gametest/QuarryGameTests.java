@@ -171,7 +171,8 @@ public final class QuarryGameTests {
   }
 
   @GameTest(template = "empty")
-  public static void sameChunkKeepsProgressAndNewChunkRestartsWork(GameTestHelper helper) {
+  public static void sameChunkKeepsProgressAndNewChunkResetsPlanWhileWaiting(
+      GameTestHelper helper) {
     MiningSlime miner = ModEntities.MINING_SLIME.get().create(helper.getLevel());
     miner.setWorking(true);
     miner.moveTo(helper.absoluteVec(Vec3.atCenterOf(PET)));
@@ -196,11 +197,11 @@ public final class QuarryGameTests {
     miner.moveTo((old.x + 1) * 16 + 8, miner.getY(), old.z * 16 + 8);
     miner.onReleased();
     helper.assertTrue(
-        miner.isWorking()
-            && !miner.isOrderedToSit()
+        !miner.isWorking()
+            && miner.isOrderedToSit()
             && miner.getMiningChunk().equals(miner.chunkPosition())
             && miner.getQuarryPlan().layer() == miner.getQuarryPlan().topFloor() + 2,
-        "A different chunk must start a new quarry automatically");
+        "A different chunk creates a new quarry without resuming a paused command");
     helper.assertTrue(
         miner.getHealth() == 7
             && miner.getBag().getStackInSlot(0).getCount() == 7
