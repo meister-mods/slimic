@@ -52,17 +52,17 @@ public final class AdvancedSlimeLayer
         "overalls",
         CubeListBuilder.create()
             .texOffs(0, 0)
-            .addBox(-4.3F, 21, -4.3F, 8.6F, 2.8F, 8.6F)
-            .addBox(-2.8F, 18.5F, -4.4F, 5.6F, 2.5F, .5F)
-            .addBox(-3, 16, -4.45F, .8F, 2.5F, .5F)
-            .addBox(2.2F, 16, -4.45F, .8F, 2.5F, .5F),
+            .addBox(-4.3F, 22, -4.3F, 8.6F, 1.8F, 8.6F)
+            .addBox(-2.8F, 22, -4.4F, 5.6F, 1.5F, .5F)
+            .addBox(-3, 20.5F, -4.45F, .8F, 1.5F, .5F)
+            .addBox(2.2F, 20.5F, -4.45F, .8F, 1.5F, .5F),
         PartPose.ZERO);
     parts.addOrReplaceChild(
         "buttons",
         CubeListBuilder.create()
             .texOffs(0, 0)
-            .addBox(-2.85F, 18.5F, -4.75F, .6F, .6F, .25F)
-            .addBox(2.25F, 18.5F, -4.75F, .6F, .6F, .25F),
+            .addBox(-2.85F, 22, -4.75F, .6F, .6F, .25F)
+            .addBox(2.25F, 22, -4.75F, .6F, .6F, .25F),
         PartPose.ZERO);
     parts.addOrReplaceChild(
         "lyre",
@@ -72,10 +72,10 @@ public final class AdvancedSlimeLayer
             .addBox(2.5F, 18, -5.5F, .7F, 5, .7F)
             .addBox(-2.5F, 22.3F, -5.5F, 5, .7F, .7F)
             .addBox(-2.5F, 17.4F, -5.5F, 5, .7F, .7F),
-        PartPose.ZERO);
+        PartPose.offset(7.5F, 0, 3.5F));
     var strings = CubeListBuilder.create().texOffs(0, 0);
     for (int i = -2; i <= 2; i++) strings.addBox(i, 18.1F, -5.25F, .12F, 4.2F, .12F);
-    parts.addOrReplaceChild("strings", strings, PartPose.ZERO);
+    parts.addOrReplaceChild("strings", strings, PartPose.offset(7.5F, 0, 3.5F));
     parts.addOrReplaceChild(
         "laurel",
         CubeListBuilder.create()

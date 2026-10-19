@@ -4,6 +4,19 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.36] - 2026-10-19
+
+### Changed
+
+- Lower Fishing Slime overalls, straps, and buttons below the eyes, and move the Abundance Slime's lyre and strings together beside its body.
+- Accept Attention Slimes as an alternative to Friendly Slimes in sixteen basic specialization recipes, including their JEI previews. Advanced professions retain their existing prerequisites.
+- Specializing an Attention Slime retains common companion data and invested stats while removing its roaming state, profession activity, and permanent movement-speed bonus. The resulting profession initially waits.
+
+### Validation
+
+- All 39 native regression tests pass with optional integrations present and absent, including every basic specialization and source-slot arrangement, real inventory crafting, exact tool retention, and removal of Attention-specific state.
+- Native client portraits verify Fishing and Abundance appearance; JEI exposes both bases for all sixteen specializations. English, Korean, and fallback guidebook pages render successfully. Google Java Format and the Java 17 build pass.
+
 ## [0.1.35] - 2026-10-19
 
 ### Changed

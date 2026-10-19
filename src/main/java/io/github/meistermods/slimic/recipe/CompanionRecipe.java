@@ -39,9 +39,7 @@ public final class CompanionRecipe extends CustomRecipe {
   }
 
   private boolean primary(ItemStack stack) {
-    return kind == Kind.ARMOR
-        ? SlimeArmorItem.accepts(stack)
-        : stack.is(ModItems.FRIENDLY_SLIME.get());
+    return kind == Kind.ARMOR ? SlimeArmorItem.accepts(stack) : CompanionBase.accepts(stack);
   }
 
   private boolean secondary(ItemStack stack) {
@@ -72,7 +70,7 @@ public final class CompanionRecipe extends CustomRecipe {
 
   public static ItemStack combat(ItemStack friendly, ItemStack sword) {
     ItemStack result = new ItemStack(ModItems.COMBAT_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     result
         .getOrCreateTag()
         .put(CombatSlimeItem.INITIAL_SWORD, sword.copyWithCount(1).save(new CompoundTag()));
@@ -81,25 +79,25 @@ public final class CompanionRecipe extends CustomRecipe {
 
   public static ItemStack cleaning(ItemStack friendly) {
     ItemStack result = new ItemStack(ModItems.CLEANING_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     return result;
   }
 
   public static ItemStack healing(ItemStack friendly) {
     ItemStack result = new ItemStack(ModItems.HEALING_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     return result;
   }
 
   public static ItemStack soggy(ItemStack friendly) {
     ItemStack result = new ItemStack(ModItems.SOGGY_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     return result;
   }
 
   public static ItemStack saddle(ItemStack friendly, ItemStack saddle) {
     ItemStack result = new ItemStack(ModItems.SADDLE_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     result.getOrCreateTag().put("InitialSaddle", saddle.copyWithCount(1).save(new CompoundTag()));
     return result;
   }
@@ -107,7 +105,7 @@ public final class CompanionRecipe extends CustomRecipe {
   public static ItemStack field(ItemStack friendly, ItemStack tool, boolean farmer) {
     ItemStack result =
         new ItemStack(farmer ? ModItems.FARMER_SLIME.get() : ModItems.LUMBERJACK_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     result.getOrCreateTag().put("InitialWorkTool", tool.copyWithCount(1).save(new CompoundTag()));
     return result;
   }

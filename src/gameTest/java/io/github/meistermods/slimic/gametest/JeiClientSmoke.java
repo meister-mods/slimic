@@ -80,6 +80,60 @@ public final class JeiClientSmoke implements IModPlugin {
     return recipes("slime_armor/");
   }
 
+  public static boolean attentionBaseRecipesReady() {
+    if (runtime == null) return false;
+    var client = net.minecraft.client.Minecraft.getInstance();
+    var friendly =
+        new net.minecraft.world.item.ItemStack(
+            io.github.meistermods.slimic.registry.ModItems.FRIENDLY_SLIME.get());
+    var attention =
+        new net.minecraft.world.item.ItemStack(
+            io.github.meistermods.slimic.registry.ModItems.ATTENTION_SLIME.get());
+    var outputs = new java.util.HashSet<String>();
+    runtime
+        .getRecipeManager()
+        .createRecipeLookup(RecipeTypes.CRAFTING)
+        .get()
+        .filter(recipe -> recipe.getId().getNamespace().equals("slimic"))
+        .forEach(
+            recipe -> {
+              var result = recipe.getResultItem(client.level.registryAccess());
+              String name =
+                  net.minecraftforge.registries.ForgeRegistries.ITEMS
+                      .getKey(result.getItem())
+                      .toString();
+              boolean alternatives =
+                  recipe.getIngredients().stream()
+                      .anyMatch(i -> i.test(friendly) && i.test(attention));
+              if (alternatives) outputs.add(name);
+              if (name.equals("slimic:attention_slime") && alternatives)
+                throw new IllegalStateException(
+                    "Attention must not be its own specialization base");
+            });
+    var expected =
+        java.util.Set.of(
+            "mining",
+            "transport",
+            "herald",
+            "combat",
+            "cleaning",
+            "saddle",
+            "farmer",
+            "lumberjack",
+            "soggy",
+            "healing",
+            "guardian_angel",
+            "fishing",
+            "meow",
+            "glow",
+            "commander",
+            "ender");
+    for (String name : expected)
+      if (!outputs.contains("slimic:" + name + "_slime"))
+        throw new IllegalStateException("JEI is missing Attention as an alternative for " + name);
+    return true;
+  }
+
   private static long recipes(String path) {
     if (runtime == null) return 0;
     return runtime

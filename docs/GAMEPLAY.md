@@ -398,7 +398,7 @@ Combine a Friendly Slime with a fishing rod in any arrangement. The original rod
 
 The slime finds a dry shore beside source water inside its release-centered Detection Range. Catches enter its normal bag. After five minutes without a catch it seeks another spot. Native fishing loot tables and open-water treasure conditions apply. **Lure** reduces waiting, **Luck of the Sea** changes loot chances, **Unbreaking** reduces rod wear, and **Mending** repairs the rod with catch experience before remaining experience appears. Work Speed shortens waiting.
 
-Each successful catch costs one stamina. A full bag pauses fishing and requests cargo pickup; a missing or broken rod requests a replacement from transport or warehouse support. Pending catches and the original rod survive recovery. The slime wears blue overalls with gold buttons.
+Each successful catch costs one stamina. A full bag pauses fishing and requests cargo pickup; a missing or broken rod requests a replacement from transport or warehouse support. Pending catches and the original rod survive recovery. The slime wears blue overalls with low straps and gold buttons below its eyes.
 
 ## Abundance slimes
 
@@ -406,7 +406,7 @@ Combine a Healing Slime, one bone meal, and one nether star without a fixed arra
 
 Abundance retains the Healing Slime's healing and revival and gives those patients priority. It then prioritizes crops and saplings over grass while applying native bonemeal effects to nearby growable plants, using **two stamina per application** and no bone meal item. Native random growth chances remain; an allowed application spends stamina and earns activity even without immediate plant growth. Work Speed controls the growth interval. Its fixed Detection Range is always twice the common base, initially 16 blocks. Plant growth requires the surrounding terrain to be loaded.
 
-Healing still requires slimeballs, with normal transport/warehouse supply. Plant growth respects `mobGriefing`, world borders, owner permissions, and Forge bonemeal protection events. Golden lyre strings and a laurel distinguish its appearance.
+Healing still requires slimeballs, with normal transport/warehouse supply. Plant growth respects `mobGriefing`, world borders, owner permissions, and Forge bonemeal protection events. It carries a golden lyre beside its body, with matching strings and a laurel.
 
 ## Tunnel slimes
 
@@ -479,3 +479,5 @@ Follow releases the anchor. Recovery and collapse release its chunk; ordinary sa
 Combine a Friendly Slime with **redstone dust**. It initially waits and has no bag or equipment. Its effective Movement Speed is **1.5 times** that of a companion with the same base value, including upgrades, stored specialization, tuning, and recovery.
 
 Roam keeps it bustling around an available owner, brushing past and lightly nudging players without attacking. It uses nearby loaded ground when the owner is unavailable, more than 24 blocks away, or has no reachable ground nearby. It does not load chunks or trample farmland. Follow and Wait stop roaming. Actual roaming movement earns activity at the configured following interval; stationary or waiting companions gain no activity. Partial activity survives recovery.
+
+An Attention Slime item may replace the Friendly Slime in all sixteen basic specialization recipes. This preserves its invested common stats and ordinary companion data, including identity, owner, name, health, and growth. The new profession starts in Wait and loses Attention roaming, its partial roaming timer, and the profession’s +50% Movement Speed multiplier. Movement Speed upgrades remain. JEI displays both base ingredients. Attention cannot be specialized into itself, and Abundance, Tunnel, Dragon, and Warehouse still require their existing profession-specific bases.
