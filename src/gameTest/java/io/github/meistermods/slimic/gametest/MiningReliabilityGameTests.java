@@ -92,8 +92,7 @@ public final class MiningReliabilityGameTests {
     helper
         .startSequence()
         .thenWaitUntil(() -> helper.assertTrue(miner.tickCount > 0, "Miner has started ticking"))
-        .thenIdle(450)
-        .thenExecute(
+        .thenWaitUntil(
             () -> {
               helper.assertTrue(
                   miner.getMiningStatus() == MiningSlime.Status.UNREACHABLE
@@ -111,6 +110,9 @@ public final class MiningReliabilityGameTests {
                       + miner.tickCount
                       + " bag="
                       + miner.getBag().getStackInSlot(0));
+            })
+        .thenExecute(
+            () -> {
               arena.wall(false);
               arena.assertRepairFinishes(helper, miner);
             });

@@ -61,6 +61,7 @@ public final class SlimeClientSmoke {
     if (!Boolean.getBoolean("slimic.clientSmoke") || event.phase != TickEvent.Phase.END) return;
     Minecraft client = Minecraft.getInstance();
     int timeout = 3600;
+    if (Boolean.getBoolean("slimic.workAreaOnly")) timeout = WorkAreaClientSmoke.maximumTicks();
     if (Boolean.getBoolean("slimic.accessoryTexturesOnly"))
       timeout +=
           400

@@ -437,7 +437,7 @@ Combine a Friendly Slime with one raw cod, salmon, tropical fish, or pufferfish.
 
 Active companions make nearby creepers use the same **six-block avoidance goal** used for cats. **Active/Inactive** and **Wait/Roam** are independent: disabling the aura does not change movement, and a movement command does not reactivate it. Waiting companions still repel creepers while active. Native avoidance does not guarantee protection from an already ignited creeper.
 
-It retains ordinary companion ownership, stats, naming, dyeing, healing, and recovery, with no bag or equipment slots. Activation and roaming state survive saves and recovery.
+It retains ordinary companion ownership, stats, naming, dyeing, healing, and recovery, with no bag or equipment slots. World saves retain activation and movement orders. Recovery preserves activation, but re-release starts in Wait; select Roam again to move freely.
 
 ## Combat loot and healing range
 

@@ -4,6 +4,24 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-19
+
+### Fixed
+
+- Planned quarry previews use the same starting-floor calculation as actual quarry initialization, including relocation at the world's minimum build height.
+- Rebased farming and logging previews remain centered on the registered work area when the worker moves.
+- Missing-storage herald messages cover both Slime Chests and Warehouse Slimes.
+- Fishing alerts distinguish a missing suitable fishing spot from an unreachable route.
+- Bilingual version guidance uses the 0.2.x series. Meow Slime guidance distinguishes retained activation from movement orders, which return to Wait on item release.
+
+### Validation
+
+- All 547 native server regressions pass in each of the four JEI/Patchouli combinations. Previous-version world and recovered-item data retain their companion traits, and all twenty-two types pass repeated recovery and release checks.
+- Focused server regressions reproduce and verify corrected quarry heights, rebased farming/logging origins, missing fishing spots, shared-access revocation, cross-dimension warning delivery, and read-only previews without chunk loading or survey advancement.
+- A native client completes sixty English/Korean resource-reload cycles and 600 Shift previews. Latest-client checks cover rebased fields, GUI scales 2–4, armored Combat/Dragon previews, existing management and equipment, 528 tooltips, and 26 synchronized inventory screens.
+- Both guidebook fonts render all 44 entries and 137 pages in English, Korean, and English fallback, including updated recovery guidance.
+- Seventy minutes of real server time complete 170 obstacle-route, delivery, treatment, and collection cycles while preserving exact cargo, supply costs, and mount equipment.
+
 ## [0.2.0] - 2026-10-19
 
 ### Added
@@ -13,7 +31,7 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- All item-based releases and revivals start in Wait, including recovered companions. Identity, health, growth, equipment, cargo, and applicable work plans remain intact; work resumes through an explicit command.
+- All item-based releases and revivals start in Wait, including recovered companions. Identity, growth, equipment, cargo, and applicable work plans remain intact. Recovery retains health; revival still restores one health. Work resumes through an explicit command.
 - Tuner previews take precedence over Shift-right-click recovery. Recovery remains available without a held tuner. Network protocol 16 carries bounded server-provided area snapshots.
 
 ### Validation

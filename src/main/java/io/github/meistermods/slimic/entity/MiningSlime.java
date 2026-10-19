@@ -195,6 +195,12 @@ public class MiningSlime extends BagSlime {
     return quarry;
   }
 
+  public int getQuarryStartFloor() {
+    return Math.max(
+        level().getMinBuildHeight(),
+        Math.min(level().getMaxBuildHeight() - 3, blockPosition().getY() - 1));
+  }
+
   public int getRequiredToolSlot() {
     return requiredTool;
   }
@@ -370,10 +376,7 @@ public class MiningSlime extends BagSlime {
       drainedWaterLayer = Integer.MIN_VALUE;
       chunkX = chunk.x;
       chunkZ = chunk.z;
-      int top =
-          Math.max(
-              level().getMinBuildHeight(),
-              Math.min(level().getMaxBuildHeight() - 3, blockPosition().getY() - 1));
+      int top = getQuarryStartFloor();
       quarry = new QuarryPlan(chunk, top, top + 2);
       walls = new QuarryWalls(chunk);
       if (changed) {

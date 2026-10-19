@@ -132,7 +132,7 @@ public abstract class FieldSlime extends BagSlime {
   }
 
   public final BlockPos getPreviewWorkHome() {
-    return originChanged ? blockPosition() : getWorkHome();
+    return getWorkHome();
   }
 
   protected final boolean inArea(BlockPos pos) {

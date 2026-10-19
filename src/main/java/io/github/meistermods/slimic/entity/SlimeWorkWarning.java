@@ -17,6 +17,10 @@ public final class SlimeWorkWarning {
   }
 
   public static Component reason(FriendlySlime worker, WorkStatus status) {
+    if (status.reason() == WorkStatus.Reason.UNREACHABLE
+        && worker instanceof FishingSlime fishing
+        && fishing.getFishingStatus() == FishingSlime.Status.NO_WATER)
+      return Component.translatable("message.slimic.blocked.fishing_site_missing");
     if (status.reason() == WorkStatus.Reason.TOOL_MISSING) {
       String tool =
           worker instanceof MiningSlime miner

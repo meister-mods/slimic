@@ -69,13 +69,14 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
           plan != null
               && (miner.getMiningChunk().equals(slime.chunkPosition()) || slime.isWorking());
       ChunkPos chunk = existingPlan ? miner.getMiningChunk() : slime.chunkPosition();
-      int nextLayer = existingPlan ? plan.layer() : slime.blockPosition().getY() + 1;
+      int topFloor = existingPlan ? plan.topFloor() : miner.getQuarryStartFloor();
+      int nextLayer = existingPlan ? plan.layer() : topFloor + 2;
       int layer = nextLayer;
       layer =
           Math.max(
               slime.level().getMinBuildHeight(),
               Math.min(slime.level().getMaxBuildHeight() - 1, layer));
-      int top = Math.max(layer + 1, existingPlan ? plan.topFloor() + 3 : layer + 1);
+      int top = Math.max(layer + 1, topFloor + 3);
       shapes.add(
           new Shape(
               new AABB(

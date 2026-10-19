@@ -27,10 +27,11 @@ public final class WorkPreviewGameTests {
     final List<Component> messages = new ArrayList<>();
 
     Receiver(GameTestHelper h) {
-      super(
-          h.getLevel().getServer(),
-          h.getLevel(),
-          new GameProfile(UUID.randomUUID(), "AlertReceiver"));
+      this(h, h.getLevel());
+    }
+
+    Receiver(GameTestHelper h, net.minecraft.server.level.ServerLevel level) {
+      super(h.getLevel().getServer(), level, new GameProfile(UUID.randomUUID(), "AlertReceiver"));
       var connection =
           new net.minecraft.network.Connection(
               net.minecraft.network.protocol.PacketFlow.SERVERBOUND) {
@@ -113,6 +114,121 @@ public final class WorkPreviewGameTests {
         SlimeWorkArea.of(miner).shapes().size() == 1
             && !SlimeWorkArea.of(miner).shapes().get(0).next(),
         "Completed quarries keep their outline without inventing a next layer");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void proposedQuarryLayerMatchesActualPlanAtWorldHeightLimits(GameTestHelper h) {
+    int site = 0;
+    for (var level : h.getLevel().getServer().getAllLevels()) {
+      int min = level.getMinBuildHeight(), max = level.getMaxBuildHeight();
+      for (int y : new int[] {min, min + 1, 101, max - 1}) {
+        var miner = ModEntities.MINING_SLIME.get().create(level);
+        // Starting work registers staircase protection; keep it away from other fixtures.
+        int x = 18_000_008 + site++ * 64;
+        miner.moveTo(x + .5, 101, -18_000_008.5);
+        miner.onReleased();
+        miner.setWaiting(true);
+        miner.moveTo(x + 16.5, y, -18_000_008.5);
+        var proposed = SlimeWorkArea.of(miner).shapes();
+        h.assertTrue(miner.isOrderedToSit(), "A proposed area keeps the miner waiting");
+        miner.setWorking(true);
+        h.assertTrue(
+            proposed.equals(SlimeWorkArea.of(miner).shapes()),
+            "Proposed and actual quarry agree at " + level.dimension().location() + " y=" + y);
+      }
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void allProfessionAreasRemainFiniteAtWorldBorderAndZeroRange(GameTestHelper h) {
+    for (var type : ModEntities.ENTITY_TYPES.getEntries()) {
+      for (int sign : new int[] {-1, 1}) {
+        var pet = (FriendlySlime) type.get().create(h.getLevel());
+        pet.moveTo(sign * 29_999_980.5, 101, sign * 29_999_980.5);
+        for (int range : new int[] {0, 64}) {
+          SlimeStat.DETECTION_RANGE.tune(pet, range);
+          var area = SlimeWorkArea.of(pet);
+          h.assertTrue(
+              area.shapes().size() <= SlimeWorkArea.MAX_SHAPES,
+              "Bounded shapes for " + type.getId());
+          for (var shape : area.shapes()) {
+            var center = shape.bounds().getCenter();
+            h.assertTrue(
+                Double.isFinite(center.x)
+                    && Double.isFinite(center.y)
+                    && Double.isFinite(center.z)
+                    && shape.bounds().getXsize() <= 640,
+                "Finite small area at world border for " + type.getId());
+          }
+          h.assertTrue(pet.isOrderedToSit() && !pet.isWorking(), "Preview keeps Wait");
+        }
+      }
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void previewsNeverLoadColdTerrainOrAdvanceAnActiveFarmSurvey(GameTestHelper h) {
+    var level = h.getLevel();
+    var soil = h.absolutePos(new BlockPos(1, 1, 1));
+    var original = level.getBlockState(soil);
+    level.setBlock(soil, net.minecraft.world.level.block.Blocks.FARMLAND.defaultBlockState(), 2);
+    var farmer = ModEntities.FARMER_SLIME.get().create(level);
+    farmer.moveTo(Vec3.atBottomCenterOf(soil.above()));
+    farmer.setWorking(true);
+    h.assertTrue(farmer.getFarmPlots().isEmpty(), "The new survey has not inspected its palette");
+    int[] loads = {0};
+    java.util.function.Consumer<net.minecraftforge.event.level.ChunkEvent.Load> listener =
+        event -> {
+          if (event.getLevel() == level) loads[0]++;
+        };
+    net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(listener);
+    try {
+      for (int query = 0; query < 100; query++) SlimeWorkArea.of(farmer);
+      h.assertTrue(
+          farmer.getFarmPlots().isEmpty() && farmer.getFieldStatus() == FieldSlime.Status.SURVEYING,
+          "Previewing an active farmer does not serialize or complete its survey");
+      var cold = new BlockPos(15_000_008, 101, -15_000_008);
+      h.assertTrue(!level.hasChunkAt(cold), "Preview terrain starts unloaded");
+      for (var type : ModEntities.ENTITY_TYPES.getEntries()) {
+        var pet = (FriendlySlime) type.get().create(level);
+        pet.moveTo(Vec3.atCenterOf(cold));
+        for (int query = 0; query < 100; query++) SlimeWorkArea.of(pet);
+        h.assertTrue(pet.isOrderedToSit() && !pet.isWorking(), "Repeated previews retain Wait");
+      }
+      h.assertTrue(loads[0] == 0 && !level.hasChunkAt(cold), "No preview acquires any chunk");
+    } finally {
+      net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(listener);
+      level.setBlock(soil, original, 2);
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void relocatedFieldsKeepTheirRegisteredCenterDuringTravel(GameTestHelper h) {
+    for (var type : List.of(ModEntities.FARMER_SLIME.get(), ModEntities.LUMBERJACK_SLIME.get())) {
+      FieldSlime field = type.create(h.getLevel());
+      field.moveTo(17_000_008.5, 101, -17_000_008.5);
+      field.onReleased();
+      field.setWorking(true);
+      field.setWaiting(true);
+      field.moveTo(17_000_040.5, 101, -17_000_008.5);
+      field.onReleased();
+      field.setWorking(true);
+      Vec3 center = Vec3.atCenterOf(field.getWorkHome());
+      field.moveTo(field.position().add(3, 0, 0));
+      h.assertTrue(
+          SlimeWorkArea.of(field).shapes().get(0).bounds().getCenter().equals(center),
+          "A relocated worker's movement does not move its registered field area: " + type);
+      field.setWaiting(true);
+      var plannedCenter =
+          field instanceof FarmerSlime ? Vec3.atCenterOf(field.blockPosition()) : center;
+      h.assertTrue(
+          SlimeWorkArea.of(field).shapes().get(0).bounds().getCenter().equals(plannedCenter),
+          "Planned farming adopts its next survey center while logging keeps its area: " + type);
+    }
     h.succeed();
   }
 
@@ -220,6 +336,42 @@ public final class WorkPreviewGameTests {
   }
 
   @GameTest(template = "empty")
+  public static void previewsRespectRangeSharedAccessAndCreativeToolPermissions(GameTestHelper h) {
+    var owner = h.makeMockSurvivalPlayer();
+    var shared = h.makeMockSurvivalPlayer();
+    var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
+    miner.tame(owner);
+    shared.moveTo(miner.position());
+    shared.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+    var registry = CompanionRegistry.get(h.getLevel());
+    registry.setRelation(owner.getUUID(), shared.getUUID(), true, true);
+    h.assertTrue(
+        SlimeTunerItem.preview(shared, miner).consumesAction(),
+        "A delegated owner can preview the worker");
+    registry.setRelation(owner.getUUID(), shared.getUUID(), true, false);
+    h.assertTrue(
+        !SlimeTunerItem.preview(shared, miner).consumesAction(),
+        "Revocation applies before the next request");
+    owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+    owner.moveTo(miner.position().add(8.01, 0, 0));
+    h.assertTrue(!SlimeTunerItem.preview(owner, miner).consumesAction(), "Range is enforced");
+    owner.moveTo(miner.position().add(8, 0, 0));
+    h.assertTrue(SlimeTunerItem.preview(owner, miner).consumesAction(), "Eight blocks is allowed");
+    owner.moveTo(miner.position());
+    owner.setItemInHand(
+        InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
+    h.assertTrue(
+        !SlimeTunerItem.preview(owner, miner).consumesAction(),
+        "A Survival player cannot use the Creative tuner for previews");
+    owner.getAbilities().instabuild = true;
+    h.assertTrue(
+        SlimeTunerItem.preview(owner, miner).consumesAction(),
+        "A Creative player can preview with the Creative tuner");
+    h.assertTrue(miner.isOrderedToSit() && !miner.isWorking(), "Authorization never starts work");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
   public static void workWarningsIncludeCustomIdentityAndProfessionSpecificCauses(
       GameTestHelper h) {
     var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
@@ -257,10 +409,59 @@ public final class WorkPreviewGameTests {
   }
 
   @GameTest(template = "empty", timeoutTicks = 160)
+  public static void missingFishingSpotsHaveTheirOwnWarning(GameTestHelper h) {
+    var area = new LoadedWorkArea(h);
+    var fishing = ModEntities.FISHING_SLIME.get().create(h.getLevel());
+    fishing.tame(h.makeMockSurvivalPlayer());
+    fishing.moveTo(area.point(8.5, 101, 8.5));
+    fishing.onReleased();
+    fishing.setItemSlot(
+        net.minecraft.world.entity.EquipmentSlot.MAINHAND, new ItemStack(Items.FISHING_ROD));
+    SlimeStat.DETECTION_RANGE.tune(fishing, 0);
+    fishing.setWorking(true);
+    h.startSequence()
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    h.getLevel().isPositionEntityTicking(fishing.blockPosition()),
+                    "Fishing area ticks"))
+        .thenExecute(() -> h.getLevel().addFreshEntity(fishing))
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    fishing.getFishingStatus() == FishingSlime.Status.NO_WATER,
+                    "An empty search reports no suitable water"))
+        .thenExecute(
+            () -> {
+              h.assertTrue(
+                  Component.Serializer.toJson(
+                          SlimeWorkWarning.message(fishing, fishing.getWorkStatus()))
+                      .contains("blocked.fishing_site_missing"),
+                  "Missing water is distinct from failed travel");
+              try {
+                var status = FishingSlime.class.getDeclaredField("status");
+                status.setAccessible(true);
+                status.set(fishing, FishingSlime.Status.UNREACHABLE);
+              } catch (ReflectiveOperationException failure) {
+                throw new IllegalStateException(failure);
+              }
+              h.assertTrue(
+                  Component.Serializer.toJson(
+                          SlimeWorkWarning.message(fishing, fishing.getWorkStatus()))
+                      .contains("blocked.unreachable"),
+                  "A real travel failure retains its route warning");
+              fishing.discard();
+              area.close();
+            })
+        .thenSucceed();
+  }
+
+  @GameTest(template = "empty", timeoutTicks = 160)
   public static void heraldMessagesOwnersAndSharedOwnersOncePerSignalCooldown(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var owner = new Receiver(h);
-    var shared = new Receiver(h);
+    var shared =
+        new Receiver(h, h.getLevel().getServer().getLevel(net.minecraft.world.level.Level.NETHER));
     var observer = new Receiver(h);
     receivers(h, List.of(owner, shared, observer));
     CompanionRegistry.get(h.getLevel()).setRelation(owner.getUUID(), shared.getUUID(), true, true);
@@ -307,10 +508,16 @@ public final class WorkPreviewGameTests {
                               .size()
                           == 1,
                   "A completed automatic signal sends the named worker and concrete cause");
+              CompanionRegistry.get(h.getLevel())
+                  .setRelation(owner.getUUID(), shared.getUUID(), true, false);
+              SlimeWorkWarning.notifyOwners(miner);
+              h.assertTrue(
+                  owner.messages.size() == 2 && shared.messages.size() == 1,
+                  "Current access is rechecked even for recipients in another dimension");
               miner.setWaiting(true);
               SlimeWorkWarning.notifyOwners(miner);
               h.assertTrue(
-                  owner.messages.size() == 1,
+                  owner.messages.size() == 2,
                   "Manual waiting does not issue blocked-work messages");
               area.close();
             })

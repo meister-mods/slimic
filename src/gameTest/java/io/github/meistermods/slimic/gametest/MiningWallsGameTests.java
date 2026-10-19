@@ -334,12 +334,15 @@ public final class MiningWallsGameTests {
   @GameTest(template = "empty", batch = "walls", timeoutTicks = 800)
   public static void fullBagIsUnloadedBeforeWallMaterialDelivery(GameTestHelper h) {
     var s = site(h);
+    // Keep the handoff within reach; water navigation has its own default-stat regression.
+    SlimeStat.REACH.tune(s.miner, 8);
     fluid(h, s, Blocks.WATER.defaultBlockState());
     for (int i = 0; i < s.miner.getCapacity(); i++)
       s.miner.getBag().setStackInSlot(i, new ItemStack(Items.DIRT, 64));
     var chest = s.area.chest(10, 101, 7);
     chest.setItem(0, new ItemStack(Items.COBBLESTONE, 64));
     var carrier = s.area.carrier(new Vec3(11.5, 101, 8.5));
+    SlimeStat.REACH.tune(carrier, 8);
     carrier.setOwnerUUID(s.miner.getOwnerUUID());
     start(h, s)
         .thenWaitUntil(
@@ -362,6 +365,52 @@ public final class MiningWallsGameTests {
               h.assertTrue(dirt == 9 * 64, "All original cargo conserved");
               carrier.discard();
               s.close();
+            })
+        .thenSucceed();
+  }
+
+  @GameTest(template = "empty", batch = "walls", timeoutTicks = 800)
+  public static void defaultReachSealsWallsFromFlowDisplacedPoses(GameTestHelper h) {
+    var sites = new ArrayList<Site>();
+    for (int heading = 0; heading < 8; heading++) {
+      var s = site(h);
+      fluid(h, s, Blocks.WATER.defaultBlockState());
+      s.miner.moveTo(s.area.point(13.91197977963, 101.36437599669, 10.16811488174));
+      s.miner.setYRot(heading * 45);
+      s.miner.setOnGround(false);
+      s.miner.setDeltaMovement(.0282957786, .0571248014, .0038788263);
+      s.miner.getQuarryPlan().descend();
+      s.miner.getBag().setStackInSlot(0, new ItemStack(Items.COBBLESTONE, 64));
+      sites.add(s);
+    }
+    h.startSequence()
+        .thenWaitUntil(
+            () -> {
+              for (var s : sites)
+                h.assertTrue(h.getLevel().isPositionEntityTicking(s.inlet), "Flow arena ticks");
+            })
+        .thenExecute(() -> sites.forEach(s -> h.getLevel().addFreshEntity(s.miner)))
+        .thenWaitUntil(
+            () -> {
+              for (var s : sites)
+                h.assertTrue(
+                    h.getLevel().getBlockState(s.inlet).is(Blocks.COBBLESTONE),
+                    "Default reach finishes the displaced approach: "
+                        + s.miner.getMiningStatus()
+                        + " at "
+                        + s.miner.position());
+            })
+        .thenExecute(
+            () -> {
+              for (var s : sites) {
+                h.assertTrue(
+                    count(s.miner.getBag()) == 63
+                        && !s.miner.hasBucket()
+                        && s.miner.getActivityProgress() == 1
+                        && SlimeStat.REACH.value(s.miner) == 3,
+                    "Each default-stat approach consumes one real wall block");
+                s.close();
+              }
             })
         .thenSucceed();
   }
