@@ -12,7 +12,9 @@ Slimic은 친근한 슬라임을 육성하고 일을 맡겨 조수로 활용하�
 
 동료는 활동과 능력치 강화로 성장합니다. 슬라임 조작기로 이름과 행동을 관리하고, 저장된 특성을 유지한 채 아이템으로 회수할 수 있습니다. 크리에이티브 슬라임 조작기는 능력치를 직접 편집하는 도구입니다. JEI는 조합법과 동료 안내를, Patchouli는 게임 내 가이드북을 선택적으로 제공합니다.
 
-Slimic은 `0.2.x` 범위의 초기 개발 단계입니다.
+**The Slimic**의 눅눅한 지형과 버려진 작업장을 탐험하고, 고유한 건축 자재와 폐허 장식으로 거점을 꾸밀 수 있습니다.
+
+Slimic은 `0.3.x` 범위의 초기 개발 단계입니다.
 
 ## 지원 환경
 
@@ -23,6 +25,7 @@ Minecraft **1.20.1**, Minecraft Forge **47.x**, Java **17**을 사용합니다.
 - [게임플레이 가이드](docs/GAMEPLAY.kr.md) · [English](docs/GAMEPLAY.md)
 - [안내서 목차](docs/GUIDEBOOK.kr.md) · [English](docs/GUIDEBOOK.md)
 - [개발 가이드](docs/DEVELOPMENT.kr.md) · [English](docs/DEVELOPMENT.md)
+- [The Slimic 차원](docs/THE_SLIMIC.kr.md) · [English](docs/THE_SLIMIC.md)
 - [변경 기록](CHANGELOG.md)
 
 문제 제보와 개선 제안은 [GitHub Issues](https://github.com/meister-mods/slimic/issues)에 등록할 수 있습니다.

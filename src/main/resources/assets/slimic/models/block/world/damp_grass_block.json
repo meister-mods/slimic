@@ -1,0 +1,90 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:solid",
+  "textures": {
+    "all": "slimic:block/world/damp_grass_top",
+    "particle": "slimic:block/world/damp_grass_top",
+    "soil": "slimic:block/world/slimic_soil",
+    "grass": "slimic:block/world/damp_grass_top"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        14,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#soil",
+          "tintindex": 0,
+          "cullface": "down"
+        },
+        "north": {
+          "texture": "#soil",
+          "tintindex": 0,
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#soil",
+          "tintindex": 0,
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#soil",
+          "tintindex": 0,
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#soil",
+          "tintindex": 0,
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        14,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#grass",
+          "tintindex": 0,
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#grass",
+          "tintindex": 0,
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#grass",
+          "tintindex": 0,
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#grass",
+          "tintindex": 0,
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#grass",
+          "tintindex": 0,
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

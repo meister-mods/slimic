@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "slimic:slimic_stone_stairs",
+    "slimic:slimic_cobblestone_stairs",
+    "slimic:slimic_stone_bricks_stairs",
+    "slimic:mossy_slimic_stone_bricks_stairs",
+    "slimic:slimic_tiles_stairs",
+    "slimic:slime_marble_stairs",
+    "slimic:black_slime_stone_stairs",
+    "slimic:slime_infused_planks_stairs"
+  ]
+}

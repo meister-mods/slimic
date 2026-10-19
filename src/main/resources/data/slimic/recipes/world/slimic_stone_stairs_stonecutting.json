@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:slimic_stone"
+  },
+  "result": "slimic:slimic_stone_stairs",
+  "count": 1
+}

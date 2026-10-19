@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:slime_marble"
+  },
+  "result": "slimic:relic_shard_pile",
+  "count": 1
+}

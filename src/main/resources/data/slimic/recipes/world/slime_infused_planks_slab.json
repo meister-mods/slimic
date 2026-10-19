@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "slimic:slime_infused_planks"
+    }
+  },
+  "result": {
+    "item": "slimic:slime_infused_planks_slab",
+    "count": 6
+  }
+}

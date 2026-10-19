@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [{"item": "slimic:congealed_slime"}, {"item": "minecraft:clay_ball"}],
+  "result": {"item": "slimic:hardened_slime"}
+}

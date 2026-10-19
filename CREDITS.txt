@@ -76,3 +76,7 @@ management screens use dedicated PNG backgrounds and slot artwork. Native held
 items and the Meow Slime cat head reference Minecraft models and textures.
 The Survival Slime Tuner, Slime Scanner, and Slime Slag use artwork created for Slimic and
 exported as 16x16 item icons. Minecraft artwork belongs to Mojang Studios.
+
+The Slimic world palette and portal use nine 32x32 surface textures created for
+Slimic. Ruin and construction models combine these surfaces with referenced
+Minecraft textures. Minecraft artwork belongs to Mojang Studios.

@@ -1,0 +1,7 @@
+{
+  "parent": "slimic:block/world/templates/cross",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "cross": "minecraft:block/brown_mushroom"
+  }
+}

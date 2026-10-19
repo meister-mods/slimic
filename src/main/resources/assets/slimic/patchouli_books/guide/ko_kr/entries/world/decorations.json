@@ -1,0 +1,54 @@
+{
+  "name": "폐허 장식",
+  "icon": "slimic:gel_lantern",
+  "category": "slimic:world",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "장식 탭에는 소품과 식물 32종이 있습니다. 받침대, 기둥, 기록판, 항아리, 가구, 수정, 조명과 풍화된 이정표로 정착지의 역사를 표현할 수 있습니다. 현지 석재와 점액이 밴 목재, 점액, 익숙한 식물로 제작하세요."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "대부분의 고형 소품은 놓을 때 플레이어 쪽을 향하며 단단한 바닥이 필요하고 물을 머금을 수 있습니다. 충돌 범위도 보이는 형태에 맞습니다. 점액 등불·고대 화로·수정·빛나는 꽃은 빛을 내고, 잠든 봉화는 꺼져 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "나무 상자, 항아리, 걸이, 의자, 대야와 부서진 작업대는 장식용입니다. 동료 물류에는 실제 슬라임 상자를, 제작에는 일반 작업대를 사용하세요. 뿌리·풀·버섯·꽃은 적합한 눅눅한 흙 위에 장식으로 심을 수 있습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:gel_lantern": 0,
+    "slimic:ancient_brazier": 0,
+    "slimic:dormant_beacon": 0,
+    "slimic:command_pedestal": 0,
+    "slimic:cracked_command_pedestal": 0,
+    "slimic:fallen_pillar": 0,
+    "slimic:broken_pillar": 0,
+    "slimic:royal_waymarker": 0,
+    "slimic:weathered_waymarker": 0,
+    "slimic:royal_crest": 0,
+    "slimic:stone_tablet": 0,
+    "slimic:cracked_stone_tablet": 0,
+    "slimic:abandoned_crate": 0,
+    "slimic:broken_crate": 0,
+    "slimic:supply_urn": 0,
+    "slimic:cracked_supply_urn": 0,
+    "slimic:tool_rack": 0,
+    "slimic:broken_workbench": 0,
+    "slimic:ruined_bench": 0,
+    "slimic:low_stone_table": 0,
+    "slimic:stone_bench": 0,
+    "slimic:gel_basin": 0,
+    "slimic:dried_gel_basin": 0,
+    "slimic:relic_shard_pile": 0,
+    "slimic:fallen_masonry_pile": 0,
+    "slimic:gel_crystal_cluster": 0,
+    "slimic:small_gel_crystal_cluster": 0,
+    "slimic:old_slime_banner": 0,
+    "slimic:slime_roots": 0,
+    "slimic:slime_tuft": 0,
+    "slimic:gel_cap": 0,
+    "slimic:glowing_bloom": 0
+  }
+}

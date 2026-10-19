@@ -65,5 +65,35 @@ public final class ModCreativeTabs {
                       })
                   .build());
 
+  public static final RegistryObject<CreativeModeTab> BUILDING =
+      TABS.register(
+          "slimic_building",
+          () ->
+              worldTab(
+                  "itemGroup.slimic.building",
+                  "slimic_stone_bricks",
+                  ModWorldBlocks.Category.BUILDING));
+  public static final RegistryObject<CreativeModeTab> DECORATIONS =
+      TABS.register(
+          "slimic_decorations",
+          () ->
+              worldTab(
+                  "itemGroup.slimic.decorations",
+                  "gel_lantern",
+                  ModWorldBlocks.Category.DECORATION));
+
+  private static CreativeModeTab worldTab(
+      String title, String icon, ModWorldBlocks.Category category) {
+    return CreativeModeTab.builder()
+        .title(Component.translatable(title))
+        .icon(() -> new ItemStack(ModWorldBlocks.block(icon)))
+        .displayItems(
+            (parameters, output) ->
+                ModWorldBlocks.entries().stream()
+                    .filter(entry -> entry.category() == category)
+                    .forEach(entry -> output.accept(entry.item().get())))
+        .build();
+  }
+
   private ModCreativeTabs() {}
 }

@@ -1,0 +1,8 @@
+{
+  "parent": "slimic:block/world/templates/outer_stairs",
+  "textures": {
+    "top": "slimic:block/world/slimic_stone",
+    "bottom": "slimic:block/world/slimic_stone",
+    "side": "slimic:block/world/slimic_stone"
+  }
+}

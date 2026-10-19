@@ -86,6 +86,16 @@ public class FriendlySlime extends TamableAnimal {
   private int defenseActivityCooldown;
   private int escapeActivityTicks;
   private boolean shieldHit;
+  // The original still owns the traits until a provisional replacement is admitted.
+  private boolean pendingSpawn;
+
+  public final boolean isPendingSpawn() {
+    return pendingSpawn;
+  }
+
+  public final void setPendingSpawn(boolean value) {
+    pendingSpawn = value;
+  }
 
   public FriendlySlime(EntityType<? extends FriendlySlime> type, Level level) {
     super(type, level);

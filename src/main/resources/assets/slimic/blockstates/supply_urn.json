@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "slimic:block/world/supply_urn",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "slimic:block/world/supply_urn",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "slimic:block/world/supply_urn",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "slimic:block/world/supply_urn",
+      "y": 270
+    }
+  }
+}

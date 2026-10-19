@@ -1,0 +1,8 @@
+{
+  "parent": "slimic:block/world/templates/stairs",
+  "textures": {
+    "top": "slimic:block/world/slimic_bricks",
+    "bottom": "slimic:block/world/slimic_bricks",
+    "side": "slimic:block/world/slimic_bricks"
+  }
+}

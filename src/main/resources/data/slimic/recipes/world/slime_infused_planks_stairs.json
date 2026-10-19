@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "slimic:slime_infused_planks"
+    }
+  },
+  "result": {
+    "item": "slimic:slime_infused_planks_stairs",
+    "count": 4
+  }
+}

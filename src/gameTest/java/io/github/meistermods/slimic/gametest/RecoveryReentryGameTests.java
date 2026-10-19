@@ -30,6 +30,18 @@ public final class RecoveryReentryGameTests {
         other.setChunkForced(cx + dx, cz + dz, true);
         other.getChunk(cx + dx, cz + dz);
       }
+    long readyBy = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(30);
+    level
+        .getServer()
+        .managedBlock(
+            () -> {
+              level.getChunkSource().pollTask();
+              other.getChunkSource().pollTask();
+              return other.isPositionEntityTicking(pos) || System.nanoTime() >= readyBy;
+            });
+    h.assertTrue(
+        other.isPositionEntityTicking(pos),
+        "The second world is ready before restoration callbacks");
     h.runAfterDelay(
         399,
         () -> {

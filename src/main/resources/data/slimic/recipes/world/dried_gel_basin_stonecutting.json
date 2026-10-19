@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:dried_slime"
+  },
+  "result": "slimic:dried_gel_basin",
+  "count": 1
+}

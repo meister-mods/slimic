@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:congealed_slime"
+  },
+  "result": "slimic:gel_basin",
+  "count": 1
+}

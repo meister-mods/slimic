@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [{"item": "minecraft:clay"}, {"item": "minecraft:slime_ball"}],
+  "result": {"item": "slimic:slimic_clay"}
+}

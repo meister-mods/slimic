@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:dirt",
+    "#minecraft:base_stone_overworld",
+    "minecraft:sand",
+    "minecraft:gravel",
+    "minecraft:snow",
+    "minecraft:snow_block",
+    "minecraft:clay",
+    "minecraft:mud",
+    "minecraft:slime_block",
+    "slimic:slime_silt",
+    "slimic:slimic_clay",
+    "slimic:congealed_slime",
+    "slimic:hardened_slime",
+    "slimic:dried_slime",
+    "slimic:luminous_slime"
+  ]
+}

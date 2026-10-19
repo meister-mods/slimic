@@ -132,7 +132,8 @@ public final class FriendlySlimeInteractions {
   public static void preserveOnDeath(LivingDeathEvent event) {
     if (!event.getEntity().level().isClientSide
         && event.getEntity() instanceof FriendlySlime slime) {
-      BrokenSlimeBlock.preserve(slime);
+      if (slime.isPendingSpawn()) slime.discard();
+      else BrokenSlimeBlock.preserve(slime);
       event.setCanceled(true);
     }
   }

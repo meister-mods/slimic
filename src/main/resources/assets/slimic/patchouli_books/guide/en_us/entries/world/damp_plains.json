@@ -1,0 +1,20 @@
+{
+  "name": "Damp Plains",
+  "icon": "slimic:damp_grass_block",
+  "category": "slimic:world",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Slimic resembles a weathered Overworld under a layer of gel. Damp Plains covers its hills, lowlands, caves, and waterways. Green stone, wet soil, silt, and scattered gel patches form its landscape."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Wild Slimes roam the surface. Frogs inhabit the plains and bats live underground; familiar hostile mobs can appear in the dark. The dimension follows the ordinary day and night cycle, and beds can set a respawn point."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Bring tools, food, building supplies, and a way to mark your portal. Surface gel can bounce and slow travel. Companions can work here with their normal equipment and supplies. They arrive through a slime portal in Wait; issue a new command when ready."
+    }
+  ]
+}

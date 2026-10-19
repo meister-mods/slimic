@@ -2,7 +2,7 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its six categories contain 44 entries and 139 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 50 entries and 157 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
@@ -81,3 +81,14 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Fallen companions | [Hostile encounters and revival](GAMEPLAY.md#hostile-encounters-and-revival) |
 | Mounted flight | [Saddle slimes](GAMEPLAY.md#saddle-slimes) |
 | When work stops | [Support reliability](GAMEPLAY.md#support-reliability) |
+
+## The Slimic
+
+| Entry | Web guide |
+| --- | --- |
+| Entering The Slimic | [Entering The Slimic](THE_SLIMIC.md#slime-portals) |
+| Damp Plains | [Damp Plains](THE_SLIMIC.md#damp-plains) |
+| Building materials | [Building materials](THE_SLIMIC.md#building-materials) |
+| Ruin decorations | [Ruin decorations](THE_SLIMIC.md#decorations) |
+| Abandoned workshops | [Abandoned workshops](THE_SLIMIC.md#ruins-and-records) |
+| Companion travel | [Companion travel](THE_SLIMIC.md#companion-travel) |

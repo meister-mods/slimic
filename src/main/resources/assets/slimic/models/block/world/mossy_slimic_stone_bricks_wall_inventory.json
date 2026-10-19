@@ -1,0 +1,6 @@
+{
+  "parent": "slimic:block/world/templates/wall_inventory",
+  "textures": {
+    "wall": "minecraft:block/mossy_stone_bricks"
+  }
+}

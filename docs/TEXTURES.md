@@ -66,3 +66,9 @@ JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -Pcl
 ```
 
 The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all twenty-two professions and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
+
+## World materials
+
+The Slimic uses nine dedicated **32×32** textures in [`assets/slimic/textures/block/world`](../src/main/resources/assets/slimic/textures/block/world): stone, bricks, tiles, soil, damp grass, silt, congealed gel, marble, and the portal surface. Pixel-art sources were exported with nearest-neighbor sampling. The portal preserves alpha; the other eight material textures are opaque.
+
+Block models under `models/block/world` combine these textures with referenced Minecraft surfaces and tint index 0. `SlimicWorldClient` applies each catalog entry's tint to blocks and items. Stairs, slabs, walls, cutout plants, translucent glass, and the portal declare their Forge render type in JSON. Resource packs can replace the surfaces without changing collision shapes or world-generation rules.

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:mossy_slimic_stone_bricks"
+  },
+  "result": "slimic:mossy_slimic_stone_bricks_wall",
+  "count": 1
+}

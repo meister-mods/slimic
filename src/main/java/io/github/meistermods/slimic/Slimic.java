@@ -21,6 +21,9 @@ public final class Slimic {
     ModEntities.ENTITY_TYPES.register(bus);
     ModBlocks.BLOCKS.register(bus);
     ModBlocks.BLOCK_ENTITIES.register(bus);
+    io.github.meistermods.slimic.registry.ModWorldBlocks.BLOCKS.register(bus);
+    io.github.meistermods.slimic.registry.ModWorldBlocks.ITEMS.register(bus);
+    io.github.meistermods.slimic.registry.ModWorldgen.FEATURES.register(bus);
     ModItems.ITEMS.register(bus);
     ModMenus.MENUS.register(bus);
     ModRecipes.SERIALIZERS.register(bus);

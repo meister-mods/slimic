@@ -103,7 +103,8 @@ public final class FarmerSlime extends FieldSlime {
   }
 
   private boolean soil(BlockState state) {
-    return state.is(Blocks.DIRT)
+    return state.getBlock() instanceof io.github.meistermods.slimic.block.SlimicSoilBlock
+        || state.is(Blocks.DIRT)
         || state.is(Blocks.GRASS_BLOCK)
         || state.is(Blocks.DIRT_PATH)
         || state.is(Blocks.COARSE_DIRT)

@@ -1,0 +1,6 @@
+{
+  "parent": "slimic:block/world/templates/template_wall_post",
+  "textures": {
+    "wall": "slimic:block/world/slimic_bricks"
+  }
+}

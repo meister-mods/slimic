@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "slimic:slimic_tiles"
+    }
+  },
+  "result": {
+    "item": "slimic:slimic_tiles_stairs",
+    "count": 4
+  }
+}

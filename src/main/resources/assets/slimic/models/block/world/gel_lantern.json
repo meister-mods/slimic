@@ -1,0 +1,167 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:solid",
+  "textures": {
+    "all": "slimic:block/world/congealed_slime",
+    "particle": "slimic:block/world/congealed_slime",
+    "metal": "minecraft:block/iron_block",
+    "gel": "slimic:block/world/congealed_slime",
+    "cloth": "minecraft:block/lime_wool"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        2,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#metal",
+          "tintindex": 0,
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#metal",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        2,
+        4
+      ],
+      "to": [
+        12,
+        12,
+        12
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#all",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        12,
+        3
+      ],
+      "to": [
+        13,
+        14,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#metal",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        14,
+        7
+      ],
+      "to": [
+        9,
+        16,
+        9
+      ],
+      "faces": {
+        "down": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#metal",
+          "tintindex": 0,
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#metal",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#metal",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}

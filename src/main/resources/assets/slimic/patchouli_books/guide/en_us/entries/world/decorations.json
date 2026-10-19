@@ -1,0 +1,54 @@
+{
+  "name": "Ruin decorations",
+  "icon": "slimic:gel_lantern",
+  "category": "slimic:world",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Decorations tab holds 32 props and plants. Pedestals, pillars, tablets, urns, furniture, crystals, lights, and weathered markers give settlements their own history. Their recipes use local stone, infused wood, gel, or familiar plants."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Most solid props face the player when placed, need a firm floor, and can hold water. Their shapes match their visible parts. Gel Lanterns, Ancient Braziers, crystals, and Glowing Blooms provide light; a Dormant Beacon remains unlit."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Crates, urns, racks, benches, basins, and broken workbenches are decorations. Use a real Slime Chest for companion logistics and an ordinary crafting table for crafting. Roots, tufts, caps, and blooms can grow as placed decorations on suitable damp soil."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:gel_lantern": 0,
+    "slimic:ancient_brazier": 0,
+    "slimic:dormant_beacon": 0,
+    "slimic:command_pedestal": 0,
+    "slimic:cracked_command_pedestal": 0,
+    "slimic:fallen_pillar": 0,
+    "slimic:broken_pillar": 0,
+    "slimic:royal_waymarker": 0,
+    "slimic:weathered_waymarker": 0,
+    "slimic:royal_crest": 0,
+    "slimic:stone_tablet": 0,
+    "slimic:cracked_stone_tablet": 0,
+    "slimic:abandoned_crate": 0,
+    "slimic:broken_crate": 0,
+    "slimic:supply_urn": 0,
+    "slimic:cracked_supply_urn": 0,
+    "slimic:tool_rack": 0,
+    "slimic:broken_workbench": 0,
+    "slimic:ruined_bench": 0,
+    "slimic:low_stone_table": 0,
+    "slimic:stone_bench": 0,
+    "slimic:gel_basin": 0,
+    "slimic:dried_gel_basin": 0,
+    "slimic:relic_shard_pile": 0,
+    "slimic:fallen_masonry_pile": 0,
+    "slimic:gel_crystal_cluster": 0,
+    "slimic:small_gel_crystal_cluster": 0,
+    "slimic:old_slime_banner": 0,
+    "slimic:slime_roots": 0,
+    "slimic:slime_tuft": 0,
+    "slimic:gel_cap": 0,
+    "slimic:glowing_bloom": 0
+  }
+}
