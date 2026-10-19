@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Store collects blocked workers’ cargo and delivers supplies, keeping cargo inside the warehouse. It does not empty itself into chests. Other carriers may use it as storage or supply even during Wait or Follow."
+      "text": "Store collects requested worker cargo and delivers supplies, keeping cargo inside the warehouse. It does not empty itself into chests. Other carriers may use it as storage or supply even during Wait or Follow."
     }
   ],
   "extra_recipe_mappings": {

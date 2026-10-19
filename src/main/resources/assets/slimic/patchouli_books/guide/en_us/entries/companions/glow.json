@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click to spend 10 stamina and leave fireflies in nearby open air for six seconds. Bursts have a one-second interval. Expiring light nodes are invisible, replaceable, and cannot be collected. Shared light sources remain lit until their final lease ends."
+      "text": "Right-click to spend 10 stamina on fireflies in nearby open air for six seconds, with a one-second interval. The temporary light cannot be collected and does not block building. Overlapping lights stay on while any companion or firefly effect still lights that spot."
     }
   ],
   "extra_recipe_mappings": {

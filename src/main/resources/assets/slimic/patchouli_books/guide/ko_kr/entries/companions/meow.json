@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "slimic:combination",
-      "title": "모양 없는 조합",
+      "title": "순서 없는 조합",
       "input1": "slimic:friendly_slime",
       "input2": "minecraft:cod",
       "result": "slimic:meow_slime",
-      "label": "조합 → 1개",
+      "label": "조합 → 결과 1개",
       "text": "친근한 슬라임 + 생대구·생연어·열대어·복어 중 하나. 익힌 생선은 사용할 수 없습니다. 고양이 머리를 달고 활성 + 대기 상태로 시작합니다."
     },
     {

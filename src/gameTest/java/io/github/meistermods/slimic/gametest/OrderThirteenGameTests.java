@@ -509,6 +509,137 @@ public final class OrderThirteenGameTests {
         .thenSucceed();
   }
 
+  @GameTest(template = "empty", batch = "order_thirteen", timeoutTicks = 240)
+  public static void gatherLeavesEveryProfessionWaitingAfterSubsequentTicks(GameTestHelper h) {
+    var destination = new LoadedWorkArea(h);
+    var source = new LoadedWorkArea(h);
+    var companions = new ArrayList<FriendlySlime>();
+    var owner = owner(h);
+    var commander = pet(h, destination, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
+    commander.setNoAi(true);
+    var registry = CompanionRegistry.get(h.getLevel());
+    for (var registered : ModEntities.ENTITY_TYPES.getEntries()) {
+      var slime = (FriendlySlime) registered.get().create(h.getLevel());
+      slime.tame(owner);
+      slime.setNoAi(true);
+      slime.moveTo(source.point(3, 101, 3));
+      h.getLevel().addFreshEntity(slime);
+      slime.onReleased();
+      slime.setWaiting(false);
+      if (slime instanceof BagSlime worker) {
+        worker.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 9));
+        worker.setWorking(true);
+      }
+      if (slime instanceof HeraldSlime herald) herald.setMonitoring(true);
+      if (slime instanceof SoggySlime soggy) soggy.setRoaming(true);
+      if (slime instanceof MeowSlime meow) meow.setRoaming(true);
+      if (slime instanceof AttentionSlime attention) attention.setRoaming(true);
+      slime.setTunedVitals(7, 37, 3);
+      registry.observe(slime);
+      registry.setTag(owner.getUUID(), slime.getUUID(), "waiting");
+      companions.add(slime);
+    }
+    h.assertTrue(companions.size() == 22, "All companion professions are covered");
+    h.assertTrue(commander.gather(owner, "waiting"), "Gather every active profession");
+    h.startSequence()
+        .thenWaitUntil(() -> h.assertTrue(!commander.isGathering(), "All companions arrive"))
+        .thenIdle(20)
+        .thenExecute(
+            () -> {
+              h.assertTrue(commander.gathered() == 22, "Every profession was gathered");
+              for (var slime : companions) {
+                var label = EntityType.getKey(slime.getType()).toString();
+                h.assertTrue(
+                    slime.isOrderedToSit()
+                        && !slime.isWorking()
+                        && slime.getWorkStatus().order() == WorkStatus.Order.WAIT
+                        && slime.getWorkStatus().requests().isEmpty()
+                        && slime.distanceToSqr(commander) < 400,
+                    label + " remains waiting without work or support requests after arrival");
+                var saved = slime.saveWithoutId(new CompoundTag());
+                var restored = (FriendlySlime) slime.getType().create(h.getLevel());
+                restored.load(saved);
+                h.assertTrue(
+                    restored.isOrderedToSit()
+                        && !restored.isWorking()
+                        && restored.getWorkStatus().order() == WorkStatus.Order.WAIT
+                        && restored.getUUID().equals(slime.getUUID())
+                        && restored.getHealth() == 7
+                        && restored.getStatPoints() == 3,
+                    label + " retains identity, health, growth and Wait when restored");
+                if (restored instanceof BagSlime worker)
+                  h.assertTrue(
+                      worker.getBag().getStackInSlot(0).is(Items.DIAMOND)
+                          && worker.getBag().getStackInSlot(0).getCount() == 9,
+                      label + " retains its cargo");
+                h.assertTrue(
+                    registry.find(slime.getUUID()).order().equals("WAIT"),
+                    label + " also reports Wait in the commander roster");
+              }
+              companions.forEach(Entity::discard);
+              commander.discard();
+              owner.discard();
+              source.close();
+              destination.close();
+            })
+        .thenSucceed();
+  }
+
+  @GameTest(template = "empty", batch = "order_thirteen", timeoutTicks = 100)
+  public static void gatheredCommanderCancelsItsOwnPendingGather(GameTestHelper h) {
+    var a = new LoadedWorkArea(h);
+    var owner = owner(h);
+    var caller = pet(h, a, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
+    var arriving = pet(h, a, ModEntities.COMMANDER_SLIME.get(), owner, 3, 3);
+    caller.setNoAi(true);
+    arriving.setNoAi(true);
+    var registry = CompanionRegistry.get(h.getLevel());
+    // A last-known world observation whose entity is unavailable keeps the source ticket pending.
+    var unavailable = ModEntities.FRIENDLY_SLIME.get().create(h.getLevel());
+    unavailable.tame(owner);
+    unavailable.moveTo(a.point(13, 101, 13));
+    registry.observe(unavailable);
+    registry.setTag(owner.getUUID(), unavailable.getUUID(), "pending");
+    registry.setTag(owner.getUUID(), arriving.getUUID(), "arriving");
+    h.assertTrue(arriving.gather(owner, "pending"), "The arriving commander has a pending rally");
+    var tickets =
+        h.getLevel()
+            .getDataStorage()
+            .get(net.minecraft.world.level.ForcedChunksSavedData::load, "chunks");
+    int sourceTickets = tickets.getEntityForcedChunks().getTickingChunks().size();
+    arriving.tick();
+    h.assertTrue(
+        arriving.isGathering()
+            && tickets.getEntityForcedChunks().getTickingChunks().size() == sourceTickets + 1,
+        "Unavailable source keeps exactly one temporary rally ticket pending");
+    h.assertTrue(caller.gather(owner, "arriving"), "The caller gathers the other commander");
+    caller.tick();
+    h.assertTrue(
+        caller.gathered() == 1
+            && arriving.isOrderedToSit()
+            && arriving.getWorkStatus().order() == WorkStatus.Order.WAIT
+            && !arriving.isGathering()
+            && tickets.getEntityForcedChunks().getTickingChunks().size() == sourceTickets,
+        "A gathered commander waits, cancels its previous rally, and releases its source ticket");
+    h.startSequence()
+        .thenIdle(20)
+        .thenExecute(
+            () -> {
+              h.assertTrue(!arriving.isGathering(), "The cancelled rally does not resume");
+              arriving.setTunedVitals(7, 100, 3);
+              for (int i = 0; i < 100; i++) arriving.tick();
+              h.assertTrue(
+                  arriving.gather(owner, "pending"), "A new explicit rally remains available");
+              arriving.setWaiting(true);
+              h.assertTrue(!arriving.isGathering(), "Explicit Wait cancels a rally too");
+              caller.discard();
+              arriving.discard();
+              owner.discard();
+              a.close();
+            })
+        .thenSucceed();
+  }
+
   @GameTest(template = "empty", batch = "order_thirteen", timeoutTicks = 100)
   public static void gatherExcludesStoredBrokenAndForeignRecords(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
@@ -559,6 +690,7 @@ public final class OrderThirteenGameTests {
               pets.add(commander);
               var slime = pet(h, a, ModEntities.FRIENDLY_SLIME.get(), owner, 3, 3);
               slime.setNoAi(true);
+              slime.setWaiting(false);
               pets.add(slime);
               MinecraftForge.EVENT_BUS.addListener(listener);
               h.assertTrue(commander.gather(owner, ""), "Issue a valid gather");
@@ -572,8 +704,10 @@ public final class OrderThirteenGameTests {
               try {
                 h.assertTrue(
                     ((CommanderSlime) pets.get(0)).gathered() == 0
-                        && pets.get(1).distanceToSqr(a.point(3, 101, 3)) < .1,
-                    "Cancelled teleport keeps source intact");
+                        && pets.get(1).distanceToSqr(a.point(3, 101, 3)) < .1
+                        && !pets.get(1).isOrderedToSit()
+                        && pets.get(1).getWorkStatus().order() == WorkStatus.Order.FOLLOW,
+                    "Cancelled teleport preserves the source position and Follow order");
               } finally {
                 MinecraftForge.EVENT_BUS.unregister(listener);
                 pets.forEach(Entity::discard);

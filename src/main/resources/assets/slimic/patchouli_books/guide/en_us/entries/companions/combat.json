@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Targets has six independent filters. Hostile is enabled initially; Neutral, Passive, Players, Tamed, and Creepers are disabled. Owners, allies, and same-owner companions stay excluded. An Enderman attacking a living companion counts as Hostile until it disengages."
+      "text": "Targets has six filters. Only Hostile starts enabled; Neutral, Passive, Players, Tamed, and Creepers start off. Owners and allies stay excluded. Assigned enemy players use Hostile, with PvP protection. An Enderman targeting a living companion also uses Hostile until it disengages."
     },
     {
       "type": "patchouli:text",

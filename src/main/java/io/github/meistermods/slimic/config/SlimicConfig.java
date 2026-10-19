@@ -25,14 +25,14 @@ public final class SlimicConfig {
     FOLLOW_ACTIVITY_INTERVAL =
         builder
             .comment(
-                "Ticks of movement while following an owner, carrying a rider, or fleeing per"
+                "Ticks of movement while following, riding, Attention roaming, or fleeing per"
                     + " activity unit.")
             .defineInRange("followingActivityIntervalTicks", 100, 20, 1200);
     MONITOR_ACTIVITY_INTERVAL =
         builder
             .comment(
-                "Ticks monitoring an active or blocked worker with the same owner per activity"
-                    + " unit.")
+                "Ticks monitoring an active or blocked same-owner or mutually shared worker per"
+                    + " activity unit.")
             .defineInRange("monitoringActivityIntervalTicks", 100, 20, 1200);
     ENDER_ANCHORS =
         builder

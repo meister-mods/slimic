@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Starts waiting. Farm registers the farmland currently in its loaded area. Range is twice the common base, initially 16 blocks. Supply seeds or crops in its normal bag. New farmland needs a new Farm activation."
+      "text": "Starts waiting. Farm surveys loaded farmland around its current position. Range is twice the common base, initially 16 blocks. Stock seeds or crops in its bag. For new farmland, select Wait, then Farm."
     },
     {
       "type": "patchouli:text",

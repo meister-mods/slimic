@@ -15,11 +15,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "With full stamina and an empty inventory slot, right-click to pin it and receive a Slime Teleporter. Linking spends all its stamina. Primary and shared owners may link it. The teleporter keeps the companion identity rather than a fixed coordinate."
+      "text": "With full stamina and an empty inventory slot, right-click it with an empty hand to pin it and receive a Slime Teleporter. Linking spends all its stamina. Primary and shared owners may link it. The teleporter keeps the companion identity rather than a fixed coordinate."
     },
     {
       "type": "patchouli:text",
-      "text": "Use the teleporter to reach a safe space beside the living pinned companion, including another dimension. The destination must have full stamina and spends it all on successful travel. There is no pearl consumption or teleport damage. Unsafe, missing, or unauthorized destinations fail without spending stamina."
+      "text": "Right-click in the air with the teleporter to reach a safe spot beside the living pinned companion across dimensions. The destination needs full stamina and spends it all on success. Teleportation consumes no pearls and deals no damage. Unsafe, missing, or unauthorized destinations retain stamina."
     },
     {
       "type": "patchouli:text",
@@ -27,7 +27,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Stamina recovers by 2% of its maximum each second while resting, so a complete recharge takes about 50 seconds. Increasing maximum stamina also increases recovery and does not shorten that full-charge time. Shared ownership and recovery retain the original owner identity. Release and revival also require a free anchor slot; the stored companion is kept when full."
+      "text": "Rest restores 2% of maximum stamina each second, so a full recharge takes about 50 seconds at any maximum. Sharing and recovery keep the primary owner. Restoring a stored pinned companion needs a free anchor slot; at the limit, its item or Broken Slime Block stays intact."
     }
   ],
   "extra_recipe_mappings": {

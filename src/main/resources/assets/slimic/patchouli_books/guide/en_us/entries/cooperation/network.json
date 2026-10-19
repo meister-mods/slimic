@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Workers and carriers must share an owner. Keep workers and storage within the carrier’s fixed work area. Transfers need loaded terrain, a reachable route, Reach, and line of sight. Walking does not move the area’s center."
+      "text": "Workers and carriers cooperate within one primary owner’s team or between mutually shared owners. Keep workers and storage within the carrier’s fixed work area. Transfers need loaded terrain, a route, Reach, and line of sight. Walking does not move the area’s center."
     },
     {
       "type": "patchouli:text",

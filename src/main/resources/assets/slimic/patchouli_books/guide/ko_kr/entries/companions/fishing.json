@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "slimic:combination",
-      "title": "모양 없는 조합",
+      "title": "순서 없는 조합",
       "input1": "slimic:friendly_slime",
       "input2": "minecraft:fishing_rod",
       "result": "slimic:fishing_slime",
-      "label": "조합 → 1개",
+      "label": "조합 → 결과 1개",
       "text": "친근한 슬라임 + 낚싯대. 원본 낚싯대의 마법 부여·내구도·이름·데이터를 유지해 장착하고 대기 상태로 시작합니다."
     },
     {

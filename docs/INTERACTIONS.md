@@ -39,7 +39,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I29 | Healing / Soggy | Keep Roam and its fixed origin during treatment. |
 | I30 | Mining / Mining | Share one chunk staircase across start heights; preserve legacy floors, queued protection, exact repair costs and loot. |
 | I31 | Transport / Fishing | Unload fishing cargo and supply replacement rods with their item data intact. |
-| I32 | Transport / Tunnel | Supply at most one stack of actual selected lining material; retain the ghost template. |
+| I32 | Transport / Tunnel | Supply at most 64 matching lining blocks; retain the ghost template. |
 | I33 | Abundance / plants / Healing | Apply growth with stamina, retain patient care, and respect cancelled bonemeal events. |
 | I34 | Meow / Creeper | Use native cat avoidance while active, independently of Wait or Roam. |
 | I35 | Combat / Dragon / Transport | Collect own kill loot and request unloading without stopping full-bag combat. |

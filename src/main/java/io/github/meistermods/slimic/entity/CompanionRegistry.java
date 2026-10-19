@@ -1,5 +1,6 @@
 package io.github.meistermods.slimic.entity;
 
+import io.github.meistermods.slimic.registry.ModEntities;
 import java.text.Normalizer;
 import java.util.*;
 import net.minecraft.core.BlockPos;
@@ -73,6 +74,11 @@ public final class CompanionRegistry extends SavedData {
     }
   }
 
+  // Reservations only span a spawn transaction and never survive a restart.
+  private record PendingCommander(UUID identity, Entry previous) {}
+
+  private final Map<UUID, PendingCommander> pendingCommanders = new HashMap<>();
+
   private long relationshipRevision;
 
   public long relationshipRevision() {
@@ -140,10 +146,83 @@ public final class CompanionRegistry extends SavedData {
     return !owns(owner, player) && enemies.getOrDefault(owner, Set.of()).contains(player);
   }
 
+  /** Shared-access edges form an undirected group only for the commander population limit. */
+  private Set<UUID> commanderGroup(UUID owner) {
+    var adjacency = new HashMap<UUID, Set<UUID>>();
+    coOwners.forEach(
+        (primary, shared) -> {
+          for (var other : shared) {
+            adjacency.computeIfAbsent(primary, ignored -> new HashSet<>()).add(other);
+            adjacency.computeIfAbsent(other, ignored -> new HashSet<>()).add(primary);
+          }
+        });
+    var group = new HashSet<UUID>();
+    var queue = new ArrayDeque<UUID>();
+    group.add(owner);
+    queue.add(owner);
+    while (!queue.isEmpty())
+      for (var other : adjacency.getOrDefault(queue.remove(), Set.of()))
+        if (group.add(other)) queue.add(other);
+    return group;
+  }
+
+  private static boolean worldCommander(Entry entry) {
+    return entry != null
+        && entry.location == Location.WORLD
+        && entry.health > 0
+        && entry.type.equals(ModEntities.COMMANDER_SLIME.getId().toString());
+  }
+
+  private long commanderCount(Set<UUID> group, UUID exceptId, UUID exceptReservationOwner) {
+    long count =
+        companions.values().stream()
+            .filter(e -> group.contains(e.owner) && !e.id.equals(exceptId) && worldCommander(e))
+            .count();
+    for (var pending : pendingCommanders.entrySet())
+      if (group.contains(pending.getKey())
+          && !pending.getKey().equals(exceptReservationOwner)
+          && (pending.getValue() == null
+              || !worldCommander(companions.get(pending.getValue().identity())))) count++;
+    return count;
+  }
+
+  /** Reserves capacity before spawn callbacks can recursively release another commander. */
+  public boolean reserveCommander(UUID owner) {
+    if (owner == null || commanderCount(commanderGroup(owner), null, null) > 0) return false;
+    pendingCommanders.put(owner, null);
+    return true;
+  }
+
+  public boolean prepareCommanderSpawn(CommanderSlime slime) {
+    var owner = slime.getOwnerUUID();
+    if (owner == null || !pendingCommanders.containsKey(owner)) return false;
+    pendingCommanders.put(owner, new PendingCommander(slime.getUUID(), find(slime.getUUID())));
+    return commanderCount(commanderGroup(owner), slime.getUUID(), owner) == 0;
+  }
+
+  public void releaseCommanderReservation(UUID owner, boolean spawned) {
+    var pending = pendingCommanders.remove(owner);
+    if (!spawned && pending != null) {
+      // Join listeners may observe the candidate before another listener cancels insertion.
+      if (pending.previous() == null) companions.remove(pending.identity());
+      else companions.put(pending.identity(), pending.previous());
+      setDirty();
+    }
+  }
+
+  public boolean commanderMergeConflict(UUID owner, UUID target) {
+    if (owner == null || target == null) return false;
+    var group = commanderGroup(owner);
+    if (group.contains(target)) return false;
+    group.addAll(commanderGroup(target));
+    return commanderCount(group, null, null) > 1;
+  }
+
   public boolean setRelation(UUID owner, UUID target, boolean shared, boolean enabled) {
     if (owner == null || target == null || owner.equals(target)) return false;
     var map = shared ? coOwners : enemies;
     if (enabled && !shared && owns(owner, target)) return false;
+    if (enabled && shared && commanderMergeConflict(owner, target)) return false;
     var values = map.computeIfAbsent(owner, ignored -> new HashSet<>());
     if (enabled && values.size() >= (shared ? 64 : 256) && !values.contains(target)) return false;
     boolean changed = enabled ? values.add(target) : values.remove(target);

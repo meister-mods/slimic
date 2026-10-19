@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Health starts at 16 and gains 4 per point; upgrades do not heal. Attack starts at 2 and gains 1, serving combat and guardian beams. Defense starts at 0 and gains 1 using normal armor rules."
+      "text": "Health starts at 16 and gains 4 per point; upgrades do not heal. Attack starts at 2 and gains 1, serving Combat and Dragon melee, Dragon breath, and Guardian Angel beams. Defense starts at 0 and gains 1 using normal armor rules."
     },
     {
       "type": "patchouli:text",
@@ -22,7 +22,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The management screen marks stats unused by the current job. Investments persist when a Friendly Slime specializes. Guardian health is ten times the corresponding common value."
+      "text": "The management screen marks stats unused by the current job. Investments persist when a Friendly Slime specializes. Guardian Angel health is ten times the common value; Attention movement is 1.5 times the common value at identical base stats."
     }
   ]
 }

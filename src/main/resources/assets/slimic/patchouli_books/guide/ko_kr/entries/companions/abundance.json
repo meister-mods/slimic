@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "slimic:combination_three",
-      "title": "모양 없는 조합",
+      "title": "순서 없는 조합",
       "input1": "slimic:healing_slime",
       "input2": "minecraft:bone_meal",
       "result": "slimic:abundance_slime",
-      "label": "조합 → 1개",
+      "label": "조합 → 결과 1개",
       "text": "치유 슬라임 + 뼛가루 + 네더의 별. 원래 동료의 특성·장비·가방을 보존하고 대기 상태로 시작하며 황금 리라를 듭니다.",
       "input3": "minecraft:nether_star"
     },
@@ -20,7 +20,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "성장 효과 적용에는 기력 2를 쓰며 뼛가루 아이템은 필요하지 않습니다. 바닐라의 무작위 성장 확률을 유지합니다. 치료에는 여전히 슬라임볼이 필요합니다. 성장은 mobGriefing·뼛가루 보호 이벤트·로드된 지형을 따릅니다. 운반자는 슬라임볼 보급과 가방 수거를 돕습니다."
+      "text": "허용된 성장 적용은 기력 2를 쓰고 진행도 1을 주며 뼛가루는 필요하지 않습니다. 기본 확률에 따라 바로 자라지 않을 수도 있습니다. 주변 지형이 로드되어야 합니다. 치료에는 슬라임볼이 필요하며 운반자가 보급합니다. 성장은 mobGriefing과 보호 이벤트를 따릅니다."
     }
   ],
   "extra_recipe_mappings": {

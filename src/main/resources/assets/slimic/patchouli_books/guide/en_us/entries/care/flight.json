@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Flight and sprinting stop stamina recovery. At zero stamina, ascent stops and the open wings descend slowly with limited steering. Landing allows recovery; flight and sprint resume at 25%. Removing unusable wings restores normal gravity."
+      "text": "Airborne flight and sprinting stop stamina recovery. At zero stamina, ascent stops and the open wings descend slowly with limited steering. Landing allows recovery; flight and sprint resume at 25%. Normal gravity returns when wings are removed or unusable, or the rider dismounts."
     }
   ]
 }

@@ -4,6 +4,46 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.35] - 2026-10-19
+
+### Changed
+
+- Limit released Commander Slimes to one per connected shared-owner group across all dimensions, including unloaded chunks. Direct, indirect, and one-way shared-access links define the population group without expanding management or cooperation permissions.
+- Apply the limit to fresh summons, stored releases, and revivals while preserving items, companion data, broken blocks, and revival materials on failure. Stored and broken commanders do not occupy a world slot.
+- Reject shared-owner changes that would join two groups with released commanders. Existing extra commanders from older saves remain intact and prevent further releases.
+
+### Fixed
+
+- Gathered commanders cancel their own pending Gather commands and release temporary source chunks. Every gathered profession arrives in Wait; rejected teleports retain the original command.
+- Reserve commander capacity through spawn callbacks so recursive releases and relationship changes cannot bypass the limit.
+
+### Validation
+
+- Native servers verify waiting arrivals for all twenty-two professions, rally cancellation and source-ticket release, connected-owner population limits, unloaded and cross-dimension records, stored restoration, revival, and cancelled spawn callbacks with optional integrations present and absent.
+- English, Korean, and English-fallback guidebook rendering passes with default and Unicode fonts. Bilingual documentation, release metadata, runtime references, the Java 17 build, and Google Java Format pass verification.
+
+## [0.1.34] - 2026-10-18
+
+### Documentation
+
+- Align English and Korean gameplay guides, development notes, guidebook pages, and JEI descriptions with all twenty-two companion types, shared ownership, growth rewards, and current equipment support.
+- Clarify right-click priorities, Wait → Farm plot registration, supported staircase materials, request-based cargo collection, exact supply limits, flight recovery, and Ender linking and travel.
+- Distinguish common stat values from profession multipliers and document Guardian beam range, assigned-enemy target filters, bonemeal chance and costs, and teleport dismounting.
+- Standardize Korean crafting diagrams and status wording, and shorten dense guidebook paragraphs while keeping 44 entries and 137 pages per language.
+
+### Fixed
+
+- Commander rosters display Nurture for Abundance Slimes and missing saplings for Lumberjack Slimes without changing saved order or reason identifiers. Korean roster labels distinguish loaded and unloaded companions.
+- Cargo-collection messages describe actual support requests, including combat cargo before a bag fills. Development test-mod metadata matches the release.
+
+### Validation
+
+- Documentation and context review continued for over two hours, comparing implementation, bilingual wording, and native rendering.
+
+- All 822 rendered page bodies match the current source text across both font profiles and all three language settings. Native guidebook checks cover English, Korean, English fallback, default and Unicode fonts, every page and diagram, links, item lookups, and localized search.
+- Independent servers verify profession-specific roster text through saved records, native menu snapshots, real packet encoding, and both locales with optional integrations present and absent.
+- Native clients verify all twenty-two models and minimum-size English/Korean management and roster screens. Google Java Format and the Java 17 build pass.
+
 ## [0.1.33] - 2026-10-18
 
 ### Changed

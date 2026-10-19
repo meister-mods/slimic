@@ -6,15 +6,15 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The first point costs 32 activity. Each earned point adds 64 to the next cost, capped at 4,096. Successful job actions earn activity; failed actions, idle time, and changing orders do not."
+      "text": "The first point costs 32 activity. Each earned point adds 64 to the next cost, capped at 4,096. Successful work earns activity. Fireflies, Ender linking and arrivals, and each gathered companion also earn one unit. Failed actions, idle time, and order changes earn none."
     },
     {
       "type": "patchouli:text",
-      "text": "Successful deliveries and warehouse cargo collection normally earn four units per moved stack; fetching or ordinary cargo pickup by a carrier earns none. Healing and revival earn one unit on success."
+      "text": "Successful deliveries and warehouse cargo collection normally earn four units per moved stack; fetching or ordinary cargo pickup by a carrier earns none. Healing and revival earn one unit on success. A successful guardian totem rescue earns four."
     },
     {
       "type": "patchouli:text",
-      "text": "Actual following or rider movement earns one unit per 100 ticks by default. Heralds earn the same while monitoring an active or blocked worker. Defensive hits or shield blocks have a one-second award limit."
+      "text": "Horizontal movement while following, riding, Attention roaming, or fleeing earns one unit per 100 movement ticks by default. Heralds earn the same while monitoring active or blocked workers. Enemy damage or shield blocks earn at most one unit per second; owner and environmental damage earn none."
     }
   ]
 }
