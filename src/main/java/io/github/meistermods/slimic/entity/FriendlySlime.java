@@ -3,6 +3,7 @@ package io.github.meistermods.slimic.entity;
 import io.github.meistermods.slimic.config.SlimicConfig;
 import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
+import io.github.meistermods.slimic.item.SlimeScannerItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.EnumSet;
@@ -213,6 +214,7 @@ public class FriendlySlime extends TamableAnimal {
 
   public static boolean isUtilityItem(ItemStack stack) {
     return stack.getItem() instanceof SlimeTunerItem
+        || stack.getItem() instanceof SlimeScannerItem
         || stack.getItem() instanceof CreativeSlimeTunerItem
         || stack.getItem() instanceof DyeItem
         || stack.is(Items.SLIME_BALL)
@@ -644,10 +646,9 @@ public class FriendlySlime extends TamableAnimal {
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
     ItemStack held = player.getItemInHand(hand);
     if (player.isShiftKeyDown()) {
-      return SlimeTunerItem.isHoldingPreviewTool(player)
-          ? SlimeTunerItem.preview(player, this)
-          : capture(player);
+      return capture(player);
     }
+    if (held.getItem() instanceof SlimeScannerItem) return SlimeScannerItem.preview(player, this);
     if (held.getItem() instanceof CreativeSlimeTunerItem)
       return CreativeSlimeTunerItem.open(player, this);
     if (held.getItem() instanceof SlimeTunerItem) return SlimeTunerItem.open(player, this);

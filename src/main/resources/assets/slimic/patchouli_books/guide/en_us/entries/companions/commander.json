@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click to open Companions or Players. The tuner opens ordinary stats and also has a roster button. Companion rows show last-known health, orders, work state, location, and whether the companion is loaded, unloaded, stored, broken, or removed. Hover a row for its position."
+      "text": "Right-click opens Companions or Players. The roster and Gather cover companions belonging to the commander’s primary owner. Shared owners may use them. The tuner opens stats and offers a roster button. Rows show last-known health, orders, work state, location and storage status. Hover for coordinates."
     },
     {
       "type": "patchouli:text",

@@ -13,6 +13,7 @@ import io.github.meistermods.slimic.item.LumberjackSlimeItem;
 import io.github.meistermods.slimic.item.MiningSlimeItem;
 import io.github.meistermods.slimic.item.SaddleSlimeItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
+import io.github.meistermods.slimic.item.SlimeScannerItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.item.TransportSlimeItem;
 import io.github.meistermods.slimic.item.WarehouseSlimeItem;
@@ -101,6 +102,9 @@ public final class ModItems {
 
   public static final RegistryObject<Item> SLIME_TUNER =
       ITEMS.register("slime_tuner", () -> new SlimeTunerItem(new Item.Properties().stacksTo(1)));
+  public static final RegistryObject<Item> SLIME_SCANNER =
+      ITEMS.register(
+          "slime_scanner", () -> new SlimeScannerItem(new Item.Properties().stacksTo(1)));
   public static final RegistryObject<Item> GUARDIAN_ANGEL_SLIME =
       ITEMS.register(
           "guardian_angel_slime", () -> new GuardianAngelSlimeItem(new Item.Properties()));

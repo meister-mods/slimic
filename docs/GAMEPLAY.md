@@ -27,6 +27,8 @@ Place eight slimeballs around one soul sand or soul soil in a crafting table to 
 
 The item is also available in the Slimic creative tab.
 
+You can also right-click a **wild Slime of the smallest size** with a **golden apple** to turn it into one Friendly Slime. It belongs to the player who feeds it, retains its custom name, and starts in **Wait**. Survival consumes one apple; Creative does not. Larger Slimes, Magma Cubes, and enchanted golden apples do not use this interaction. **Shift-right-click** to recover the new companion into an item with its traits intact.
+
 ## Summoning and controls
 
 Use the item on a block or water source, like a spawn egg. A newly crafted item summons a slime already tamed to the player using it. A successful Survival use consumes one item; a newly crafted item is reusable in Creative mode.
@@ -38,13 +40,13 @@ The player who first summons a fresh item is its primary owner. In this guide, a
 | Action | Result |
 | --- | --- |
 | Owner uses a Slime Tuner on the slime | Open the management screen for stats, upgrades, naming, equipment, inventory, and orders. |
-| Owner Shift-right-clicks with a tuner | Preview the current or planned work area for 15 seconds. |
-| Owner Shift-right-clicks without a tuner | Recover the slime into an inventory item. |
+| Owner right-clicks with a Slime Scanner | Preview the current or planned work area for 15 seconds. |
+| Owner Shift-right-clicks | Recover the slime into an inventory item. |
 | Use a recovered item on a block or water source | Release the same companion in Wait with its saved traits. |
 
 All newly created companions start in **Wait**, including Friendly and Saddle Slimes, Creative defaults, and first specialization of a stored companion. Start Mine, Haul, Watch, Fight, Clean, Farm, Chop, Search, Store, Fish, Nurture, or Tunnel explicitly in management. Select Follow or Roam for Soggy Slime trails, or Follow for guardian movement. Recovered companions also start in Wait; choose a command explicitly to resume movement or work. Missing job data defaults to Wait.
 
-Right-click a saddled Saddle Slime with an empty hand or an item without a dedicated interaction to mount it. Tuners, slimeballs, dyes, and water buckets keep their management or care functions; gear fills its matching empty equipment slot first. On a Herald Slime, ordinary right-click launches the saved firework, while holding a firework rocket replaces the saved design.
+Right-click a saddled Saddle Slime with an empty hand or an item without a dedicated interaction to mount it. Tuners, scanners, slimeballs, dyes, and water buckets keep their management or care functions; gear fills its matching empty equipment slot first. On a Herald Slime, ordinary right-click launches the saved firework, while holding a firework rocket replaces the saved design.
 
 Primary and shared owners can recover the slime or change its follow/wait order. Releasing a recovered item preserves the original owner, even if another player uses the item.
 
@@ -54,9 +56,12 @@ Recovery saves the slime's complete persistent state. Its current health is pres
 
 - Maximum health, other attributes, and permanent attribute modifiers.
 - Active effects and their remaining durations.
-- Custom name, primary owner, and assigned order.
+- Custom name and primary owner.
+- Applicable work plans and job progress.
 - Identity, age, equipment, and other saved entity properties.
 - Other persistent companion data.
+
+Item release always selects Wait. Ordinary world reloads retain the saved command.
 
 Save data carries a schema version. Companion payloads without a version field can still be loaded; a stored item with an unsupported newer version cannot be released and remains intact.
 
@@ -106,7 +111,7 @@ Firefly bursts, each successfully gathered companion, endpoint linking, and comp
 
 The first stat point requires 32 activity units. Each earned point increases the next requirement by 64 units, capped at 4,096. Successful fluid removal, slime-trail placement, mining, combat hits, cleaning pickups, crop harvesting/planting, soil restoration, log harvesting, material collection, and replanting each grant one unit. Successful healing, revival, fishing catches, and plant-growth applications each grant one unit. Transport grants four units per cargo-stack delivery into a warehouse or Slime Chest, or supplies delivered to a worker; warehouse cargo collection also earns this reward. Ordinary transport collection and fetching supplies grant none. This higher delivery reward compensates for travel, while actual progress rates still depend on the job and terrain.
 
-All companions can earn one unit per 100 ticks (five seconds) of actual horizontal movement while following a nearby owner or carrying their rider. Escaping an attacker uses the same movement interval. Actual damage from a non-allied attacker or a successful shield block also earns one unit, limited to one defensive award per second; owner damage and environmental damage grant none. Passive waiting, standing still, being transported by teleport, and changing orders grant none. Heralds also earn one unit per 100 ticks of monitoring an active or blocked worker with same-owner or mutual sharing authorization in range; idle, completed, or manually waiting workers grant none. Partial following and monitoring timers survive saves and recovery and pause in item storage. Signals do not grant extra activity.
+All companions can earn one unit per 100 ticks (five seconds) of actual horizontal movement while following a nearby owner or carrying their rider. Attention Slime roaming and escaping an attacker use the same movement interval. Actual damage from a non-allied attacker or a successful shield block also earns one unit, limited to one defensive award per second; owner damage and environmental damage grant none. Passive waiting, standing still, being transported by teleport, and changing orders grant none. Heralds also earn one unit per 100 ticks of monitoring an active or blocked worker with same-owner or mutual sharing authorization in range; idle, completed, or manually waiting workers grant none. Partial following and monitoring timers survive saves and recovery and pause in item storage. Signals do not grant extra activity.
 
 The world's `serverconfig/slimic-server.toml` configures `transportActivityPerDelivery` (default 4, range 1–64), `followingActivityIntervalTicks`, and `monitoringActivityIntervalTicks` (both default 100, range 20–1,200). Existing points and activity are retained.
 
@@ -122,7 +127,7 @@ A full working bag issues a cargo-pickup request. A worker missing its required 
 
 Existing activity is recalculated against the current thresholds when a companion is loaded. Newly earned points are granted and remaining activity is retained; existing points and stat investments remain intact. For example, 200 activity at the first tier becomes two points and 72 remaining activity. Subsequent recovery does not grant those points again.
 
-The Slimic Creative tab groups all twenty-two companion items first, followed by Slime Trail, Slime Slag, the Slime Chest and Broken Slime Block, six armor materials from leather through netherite, the Survival Slime Tuner, and the Creative Slime Tuner. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime.
+The Slimic Creative tab groups all twenty-two companion items first, followed by Slime Trail, Slime Slag, the Slime Chest and Broken Slime Block, six armor materials from leather through netherite, the Survival Slime Tuner, the Slime Scanner, and the Creative Slime Tuner. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime.
 
 ## Mining slimes
 
@@ -206,11 +211,13 @@ Ordinary right-click launches a manual signal without consuming rockets. Right-c
 
 ## Slime Tuners
 
-Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within eight blocks to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. Keep it in either hand while using management. The ordinary tuner does not edit base stats. Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. Dark cells are locked by Capacity and cannot hold items. Paging controls appear only when the bag spans multiple pages. The management panel is 368×240 GUI units; lower Minecraft's GUI Scale if it extends beyond the window.
+Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within normal interaction reach to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. While using management, stay within eight blocks and keep the tuner in either hand. The ordinary tuner does not edit base stats. Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. Dark cells are locked by Capacity and cannot hold items. Paging controls appear only when the bag spans multiple pages. The management panel is 368×240 GUI units; lower Minecraft's GUI Scale if it extends beyond the window.
+
+Craft one **Slime Tuner** with **four glass blocks** without a fixed arrangement to make a **Slime Scanner**. Ordinary right-click with the scanner previews work areas. Shift-right-click recovers a companion regardless of the held tool.
 
 The **Creative Slime Tuner** is available in the Slimic creative tab and has no Survival recipe. Hold it and right-click to open a separate stat editor for the companion under the crosshair within 16 blocks, falling back to the nearest companion in that range. Right-clicking a companion directly also opens it. The editor requires Creative mode and a held tuner throughout use.
 
-The Creative Slime Tuner edits base stats, current health, current stamina, and unused stat points. Permanent attribute modifiers remain applied. Transport Capacity is twice the entered common base, and Warehouse Capacity is eight times that base; Cleaning Detection Range is five times its entered base; Farming, Lumberjack, Healing, and Abundance Detection Range is twice its entered base. Apply saves valid changes together; Refresh reloads the current values. Reducing Capacity requires emptying every bag slot that would become unavailable. Changing maximum health does not automatically refill current health.
+The Creative Slime Tuner edits base stats, current health, current stamina, and unused stat points. Permanent attribute modifiers remain applied. Guardian Health is ten times its base, and Attention Movement Speed is 1.5 times its base. Transport Capacity is twice the entered common base, and Warehouse Capacity is eight times that base; Cleaning Detection Range is five times its entered base; Farming, Lumberjack, Healing, and Abundance Detection Range is twice its entered base. Apply saves valid changes together; Refresh reloads the current values. Reducing Capacity requires emptying every bag slot that would become unavailable. Changing maximum health does not automatically refill current health.
 
 | Field | Range |
 | --- | --- |
@@ -299,7 +306,7 @@ Equipped wings form two side-mounted wings, fold down while grounded, and flap d
 
 Hostile mobs with native target-goal AI, including zombies, skeletons, and spiders, can select every companion type as prey. Creepers receive no added companion targeting or swelling. Endermen retain their native behavior and receive no added companion-targeting goal. Vanilla Slimes only select a companion after it attacks them; this exception does not apply to Magma Cubes. Combat and Dragon Slimes can still attack vanilla Slimes first when Hostile targeting is enabled. An Enderman actively targeting a living companion is classified as Hostile for Combat Slimes; once it disengages, it returns to Neutral. The corresponding target filter still applies. Companions other than Combat, Dragon, and Guardian Angel Slimes flee for up to ten seconds after an attack, temporarily overriding work and waiting while retaining the assigned order. A pinned Ender Slime stays anchored, and a mounted slime follows its rider's controls.
 
-A fallen companion leaves a **Broken Slime Block** at its position. The block stores the same UUID, owner, specialization, name, dye, stat investments, points, activity, remaining stamina, equipment, cargo, and orders. The owner can right-click it with one slimeball to revive it with **1 health**. Survival consumes one ball only after successful revival; Creative consumes none. Clear enough space for the companion before reviving. Blocked placement, an existing matching UUID, or invalid stored data leaves the block and ball intact.
+A fallen companion leaves a **Broken Slime Block** at its position. The block stores the same UUID, owner, specialization, name, dye, stat investments, points, activity, remaining stamina, equipment, cargo, and applicable work plans. The owner can right-click it with one slimeball to revive it in **Wait** with **1 health**. Survival consumes one ball only after successful revival; Creative consumes none. Clear enough space for the companion before reviving. Blocked placement, an existing matching UUID, or invalid stored data leaves the block and ball intact.
 
 Breaking the block yields a single recovery block item carrying its stored companion; place it again to revive. A collapsed companion does not separately drop its retained equipment or cargo. Existing solid blocks and containers are preserved: if the death position cannot accept the block, a recovery block item is left there instead. The recovery item resists fire, and the placed block resists explosions. Breaking a stored recovery block in Creative also returns its companion item.
 
@@ -401,7 +408,7 @@ Follow and Wait take effect before the next job action, including when the previ
 
 Combine a Friendly Slime with a fishing rod in any arrangement. The original rod retains its enchantments, wear, name, and item data, and is equipped when released. A fresh Creative-default Fishing Slime also receives one rod. It starts in **Wait**; select **Fish** to begin.
 
-The slime finds a dry shore beside source water inside its release-centered Detection Range. Catches enter its normal bag. After five minutes without a catch it seeks another spot. Native fishing loot tables and open-water treasure conditions apply. **Lure** reduces waiting, **Luck of the Sea** changes loot chances, **Unbreaking** reduces rod wear, and **Mending** repairs the rod with catch experience before remaining experience appears. Work Speed shortens waiting.
+The slime finds a dry shore beside source water inside its release-centered Detection Range. Catches enter its normal bag. After five minutes of active work time without a catch it seeks another spot. Native fishing loot tables and open-water treasure conditions apply. **Lure** reduces waiting, **Luck of the Sea** changes loot chances, **Unbreaking** reduces rod wear, and **Mending** repairs the rod with catch experience before remaining experience appears. Work Speed shortens waiting.
 
 Each successful catch costs one stamina. A full bag pauses fishing and requests cargo pickup; a missing or broken rod requests a replacement from transport or warehouse support. Pending catches and the original rod survive recovery. The slime wears blue overalls with low straps and gold buttons below its eyes.
 
@@ -459,7 +466,7 @@ Right-click the companion to spend **10 stamina** on fireflies in nearby open ai
 
 ## Commander slimes
 
-Combine a Friendly Slime with a **book**. It initially waits and has a mustache and baton. Ordinary right-click opens a paged roster; the tuner opens stats and provides a roster button. Companion rows include last-known health, order, work state, storage/life status, dimension, coordinates, and tag. Hover a row to read its location. Observations are discovered when entities, stored items, or broken blocks load; previously unrecorded companions become visible when they or their stored data are observed. Stored-item locations are last known, not continuous chest tracking.
+Combine a Friendly Slime with a **book**. It initially waits and has a mustache and baton. Ordinary right-click opens a paged roster; the tuner opens stats and provides a roster button. The companion roster and Gather cover companions belonging to the commander’s primary owner; shared owners may operate those commands. Companion rows include last-known health, order, work state, storage/life status, dimension, coordinates, and tag. Hover a row to read its location. Observations are discovered when entities, stored items, or broken blocks load; previously unrecorded companions become visible when they or their stored data are observed. Stored-item locations are last known, not continuous chest tracking.
 
 Only **one living released Commander Slime per connected shared-owner group** may be summoned across the entire save, including all dimensions and unloaded chunks. One-way grants, shared co-owners, and indirect shared-access links connect players into the same group for this limit; tags do not define groups. This grouping does not grant additional management or logistics permissions. Stored, broken, and removed commanders do not occupy the slot. Fresh releases, stored releases, and revivals all check the limit; failures preserve the item, broken block, and revival materials. Stored releases use the original owner’s group. Recover one commander before joining two groups that each have one. Removing the last connecting shared-access link separates the groups. Existing extra commanders from older saves are preserved, but block additional releases.
 
@@ -489,6 +496,6 @@ An Attention Slime item may replace the Friendly Slime in all sixteen basic spec
 
 ## Work area previews and herald messages
 
-Hold either tuner and Shift-right-click an owned or shared companion within eight blocks. The preview is visible only to the requester for 15 seconds and clears when the tuner is put away, the companion disappears, or the dimension changes. Cyan outlines show the current or planned range; gold outlines show the next quarry layer or tunnel face, registered farmland bounds, or the selected work position. Tunnel previews show the next eight sections. Search spheres use each profession’s effective Detection Range. Previews do not start jobs, inspect unloaded terrain, or load chunks. Companions without a work area show a short notice instead.
+Hold a **Slime Scanner** and right-click an owned or shared companion. Normal entity-interaction reach applies, with an eight-block server limit. The preview is visible only to the requester for 15 seconds and clears when the scanner is put away, the companion disappears, or the dimension changes. Cyan outlines show the current or planned range; gold outlines show the next quarry layer or tunnel face, registered farmland bounds, or the selected work position. Tunnel previews show the next eight sections. Search spheres use each profession’s effective Detection Range. Previews do not start jobs, inspect unloaded terrain, or load chunks. Companions without a work area show a short notice instead.
 
 When a Herald Slime launches an automatic blocked-work signal, the worker’s online primary and shared owners also receive a chat message containing its type, custom name if present, and concrete cause. Missing pickaxes, shovels, hoes, axes, rods, swords, seeds, saplings, buckets, cobblestone, slimeballs, and lining materials are distinguished from full bags, storage problems, exhaustion, unreachable destinations, and disabled world changes. Messages follow the existing signal delay and ten-second repeat interval. Manual signals and ordinary Wait do not issue blocked-work messages.

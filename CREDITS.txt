@@ -74,5 +74,5 @@ from Minecraft textures and Slimic Slime Slag artwork. Slimic provides dedicated
 Companion accessories and equipped armor use dedicated Slimic texture atlases;
 management screens use dedicated PNG backgrounds and slot artwork. Native held
 items and the Meow Slime cat head reference Minecraft models and textures.
-The Survival Slime Tuner and Slime Slag use artwork created for Slimic and
+The Survival Slime Tuner, Slime Scanner, and Slime Slag use artwork created for Slimic and
 exported as 16x16 item icons. Minecraft artwork belongs to Mojang Studios.

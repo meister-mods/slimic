@@ -203,6 +203,10 @@ public final class SlimicJeiPlugin implements IModPlugin {
         new ItemStack(ModItems.SLIME_TUNER.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.slime_tuner"));
+    registration.addIngredientInfo(
+        new ItemStack(ModItems.SLIME_SCANNER.get()),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.slime_scanner"));
     for (var kind : io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind.values()) {
       List<ItemStack> secondary =
           switch (kind) {

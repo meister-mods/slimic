@@ -3,7 +3,7 @@ package io.github.meistermods.slimic.gametest;
 import com.mojang.authlib.GameProfile;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.*;
-import io.github.meistermods.slimic.item.SlimeTunerItem;
+import io.github.meistermods.slimic.item.SlimeScannerItem;
 import io.github.meistermods.slimic.network.WorkAreaPacket;
 import io.github.meistermods.slimic.registry.*;
 import io.netty.buffer.Unpooled;
@@ -300,74 +300,196 @@ public final class WorkPreviewGameTests {
   }
 
   @GameTest(template = "empty")
-  public static void tunerShiftInteractionPreviewsInsteadOfCapturingAndChecksOwnership(
-      GameTestHelper h) {
+  public static void ordinaryScannerInteractionPreviewsAndShiftStillRecovers(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
     miner.tame(owner);
     owner.moveTo(miner.position());
+    owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
+    h.assertTrue(
+        miner.mobInteract(owner, InteractionHand.MAIN_HAND).consumesAction()
+            && !miner.isRemoved()
+            && owner.getMainHandItem().is(ModItems.SLIME_SCANNER.get()),
+        "Ordinary scanner right-click previews without capturing or consuming the tool");
+    var stranger = h.makeMockSurvivalPlayer();
+    stranger.moveTo(miner.position());
+    stranger.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
+    h.assertTrue(
+        !SlimeScannerItem.preview(stranger, miner).consumesAction(),
+        "Unauthorized viewers are rejected");
+    owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+    owner.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
+    h.assertTrue(
+        miner.mobInteract(owner, InteractionHand.OFF_HAND).consumesAction() && !miner.isRemoved(),
+        "Offhand scanner also previews with ordinary right-click");
     owner.setShiftKeyDown(true);
-    owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
-    var event = new PlayerInteractEvent.EntityInteract(owner, InteractionHand.MAIN_HAND, miner);
+    var event = new PlayerInteractEvent.EntityInteract(owner, InteractionHand.OFF_HAND, miner);
     FriendlySlimeInteractions.captureOnSneakInteract(event);
     h.assertTrue(
         event.isCanceled()
             && event.getCancellationResult().consumesAction()
-            && !miner.isRemoved()
-            && owner.getMainHandItem().is(ModItems.SLIME_TUNER.get()),
-        "Tuner Shift-click cannot capture or consume gear");
-    var stranger = h.makeMockSurvivalPlayer();
-    stranger.moveTo(miner.position());
-    stranger.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
-    h.assertTrue(
-        !SlimeTunerItem.preview(stranger, miner).consumesAction(),
-        "Unauthorized viewers are rejected");
-    owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-    owner.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
-    h.assertTrue(
-        SlimeTunerItem.preview(owner, miner).consumesAction(), "Offhand tuner also previews");
-    owner.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
-    event = new PlayerInteractEvent.EntityInteract(owner, InteractionHand.MAIN_HAND, miner);
-    FriendlySlimeInteractions.captureOnSneakInteract(event);
-    h.assertTrue(
-        event.isCanceled() && event.getCancellationResult().consumesAction() && miner.isRemoved(),
-        "Shift-click without a tuner still recovers the companion");
+            && miner.isRemoved()
+            && owner.getOffhandItem().is(ModItems.SLIME_SCANNER.get()),
+        "Shift-click with a scanner uses common recovery and preserves the tool");
     h.succeed();
   }
 
   @GameTest(template = "empty")
-  public static void previewsRespectRangeSharedAccessAndCreativeToolPermissions(GameTestHelper h) {
+  public static void previewsRespectRangeSharedAccessAndRejectBothTuners(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
     var shared = h.makeMockSurvivalPlayer();
     var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
     miner.tame(owner);
     shared.moveTo(miner.position());
-    shared.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+    shared.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
     var registry = CompanionRegistry.get(h.getLevel());
     registry.setRelation(owner.getUUID(), shared.getUUID(), true, true);
     h.assertTrue(
-        SlimeTunerItem.preview(shared, miner).consumesAction(),
-        "A delegated owner can preview the worker");
+        SlimeScannerItem.preview(shared, miner).consumesAction(), "A delegated owner can preview");
     registry.setRelation(owner.getUUID(), shared.getUUID(), true, false);
     h.assertTrue(
-        !SlimeTunerItem.preview(shared, miner).consumesAction(),
-        "Revocation applies before the next request");
-    owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+        !SlimeScannerItem.preview(shared, miner).consumesAction(),
+        "Revocation applies immediately");
+    owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
     owner.moveTo(miner.position().add(8.01, 0, 0));
-    h.assertTrue(!SlimeTunerItem.preview(owner, miner).consumesAction(), "Range is enforced");
+    h.assertTrue(!SlimeScannerItem.preview(owner, miner).consumesAction(), "Range is enforced");
     owner.moveTo(miner.position().add(8, 0, 0));
-    h.assertTrue(SlimeTunerItem.preview(owner, miner).consumesAction(), "Eight blocks is allowed");
+    h.assertTrue(
+        SlimeScannerItem.preview(owner, miner).consumesAction(), "Eight blocks is allowed");
     owner.moveTo(miner.position());
-    owner.setItemInHand(
-        InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
-    h.assertTrue(
-        !SlimeTunerItem.preview(owner, miner).consumesAction(),
-        "A Survival player cannot use the Creative tuner for previews");
-    owner.getAbilities().instabuild = true;
-    h.assertTrue(
-        SlimeTunerItem.preview(owner, miner).consumesAction(),
-        "A Creative player can preview with the Creative tuner");
+    for (var tool : List.of(ModItems.SLIME_TUNER.get(), ModItems.CREATIVE_SLIME_TUNER.get())) {
+      owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(tool));
+      for (boolean creative : new boolean[] {false, true}) {
+        owner.getAbilities().instabuild = creative;
+        h.assertTrue(
+            !SlimeScannerItem.preview(owner, miner).consumesAction(),
+            "Management tools never authorize a preview, in either game mode");
+      }
+    }
     h.assertTrue(miner.isOrderedToSit() && !miner.isWorking(), "Authorization never starts work");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void scannerTakesPriorityOverEveryProfessionRightClickAction(GameTestHelper h) {
+    var owner = h.makeMockSurvivalPlayer();
+    owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
+    int checked = 0;
+    for (var registered : ModEntities.ENTITY_TYPES.getEntries()) {
+      var slime = (FriendlySlime) registered.get().create(h.getLevel());
+      slime.tame(owner);
+      owner.moveTo(slime.position());
+      if (slime instanceof SaddleSlime saddle) saddle.setEquipment(0, new ItemStack(Items.SADDLE));
+      var menu = owner.containerMenu;
+      var before = slime.saveWithoutId(new CompoundTag());
+      h.assertTrue(
+          slime.mobInteract(owner, InteractionHand.MAIN_HAND).consumesAction(),
+          "Ordinary scanner click is handled by " + registered.getId());
+      h.assertTrue(
+          before.equals(slime.saveWithoutId(new CompoundTag()))
+              && owner.containerMenu == menu
+              && !slime.isVehicle()
+              && !slime.isRemoved(),
+          "Scanning does not mount, signal, toggle abilities, open menus or change saved state");
+      slime.discard();
+      checked++;
+    }
+    h.assertTrue(checked == 22, "Every companion profession is tested");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void shiftWithManagementTunersUsesCommonRecovery(GameTestHelper h) {
+    for (var tool : List.of(ModItems.SLIME_TUNER.get(), ModItems.CREATIVE_SLIME_TUNER.get())) {
+      var owner = h.makeMockSurvivalPlayer();
+      owner.setShiftKeyDown(true);
+      owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(tool));
+      var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
+      miner.tame(owner);
+      miner.setHealth(3.5F);
+      var event = new PlayerInteractEvent.EntityInteract(owner, InteractionHand.MAIN_HAND, miner);
+      FriendlySlimeInteractions.captureOnSneakInteract(event);
+      h.assertTrue(
+          event.isCanceled()
+              && event.getCancellationResult().consumesAction()
+              && miner.isRemoved()
+              && owner.getMainHandItem().is(tool),
+          "Shift recovery is independent of the held management tool");
+      h.assertTrue(
+          owner.getInventory().items.stream()
+              .anyMatch(
+                  stack ->
+                      stack.is(ModItems.MINING_SLIME.get())
+                          && stack.getTag().getCompound("SlimeData").getFloat("Health") == 3.5F),
+          "Recovery stores the companion with its health");
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void scannerRecipeUsesExactlyOneTunerAndFourGlassInAnyOrder(GameTestHelper h) {
+    var grid =
+        new net.minecraft.world.inventory.TransientCraftingContainer(
+            new net.minecraft.world.inventory.AbstractContainerMenu(null, -1) {
+              @Override
+              public boolean stillValid(net.minecraft.world.entity.player.Player p) {
+                return true;
+              }
+
+              @Override
+              public ItemStack quickMoveStack(
+                  net.minecraft.world.entity.player.Player p, int slot) {
+                return ItemStack.EMPTY;
+              }
+            },
+            3,
+            3);
+    for (int tunerSlot : new int[] {0, 4, 8}) {
+      grid.clearContent();
+      grid.setItem(tunerSlot, new ItemStack(ModItems.SLIME_TUNER.get()));
+      int glass = 0;
+      for (int slot = 0; slot < 9 && glass < 4; slot++)
+        if (slot != tunerSlot) {
+          grid.setItem(slot, new ItemStack(Items.GLASS));
+          glass++;
+        }
+      var recipe =
+          h.getLevel()
+              .getRecipeManager()
+              .getRecipeFor(
+                  net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel());
+      h.assertTrue(recipe.isPresent(), "The scanner recipe is shapeless");
+      var output = recipe.orElseThrow().assemble(grid, h.getLevel().registryAccess());
+      h.assertTrue(
+          output.is(ModItems.SLIME_SCANNER.get())
+              && output.getCount() == 1
+              && output.getMaxStackSize() == 1,
+          "The exact ingredients make one nonstackable scanner");
+    }
+    grid.clearContent();
+    grid.setItem(0, new ItemStack(ModItems.SLIME_TUNER.get()));
+    for (int slot = 1; slot <= 3; slot++) grid.setItem(slot, new ItemStack(Items.GLASS));
+    h.assertTrue(
+        h.getLevel()
+            .getRecipeManager()
+            .getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel())
+            .isEmpty(),
+        "Three glass is insufficient");
+    grid.setItem(4, new ItemStack(Items.GLASS_PANE));
+    h.assertTrue(
+        h.getLevel()
+            .getRecipeManager()
+            .getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel())
+            .isEmpty(),
+        "A glass pane cannot replace a glass block");
+    grid.setItem(4, new ItemStack(Items.GLASS));
+    grid.setItem(0, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
+    h.assertTrue(
+        h.getLevel()
+            .getRecipeManager()
+            .getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel())
+            .isEmpty(),
+        "The Creative tuner cannot replace the Survival tuner");
     h.succeed();
   }
 

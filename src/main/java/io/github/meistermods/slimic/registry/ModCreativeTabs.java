@@ -60,6 +60,7 @@ public final class ModCreativeTabs {
                             })
                           output.accept(SlimeArmorItem.fromChestplate(new ItemStack(chestplate)));
                         output.accept(ModItems.SLIME_TUNER.get());
+                        output.accept(ModItems.SLIME_SCANNER.get());
                         output.accept(ModItems.CREATIVE_SLIME_TUNER.get());
                       })
                   .build());
