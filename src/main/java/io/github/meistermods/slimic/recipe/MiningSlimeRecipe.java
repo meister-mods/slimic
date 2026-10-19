@@ -26,7 +26,7 @@ public final class MiningSlimeRecipe extends CustomRecipe {
     for (int slot = 0; slot < grid.getContainerSize(); slot++) {
       ItemStack item = grid.getItem(slot);
       if (item.isEmpty()) continue;
-      if (!slime && item.is(ModItems.FRIENDLY_SLIME.get())) slime = true;
+      if (!slime && CompanionBase.accepts(item)) slime = true;
       else if (!tool && MiningSlime.isPickaxe(item)) tool = true;
       else return false;
     }
@@ -35,7 +35,7 @@ public final class MiningSlimeRecipe extends CustomRecipe {
 
   public static ItemStack specialize(ItemStack friendly, ItemStack pickaxe) {
     ItemStack result = new ItemStack(ModItems.MINING_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     ItemStack tool = pickaxe.copy();
     tool.setCount(1);
     result.getOrCreateTag().put(MiningSlimeItem.INITIAL_PICKAXE, tool.save(new CompoundTag()));
@@ -47,7 +47,7 @@ public final class MiningSlimeRecipe extends CustomRecipe {
     ItemStack friendly = ItemStack.EMPTY, pickaxe = ItemStack.EMPTY;
     for (int slot = 0; slot < grid.getContainerSize(); slot++) {
       ItemStack item = grid.getItem(slot);
-      if (item.is(ModItems.FRIENDLY_SLIME.get())) friendly = item;
+      if (CompanionBase.accepts(item)) friendly = item;
       else if (MiningSlime.isPickaxe(item)) pickaxe = item;
     }
     return friendly.isEmpty() || pickaxe.isEmpty()

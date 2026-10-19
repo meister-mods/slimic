@@ -11,7 +11,7 @@
       "input2": "minecraft:bone_meal",
       "result": "slimic:abundance_slime",
       "label": "조합 → 결과 1개",
-      "text": "치유 슬라임 + 뼛가루 + 네더의 별. 원래 동료의 특성·장비·가방을 보존하고 대기 상태로 시작하며 황금 리라를 듭니다.",
+      "text": "치유 슬라임 + 뼛가루 + 네더의 별. 원래 동료의 특성·장비·가방을 보존하고 대기 상태로 시작하며 몸 옆에 황금 리라를 듭니다.",
       "input3": "minecraft:nether_star"
     },
     {

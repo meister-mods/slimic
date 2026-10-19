@@ -25,6 +25,23 @@ public final class AttentionSlime extends FriendlySlime {
   private static final java.util.UUID SPEED_SCALE =
       java.util.UUID.fromString("9bd346c1-5c11-4af6-b4a8-ae79c9c36374");
 
+  /** Removes profession-only state when this companion becomes another specialization. */
+  public static void removeProfessionData(CompoundTag data) {
+    data.remove("AttentionRoaming");
+    data.remove("AttentionActivity");
+    for (var element : data.getList("Attributes", net.minecraft.nbt.Tag.TAG_COMPOUND)) {
+      var attribute = (CompoundTag) element;
+      attribute
+          .getList("Modifiers", net.minecraft.nbt.Tag.TAG_COMPOUND)
+          .removeIf(
+              modifier -> {
+                var saved = (CompoundTag) modifier;
+                return saved.hasUUID("UUID") && SPEED_SCALE.equals(saved.getUUID("UUID"));
+              });
+    }
+    data.putBoolean("Sitting", true);
+  }
+
   private void ensureSpeedScale() {
     var attribute =
         getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);

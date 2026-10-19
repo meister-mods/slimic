@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
@@ -61,6 +62,19 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     };
   }
 
+  public static Ingredient primaryIngredient(Kind kind) {
+    return source(kind) == ModItems.FRIENDLY_SLIME.get() && kind != Kind.ATTENTION
+        ? CompanionBase.ingredient()
+        : Ingredient.of(source(kind));
+  }
+
+  private boolean primary(ItemStack stack) {
+    return stack.is(source(kind))
+        || (source(kind) == ModItems.FRIENDLY_SLIME.get()
+            && kind != Kind.ATTENTION
+            && stack.is(ModItems.ATTENTION_SLIME.get()));
+  }
+
   private boolean secondary(ItemStack stack) {
     return switch (kind) {
       case FISHING -> FishingSlime.isRod(stack);
@@ -86,7 +100,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     for (int i = 0; i < grid.getContainerSize(); i++) {
       var stack = grid.getItem(i);
       if (stack.isEmpty()) continue;
-      if (!primary && stack.is(source(kind))) primary = true;
+      if (!primary && primary(stack)) primary = true;
       else if (!secondary && secondary(stack)) secondary = true;
       else if (!star && stack.is(Items.NETHER_STAR)) star = true;
       else return false;
@@ -96,7 +110,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
 
   public static ItemStack specialize(Kind kind, ItemStack source, ItemStack secondary) {
     var result = new ItemStack(result(kind));
-    if (source.hasTag()) result.setTag(source.getTag().copy());
+    CompanionBase.copyData(source, result);
     if (result.getOrCreateTag().contains("SlimeData")) {
       var data = result.getTag().getCompound("SlimeData");
       data.putBoolean("Sitting", true);
@@ -120,7 +134,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     ItemStack first = ItemStack.EMPTY, second = ItemStack.EMPTY;
     for (int i = 0; i < grid.getContainerSize(); i++) {
       var stack = grid.getItem(i);
-      if (stack.is(source(kind))) first = stack;
+      if (primary(stack)) first = stack;
       else if (secondary(stack)) second = stack;
     }
     return specialize(kind, first, second);

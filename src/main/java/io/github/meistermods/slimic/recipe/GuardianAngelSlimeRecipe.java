@@ -20,7 +20,7 @@ public final class GuardianAngelSlimeRecipe extends CustomRecipe {
     for (int i = 0; i < grid.getContainerSize(); i++) {
       var item = grid.getItem(i);
       if (item.isEmpty()) continue;
-      if (item.is(ModItems.FRIENDLY_SLIME.get())) friendly++;
+      if (CompanionBase.accepts(item)) friendly++;
       else if (item.is(Items.NETHER_STAR)) star++;
       else if (item.is(Items.TOTEM_OF_UNDYING)) totem++;
       else return false;
@@ -30,7 +30,7 @@ public final class GuardianAngelSlimeRecipe extends CustomRecipe {
 
   public static ItemStack specialize(ItemStack friendly, ItemStack totem) {
     var result = new ItemStack(ModItems.GUARDIAN_ANGEL_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     result
         .getOrCreateTag()
         .put("InitialGuardianTotem", totem.copyWithCount(1).save(new CompoundTag()));
@@ -43,7 +43,7 @@ public final class GuardianAngelSlimeRecipe extends CustomRecipe {
     ItemStack friendly = ItemStack.EMPTY, totem = ItemStack.EMPTY;
     for (int i = 0; i < grid.getContainerSize(); i++) {
       var stack = grid.getItem(i);
-      if (stack.is(ModItems.FRIENDLY_SLIME.get())) friendly = stack;
+      if (CompanionBase.accepts(stack)) friendly = stack;
       if (stack.is(Items.TOTEM_OF_UNDYING)) totem = stack;
     }
     return specialize(friendly, totem);

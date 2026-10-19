@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Its effective Movement Speed is 50% higher than that of a companion with the same base stat, including upgrades and stored specialization. Select Roam to keep it bustling near the available owner. It can brush past and nudge nearby players without attacking."
+      "text": "Its effective Movement Speed is 50% higher at the same base stat. Roam keeps it moving near an available owner. It can replace a Friendly Slime in basic specialization recipes: invested stats and common companion data remain, while Attention roaming and its speed bonus disappear. The new profession waits."
     },
     {
       "type": "patchouli:text",

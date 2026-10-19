@@ -7,6 +7,7 @@ import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
+import io.github.meistermods.slimic.recipe.CompanionBase;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
 import io.github.meistermods.slimic.recipe.GuardianAngelSlimeRecipe;
 import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
@@ -49,9 +50,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             CraftingBookCategory.MISC,
             CompanionRecipe.healing(new ItemStack(ModItems.FRIENDLY_SLIME.get())),
             NonNullList.of(
-                Ingredient.EMPTY,
-                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
-                Ingredient.of(Items.GOLDEN_CARROT))));
+                Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(Items.GOLDEN_CARROT))));
     NonNullList<Ingredient> warehouseIngredients = NonNullList.create();
     warehouseIngredients.add(Ingredient.of(ModItems.TRANSPORT_SLIME.get()));
     for (int chest = 0; chest < 8; chest++) warehouseIngredients.add(Ingredient.of(Items.CHEST));
@@ -74,9 +73,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             CraftingBookCategory.MISC,
             CompanionRecipe.soggy(new ItemStack(ModItems.FRIENDLY_SLIME.get())),
             NonNullList.of(
-                Ingredient.EMPTY,
-                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
-                Ingredient.of(Items.SLIME_BALL))));
+                Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(Items.SLIME_BALL))));
     registration.addIngredientInfo(
         new ItemStack(ModItems.SOGGY_SLIME.get()),
         VanillaTypes.ITEM_STACK,
@@ -93,7 +90,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
               "slimic:mining_slime",
               CraftingBookCategory.MISC,
               MiningSlimeRecipe.specialize(friendly, tool),
-              NonNullList.of(Ingredient.EMPTY, Ingredient.of(friendly), Ingredient.of(tool))));
+              NonNullList.of(Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(tool))));
     }
     recipes.add(
         new ShapelessRecipe(
@@ -102,9 +99,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             CraftingBookCategory.MISC,
             TransportSlimeRecipe.specialize(new ItemStack(ModItems.FRIENDLY_SLIME.get())),
             NonNullList.of(
-                Ingredient.EMPTY,
-                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
-                Ingredient.of(Items.CHEST))));
+                Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(Items.CHEST))));
     recipes.add(
         new ShapelessRecipe(
             ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "herald_slime/firework"),
@@ -114,7 +109,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 new ItemStack(ModItems.FRIENDLY_SLIME.get()), HeraldSlime.defaultFirework()),
             NonNullList.of(
                 Ingredient.EMPTY,
-                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                CompanionBase.ingredient(),
                 Ingredient.of(Items.FIREWORK_ROCKET))));
     for (var item : ForgeRegistries.ITEMS.getValues()) {
       ItemStack stack = new ItemStack(item);
@@ -130,9 +125,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 CraftingBookCategory.MISC,
                 CompanionRecipe.field(new ItemStack(ModItems.FRIENDLY_SLIME.get()), stack, farmer),
                 NonNullList.of(
-                    Ingredient.EMPTY,
-                    Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
-                    Ingredient.of(stack))));
+                    Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(stack))));
       }
       if (CombatSlime.isSword(stack))
         recipes.add(
@@ -143,9 +136,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 CraftingBookCategory.MISC,
                 CompanionRecipe.combat(new ItemStack(ModItems.FRIENDLY_SLIME.get()), stack),
                 NonNullList.of(
-                    Ingredient.EMPTY,
-                    Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
-                    Ingredient.of(stack))));
+                    Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(stack))));
       if (SlimeArmorItem.accepts(stack))
         recipes.add(
             new ShapelessRecipe(
@@ -164,9 +155,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             CraftingBookCategory.MISC,
             new ItemStack(ModItems.CLEANING_SLIME.get()),
             NonNullList.of(
-                Ingredient.EMPTY,
-                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
-                Ingredient.of(Items.ROTTEN_FLESH))));
+                Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(Items.ROTTEN_FLESH))));
     for (var item :
         new Item[] {
           ModItems.COMBAT_SLIME.get(),
@@ -188,9 +177,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             CompanionRecipe.saddle(
                 new ItemStack(ModItems.FRIENDLY_SLIME.get()), new ItemStack(Items.SADDLE)),
             NonNullList.of(
-                Ingredient.EMPTY,
-                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
-                Ingredient.of(Items.SADDLE))));
+                Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(Items.SADDLE))));
     registration.addIngredientInfo(
         new ItemStack(ModItems.SADDLE_SLIME.get()),
         VanillaTypes.ITEM_STACK,
@@ -205,7 +192,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 new ItemStack(Items.TOTEM_OF_UNDYING)),
             NonNullList.of(
                 Ingredient.EMPTY,
-                Ingredient.of(ModItems.FRIENDLY_SLIME.get()),
+                CompanionBase.ingredient(),
                 Ingredient.of(Items.NETHER_STAR),
                 Ingredient.of(Items.TOTEM_OF_UNDYING))));
     registration.addIngredientInfo(
@@ -242,8 +229,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
       for (var ingredient : secondary) {
         var ingredients = NonNullList.<Ingredient>create();
         ingredients.add(
-            Ingredient.of(
-                io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.source(kind)));
+            io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.primaryIngredient(kind));
         ingredients.add(Ingredient.of(ingredient));
         if (kind == io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind.ABUNDANCE)
           ingredients.add(Ingredient.of(Items.NETHER_STAR));

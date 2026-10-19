@@ -24,7 +24,7 @@ public final class TransportSlimeRecipe extends CustomRecipe {
     for (int slot = 0; slot < grid.getContainerSize(); slot++) {
       ItemStack item = grid.getItem(slot);
       if (item.isEmpty()) continue;
-      if (!slime && item.is(ModItems.FRIENDLY_SLIME.get())) slime = true;
+      if (!slime && CompanionBase.accepts(item)) slime = true;
       else if (!chest && item.is(Items.CHEST)) chest = true;
       else return false;
     }
@@ -33,15 +33,14 @@ public final class TransportSlimeRecipe extends CustomRecipe {
 
   public static ItemStack specialize(ItemStack friendly) {
     ItemStack result = new ItemStack(ModItems.TRANSPORT_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     return result;
   }
 
   @Override
   public ItemStack assemble(CraftingContainer grid, RegistryAccess registry) {
     for (int slot = 0; slot < grid.getContainerSize(); slot++)
-      if (grid.getItem(slot).is(ModItems.FRIENDLY_SLIME.get()))
-        return specialize(grid.getItem(slot));
+      if (CompanionBase.accepts(grid.getItem(slot))) return specialize(grid.getItem(slot));
     return ItemStack.EMPTY;
   }
 

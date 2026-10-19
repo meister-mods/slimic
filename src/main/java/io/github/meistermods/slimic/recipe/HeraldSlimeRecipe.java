@@ -26,7 +26,7 @@ public final class HeraldSlimeRecipe extends CustomRecipe {
     for (int slot = 0; slot < grid.getContainerSize(); slot++) {
       ItemStack item = grid.getItem(slot);
       if (item.isEmpty()) continue;
-      if (!slime && item.is(ModItems.FRIENDLY_SLIME.get())) slime = true;
+      if (!slime && CompanionBase.accepts(item)) slime = true;
       else if (!rocket && item.is(Items.FIREWORK_ROCKET)) rocket = true;
       else return false;
     }
@@ -35,7 +35,7 @@ public final class HeraldSlimeRecipe extends CustomRecipe {
 
   public static ItemStack specialize(ItemStack friendly, ItemStack rocket) {
     ItemStack result = new ItemStack(ModItems.HERALD_SLIME.get());
-    if (friendly.hasTag()) result.setTag(friendly.getTag().copy());
+    CompanionBase.copyData(friendly, result);
     result
         .getOrCreateTag()
         .put(HeraldSlimeItem.INITIAL_FIREWORK, rocket.copyWithCount(1).save(new CompoundTag()));
@@ -47,7 +47,7 @@ public final class HeraldSlimeRecipe extends CustomRecipe {
     ItemStack friendly = ItemStack.EMPTY, rocket = ItemStack.EMPTY;
     for (int slot = 0; slot < grid.getContainerSize(); slot++) {
       ItemStack item = grid.getItem(slot);
-      if (item.is(ModItems.FRIENDLY_SLIME.get())) friendly = item;
+      if (CompanionBase.accepts(item)) friendly = item;
       else if (item.is(Items.FIREWORK_ROCKET)) rocket = item;
     }
     return friendly.isEmpty() || rocket.isEmpty() ? ItemStack.EMPTY : specialize(friendly, rocket);
