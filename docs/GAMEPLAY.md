@@ -121,7 +121,7 @@ A full working bag issues a cargo-pickup request. A worker missing its required 
 
 Existing activity is recalculated against the current thresholds when a companion is loaded. Newly earned points are granted and remaining activity is retained; existing points and stat investments remain intact. For example, 200 activity at the first tier becomes two points and 72 remaining activity. Subsequent recovery does not grant those points again.
 
-The Slimic Creative tab groups all twenty-two companion items first, followed by Slime Trail, Slime Slag, the Slime Chest and Broken Slime Block, six armor materials from leather through netherite, the Survival Slime Tuner, and the Creative Slime Tuner.
+The Slimic Creative tab groups all twenty-two companion items first, followed by Slime Trail, Slime Slag, the Slime Chest and Broken Slime Block, six armor materials from leather through netherite, the Survival Slime Tuner, and the Creative Slime Tuner. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime.
 
 ## Mining slimes
 

@@ -33,8 +33,6 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.COMMANDER_SLIME.get());
                         output.accept(ModItems.ENDER_SLIME.get());
                         output.accept(ModItems.ATTENTION_SLIME.get());
-                        output.accept(ModItems.SLIME_TELEPORTER.get());
-
                         output.accept(ModItems.WAREHOUSE_SLIME.get());
                         output.accept(ModItems.HEALING_SLIME.get());
                         output.accept(ModItems.MINING_SLIME.get());

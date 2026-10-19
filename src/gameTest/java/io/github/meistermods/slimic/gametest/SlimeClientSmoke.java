@@ -555,15 +555,17 @@ public final class SlimeClientSmoke {
           ModItems.ITEMS.getEntries().stream()
               .map(value -> value.get())
               .collect(java.util.stream.Collectors.toSet());
+      var expectedItems = new java.util.HashSet<>(registeredItems);
+      expectedItems.remove(ModItems.SLIME_TELEPORTER.get());
       var displayedItems =
           items.stream()
               .map(ItemStack::getItem)
               .filter(registeredItems::contains)
               .collect(java.util.stream.Collectors.toSet());
-      if (!displayedItems.equals(registeredItems)
-          || items.size() != registeredItems.size() + (ModList.get().isLoaded("patchouli") ? 1 : 0))
+      if (!displayedItems.equals(expectedItems)
+          || items.size() != expectedItems.size() + (ModList.get().isLoaded("patchouli") ? 1 : 0))
         throw new IllegalStateException(
-            "Creative tab must contain every registered item exactly once");
+            "Creative tab must contain each listed item once and omit unbound teleporters");
       ItemStack miner =
           items.stream()
               .filter(stack -> stack.is(ModItems.MINING_SLIME.get()))

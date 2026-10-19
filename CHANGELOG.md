@@ -4,6 +4,17 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.39] - 2026-10-19
+
+### Fixed
+
+- Remove the unbound Slime Teleporter from the Creative tab so all twenty-two companion items appear together. Bound teleporters remain available by linking an Ender Slime.
+- Clarify teleporter availability in the English and Korean gameplay guides.
+
+### Validation
+
+- Native clients verify Creative tab contents with JEI and Patchouli present and absent. Existing server regressions confirm Ender linking, authorized teleportation, and destination identity after recovery in both environments. Bilingual documentation checks, Google Java Format, and the Java 17 build pass.
+
 ## [0.1.38] - 2026-10-19
 
 ### Changed
