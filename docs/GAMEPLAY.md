@@ -73,7 +73,7 @@ All twenty-two companion types start in Wait, including Friendly and Saddle Slim
 
 Companions retain the original slime texture with a dye color filter. Summon icons use 16×16 pixel textures with slimeball silhouettes, a shared Friendly Slime base, and framed profession symbols. See [CREDITS.txt](../CREDITS.txt).
 
-All twenty-two summoning items share the Friendly Slime base. Friendly Slimes have a flat, unmarked gold plate; specialized companions use a framed profession crest, such as a pickaxe, bundle, firework, sword, brush, saddle, hoe, axe, nether star, Slime Slag, golden carrot, or chest minecart. Fishing rods, bone meal, minecarts, dragon breath, and raw fish distinguish Fishing, Abundance, Tunnel, Dragon, and Meow Slimes. Glowstone dust, a book, an ender pearl, and redstone distinguish Glow, Commander, Ender, and Attention Slimes. The base stays consistent while the crests distinguish each specialization.
+All twenty-two summoning items share the Friendly Slime base. Friendly Slimes have a flat badge showing the full gold-block texture without a profession symbol; specialized companions use a framed profession crest, such as a pickaxe, bundle, firework, sword, brush, saddle, hoe, axe, nether star, Slime Slag, golden carrot, or chest minecart. Fishing rods, bone meal, minecarts, dragon breath, and raw fish distinguish Fishing, Abundance, Tunnel, Dragon, and Meow Slimes. Glowstone dust, a book, an ender pearl, and redstone distinguish Glow, Commander, Ender, and Attention Slimes. The base stays consistent while the crests distinguish each specialization.
 
 Permanent profession details remain visible without optional equipment: Cleaning Slimes wear blue work caps, Combat Slimes wear metal headbands with red crests, Saddle Slimes have brown bridles with gold buckles, and Soggy Slimes carry three slime droplets. Armor, saddles, and wings remain visible with these details.
 
@@ -201,7 +201,7 @@ Ordinary right-click launches a manual signal without consuming rockets. Right-c
 
 ## Slime Tuners
 
-Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within eight blocks to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. Keep it in either hand while using management. The ordinary tuner does not edit base stats.
+Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within eight blocks to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. Keep it in either hand while using management. The ordinary tuner does not edit base stats. Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. Dark cells are locked by Capacity and cannot hold items. Paging controls appear only when the bag spans multiple pages.
 
 The **Creative Slime Tuner** is available in the Slimic creative tab and has no Survival recipe. Hold it and right-click to open a separate stat editor for the companion under the crosshair within 16 blocks, falling back to the nearest companion in that range. Right-clicking a companion directly also opens it. The editor requires Creative mode and a held tuner throughout use.
 

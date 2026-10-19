@@ -4,6 +4,18 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.37] - 2026-10-19
+
+### Changed
+
+- Align companion bags, equipment, player inventory, and hotbar slots on one nine-column grid. Bag pages reserve three rows, distinguish locked cells, and hide page controls when only one page is available.
+- Render the Friendly Slime's flat badge with the complete gold-block texture rather than stretching one gold-colored texel.
+
+### Validation
+
+- Native clients verify 26 synchronized English/Korean screens across ordinary, expanded, and partial bag pages, equipment, combat filters, locked cells, and widget bounds. The baked Friendly badge uses two planar faces spanning the gold-block sprite.
+- Existing capacity, paging, hidden-slot access, Shift-click, recovery, and armor-transfer regressions pass on servers with optional integrations present and absent. Bilingual documentation, release contents, runtime references, Google Java Format, and the Java 17 build pass verification.
+
 ## [0.1.36] - 2026-10-19
 
 ### Changed

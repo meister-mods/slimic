@@ -63,6 +63,10 @@ public final class SlimeClientSmoke {
     if (++ticks > 3600) throw new IllegalStateException("Client smoke timed out in phase " + phase);
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.inventoryLayoutOnly")) {
+      if (InventoryLayoutClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.attentionBaseOnly")) {
       if (AttentionBaseClientSmoke.tick(client)) client.stop();
       return;
