@@ -74,6 +74,7 @@ public final class VanillaSlimeAggroGameTests {
     areas.add(huskArea);
     otherTargets.add(waiting(h, huskArea, ModEntities.FRIENDLY_SLIME.get(), owner, 7));
     var husk = EntityType.HUSK.create(h.getLevel());
+    husk.setPersistenceRequired();
     husk.moveTo(huskArea.point(8, 101, 11));
     husk.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0);
     husk.getRandom().setSeed(7919);

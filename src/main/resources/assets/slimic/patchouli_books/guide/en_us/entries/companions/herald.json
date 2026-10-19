@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The delay is 1–60 minutes, default five. Manual pauses and completed work do not count. Right-click launches a manual signal; applying a rocket replaces the saved design. Healing, dyes, washing, and tuners take priority."
+      "text": "The delay is 1–60 minutes, default five. Manual pauses and completed work do not count. Right-click launches a manual signal; applying a rocket replaces the saved design. Healing, dyes, washing, tuners, and scanners take priority."
     }
   ],
   "extra_recipe_mappings": {

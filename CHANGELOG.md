@@ -4,6 +4,49 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-10-19
+
+### Documentation
+
+- Distinguish preserved traits and applicable work plans from commands: item release and revival start in Wait, while ordinary world reloads retain saved commands. Revival restores one health.
+- Clarify normal tool interaction reach, management distance limits, and Creative tuner base values before profession multipliers.
+- Scope Commander rosters and Gather to the primary owner's companions, and include the empty-hand and inventory-space requirements for Ender linking.
+- Explain active fishing time, Attention roaming growth, scanner priority over manual herald signals, and shared tunnel block-breaking timing. Align Korean ingredient names with Minecraft and correct grammatical errors.
+
+### Validation
+
+- All 558 native server regressions pass with JEI and Patchouli. All 24 focused control, following, and aggression checks also pass without both optional mods. The obsolete tuner preview expectation now checks Shift recovery; following and aggression fixtures avoid cross-test interference.
+- Both guidebook fonts render all 44 entries and 139 pages in English, Korean, and English fallback, including internal links, item lookups, localized search, and page bounds.
+- Native clients verify 528 fresh/stored tooltips across languages and fonts, plus profession-specific JEI information. The Java 17 build, Google Java Format, bilingual documentation, release resources, and runtime reference checks pass.
+
+## [0.2.3] - 2026-10-19
+
+### Added
+
+- Craft one Slime Tuner and four glass blocks without a fixed arrangement to make a Slime Scanner. Its dedicated lens texture distinguishes the tool, which appears beside the tuners in the Creative tab and has JEI guidance.
+
+### Changed
+
+- Move work-area previews to ordinary right-click with the Slime Scanner. Hold it in either hand to keep the fifteen-second preview visible. Ownership, range, and read-only area rules remain in effect; Shift-right-click uses normal companion recovery with any held tool.
+- Rename the Korean Slime Tuner and Creative Slime Tuner to 슬라임 조작기 and 크리에이티브 슬라임 조작기. The scanner is named 슬라임 탐색기.
+
+### Validation
+
+- All 51 focused native server regressions pass with JEI and Patchouli present and absent, covering the exact shapeless recipe, ordinary scanner clicks on all twenty-two professions, shared permissions and revocation, range limits, tool-independent Shift recovery, and existing acquisition and guidebook behavior.
+- Native English/Korean clients verify fourteen scanner previews, dedicated 16×16 artwork, localized tool names, tool-change clearing, expiry, and named herald chat. Both guidebook fonts render all 44 entries and 139 pages in English, Korean, and English fallback.
+- Bilingual documentation and resource checks, release contents, runtime references, Google Java Format, and the Java 17 build pass.
+
+## [0.2.2] - 2026-10-19
+
+### Added
+
+- Feed a golden apple to a tiny wild Slime to turn it into one owned Friendly Slime in Wait. The companion retains its custom name and supports normal Shift-right-click recovery. Survival consumes one apple; Creative preserves it. Larger Slimes and Magma Cubes are unaffected.
+
+### Validation
+
+- All 34 focused native server regressions pass with JEI and Patchouli present and absent. Eight new cases cover feeding, both hands, Creative use, full inventories, excluded targets and items, canceled interactions and spawns, owner-only recovery, and preserved traits on release.
+- English/Korean gameplay, development, guidebook, and JEI guidance describe the new acquisition method. Google Java Format, bilingual resource checks, and the Java 17 build pass.
+
 ## [0.2.1] - 2026-10-19
 
 ### Fixed

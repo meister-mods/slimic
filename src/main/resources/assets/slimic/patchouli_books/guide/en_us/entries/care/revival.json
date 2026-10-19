@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The owner can use one slimeball on the block to revive it at $(bold)one health$(). Clear enough space first. Successful Survival revival consumes one ball. Blocked placement, invalid data, or a loaded matching identity leaves everything intact."
+      "text": "The owner can use one slimeball on the block to revive it in Wait at $(bold)one health$(). Clear enough space first. Successful Survival revival consumes one ball. Blocked placement, invalid data, or a loaded matching identity leaves everything intact."
     },
     {
       "type": "patchouli:text",

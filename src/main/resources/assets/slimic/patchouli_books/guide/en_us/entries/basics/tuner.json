@@ -11,15 +11,25 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click within eight blocks to manage names, stats, orders, gear, and cargo. Keep the tuner in either hand. Shift-right-click with either tuner to preview work areas for 15 seconds: cyan marks range, gold marks the next section or registered plots. Use another held item for recovery."
+      "text": "Right-click within normal interaction reach to manage names, stats, orders, gear, and cargo. Stay within eight blocks and keep the tuner in either hand while using management. Shift-right-click recovers the companion, including when holding a tuner or scanner."
     },
     {
       "type": "patchouli:text",
       "text": "The Creative Slime Tuner edits base stats and current resources in Creative only. It has no Survival recipe. Shrinking Capacity requires emptying the slots that would be lost."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_scanner",
+      "text": "Combine one Slime Tuner with four glass blocks in any arrangement."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click your companion with a Slime Scanner to preview its current or planned work area for 15 seconds. Hold the scanner in either hand to keep it visible. Cyan marks range; gold marks the next section or registered plots. Scanning does not start work. Shift-right-click recovers the companion."
     }
   ],
   "extra_recipe_mappings": {
     "slimic:slime_tuner": 0,
-    "slimic:creative_slime_tuner": 2
+    "slimic:creative_slime_tuner": 2,
+    "slimic:slime_scanner": 3
   }
 }

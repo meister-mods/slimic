@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 
 /**
- * Native Shift interaction, server snapshots, visible outlines, expiry and localized system chat.
+ * Native scanner interaction, server snapshots, visible outlines, expiry and localized system chat.
  */
 public final class WorkAreaClientSmoke {
   private static int phase, ticks, index, language, completedCycles;
@@ -108,7 +108,13 @@ public final class WorkAreaClientSmoke {
     var held = c.player.getMainHandItem();
     c.player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
     WorkAreaPreview.tick(tick);
-    check(active() == null, "A late packet cannot restore a preview without a tuner");
+    check(active() == null, "A late packet cannot restore a preview without a scanner");
+    for (var tool : List.of(ModItems.SLIME_TUNER.get(), ModItems.CREATIVE_SLIME_TUNER.get())) {
+      c.player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(tool));
+      WorkAreaPreview.receive(valid);
+      WorkAreaPreview.tick(tick);
+      check(active() == null, "Switching to a management tool clears the scanner preview");
+    }
     c.player.setItemInHand(InteractionHand.MAIN_HAND, held);
     WorkAreaPreview.receive(valid);
     WorkAreaPreview.tick(tick);
@@ -172,7 +178,7 @@ public final class WorkAreaClientSmoke {
           p.getInventory().clearContent();
           p.getInventory().selected = 0;
           p.setShiftKeyDown(false);
-          p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+          p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
           p.inventoryMenu.broadcastChanges();
           var pet = TYPES.get(index).create(level);
           pet.moveTo(8.5, 101, 8.5);
@@ -240,6 +246,29 @@ public final class WorkAreaClientSmoke {
     }
     if (phase == 1) {
       if (c.getOverlay() != null) return false;
+      var scanner = new ItemStack(ModItems.SLIME_SCANNER.get());
+      var sprite = c.getItemRenderer().getModel(scanner, c.level, c.player, 0).getParticleIcon();
+      check(
+          sprite.contents().name().toString().equals("slimic:item/slime_scanner")
+              && sprite.contents().width() == 16
+              && sprite.contents().height() == 16,
+          "Scanner uses its dedicated 16x16 texture rather than a missing sprite");
+      boolean korean = locale().equals("ko_kr");
+      check(
+          scanner.getHoverName().getString().equals(korean ? "슬라임 탐색기" : "Slime Scanner"),
+          "The scanner has its localized name");
+      check(
+          new ItemStack(ModItems.SLIME_TUNER.get())
+              .getHoverName()
+              .getString()
+              .equals(korean ? "슬라임 조작기" : "Slime Tuner"),
+          "Management tool name is localized");
+      check(
+          new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get())
+              .getHoverName()
+              .getString()
+              .equals(korean ? "크리에이티브 슬라임 조작기" : "Creative Slime Tuner"),
+          "Creative tool name is localized");
       prepare(c);
       phase = 2;
       ticks = 0;
@@ -290,10 +319,10 @@ public final class WorkAreaClientSmoke {
               .findFirst()
               .orElse(null);
       if (pet == null
-          || !c.player.getMainHandItem().is(ModItems.SLIME_TUNER.get())
+          || !c.player.getMainHandItem().is(ModItems.SLIME_SCANNER.get())
           || c.player.distanceToSqr(pet) > 25
           || ticks < 15) return false;
-      shift(c, true);
+      shift(c, false);
       c.gameMode.interact(c.player, pet, InteractionHand.MAIN_HAND);
       phase = 3;
       ticks = 0;
@@ -404,7 +433,7 @@ public final class WorkAreaClientSmoke {
               + locale()
               + ", "
               + TYPES.size()
-              + " native Shift previews, visible outlines, tool-change clearing, expiry and"
+              + " native scanner previews, visible outlines, tool-change clearing, expiry and"
               + " named herald chat");
       if (++language == 2) {
         System.out.println("SLIMIC WORK AREA SESSION CYCLE PASSED: " + ++completedCycles);

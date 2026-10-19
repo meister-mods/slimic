@@ -412,8 +412,7 @@ public final class SlimeToolsGameTests {
   }
 
   @GameTest(template = "empty")
-  public static void shiftRightClickWithTunerPreviewsInsteadOfRecoveringOwnedSlime(
-      GameTestHelper helper) {
+  public static void shiftRightClickWithCreativeTunerRecoversOwnedSlime(GameTestHelper helper) {
     Player owner = helper.makeMockSurvivalPlayer();
     owner.getAbilities().instabuild = true;
     FriendlySlime pet = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), PET);
@@ -424,10 +423,10 @@ public final class SlimeToolsGameTests {
     owner.setShiftKeyDown(true);
     helper.assertTrue(
         pet.mobInteract(owner, InteractionHand.MAIN_HAND).consumesAction()
-            && !pet.isRemoved()
+            && pet.isRemoved()
             && owner.getInventory().items.stream()
-                .noneMatch(stack -> stack.is(ModItems.FRIENDLY_SLIME.get())),
-        "A held tuner takes preview priority without recovering even an area-less companion");
+                .anyMatch(stack -> stack.is(ModItems.FRIENDLY_SLIME.get())),
+        "Shift with a Creative tuner uses common recovery instead of a work-area preview");
     helper.succeed();
   }
 

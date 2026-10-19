@@ -212,7 +212,7 @@ public final class FriendlySlimeGameTests {
         });
   }
 
-  @GameTest(template = "empty", timeoutTicks = 180)
+  @GameTest(template = "empty", batch = "friendly_follow", timeoutTicks = 180)
   public static void followsOwnerByHopping(GameTestHelper helper) {
     FakePlayer owner =
         new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "SlimeOwner"));

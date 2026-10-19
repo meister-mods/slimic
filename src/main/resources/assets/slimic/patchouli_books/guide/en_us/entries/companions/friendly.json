@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A Friendly Slime starts in Wait. Select Follow in its management screen to have it hop after you. Raise its stats, name it, and specialize its item later. First specialization also waits and retains saved traits."
+      "text": "A Friendly Slime starts in Wait. Select Follow in management, raise its stats and name it. Recover it to specialize later; first specialization also waits and retains traits.$(br2)Feed one golden apple to a tiny wild Slime to turn it into one owned Friendly Slime in Wait. Shift-right-click to recover it."
     }
   ],
   "extra_recipe_mappings": {

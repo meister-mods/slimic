@@ -2,8 +2,12 @@ package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.block.BrokenSlimeBlock;
+import io.github.meistermods.slimic.registry.ModEntities;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -11,8 +15,11 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -134,12 +141,48 @@ public final class FriendlySlimeInteractions {
   public static void captureOnSneakInteract(PlayerInteractEvent.EntityInteract event) {
     if (event.getTarget() instanceof FriendlySlime slime && event.getEntity().isShiftKeyDown()) {
       // Run before vanilla consumes leads, name tags, or other held items.
-      event.setCancellationResult(
-          io.github.meistermods.slimic.item.SlimeTunerItem.isHoldingPreviewTool(event.getEntity())
-              ? io.github.meistermods.slimic.item.SlimeTunerItem.preview(event.getEntity(), slime)
-              : slime.capture(event.getEntity()));
+      event.setCancellationResult(slime.capture(event.getEntity()));
       event.setCanceled(true);
     }
+  }
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void tameSmallWildSlime(PlayerInteractEvent.EntityInteract event) {
+    var player = event.getEntity();
+    if (!(event.getTarget() instanceof Slime wild)
+        || wild.getType() != EntityType.SLIME
+        || wild.getSize() != 1
+        || !wild.isAlive()
+        || wild.isRemoved()
+        || player.isSpectator()
+        || !event.getItemStack().is(Items.GOLDEN_APPLE)) return;
+    if (event.getLevel() instanceof ServerLevel server) {
+      var companion = ModEntities.FRIENDLY_SLIME.get().create(server);
+      if (companion == null) return;
+      companion.moveTo(wild.getX(), wild.getY(), wild.getZ(), wild.getYRot(), wild.getXRot());
+      companion.setCustomName(wild.getCustomName());
+      companion.setCustomNameVisible(wild.isCustomNameVisible());
+      companion.tame(player);
+      companion.setWaiting(true);
+      if (!server.addFreshEntity(companion)) return;
+      wild.discard();
+      if (!player.getAbilities().instabuild) event.getItemStack().shrink(1);
+      companion.onReleased();
+      companion.gameEvent(GameEvent.ENTITY_INTERACT, player);
+      companion.playSound(SoundEvents.SLIME_SQUISH, 1, 1);
+      server.sendParticles(
+          ParticleTypes.HEART,
+          companion.getX(),
+          companion.getEyeY(),
+          companion.getZ(),
+          7,
+          .3,
+          .2,
+          .3,
+          0);
+    }
+    event.setCancellationResult(InteractionResult.sidedSuccess(event.getLevel().isClientSide));
+    event.setCanceled(true);
   }
 
   @SubscribeEvent

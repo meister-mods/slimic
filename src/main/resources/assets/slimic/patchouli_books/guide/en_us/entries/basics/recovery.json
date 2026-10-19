@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Shift-right-click your living companion without holding a tuner to recover it. You need one empty main-inventory slot. Identity, owner, current health, stats, growth, dye, equipment, cargo, and applicable plans are retained."
+      "text": "Shift-right-click your living companion to recover it. You need one empty main-inventory slot. Identity, owner, current health, stats, growth, dye, equipment, cargo, and applicable plans are retained."
     },
     {
       "type": "patchouli:text",

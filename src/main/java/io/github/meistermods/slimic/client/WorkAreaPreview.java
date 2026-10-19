@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
-import io.github.meistermods.slimic.item.SlimeTunerItem;
+import io.github.meistermods.slimic.item.SlimeScannerItem;
 import io.github.meistermods.slimic.network.WorkAreaPacket;
 import java.util.OptionalDouble;
 import net.minecraft.client.Minecraft;
@@ -39,7 +39,7 @@ public final class WorkAreaPreview {
     if (client.level == null
         || client.player == null
         || !client.level.dimension().location().equals(current.dimension())
-        || !SlimeTunerItem.isHoldingPreviewTool(client.player)
+        || !SlimeScannerItem.isHolding(client.player)
         || !(client.level.getEntity(current.entityId()) instanceof FriendlySlime slime)
         || !slime.getUUID().equals(current.companion())
         || !slime.isAlive()

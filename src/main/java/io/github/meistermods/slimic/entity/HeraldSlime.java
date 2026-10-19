@@ -2,6 +2,7 @@ package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.config.SlimicConfig;
 import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
+import io.github.meistermods.slimic.item.SlimeScannerItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.EnumSet;
@@ -85,6 +86,7 @@ public final class HeraldSlime extends FriendlySlime {
     var held = player.getItemInHand(hand);
     if (player.isShiftKeyDown()
         || held.getItem() instanceof SlimeTunerItem
+        || held.getItem() instanceof SlimeScannerItem
         || held.getItem() instanceof CreativeSlimeTunerItem
         || held.getItem() instanceof DyeItem
         || held.is(Items.SLIME_BALL)
