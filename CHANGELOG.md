@@ -4,6 +4,17 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-10-20
+
+### Added
+
+- Guard, Transport, and Commander variants of the Damaged Ancient Slime Core in the main Slimic Creative tab, beside the seal and restoration station. Each newly taken variant can be restored independently; naturally obtained cores retain their one-time identity protection.
+
+### Validation
+
+- All 45 focused native server cases pass with JEI and Patchouli present and absent, including repeat restoration of all three Creative variants, one-time natural cores, exact material costs, denied interactions, and nested restoration callbacks.
+- Native clients verify the three Creative core entries, role tooltips, existing models, and restoration information. Google Java Format, the Java 17 build, bilingual documents, resources, and runtime linkage checks pass. The release matches both focused server snapshots.
+
 ## [0.3.4] - 2026-10-20
 
 ### Changed

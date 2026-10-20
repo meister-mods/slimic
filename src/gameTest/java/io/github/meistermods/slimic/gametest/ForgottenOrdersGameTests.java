@@ -295,29 +295,36 @@ public final class ForgottenOrdersGameTests {
 
   @GameTest(template = "empty", batch = "forgotten_orders")
   public static void nestedCoreRestorationCommitsOnceAndConsumesOnce(GameTestHelper h) {
-    var s = site(h);
-    materials(s, 3);
-    s.owner.setItemInHand(InteractionHand.MAIN_HAND, core(s, AncientSlime.Role.GUARD));
-    boolean[] attempted = {false}, nested = {true};
-    Consumer<EntityEvent.EntityConstructing> hook =
-        event -> {
-          if (!attempted[0] && event.getEntity().getType() == ModEntities.ROYAL_GUARD_SLIME.get()) {
-            attempted[0] = true;
-            nested[0] = restore(s, InteractionHand.MAIN_HAND);
-          }
-        };
-    MinecraftForge.EVENT_BUS.addListener(hook);
-    try {
+    for (boolean creative : new boolean[] {false, true}) {
+      var s = site(h);
+      materials(s, 3);
+      s.owner.setItemInHand(
+          InteractionHand.MAIN_HAND,
+          creative
+              ? AncientSlimeCoreItem.creativeVariant(AncientSlime.Role.GUARD)
+              : core(s, AncientSlime.Role.GUARD));
+      boolean[] attempted = {false}, nested = {true};
+      Consumer<EntityEvent.EntityConstructing> hook =
+          event -> {
+            if (!attempted[0]
+                && event.getEntity().getType() == ModEntities.ROYAL_GUARD_SLIME.get()) {
+              attempted[0] = true;
+              nested[0] = restore(s, InteractionHand.MAIN_HAND);
+            }
+          };
+      MinecraftForge.EVENT_BUS.addListener(hook);
+      try {
+        h.assertTrue(
+            restore(s, InteractionHand.MAIN_HAND) && attempted[0] && !nested[0],
+            "Nested callback cannot redeem the pending core");
+      } finally {
+        MinecraftForge.EVENT_BUS.unregister(hook);
+      }
       h.assertTrue(
-          restore(s, InteractionHand.MAIN_HAND) && attempted[0] && !nested[0],
-          "Nested callback cannot redeem the pending core");
-    } finally {
-      MinecraftForge.EVENT_BUS.unregister(hook);
+          count(s, Items.SLIME_BALL) == 2 && count(s, ModItems.ANCIENT_COMMAND_SEAL.get()) == 2,
+          "Exactly one commit");
+      s.area.close();
     }
-    h.assertTrue(
-        count(s, Items.SLIME_BALL) == 2 && count(s, ModItems.ANCIENT_COMMAND_SEAL.get()) == 2,
-        "Exactly one commit");
-    s.area.close();
     h.succeed();
   }
 
@@ -982,19 +989,22 @@ public final class ForgottenOrdersGameTests {
   @GameTest(template = "empty", batch = "forgotten_orders")
   public static void nativeBlockAndItemUseVetoesPreserveCoreAndMaterials(GameTestHelper h) {
     var s = site(h);
-    for (int mode = 0; mode < 3; mode++) {
+    for (int mode = 0; mode < 6; mode++) {
       var player =
           net.minecraftforge.common.util.FakePlayerFactory.get(
               h.getLevel(),
               new com.mojang.authlib.GameProfile(UUID.randomUUID(), "CorePermission"));
       player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
       player.moveTo(Vec3.atCenterOf(s.pedestal));
-      var stack = core(s, AncientSlime.Role.GUARD);
+      var stack =
+          mode < 3
+              ? core(s, AncientSlime.Role.GUARD)
+              : AncientSlimeCoreItem.creativeVariant(AncientSlime.Role.GUARD);
       var original = stack.copy();
       player.setItemInHand(InteractionHand.MAIN_HAND, stack);
       player.getInventory().setItem(9, new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()));
       player.getInventory().setItem(10, new ItemStack(Items.SLIME_BALL));
-      int veto = mode;
+      int veto = mode % 3;
       Consumer<net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock> hook =
           event -> {
             if (event.getEntity() != player) return;
@@ -1018,6 +1028,54 @@ public final class ForgottenOrdersGameTests {
               && player.getInventory().getItem(9).getCount() == 1
               && player.getInventory().getItem(10).getCount() == 1,
           "Native permission veto preserves every input: " + mode);
+    }
+    s.area.close();
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "forgotten_orders")
+  public static void creativeCoreCopiesRestoreEachRoleIndependently(GameTestHelper h) {
+    var s = site(h);
+    var identities = new java.util.HashSet<UUID>();
+    var companionIds = new java.util.HashSet<UUID>();
+    for (var role : AncientSlime.Role.values()) {
+      var prototype = AncientSlimeCoreItem.creativeVariant(role);
+      var original = prototype.copy();
+      s.owner.setItemInHand(InteractionHand.MAIN_HAND, prototype.copy());
+      h.assertTrue(
+          !restore(s, InteractionHand.MAIN_HAND)
+              && ItemStack.matches(original, s.owner.getMainHandItem()),
+          "Missing materials leave a Creative template unchanged");
+      materials(s, 2);
+      for (int i = 0; i < 2; i++) {
+        var held = prototype.copy();
+        s.owner.setItemInHand(InteractionHand.MAIN_HAND, held);
+        h.assertTrue(
+            restore(s, InteractionHand.MAIN_HAND), "Restore another Creative copy: " + role);
+        var expected =
+            switch (role) {
+              case GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
+              case TRANSPORT -> ModItems.TRANSPORT_SLIME.get();
+              case COMMANDER -> ModItems.COMMANDER_SLIME.get();
+            };
+        var result = s.owner.getMainHandItem();
+        var data = result.getTag().getCompound("SlimeData");
+        var identity = held.getTag().getUUID("AncientIdentity");
+        h.assertTrue(
+            result.is(expected)
+                && data.getFloat("Health") == 1
+                && data.getBoolean("Sitting")
+                && data.getUUID("Owner").equals(s.owner.getUUID())
+                && companionIds.add(data.getUUID("UUID"))
+                && identities.add(identity)
+                && ForgottenOrders.get(h.getLevel()).isRedeemed(identity),
+            "Each copy restores the right waiting companion at one health, once");
+      }
+      h.assertTrue(
+          ItemStack.matches(original, prototype)
+              && count(s, ModItems.ANCIENT_COMMAND_SEAL.get()) == 0
+              && count(s, Items.SLIME_BALL) == 0,
+          "Exact costs and unchanged tab prototype");
     }
     s.area.close();
     h.succeed();

@@ -44,6 +44,25 @@ public final class ForgottenOrdersClientSmoke {
       if (net.minecraftforge.fml.ModList.get().isLoaded("jei")
           && !JeiClientSmoke.restorationInformationReady()) return false;
       SlimicWorldClientSmoke.checkModels(c);
+      var coreEntries =
+          ModCreativeTabs.SLIMIC.get().getDisplayItems().stream()
+              .filter(stack -> stack.is(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get()))
+              .toList();
+      if (coreEntries.size() != 3
+          || coreEntries.stream()
+                  .map(io.github.meistermods.slimic.item.AncientSlimeCoreItem::role)
+                  .distinct()
+                  .count()
+              != 3
+          || coreEntries.stream().anyMatch(stack -> stack.getTag().hasUUID("AncientIdentity")))
+        throw new IllegalStateException(
+            "Creative must expose three independently redeemable core variants");
+      for (var core : coreEntries) {
+        var model = c.getItemRenderer().getModel(core, c.level, c.player, 0);
+        if (model == c.getModelManager().getMissingModel()
+            || core.getTooltipLines(c.player, TooltipFlag.NORMAL).size() < 3)
+          throw new IllegalStateException("Creative core must have a model and role description");
+      }
       var station = new ItemStack(ModWorldBlocks.block("command_pedestal"));
       if (station.getTooltipLines(c.player, TooltipFlag.NORMAL).stream()
           .noneMatch(

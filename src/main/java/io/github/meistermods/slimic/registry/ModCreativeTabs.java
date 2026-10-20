@@ -1,6 +1,8 @@
 package io.github.meistermods.slimic.registry;
 
 import io.github.meistermods.slimic.Slimic;
+import io.github.meistermods.slimic.entity.AncientSlime;
+import io.github.meistermods.slimic.item.AncientSlimeCoreItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -48,6 +50,8 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SOGGY_SLIME.get());
                         output.accept(ModItems.SLIME_TRAIL.get());
                         output.accept(ModItems.SLIME_SLAG.get());
+                        for (var role : AncientSlime.Role.values())
+                          output.accept(AncientSlimeCoreItem.creativeVariant(role));
                         output.accept(ModItems.ANCIENT_COMMAND_SEAL.get());
                         output.accept(ModWorldBlocks.block("command_pedestal"));
                         output.accept(ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get());

@@ -51,12 +51,23 @@ public final class AncientSlimeCoreItem extends Item {
     return stack;
   }
 
+  /** Creative entries receive an identity when first used, so tab copies remain independent. */
+  public static ItemStack creativeVariant(AncientSlime.Role role) {
+    var stack = new ItemStack(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get());
+    var data = stack.getOrCreateTag();
+    data.putInt("AncientCoreVersion", 1);
+    data.putString("AncientRole", role.name());
+    data.putBoolean("AncientCreativeTemplate", true);
+    return stack;
+  }
+
   @Nullable
   public static AncientSlime.Role role(ItemStack stack) {
     if (!stack.is(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get())
         || !stack.hasTag()
         || stack.getTag().getInt("AncientCoreVersion") != 1
-        || !stack.getTag().hasUUID("AncientIdentity")) return null;
+        || (!stack.getTag().hasUUID("AncientIdentity")
+            && !stack.getTag().getBoolean("AncientCreativeTemplate"))) return null;
     try {
       return AncientSlime.Role.valueOf(stack.getTag().getString("AncientRole"));
     } catch (IllegalArgumentException invalid) {
@@ -100,6 +111,11 @@ public final class AncientSlimeCoreItem extends Item {
     if (count(player, ModItems.ANCIENT_COMMAND_SEAL.get()) < 1
         || count(player, Items.SLIME_BALL) < 1)
       return fail(player, "ancient_restoration_materials");
+    if (!stack.getTag().hasUUID("AncientIdentity")) {
+      stack.getTag().putUUID("AncientIdentity", UUID.randomUUID());
+      stack.getTag().remove("AncientCreativeTemplate");
+      player.getInventory().setChanged();
+    }
     UUID identity = stack.getTag().getUUID("AncientIdentity");
     var orders = ForgottenOrders.get(server);
     if (!orders.reserve(identity)) return fail(player, "ancient_core_redeemed");

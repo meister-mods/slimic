@@ -598,7 +598,6 @@ public final class SlimeClientSmoke {
               .collect(java.util.stream.Collectors.toSet());
       var expectedItems = new java.util.HashSet<>(registeredItems);
       expectedItems.remove(ModItems.SLIME_TELEPORTER.get());
-      expectedItems.remove(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get());
       expectedItems.add(ModWorldBlocks.block("command_pedestal").asItem());
       var displayedItems =
           items.stream()
@@ -606,10 +605,11 @@ public final class SlimeClientSmoke {
               .filter(expectedItems::contains)
               .collect(java.util.stream.Collectors.toSet());
       if (!displayedItems.equals(expectedItems)
-          || items.size() != expectedItems.size() + (ModList.get().isLoaded("patchouli") ? 1 : 0))
+          || items.size()
+              != expectedItems.size() + 2 + (ModList.get().isLoaded("patchouli") ? 1 : 0))
         throw new IllegalStateException(
-            "Creative tab must contain each listed item once and omit unbound or unidentified"
-                + " items");
+            "Creative tab must contain three core variants, each other listed item once, and omit"
+                + " unbound teleporters");
       ItemStack miner =
           items.stream()
               .filter(stack -> stack.is(ModItems.MINING_SLIME.get()))
