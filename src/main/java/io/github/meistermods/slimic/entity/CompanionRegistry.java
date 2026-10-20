@@ -238,7 +238,9 @@ public final class CompanionRegistry extends SavedData {
   }
 
   public void observe(FriendlySlime slime) {
-    if (!(slime.level() instanceof ServerLevel level) || slime.getOwnerUUID() == null) return;
+    if (!(slime.level() instanceof ServerLevel level)
+        || slime.getOwnerUUID() == null
+        || slime.isPendingSpawn()) return;
     var previous = companions.get(slime.getUUID());
     var status = slime.getWorkStatus();
     String tag =

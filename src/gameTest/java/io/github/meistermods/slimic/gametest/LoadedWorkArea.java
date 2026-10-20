@@ -122,6 +122,21 @@ final class LoadedWorkArea {
     return new Vec3(x + dx, y, z + dz);
   }
 
+  void sealSurroundingFluids() {
+    for (int dx = -1; dx <= 16; dx++)
+      for (int dz = -1; dz <= 16; dz++)
+        if (dx == -1 || dx == 16 || dz == -1 || dz == 16) {
+          int ceiling =
+              Math.max(
+                  107, helper.getLevel().getHeight(Heightmap.Types.WORLD_SURFACE, x + dx, z + dz));
+          for (int y = 100; y <= ceiling; y++)
+            helper
+                .getLevel()
+                .setBlockAndUpdate(
+                    new BlockPos(x + dx, y, z + dz), Blocks.BEDROCK.defaultBlockState());
+        }
+  }
+
   TransportSlime carrier(Vec3 offset) {
     TransportSlime carrier = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
     carrier.setWorking(true);

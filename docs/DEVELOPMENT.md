@@ -52,6 +52,8 @@ A recovered item stores the slime's complete serialized state in `SlimeData`, in
 
 Restoration loads the saved state and retains the original UUID and owner. Item release and revival select Wait; ordinary world loads retain saved commands. It replaces placement, motion, and fall distance for the new destination and does not restore leash or passenger relationships. A loaded entity with the same UUID prevents another release of that stored identity.
 
+Entity admission is provisional until insertion finishes. After spawn callbacks, a candidate must be alive and registered in the expected level with its original UUID and owner before the summon item is consumed. Pinned Ender capacity is rechecked after callbacks so nested restorations cannot exceed the owner's limit. Provisional candidates do not update the companion registry or create recovery cores on death. Rejected candidates are unregistered, including those removed during admission; the exact item data and previous registry record remain available for retry. Regression checks cover fresh and stored items, removal, death, ownership or UUID changes, death combined with cancellation, and competing Ender restorations.
+
 Recovered items have a stack limit of one. Their release consumes the stored item even through Creative mode's normal item-count restoration. Newly crafted items retain the usual Creative reuse behavior.
 
 ## Validation

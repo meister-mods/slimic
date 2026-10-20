@@ -4,6 +4,20 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-20
+
+### Fixed
+
+- Preserve a Slime Chest's custom name when it is broken and placed again. Its inventory still drops separately, exactly once.
+- Reject companion summons removed or reassigned by entity-admission callbacks. Preserve the summon item and previous roster record, remove provisional entities, and prevent duplicate recovery data before a summon succeeds.
+- Recheck pinned Ender Slime capacity after entity-admission callbacks so nested restorations cannot exceed the owner's configured limit.
+
+### Validation
+
+- Full and focused native server runs verify 589 regression scenarios with JEI and Patchouli present and absent. The tool-replacement fixture excludes exterior fluids and verifies that mining resumes with the replacement tool within its original deadline; all 20 transport checks pass in both environments.
+- Native clients verify all 2,892 world block states, chest articulation, portal animation, and 100 resource-pack replacement/restoration cycles. Both guidebook fonts render all 50 entries and 157 pages in English, Korean, and English fallback without layout errors.
+- Real-time portal and storage checks cover all twenty-two professions over separate 45-minute and 20-minute runs, preserving identities, vitals, equipment, cargo, and committed destination roster records. Google Java Format, the Java 17 build, documentation, resources, and release runtime references pass verification.
+
 ## [0.3.1] - 2026-10-20
 
 ### Changed
