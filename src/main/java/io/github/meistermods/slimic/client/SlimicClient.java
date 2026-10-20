@@ -38,6 +38,12 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(ModEntities.ROYAL_GUARD_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.ANCIENT_GUARD_SLIME.get(), AncientSlimeRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.FORGOTTEN_TRANSPORT_SLIME.get(), AncientSlimeRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.ANCIENT_COMMANDER_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.GLOW_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.COMMANDER_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ENDER_SLIME.get(), FriendlySlimeRenderer::new);
@@ -68,6 +74,7 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(RoyalSlimeLayer.CROWN, RoyalSlimeLayer::createLayer);
     event.registerLayerDefinition(AdvancedSlimeLayer.DETAILS, AdvancedSlimeLayer::createLayer);
     event.registerLayerDefinition(HealingSlimeLayer.BAND, HealingSlimeLayer::createLayer);
     event.registerLayerDefinition(ProfessionSlimeLayer.DETAILS, ProfessionSlimeLayer::createLayer);

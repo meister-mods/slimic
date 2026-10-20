@@ -4,6 +4,60 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-10-20
+
+### Added
+
+- Guard, Transport, and Commander variants of the Damaged Ancient Slime Core in the main Slimic Creative tab, beside the seal and restoration station. Each newly taken variant can be restored independently; naturally obtained cores retain their one-time identity protection.
+
+### Validation
+
+- All 45 focused native server cases pass with JEI and Patchouli present and absent, including repeat restoration of all three Creative variants, one-time natural cores, exact material costs, denied interactions, and nested restoration callbacks.
+- Native clients verify the three Creative core entries, role tooltips, existing models, and restoration information. Google Java Format, the Java 17 build, bilingual documents, resources, and runtime linkage checks pass. The release matches both focused server snapshots.
+
+## [0.3.4] - 2026-10-20
+
+### Changed
+
+- Give the Ancient Command Seal a dedicated gold-and-purple item texture.
+- Raise Ancient Guard base health/attack/armor to 64/8/8, Forgotten Transport to 48/6/6, and Ancient Commander to 96/12/12. Earlier default remnants migrate once while retaining health proportion and saved traits; custom attributes remain intact.
+- Match the Royal Guard's base maximum health to the Guardian Angel at 160. Its permanent profession bonus preserves existing health training and current health without stacking on crafting or reload. Stored roster maximum health includes attribute modifiers.
+- Rewrite recovered records as slime-authored accounts with the missing figure obscured as XXX. Keep restoration clues in their experiences and add bilingual royal-ward exploration guidance.
+- Make chest seals optional: a 20% chance in workshops and depots, 35% in archives, and 50% in royal wards, with at most one seal per chest. Defeated remnant drops are unchanged.
+- Name the functional pedestal Slime Restoration Station, move it from decorations to beside seals in the main Creative tab, and add item, interaction, JEI, and guidebook restoration instructions. Existing block identities remain compatible.
+
+### Added
+
+- Native spawn eggs for all three ancient hostile roles, available in the Slimic Creative tab.
+
+### Validation
+
+- All 633 native server regressions pass with JEI and Patchouli present and absent. Focused cases cover restoration through either hand, exact ingredient consumption, permission vetoes, 768 seeded chest rolls, stronger ancient defaults, legacy migration, royal health training, stored vitals, and native spawn eggs.
+- Native clients verify all 2,892 world block states in English and Korean, exclusive station placement in the main Creative tab, station tooltips and JEI information, the dedicated seal and hostile eggs, and synchronized Royal Guard management at 160/160 health.
+- Both fonts render all 54 guidebook entries and 173 pages in English, Korean, and English fallback. All 42 recovered-record page renders also pass, with unchanged record text and book data verified against the release.
+- Google Java Format, the Java 17 build, bilingual documentation, resource resolution, release contents, and runtime linkage checks pass. Release code and resources match both complete server runs.
+
+## [0.3.3] - 2026-10-20
+
+### Added
+
+- Forgotten Orders: Ancient Guards, Forgotten Transports, and Ancient Commanders remain bound to newly generated ruins in The Slimic. Guards patrol and defend their home; carriers use their own linked depots; commanders alert nearby guards of the same ruin.
+- Damaged Ancient Slime Cores and Ancient Command Seals. Defeat remnants, then use a core on an intact Command Pedestal with one seal and one slimeball to restore a newly owned companion at one health. Redeemed ancient identities persist across the save to prevent duplicate restoration.
+- Royal Guard Slimes defend an assigned post and, with a shield, intercept part of nearby allies' combat damage at a stamina cost. They inherit normal combat filters, equipment, logistics, growth, ownership, recovery, and travel rules.
+- Two acquisition paths: restore ancient remnants with their old names, insignia, and some endurance training, or specialize an existing Combat Slime with a seal while retaining its identity, growth, equipment, and cargo.
+- Occupied supply depots, archives, and old royal wards with guaranteed seals and translated records about the missing traveler and the last watch. Four new bilingual guidebook entries bring the guide to 54 entries and 171 pages per language.
+- A dedicated gold-and-purple royal accessory atlas and a royal crest on the common summon-item base.
+
+### Validation
+
+- Over two hours of independent review cover companion interactions, restoration, natural ruins, documentation, guidebook rendering, appearance, and previous-save compatibility.
+- All 624 native server regressions pass with JEI and Patchouli present and absent. New cases cover real patrol and water routes, raised-shield interception, native interaction vetoes, exact restoration costs, duplicate redemption, royal protection, occupied ruin generation, and existing companion contracts.
+- Native clients verify all twenty-three companion professions, eight armor variants, royal and ancient appearances, resource-pack replacement, 552 tooltips, and JEI information. Both guidebook fonts render all 54 entries and 171 pages in English, Korean, and English fallback; all 42 rendered record pages across those languages and both fonts also fit.
+- A real 0.3.2 world upgrade preserves all twenty-two previous professions and their stored items. Separate cold restarts retain restored and specialized companions, unused cores, redeemed identities, ancient parcels, named storage, and depot links.
+- A separate 90-minute real-time portal, restoration, and storage run completes 24,771 transfers across all twenty-three professions and 89 core restorations, preserving exact identities, ownership, vitals, equipment, cargo, waiting arrivals, named storage, and duplicate-redemption checks.
+- Actual generation checks sample 1,024 chunks. A separate 20-minute real-time run completes 1,463 pickup/delivery transitions across three natural ruin types while preserving exact stock and the original forced-chunk set.
+- Google Java Format, the Java 17 build, bilingual documents, resources, release contents, and runtime linkage checks pass. The release matches the code and resources used in both complete server runs.
+
 ## [0.3.2] - 2026-10-20
 
 ### Fixed

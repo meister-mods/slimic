@@ -16,7 +16,8 @@ import net.minecraftforge.registries.*;
 public final class ModWorldBlocks {
   public enum Category {
     BUILDING,
-    DECORATION
+    DECORATION,
+    FUNCTIONAL
   }
 
   public record Entry(
@@ -443,7 +444,7 @@ public final class ModWorldBlocks {
       String id, boolean wood, int light, int color, List<double[]> boxes) {
     add(
         id,
-        Category.DECORATION,
+        id.equals("command_pedestal") ? Category.FUNCTIONAL : Category.DECORATION,
         () ->
             new RuinDecorationBlock(
                 material(wood ? "wood" : "stone").noOcclusion().lightLevel(s -> light), boxes),

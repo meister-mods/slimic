@@ -8,6 +8,8 @@ Companion accessories use dedicated PNG atlases under [`assets/slimic/textures/e
 
 Every accessory atlas is **256×256 pixels**, mapped to a **64×64 logical UV canvas**. One UV unit corresponds to four image pixels. Keep the image square when changing its resolution, preserve the occupied regions, and use nearest-neighbor scaling for pixel art. Transparent space separates the islands; opaque edge padding prevents gaps on thin surfaces.
 
+`royal_guard.png` uses two fully opaque fields, gold on the left five-eighths and purple on the right three-eighths, to cover thin crown details reliably. Its model samples gold for the crown and purple for ancient insignia.
+
 | File | Visible elements |
 | --- | --- |
 | `mining.png` | Yellow helmet, brim, and luminous front lamp; shared by Mining and Tunnel Slimes. |
@@ -17,6 +19,7 @@ Every accessory atlas is **256×256 pixels**, mapped to a **64×64 logical UV ca
 | `healing.png` | Ivory headband and golden cross; shared by Healing and Abundance Slimes. |
 | `cleaning.png` | Blue work cap, brim, and metal badge. |
 | `combat.png` | Metal headband and red crest; also used by Dragon Slimes. |
+| `royal_guard.png` | Gold crown and purple ancient insignia; also used, weathered, by hostile remnants and restored veterans. |
 | `bridle.png` | Brown bridle and gold buckle for Saddle Slimes. |
 | `soggy.png` | Green slime droplets. |
 | `fishing.png` | Low blue overalls, straps, and gold buttons. |
@@ -66,7 +69,7 @@ JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -Pcl
 JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
-The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all twenty-two professions and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
+The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all twenty-three professions and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
 
 The visual-polish check covers localized material tabs, minimal decoration tooltips, all world models, the chest atlas and lid motion, native grass fringes, and actual portal animation updates in the GPU atlas.
 
@@ -79,3 +82,5 @@ Block models under `models/block/world` combine these textures with referenced M
 ## Slime Chest
 
 `textures/block/slime_chest.png` follows the native single-chest **64×64 UV atlas**. Body, lid, and latch share it in both the world and item models. Keep the native transparent interior and unused regions; `slime_chest_particle.png` provides the breaking-particle surface.
+
+The Ancient Command Seal uses a dedicated transparent 32×32 item texture at `assets/slimic/textures/item/ancient_command_seal.png`: a weathered gold tablet with a purple slime insignia. Its model uses one layer; hostile spawn eggs use the native tinted egg model.

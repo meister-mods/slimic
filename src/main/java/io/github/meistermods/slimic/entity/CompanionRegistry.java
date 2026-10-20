@@ -298,8 +298,13 @@ public final class CompanionRegistry extends SavedData {
     float health = finiteHealth(data.getFloat("Health")), maximum = Math.max(16, health);
     for (var element : data.getList("Attributes", Tag.TAG_COMPOUND)) {
       var attribute = (CompoundTag) element;
-      if (attribute.getString("Name").equals("minecraft:generic.max_health"))
-        maximum = Math.max(health, finiteHealth((float) attribute.getDouble("Base")));
+      if (attribute.getString("Name").equals("minecraft:generic.max_health")) {
+        var instance =
+            new net.minecraft.world.entity.ai.attributes.AttributeInstance(
+                net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, ignored -> {});
+        instance.load(attribute);
+        maximum = Math.max(health, finiteHealth((float) instance.getValue()));
+      }
     }
     var entry =
         new Entry(

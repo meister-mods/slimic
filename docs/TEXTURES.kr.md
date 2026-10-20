@@ -8,6 +8,8 @@
 
 모든 장식 아틀라스는 **256×256픽셀**이며, 모델의 **64×64 논리 UV 공간**에 대응합니다. UV 1단위는 이미지의 4픽셀입니다. 해상도를 바꿀 때는 정사각형 비율과 사용 영역을 유지하고, 도트 이미지의 크기는 최근접 이웃 방식으로 조정합니다. 각 영역 사이는 투명하며, 얇은 면에 틈이 생기지 않도록 가장자리에 불투명 여백을 둡니다.
 
+`royal_guard.png`는 얇은 왕관 면에도 빈틈이 없도록 왼쪽 5/8을 금색, 오른쪽 3/8을 보라색으로 채운 불투명 아틀라스입니다. 모델은 왕관에 금색을, 고대 문양에 보라색을 사용합니다.
+
 | 파일 | 표시 요소 |
 | --- | --- |
 | `mining.png` | 채굴·터널 슬라임의 노란 안전모, 챙, 앞쪽 발광 램프. |
@@ -17,6 +19,7 @@
 | `healing.png` | 치유·풍요 슬라임의 상아색 머리띠와 황금 십자가. |
 | `cleaning.png` | 파란 작업모자, 챙, 금속 표식. |
 | `combat.png` | 전투·드래곤 슬라임의 금속 머리띠와 붉은 문장. |
+| `royal_guard.png` | 금색 왕관과 보라색 고대 문양. 적대 고대 개체와 복원된 동료는 빛바랜 색으로 표시합니다. |
 | `bridle.png` | 안장 슬라임의 갈색 굴레와 금색 버클. |
 | `soggy.png` | 초록 점액 방울. |
 | `fishing.png` | 낮게 내려온 파란 멜빵 바지, 끈, 금색 단추. |
@@ -66,7 +69,7 @@ JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -Pcl
 JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
-클라이언트 스모크 검증에 `-Dslimic.accessoryTexturesOnly=true`를 지정하면 불러온 PNG 크기와 Minecraft 모델의 실제 UV가 가리키는 면의 불투명도를 확인합니다. 이어서 스물두 직업과 갑옷 외형 8종의 앞뒤 모습을 촬영하며, 가죽 염색·몸체 염색·마법 부여 광택·장착 도구·날개를 포함합니다. 임시 512×512 리소스 팩 교체와 원래 256×256 GPU 텍스처 복원도 확인합니다. `-Dslimic.textureReloadCycles=100`을 추가하면 교체·복원 주기를 반복해 장시간 재로딩을 검사합니다. 기존 `-Dslimic.inventoryLayoutOnly=true` 검증은 동기화된 한·영 관리 화면 배치를 확인합니다. 이 옵션들은 개발 클라이언트의 설정된 실행 폴더에 `slimic-smoke`라는 월드가 미리 준비되어 있어야 합니다. 검증 중 인벤토리와 게임 모드를 바꾸므로 전용 검사 월드를 사용합니다.
+클라이언트 스모크 검증에 `-Dslimic.accessoryTexturesOnly=true`를 지정하면 불러온 PNG 크기와 Minecraft 모델의 실제 UV가 가리키는 면의 불투명도를 확인합니다. 이어서 스물세 직업과 갑옷 외형 8종의 앞뒤 모습을 촬영하며, 가죽 염색·몸체 염색·마법 부여 광택·장착 도구·날개를 포함합니다. 임시 512×512 리소스 팩 교체와 원래 256×256 GPU 텍스처 복원도 확인합니다. `-Dslimic.textureReloadCycles=100`을 추가하면 교체·복원 주기를 반복해 장시간 재로딩을 검사합니다. 기존 `-Dslimic.inventoryLayoutOnly=true` 검증은 동기화된 한·영 관리 화면 배치를 확인합니다. 이 옵션들은 개발 클라이언트의 설정된 실행 폴더에 `slimic-smoke`라는 월드가 미리 준비되어 있어야 합니다. 검증 중 인벤토리와 게임 모드를 바꾸므로 전용 검사 월드를 사용합니다.
 
 시각 검증은 번역된 자재 탭, 간결한 장식 툴팁, 모든 월드 모델, 상자 아틀라스와 개폐, 바닐라 잔디 경계, 실제 GPU 아틀라스의 차원문 애니메이션 갱신을 확인합니다.
 
@@ -79,3 +82,5 @@ The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/asset
 ## 슬라임 상자
 
 `textures/block/slime_chest.png`는 바닐라 단일 상자의 **64×64 UV 아틀라스** 배치를 따릅니다. 월드와 아이템 모델의 본체·뚜껑·걸쇠가 같은 파일을 공유합니다. 내부와 사용하지 않는 투명 영역을 유지하세요. `slime_chest_particle.png`는 파괴 입자의 표면입니다.
+
+고대 명령 인장은 `assets/slimic/textures/item/ancient_command_seal.png`의 투명한 32×32 전용 텍스처를 사용합니다. 낡은 금색 인장에 보라색 슬라임 문양을 새겼으며 모델은 한 레이어를 사용합니다. 적대 슬라임 생성 알은 바닐라 색상 적용 모델을 사용합니다.

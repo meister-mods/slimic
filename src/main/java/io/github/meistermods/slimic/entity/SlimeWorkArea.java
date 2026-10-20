@@ -124,6 +124,12 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
         shapes.add(new Shape(new AABB(fishing.getFishingWater()), false, true));
     } else if (slime instanceof GuardianAngelSlime) {
       shapes.add(range(slime.position(), Math.min(radius, 4 * SlimeStat.REACH.value(slime))));
+    } else if (slime instanceof RoyalGuardSlime guard) {
+      shapes.add(
+          range(
+              Vec3.atCenterOf(slime.isWorking() ? guard.getGuardPost() : slime.blockPosition()),
+              radius));
+      shapes.add(range(slime.position(), 4));
     } else if (slime instanceof HeraldSlime || slime instanceof CombatSlime) {
       shapes.add(range(slime.position(), radius));
     } else if (slime instanceof SoggySlime soggy) {

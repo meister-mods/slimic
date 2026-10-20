@@ -29,7 +29,8 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     GLOW,
     COMMANDER,
     ENDER,
-    ATTENTION
+    ATTENTION,
+    ROYAL_GUARD
   }
 
   private final Kind kind;
@@ -43,7 +44,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     return switch (kind) {
       case ABUNDANCE -> ModItems.HEALING_SLIME.get();
       case TUNNEL -> ModItems.MINING_SLIME.get();
-      case DRAGON -> ModItems.COMBAT_SLIME.get();
+      case DRAGON, ROYAL_GUARD -> ModItems.COMBAT_SLIME.get();
       default -> ModItems.FRIENDLY_SLIME.get();
     };
   }
@@ -59,6 +60,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case COMMANDER -> ModItems.COMMANDER_SLIME.get();
       case ENDER -> ModItems.ENDER_SLIME.get();
       case ATTENTION -> ModItems.ATTENTION_SLIME.get();
+      case ROYAL_GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
     };
   }
 
@@ -83,6 +85,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case COMMANDER -> stack.is(Items.BOOK);
       case ENDER -> stack.is(Items.ENDER_PEARL);
       case ATTENTION -> stack.is(Items.REDSTONE);
+      case ROYAL_GUARD -> stack.is(ModItems.ANCIENT_COMMAND_SEAL.get());
 
       case TUNNEL -> stack.is(Items.NETHER_STAR);
       case DRAGON -> stack.is(Items.DRAGON_HEAD);
@@ -113,6 +116,8 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     CompanionBase.copyData(source, result);
     if (result.getOrCreateTag().contains("SlimeData")) {
       var data = result.getTag().getCompound("SlimeData");
+      if (kind == Kind.ROYAL_GUARD)
+        io.github.meistermods.slimic.entity.RoyalGuardSlime.addHealthBonusToData(data);
       data.putBoolean("Sitting", true);
       for (var key : List.of("MiningWorking", "CombatWorking", "HealingWorking"))
         data.putBoolean(key, false);
@@ -162,6 +167,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case COMMANDER -> ModRecipes.COMMANDER_SLIME.get();
       case ENDER -> ModRecipes.ENDER_SLIME.get();
       case ATTENTION -> ModRecipes.ATTENTION_SLIME.get();
+      case ROYAL_GUARD -> ModRecipes.ROYAL_GUARD_SLIME.get();
     };
   }
 }

@@ -2,7 +2,7 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 50 entries and 157 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 54 entries and 173 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
@@ -92,3 +92,7 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Ruin decorations | [Ruin decorations](THE_SLIMIC.md#decorations) |
 | Abandoned workshops | [Abandoned workshops](THE_SLIMIC.md#ruins-and-records) |
 | Companion travel | [Companion travel](THE_SLIMIC.md#companion-travel) |
+| Forgotten Orders | [Occupied ruins](FORGOTTEN_ORDERS.md#occupied-ruins) |
+| Slime restoration | [Restore a remnant](FORGOTTEN_ORDERS.md#restore-a-remnant) |
+| Kingdom relics | [Occupied ruins](FORGOTTEN_ORDERS.md#occupied-ruins) |
+| Royal Guard Slime | [Royal Guard Slime](FORGOTTEN_ORDERS.md#royal-guard-slime) |

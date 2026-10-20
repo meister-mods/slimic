@@ -217,6 +217,10 @@ public class CombatSlime extends BagSlime {
     return onGround();
   }
 
+  protected boolean moveWhileIdle() {
+    return false;
+  }
+
   private boolean ownLoot(ItemEntity item) {
     CompoundTag data = item.saveWithoutId(new CompoundTag());
     return item.isAlive()
@@ -468,7 +472,7 @@ public class CombatSlime extends BagSlime {
         resetTravel();
         status = Status.IDLE;
         stopUsingItem();
-        if (!collectLoot(true)) getNavigation().stop();
+        if (!collectLoot(true) && !moveWhileIdle()) getNavigation().stop();
         return;
       }
       getLookControl().setLookAt(victim, 30, 30);

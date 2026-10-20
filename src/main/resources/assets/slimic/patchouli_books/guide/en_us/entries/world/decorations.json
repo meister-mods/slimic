@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The Slimic Decorations tab holds 32 props and plants. Pedestals, pillars, tablets, urns, furniture, crystals, lights, and weathered markers give settlements their own history. Their recipes use local stone, infused wood, gel, or familiar plants."
+      "text": "The Slimic Decorations tab holds 31 props and plants. Pedestals, pillars, tablets, urns, furniture, crystals, lights, and weathered markers give settlements their own history. Their recipes use local stone, infused wood, gel, or familiar plants."
     },
     {
       "type": "patchouli:text",
@@ -21,7 +21,6 @@
     "slimic:gel_lantern": 0,
     "slimic:ancient_brazier": 0,
     "slimic:dormant_beacon": 0,
-    "slimic:command_pedestal": 0,
     "slimic:cracked_command_pedestal": 0,
     "slimic:fallen_pillar": 0,
     "slimic:broken_pillar": 0,

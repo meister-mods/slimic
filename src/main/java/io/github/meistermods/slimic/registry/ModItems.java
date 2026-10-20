@@ -29,6 +29,49 @@ public final class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Slimic.MOD_ID);
 
+  public static final RegistryObject<Item> ROYAL_GUARD_SLIME =
+      ITEMS.register(
+          "royal_guard_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.ROYAL_GUARD_SLIME));
+  public static final RegistryObject<Item> ANCIENT_COMMAND_SEAL =
+      ITEMS.register(
+          "ancient_command_seal",
+          () ->
+              new Item(
+                  new Item.Properties()
+                      .rarity(net.minecraft.world.item.Rarity.UNCOMMON)
+                      .fireResistant()));
+  public static final RegistryObject<Item> DAMAGED_ANCIENT_SLIME_CORE =
+      ITEMS.register(
+          "damaged_ancient_slime_core",
+          () ->
+              new io.github.meistermods.slimic.item.AncientSlimeCoreItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
+
+  public static final RegistryObject<Item> ANCIENT_GUARD_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "ancient_guard_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.ANCIENT_GUARD_SLIME, 0x476339, 0xD5AC44, new Item.Properties()));
+  public static final RegistryObject<Item> FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "forgotten_transport_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.FORGOTTEN_TRANSPORT_SLIME,
+                  0x476339,
+                  0x8A582C,
+                  new Item.Properties()));
+  public static final RegistryObject<Item> ANCIENT_COMMANDER_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "ancient_commander_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.ANCIENT_COMMANDER_SLIME, 0x476339, 0x713C91, new Item.Properties()));
+
   public static final RegistryObject<Item> FRIENDLY_SLIME =
       ITEMS.register("friendly_slime", () -> new FriendlySlimeItem(new Item.Properties()));
 

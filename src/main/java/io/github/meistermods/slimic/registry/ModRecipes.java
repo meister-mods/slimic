@@ -16,6 +16,21 @@ import net.minecraftforge.registries.RegistryObject;
 public final class ModRecipes {
   public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
       DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Slimic.MOD_ID);
+
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
+      ROYAL_GUARD_SLIME =
+          SERIALIZERS.register(
+              "royal_guard_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe(
+                              id,
+                              category,
+                              io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
+                                  .ROYAL_GUARD)));
   public static final RegistryObject<SimpleCraftingRecipeSerializer<MiningSlimeRecipe>>
       MINING_SLIME =
           SERIALIZERS.register(

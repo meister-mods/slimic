@@ -221,6 +221,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             case COMMANDER -> List.of(new ItemStack(Items.BOOK));
             case ENDER -> List.of(new ItemStack(Items.ENDER_PEARL));
             case ATTENTION -> List.of(new ItemStack(Items.REDSTONE));
+            case ROYAL_GUARD -> List.of(new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()));
 
             case TUNNEL -> List.of(new ItemStack(Items.NETHER_STAR));
             case DRAGON -> List.of(new ItemStack(Items.DRAGON_HEAD));
@@ -260,6 +261,16 @@ public final class SlimicJeiPlugin implements IModPlugin {
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
+    for (var relic :
+        new Item[] {ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(), ModItems.ANCIENT_COMMAND_SEAL.get()})
+      registration.addIngredientInfo(
+          new ItemStack(relic),
+          VanillaTypes.ITEM_STACK,
+          Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(relic).getPath()));
+    registration.addIngredientInfo(
+        new ItemStack(ModWorldBlocks.block("command_pedestal")),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.command_pedestal"));
     registration.addIngredientInfo(
         ModWorldBlocks.entries().stream()
             .filter(entry -> entry.category() == ModWorldBlocks.Category.BUILDING)

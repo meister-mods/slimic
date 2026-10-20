@@ -1,0 +1,29 @@
+{
+  "name": "Slime restoration",
+  "icon": "slimic:command_pedestal",
+  "category": "slimic:world",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Your first expedition can follow a complete loop: find a ruin, defeat a remnant, collect its core and seal, restore it, and return home. Ancient cores are separate from the Broken Slime Blocks used to revive owned companions."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Hold a damaged core and right-click a $(item)Slime Restoration Station$(). Keep one seal and one slimeball in your inventory. They are consumed and the core becomes a summon item. Find an intact station in ruins or cut Chiseled Slimic Stone Bricks with a stonecutter. Cracked stations do not work."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Guards become $(l:companions/royal_guard)Royal Guards$(), carriers become $(l:companions/transport)Transports$(), and commanders become $(l:companions/commander)Commanders$(). Each receives a new identity and your ownership, and starts waiting at one health. The usual group-wide Commander spawn limit still applies."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Ancient names, purple insignia, and some Endurance training remain. Each core can be restored once across the saved world. Alternatively, combine a Combat Slime with a seal to retain your existing companion’s growth, equipment, and cargo."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:command_pedestal": 1,
+    "slimic:damaged_ancient_slime_core": 1,
+    "slimic:ancient_command_seal": 1
+  }
+}

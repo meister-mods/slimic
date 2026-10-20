@@ -160,7 +160,7 @@ public final class OrderThirteenClientSmoke {
     p.onUpdateAbilities();
     p.getInventory().clearContent();
     int i = 0;
-    for (var value : ModEntities.ENTITY_TYPES.getEntries()) {
+    for (var value : ModEntities.companionTypes()) {
       var s = (FriendlySlime) value.get().create(level);
       s.tame(p);
       s.moveTo(4.5 + i % 6 * 4, 101, 12.5 + i / 6 * 4, 180, 0);
@@ -174,7 +174,7 @@ public final class OrderThirteenClientSmoke {
       ids.put(value.getId().getPath(), s.getUUID());
       i++;
     }
-    if (i != 22) throw new IllegalStateException("Expected all twenty-two models");
+    if (i != 23) throw new IllegalStateException("Expected all twenty-three models");
     registry.setRelation(p.getUUID(), SHARED, true, true);
     registry.setRelation(p.getUUID(), ENEMY, false, true);
     p.server.getProfileCache().add(new GameProfile(SHARED, "SharedOwner"));
@@ -215,7 +215,7 @@ public final class OrderThirteenClientSmoke {
     if (phase == 2) {
       if (ticks < 40
           || c.level.getEntitiesOfClass(FriendlySlime.class, new AABB(0, 90, 0, 32, 120, 32)).size()
-              != 22) return false;
+              != 23) return false;
       if (!iconsShown) {
         shot(c, "all-22-models");
         c.setScreen(new SummonGallery());
@@ -526,7 +526,7 @@ public final class OrderThirteenClientSmoke {
     }
     if (phase == 27) {
       System.out.println(
-          "SLIMIC ORDER THIRTEEN CLIENT SMOKE PASSED: 22 models, shared crests, commander mustache"
+          "SLIMIC ORDER THIRTEEN CLIENT SMOKE PASSED: 23 models, shared crests, commander mustache"
               + " and baton, real roster/tag/relation packets, EN/KR screens, independent light,"
               + " fireflies, bound token travel and Attention controls");
       return true;
@@ -550,7 +550,7 @@ public final class OrderThirteenClientSmoke {
       g.fill(0, 0, width, height, 0xff202830);
       g.drawCenteredString(font, title, width / 2, 12, 0xffffff);
       int i = 0;
-      for (var registered : ModEntities.ENTITY_TYPES.getEntries()) {
+      for (var registered : ModEntities.companionTypes()) {
         var item = net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(registered.getId());
         int x = width / 2 - 265 + (i % 6) * 90, y = 45 + (i / 6) * 70;
         g.pose().pushPose();

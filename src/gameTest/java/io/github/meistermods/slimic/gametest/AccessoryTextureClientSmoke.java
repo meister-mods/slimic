@@ -34,6 +34,7 @@ public final class AccessoryTextureClientSmoke {
           new Surface("healing", HealingSlimeLayer.BAND, "band", "emblem"),
           new Surface("cleaning", ProfessionSlimeLayer.DETAILS, "cleaning_cap", "cleaning_badge"),
           new Surface("combat", ProfessionSlimeLayer.DETAILS, "combat_band", "combat_crest"),
+          new Surface("royal_guard", RoyalSlimeLayer.CROWN, "crown", "relic_crest"),
           new Surface("bridle", ProfessionSlimeLayer.DETAILS, "saddle_bridle", "saddle_buckle"),
           new Surface("soggy", ProfessionSlimeLayer.DETAILS, "soggy_drops"),
           new Surface("fishing", AdvancedSlimeLayer.DETAILS, "overalls", "buttons"),
@@ -110,7 +111,7 @@ public final class AccessoryTextureClientSmoke {
 
   private static void prepare(Minecraft client) {
     validate(client);
-    for (var value : ModEntities.ENTITY_TYPES.getEntries()) {
+    for (var value : ModEntities.companionTypes()) {
       var slime = (FriendlySlime) value.get().create(client.level);
       slime.setNoAi(true);
       if (slime instanceof MiningSlime miner) {
@@ -128,7 +129,7 @@ public final class AccessoryTextureClientSmoke {
       models.add(slime);
       labels.add(value.getId().getPath());
     }
-    if (models.size() != 22) throw new IllegalStateException("Missing profession portrait");
+    if (models.size() != 23) throw new IllegalStateException("Missing profession portrait");
     Item[] materials = {
       Items.LEATHER_CHESTPLATE,
       Items.CHAINMAIL_CHESTPLATE,
@@ -188,7 +189,8 @@ public final class AccessoryTextureClientSmoke {
       prepare(client);
       ready = true;
     }
-    if (page >= 10) return resourcePacks(client);
+    int portraitPages = ((models.size() + 5) / 6) * 2;
+    if (page >= portraitPages) return resourcePacks(client);
     if (++ticks < 15) return false;
     try {
       var directory = client.gameDirectory.toPath().resolve("accessory-textures-audit");
@@ -200,10 +202,10 @@ public final class AccessoryTextureClientSmoke {
       throw new IllegalStateException(e);
     }
     ticks = 0;
-    if (++page < 10) return false;
+    if (++page < portraitPages) return false;
     client.setScreen(null);
     System.out.println(
-        "SLIMIC ACCESSORY TEXTURE CLIENT SMOKE PASSED: all 22 professions and 8 armor "
+        "SLIMIC ACCESSORY TEXTURE CLIENT SMOKE PASSED: all 23 professions and 8 armor "
             + "variants from front and rear; leather dye, body dye, glint, tools and wings");
     return false;
   }

@@ -19,6 +19,7 @@ import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModCreativeTabs;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
+import io.github.meistermods.slimic.registry.ModWorldBlocks;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -90,6 +91,14 @@ public final class SlimeClientSmoke {
     }
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.ancientRecordsOnly")) {
+      if (AncientRecordsClientSmoke.tick(client)) client.stop();
+      return;
+    }
+    if (Boolean.getBoolean("slimic.forgottenOrdersOnly")) {
+      if (ForgottenOrdersClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.visualPolishOnly")) {
       if (VisualPolishClientSmoke.tick(client)) client.stop();
       return;
@@ -589,15 +598,18 @@ public final class SlimeClientSmoke {
               .collect(java.util.stream.Collectors.toSet());
       var expectedItems = new java.util.HashSet<>(registeredItems);
       expectedItems.remove(ModItems.SLIME_TELEPORTER.get());
+      expectedItems.add(ModWorldBlocks.block("command_pedestal").asItem());
       var displayedItems =
           items.stream()
               .map(ItemStack::getItem)
-              .filter(registeredItems::contains)
+              .filter(expectedItems::contains)
               .collect(java.util.stream.Collectors.toSet());
       if (!displayedItems.equals(expectedItems)
-          || items.size() != expectedItems.size() + (ModList.get().isLoaded("patchouli") ? 1 : 0))
+          || items.size()
+              != expectedItems.size() + 2 + (ModList.get().isLoaded("patchouli") ? 1 : 0))
         throw new IllegalStateException(
-            "Creative tab must contain each listed item once and omit unbound teleporters");
+            "Creative tab must contain three core variants, each other listed item once, and omit"
+                + " unbound teleporters");
       ItemStack miner =
           items.stream()
               .filter(stack -> stack.is(ModItems.MINING_SLIME.get()))

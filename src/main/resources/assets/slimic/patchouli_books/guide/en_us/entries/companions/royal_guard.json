@@ -1,0 +1,27 @@
+{
+  "name": "Royal Guard Slime",
+  "icon": "slimic:royal_guard_slime",
+  "category": "slimic:companions",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Combine a $(item)Combat Slime + Ancient Command Seal$() without a fixed arrangement. Identity, ownership, growth, current health, gear, and cargo remain. Restoring an Ancient Guard core at a pedestal offers a second route."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Base maximum health is 160, matching a Guardian Angel. Normal Health training still adds four. It starts in Wait. Select Fight to assign the current guard post. It fights targets within Detection Range and returns when idle. Select Fight elsewhere to move the post."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Accepts a sword, shield, and Slime Armor. While working with a shield, it takes 35% of combat damage aimed at an owner or cooperating companion within four blocks. Sight, target filters, ownership, and PvP protection apply. Guards do not pass damage to other guards."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Protection costs at least four stamina, up to twice the intercepted damage, and cannot take health below one. Tool supply, hauling, healing, Herald reports, Commander orders, and portal travel use the existing companion systems. Restored veterans retain ancient names and weathered insignia."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_guard_slime": 0
+  }
+}
