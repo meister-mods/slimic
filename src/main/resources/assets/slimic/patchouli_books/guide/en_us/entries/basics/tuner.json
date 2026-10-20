@@ -20,7 +20,7 @@
     {
       "type": "patchouli:crafting",
       "recipe": "slimic:slime_scanner",
-      "text": "Combine one Slime Tuner with four glass blocks in any arrangement."
+      "text": "Place a Slime Tuner in the center of a crafting table, with glass directly above, below, left, and right."
     },
     {
       "type": "patchouli:text",

@@ -413,7 +413,7 @@
   "item.slimic.slime_scanner": "슬라임 탐색기",
   "item.slimic.slime_scanner.tooltip": "동료를 우클릭하면 작업 영역을 표시합니다.",
   "item.slimic.slime_scanner.detail": "어느 손에든 들고 있으면 15초 동안 보입니다.",
-  "jei.slimic.slime_scanner": "슬라임 조작기 1개와 유리 4개를 모양 없이 조합합니다. 소유·공동 소유 동료를 우클릭해 현재 또는 예정 작업 영역을 15초 동안 표시합니다. 일반 상호작용 거리를 따르며 최대 8블록까지 허용합니다. 어느 손에든 탐색기를 들면 표시를 유지합니다. Shift+우클릭은 동료를 회수합니다.",
+  "jei.slimic.slime_scanner": "가운데 슬라임 조작기를 놓고 상하좌우에 유리를 놓아 십자 모양으로 조합합니다. 소유·공동 소유 동료를 우클릭해 현재 또는 예정 작업 영역을 15초 동안 표시합니다. 일반 상호작용 거리를 따르며 최대 8블록까지 허용합니다. 어느 손에든 탐색기를 들면 표시를 유지합니다. Shift+우클릭은 동료를 회수합니다.",
   "block.slimic.slimic_stone": "슬라이믹 돌",
   "block.slimic.slimic_cobblestone": "슬라이믹 조약돌",
   "block.slimic.mossy_slimic_cobblestone": "이끼 낀 슬라이믹 조약돌",
@@ -500,16 +500,14 @@
   "block.slimic.slime_tuft": "슬라임 풀",
   "block.slimic.gel_cap": "점액 갓버섯",
   "block.slimic.glowing_bloom": "빛나는 꽃",
-  "itemGroup.slimic.building": "The Slimic 건축",
-  "itemGroup.slimic.decorations": "The Slimic 장식",
+  "itemGroup.slimic.building": "Slimic 블록",
+  "itemGroup.slimic.decorations": "Slimic 장식",
   "block.slimic.slimic_portal": "슬라임 차원문",
   "biome.slimic.damp_plains": "눅눅한 평원",
   "dimension.slimic.the_slimic": "The Slimic",
-  "tooltip.slimic.world_decoration": "장식용입니다. 보관함이나 작업대 기능은 없습니다.",
   "message.slimic.portal_unavailable": "차원문 이동 실패: 출구 공간과 이동 권한을 확인하세요.",
   "lore.slimic.supply_ledger.title": "끊어진 보급 기록",
   "lore.slimic.supply_ledger.page1": "북쪽 작업장으로 가는 보급이 끊겼다. 광산에서는 여전히 물품을 요청한다. 창고에는 더 보낼 것이 없다.",
   "lore.slimic.supply_ledger.page2": "새로운 명령은 도착하지 않았다. 우리는 등불을 켜 둔다. 여행자가 돌아온다면 길을 찾을 수 있어야 한다.",
-  "jei.slimic.world_building": "슬라임 블록 틀을 슬라임볼로 활성화해 The Slimic에 입장하고 자재를 채집하세요. 현지 돌은 석재 절단기로 가공하며, 제작·제련 조합법도 사용할 수 있습니다. 건축 자재는 별도 크리에이티브 탭에 있습니다.",
-  "jei.slimic.world_decoration": "현지 자재로 폐허 소품을 제작하거나 눅눅한 평원에서 채집하세요. 고형 소품은 단단한 바닥이 필요하고 물을 머금을 수 있습니다. 장식용이므로 보관과 동료 물류에는 실제 슬라임 상자를 사용하세요. 장식은 별도 크리에이티브 탭에 있습니다."
+  "jei.slimic.world_building": "슬라임 블록 틀을 슬라임볼로 활성화해 The Slimic에 입장하고 자재를 채집하세요. 현지 돌은 석재 절단기로 가공하며, 제작·제련 조합법도 사용할 수 있습니다. 건축 자재는 별도 크리에이티브 탭에 있습니다."
 }

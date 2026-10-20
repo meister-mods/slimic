@@ -65,7 +65,7 @@ public final class SlimicWorldClientSmoke {
     }
   }
 
-  private static void checkModels(Minecraft c) {
+  static void checkModels(Minecraft c) {
     var missing = c.getModelManager().getMissingModel();
     CreativeModeTabs.tryRebuildTabContents(
         c.level.enabledFeatures(), true, c.level.registryAccess());

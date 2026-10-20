@@ -59,7 +59,7 @@ public final class ModWorldBlocks {
     full("slimic_slate_bricks", "stone", 0xB4CBA7);
     full("ruined_bricks", "stone", 0xC2C49A);
     full("slimic_soil", "soil", 0xFFFFFF);
-    full("damp_grass_block", "grass", 0xFFFFFF);
+    full("damp_grass_block", "grass", 0xA0B54A);
     full("slime_silt", "soil", 0xFFFFFF);
     full("slimic_clay", "soil", 0xB2C5A6);
     full("slime_mud", "soil", 0xA2B78E);
@@ -378,11 +378,7 @@ public final class ModWorldBlocks {
       boolean translucent) {
     var block = BLOCKS.register(id, factory);
     RegistryObject<Item> item =
-        ITEMS.register(
-            id,
-            () ->
-                new io.github.meistermods.slimic.item.WorldBlockItem(
-                    block.get(), new Item.Properties(), category == Category.DECORATION));
+        ITEMS.register(id, () -> new BlockItem(block.get(), new Item.Properties()));
     if (CATALOG.putIfAbsent(id, new Entry(id, category, block, item, color, cutout, translucent))
         != null) throw new IllegalStateException("Duplicate world block: " + id);
   }

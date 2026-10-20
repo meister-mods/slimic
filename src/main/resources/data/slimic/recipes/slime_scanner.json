@@ -1,12 +1,20 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "equipment",
-  "ingredients": [
-    { "item": "slimic:slime_tuner" },
-    { "item": "minecraft:glass" },
-    { "item": "minecraft:glass" },
-    { "item": "minecraft:glass" },
-    { "item": "minecraft:glass" }
+  "pattern": [
+    " G ",
+    "GTG",
+    " G "
   ],
-  "result": { "item": "slimic:slime_scanner" }
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "T": {
+      "item": "slimic:slime_tuner"
+    }
+  },
+  "result": {
+    "item": "slimic:slime_scanner"
+  }
 }

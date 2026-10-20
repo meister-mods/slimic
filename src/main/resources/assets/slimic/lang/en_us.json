@@ -413,7 +413,7 @@
   "item.slimic.slime_scanner": "Slime Scanner",
   "item.slimic.slime_scanner.tooltip": "Right-click your slime to preview its work area.",
   "item.slimic.slime_scanner.detail": "Hold in either hand to keep the preview (15s).",
-  "jei.slimic.slime_scanner": "Craft one Slime Tuner with four glass blocks in any arrangement. Right-click an owned or shared companion within normal interaction reach (eight-block maximum) to preview its current or planned work area for fifteen seconds. Hold the scanner in either hand to keep the outline visible. Shift-right-click still recovers the companion.",
+  "jei.slimic.slime_scanner": "Place a Slime Tuner in the center and glass blocks directly above, below, left, and right. Right-click an owned or shared companion within normal interaction reach (eight-block maximum) to preview its current or planned work area for fifteen seconds. Hold the scanner in either hand to keep the outline visible. Shift-right-click still recovers the companion.",
   "block.slimic.slimic_stone": "Slimic Stone",
   "block.slimic.slimic_cobblestone": "Slimic Cobblestone",
   "block.slimic.mossy_slimic_cobblestone": "Mossy Slimic Cobblestone",
@@ -500,16 +500,14 @@
   "block.slimic.slime_tuft": "Slime Tuft",
   "block.slimic.gel_cap": "Gel Cap",
   "block.slimic.glowing_bloom": "Glowing Bloom",
-  "itemGroup.slimic.building": "The Slimic: Building Blocks",
-  "itemGroup.slimic.decorations": "The Slimic: Decorations",
+  "itemGroup.slimic.building": "Slimic Blocks",
+  "itemGroup.slimic.decorations": "Slimic Decorations",
   "block.slimic.slimic_portal": "Slimic Portal",
   "biome.slimic.damp_plains": "Damp Plains",
   "dimension.slimic.the_slimic": "The Slimic",
-  "tooltip.slimic.world_decoration": "Decoration; does not store items or operate as a workstation.",
   "message.slimic.portal_unavailable": "Portal travel failed: check the exit space and travel permissions.",
   "lore.slimic.supply_ledger.title": "The Interrupted Ledger",
   "lore.slimic.supply_ledger.page1": "Deliveries to the northern workshop have stopped. The miners still send their requests. The storehouse has nothing left to send.",
   "lore.slimic.supply_ledger.page2": "No new orders have arrived. We leave the lamps lit. If the traveler returns, the road must still be visible.",
-  "jei.slimic.world_building": "Gather materials in The Slimic through a slime-block portal activated with a slimeball. Process local stone with a stonecutter, or use the listed crafting and smelting recipes. Building blocks have a separate Creative tab.",
-  "jei.slimic.world_decoration": "Craft ruin props from local materials or collect them in Damp Plains. Solid props need a firm floor and can hold water. These are ornamental; use a real Slime Chest for storage and companion logistics. Decorations have a separate Creative tab."
+  "jei.slimic.world_building": "Gather materials in The Slimic through a slime-block portal activated with a slimeball. Process local stone with a stonecutter, or use the listed crafting and smelting recipes. Building blocks have a separate Creative tab."
 }

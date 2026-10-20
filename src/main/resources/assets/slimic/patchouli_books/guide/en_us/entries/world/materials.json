@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The Building Blocks tab contains 32 base materials plus 8 stairs, 8 slabs, and 6 walls. Gather natural stone, slate, soil, silt, clay, mud, and gel in The Slimic. Use the matching pickaxe or shovel; Slimic Stone drops Slimic Cobblestone without Silk Touch."
+      "text": "The Slimic Blocks tab contains 32 base materials plus 8 stairs, 8 slabs, and 6 walls. Gather natural stone, slate, soil, silt, clay, mud, and gel in The Slimic. Use the matching pickaxe or shovel; Slimic Stone drops Slimic Cobblestone without Silk Touch."
     },
     {
       "type": "patchouli:text",

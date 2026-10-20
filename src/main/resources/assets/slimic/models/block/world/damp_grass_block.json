@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:block/block",
-  "render_type": "minecraft:solid",
+  "render_type": "minecraft:cutout_mipped",
   "textures": {
-    "all": "slimic:block/world/damp_grass_top",
-    "particle": "slimic:block/world/damp_grass_top",
+    "particle": "slimic:block/world/slimic_soil",
     "soil": "slimic:block/world/slimic_soil",
-    "grass": "slimic:block/world/damp_grass_top"
+    "top": "slimic:block/world/damp_grass_top",
+    "overlay": "minecraft:block/grass_block_side_overlay"
   },
   "elements": [
     {
@@ -16,41 +16,40 @@
       ],
       "to": [
         16,
-        14,
+        16,
         16
       ],
       "faces": {
+        "up": {
+          "texture": "#top",
+          "cullface": "up"
+        },
         "down": {
           "texture": "#soil",
-          "tintindex": 0,
           "cullface": "down"
         },
         "north": {
           "texture": "#soil",
-          "tintindex": 0,
           "cullface": "north"
         },
         "south": {
           "texture": "#soil",
-          "tintindex": 0,
           "cullface": "south"
-        },
-        "west": {
-          "texture": "#soil",
-          "tintindex": 0,
-          "cullface": "west"
         },
         "east": {
           "texture": "#soil",
-          "tintindex": 0,
           "cullface": "east"
+        },
+        "west": {
+          "texture": "#soil",
+          "cullface": "west"
         }
       }
     },
     {
       "from": [
         0,
-        14,
+        0,
         0
       ],
       "to": [
@@ -59,30 +58,25 @@
         16
       ],
       "faces": {
-        "up": {
-          "texture": "#grass",
-          "tintindex": 0,
-          "cullface": "up"
-        },
         "north": {
-          "texture": "#grass",
-          "tintindex": 0,
-          "cullface": "north"
+          "texture": "#overlay",
+          "cullface": "north",
+          "tintindex": 0
         },
         "south": {
-          "texture": "#grass",
-          "tintindex": 0,
-          "cullface": "south"
-        },
-        "west": {
-          "texture": "#grass",
-          "tintindex": 0,
-          "cullface": "west"
+          "texture": "#overlay",
+          "cullface": "south",
+          "tintindex": 0
         },
         "east": {
-          "texture": "#grass",
-          "tintindex": 0,
-          "cullface": "east"
+          "texture": "#overlay",
+          "cullface": "east",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#overlay",
+          "cullface": "west",
+          "tintindex": 0
         }
       }
     }

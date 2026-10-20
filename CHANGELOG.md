@@ -4,6 +4,21 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-20
+
+### Changed
+
+- Rename the world tabs to Slimic Blocks and Slimic Decorations and remove repeated decoration tooltips and generic decoration JEI information.
+- Craft the Slime Scanner with a centered Slime Tuner and four glass blocks in a cross. Update English and Korean gameplay, JEI, and guidebook instructions.
+- Animate the slime portal with sixteen interpolated frames. Use native single-chest proportions and UV layout for the Slime Chest, including a lid-mounted latch and matching item model.
+- Give Damp Grass a full soil face with the native irregular grass fringe instead of a straight horizontal cap.
+
+### Validation
+
+- All 71 focused native server checks pass with JEI and Patchouli present and absent, covering the shaped scanner recipe and invalid layouts, work-area interactions, storage, transport, portals, and guidebook resources.
+- English and Korean native clients verify short tab names, all 32 decoration tooltips, 86 world models, the chest body/lid/latch and four facings, grass fringes, and sixteen portal frames with changing GPU pixels. The final scene is also visually inspected.
+- Both guidebook fonts render all 50 entries and 157 pages in English, Korean, and English fallback, including the new cross recipe, item lookups, links, and localized searches. Google Java Format, the Java 17 build, documentation, resources, and runtime references pass verification.
+
 ## [0.3.0] - 2026-10-20
 
 ### Added

@@ -213,7 +213,7 @@ Ordinary right-click launches a manual signal without consuming rockets. Right-c
 
 Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within normal interaction reach to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. While using management, stay within eight blocks and keep the tuner in either hand. The ordinary tuner does not edit base stats. Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. Dark cells are locked by Capacity and cannot hold items. Paging controls appear only when the bag spans multiple pages. The management panel is 368×240 GUI units; lower Minecraft's GUI Scale if it extends beyond the window.
 
-Craft one **Slime Tuner** with **four glass blocks** without a fixed arrangement to make a **Slime Scanner**. Ordinary right-click with the scanner previews work areas. Shift-right-click recovers a companion regardless of the held tool.
+Place one **Slime Tuner** in the center of a crafting table, with **glass blocks above, below, left, and right**, to make a **Slime Scanner**. Ordinary right-click with the scanner previews work areas. Shift-right-click recovers a companion regardless of the held tool.
 
 The **Creative Slime Tuner** is available in the Slimic creative tab and has no Survival recipe. Hold it and right-click to open a separate stat editor for the companion under the crosshair within 16 blocks, falling back to the nearest companion in that range. Right-clicking a companion directly also opens it. The editor requires Creative mode and a held tuner throughout use.
 

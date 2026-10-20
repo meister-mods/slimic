@@ -20,7 +20,7 @@ Wild Slimes can spawn on the surface. Frogs inhabit the plains, bats inhabit cav
 
 ## Building materials
 
-The **Building Blocks** Creative tab has **54 entries**: 32 independent base blocks, 8 stairs, 8 slabs, and 6 walls. The ordinary Slimic companion tab retains companions and tools. Stone uses pickaxes, soil uses shovels, and infused wood uses axes. Gel Glass needs Silk Touch to drop itself. Slimic Stone normally drops Slimic Cobblestone; smelt it to recover stone.
+The **Slimic Blocks** Creative tab has **54 entries**: 32 independent base blocks, 8 stairs, 8 slabs, and 6 walls. The ordinary Slimic companion tab retains companions and tools. Stone uses pickaxes, soil uses shovels, and infused wood uses axes. Gel Glass needs Silk Touch to drop itself. Slimic Stone normally drops Slimic Cobblestone; smelt it to recover stone.
 
 A stonecutter processes Slimic Stone into the masonry palette. Stairs, slabs, and walls also have matching crafting recipes. Additional recipes include slime-infused native planks, slime clay, hardened gel, luminous gel, dried gel, and smelted silt glass. JEI shows the exact ingredients and outputs. Slimic Soil, Damp Grass Block, and Slime Mud can be tilled into ordinary farmland when the space above is clear; they also support ordinary plants.
 
@@ -63,7 +63,7 @@ Stairs and slabs: Slimic Stone, Slimic Cobblestone, Slimic Stone Bricks, Mossy S
 
 ## Decorations
 
-The separate **Decorations** Creative tab has **32 entries**. Most solid props face their placer, require a sturdy upper floor face, have matching collision shapes, and support waterlogging. Removing their support drops the prop and preserves contained water. Plants need suitable soil. Lighting follows each block's visible design; the Dormant Beacon is unlit.
+The separate **Slimic Decorations** Creative tab has **32 entries**. Most solid props face their placer, require a sturdy upper floor face, have matching collision shapes, and support waterlogging. Removing their support drops the prop and preserves contained water. Plants need suitable soil. Lighting follows each block's visible design; the Dormant Beacon is unlit.
 
 Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. Use an actual Slime Chest for item storage and companion logistics, and an ordinary crafting table for crafting.
 

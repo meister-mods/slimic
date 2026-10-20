@@ -260,17 +260,13 @@ public final class SlimicJeiPlugin implements IModPlugin {
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
-    for (var category : ModWorldBlocks.Category.values())
-      registration.addIngredientInfo(
-          ModWorldBlocks.entries().stream()
-              .filter(entry -> entry.category() == category)
-              .map(entry -> new ItemStack(entry.item().get()))
-              .toList(),
-          VanillaTypes.ITEM_STACK,
-          Component.translatable(
-              category == ModWorldBlocks.Category.BUILDING
-                  ? "jei.slimic.world_building"
-                  : "jei.slimic.world_decoration"));
+    registration.addIngredientInfo(
+        ModWorldBlocks.entries().stream()
+            .filter(entry -> entry.category() == ModWorldBlocks.Category.BUILDING)
+            .map(entry -> new ItemStack(entry.item().get()))
+            .toList(),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.world_building"));
     registration.addIngredientInfo(
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),
         VanillaTypes.ITEM_STACK,

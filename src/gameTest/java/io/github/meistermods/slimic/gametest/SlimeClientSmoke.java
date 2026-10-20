@@ -90,6 +90,10 @@ public final class SlimeClientSmoke {
     }
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.visualPolishOnly")) {
+      if (VisualPolishClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.worldOnly")) {
       if (SlimicWorldClientSmoke.tick(client)) client.stop();
       return;

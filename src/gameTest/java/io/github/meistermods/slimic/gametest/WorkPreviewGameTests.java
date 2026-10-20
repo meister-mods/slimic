@@ -427,7 +427,7 @@ public final class WorkPreviewGameTests {
   }
 
   @GameTest(template = "empty")
-  public static void scannerRecipeUsesExactlyOneTunerAndFourGlassInAnyOrder(GameTestHelper h) {
+  public static void scannerRecipeRequiresATunerCenteredInAGlassCross(GameTestHelper h) {
     var grid =
         new net.minecraft.world.inventory.TransientCraftingContainer(
             new net.minecraft.world.inventory.AbstractContainerMenu(null, -1) {
@@ -444,52 +444,47 @@ public final class WorkPreviewGameTests {
             },
             3,
             3);
-    for (int tunerSlot : new int[] {0, 4, 8}) {
-      grid.clearContent();
-      grid.setItem(tunerSlot, new ItemStack(ModItems.SLIME_TUNER.get()));
-      int glass = 0;
-      for (int slot = 0; slot < 9 && glass < 4; slot++)
-        if (slot != tunerSlot) {
-          grid.setItem(slot, new ItemStack(Items.GLASS));
-          glass++;
-        }
-      var recipe =
-          h.getLevel()
-              .getRecipeManager()
-              .getRecipeFor(
-                  net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel());
-      h.assertTrue(recipe.isPresent(), "The scanner recipe is shapeless");
-      var output = recipe.orElseThrow().assemble(grid, h.getLevel().registryAccess());
-      h.assertTrue(
-          output.is(ModItems.SLIME_SCANNER.get())
-              && output.getCount() == 1
-              && output.getMaxStackSize() == 1,
-          "The exact ingredients make one nonstackable scanner");
-    }
-    grid.clearContent();
+    grid.setItem(4, new ItemStack(ModItems.SLIME_TUNER.get()));
+    for (int slot : new int[] {1, 3, 5, 7}) grid.setItem(slot, new ItemStack(Items.GLASS));
+    var manager = h.getLevel().getRecipeManager();
+    var type = net.minecraft.world.item.crafting.RecipeType.CRAFTING;
+    var recipe = manager.getRecipeFor(type, grid, h.getLevel());
+    h.assertTrue(
+        recipe.isPresent()
+            && recipe.get() instanceof net.minecraft.world.item.crafting.ShapedRecipe,
+        "A centered tuner with four cardinal glass blocks uses a shaped recipe");
+    var output = recipe.orElseThrow().assemble(grid, h.getLevel().registryAccess());
+    h.assertTrue(
+        output.is(ModItems.SLIME_SCANNER.get())
+            && output.getCount() == 1
+            && output.getMaxStackSize() == 1,
+        "The cross makes one nonstackable scanner");
+    grid.setItem(0, new ItemStack(Items.GLASS));
+    h.assertTrue(manager.getRecipeFor(type, grid, h.getLevel()).isEmpty(), "Corners stay empty");
+    grid.setItem(0, ItemStack.EMPTY);
+    grid.setItem(1, ItemStack.EMPTY);
+    h.assertTrue(
+        manager.getRecipeFor(type, grid, h.getLevel()).isEmpty(),
+        "All four glass blocks are required");
+    grid.setItem(1, new ItemStack(Items.GLASS_PANE));
+    h.assertTrue(
+        manager.getRecipeFor(type, grid, h.getLevel()).isEmpty(), "A pane cannot replace glass");
+    grid.setItem(1, new ItemStack(Items.GLASS));
+    grid.setItem(4, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
+    h.assertTrue(
+        manager.getRecipeFor(type, grid, h.getLevel()).isEmpty(),
+        "A Creative tuner is not a crafting ingredient");
+    grid.setItem(4, ItemStack.EMPTY);
     grid.setItem(0, new ItemStack(ModItems.SLIME_TUNER.get()));
-    for (int slot = 1; slot <= 3; slot++) grid.setItem(slot, new ItemStack(Items.GLASS));
     h.assertTrue(
-        h.getLevel()
-            .getRecipeManager()
-            .getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel())
-            .isEmpty(),
-        "Three glass is insufficient");
-    grid.setItem(4, new ItemStack(Items.GLASS_PANE));
+        manager.getRecipeFor(type, grid, h.getLevel()).isEmpty(),
+        "The tuner must occupy the center");
+    grid.clearContent();
+    grid.setItem(4, new ItemStack(ModItems.SLIME_TUNER.get()));
+    for (int slot : new int[] {0, 2, 6, 8}) grid.setItem(slot, new ItemStack(Items.GLASS));
     h.assertTrue(
-        h.getLevel()
-            .getRecipeManager()
-            .getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel())
-            .isEmpty(),
-        "A glass pane cannot replace a glass block");
-    grid.setItem(4, new ItemStack(Items.GLASS));
-    grid.setItem(0, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
-    h.assertTrue(
-        h.getLevel()
-            .getRecipeManager()
-            .getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, grid, h.getLevel())
-            .isEmpty(),
-        "The Creative tuner cannot replace the Survival tuner");
+        manager.getRecipeFor(type, grid, h.getLevel()).isEmpty(),
+        "Diagonal glass does not make the cross");
     h.succeed();
   }
 

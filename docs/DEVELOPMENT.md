@@ -216,7 +216,7 @@ The reserve slot accepts up to 64 matching totems. Manual withdrawal takes one; 
 
 Surface workers plan collision-free standing cells within action reach instead of targeting occupied logs or crops. Candidate stands and path endpoints use native `WalkNodeEvaluator.getFloorLevel`, including reduced-height collision surfaces such as mud. Lumberjacks cache unavailable roots briefly, keep the specific missing sapling and stump count in synchronized data, continue searching other species, and invalidate discovery caches after bag changes. Farming and lumberjack have separate localization namespaces. Miners exclude wood/axe/hoe targets, revalidate path endpoints, retain native step approaches, and measure real progress toward the target so stationary hopping cannot postpone retries indefinitely. Escape navigation keeps its route during airborne hops and replaces it only with a grounded path whose endpoint increases distance from the attacker.
 
-Slime Chest keeps its block entity inventory, item capabilities and block drops. A native opener counter drives chest sounds and block events; a client lid controller interpolates the angle. The block entity renderer uses cropped original base/lid models around a rear hinge. The closed item remains a baked 3D block model.
+Slime Chest keeps its block entity inventory, item capabilities and block drops. A native opener counter drives chest sounds and block events; a client lid controller interpolates the angle. The block entity renderer uses the native single-chest body, lid, and latch proportions and 64×64 UV layout around a rear hinge. The latch moves with the lid; the closed item uses the same atlas and geometry in a baked 3D block model.
 
 ## Boundary regression coverage
 
