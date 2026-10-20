@@ -1,0 +1,11 @@
+{
+  "type": "slimic:the_slimic",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "slimic:the_slimic",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "slimic:damp_plains"
+    }
+  }
+}

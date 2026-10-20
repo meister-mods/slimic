@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:cracked_slimic_stone_bricks"
+  },
+  "result": "slimic:cracked_stone_tablet",
+  "count": 1
+}

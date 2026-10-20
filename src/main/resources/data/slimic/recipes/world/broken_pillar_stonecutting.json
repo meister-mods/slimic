@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:polished_slimic_stone"
+  },
+  "result": "slimic:broken_pillar",
+  "count": 1
+}

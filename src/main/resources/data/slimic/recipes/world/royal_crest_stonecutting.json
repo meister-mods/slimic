@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:chiseled_slime_marble"
+  },
+  "result": "slimic:royal_crest",
+  "count": 1
+}

@@ -63,6 +63,19 @@ Run against the prepared client smoke world:
 ```sh
 JAVA_TOOL_OPTIONS="-Dslimic.accessoryTexturesOnly=true" ./gradlew runClient -PclientSmoke=true
 JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -PclientSmoke=true
+JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
 The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all twenty-two professions and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
+
+The visual-polish check covers localized material tabs, minimal decoration tooltips, all world models, the chest atlas and lid motion, native grass fringes, and actual portal animation updates in the GPU atlas.
+
+## World materials
+
+The Slimic uses eight opaque **32×32** material textures and one animated portal strip in [`assets/slimic/textures/block/world`](../src/main/resources/assets/slimic/textures/block/world): stone, bricks, tiles, soil, damp grass, silt, congealed gel, marble, and the portal surface. Pixel-art sources were exported with nearest-neighbor sampling. The portal is a **32×512** strip of sixteen 32×32 frames. Its `.png.mcmeta` advances every three ticks and interpolates frames; keep the strip and metadata together. Damp Grass combines its top texture and local soil with Minecraft’s irregular grass-side overlay.
+
+Block models under `models/block/world` combine these textures with referenced Minecraft surfaces and tint index 0. `SlimicWorldClient` applies each catalog entry's tint to blocks and items. Stairs, slabs, walls, cutout plants, translucent glass, and the portal declare their Forge render type in JSON. Resource packs can replace the surfaces without changing collision shapes or world-generation rules.
+
+## Slime Chest
+
+`textures/block/slime_chest.png` follows the native single-chest **64×64 UV atlas**. Body, lid, and latch share it in both the world and item models. Keep the native transparent interior and unused regions; `slime_chest_particle.png` provides the breaking-particle surface.

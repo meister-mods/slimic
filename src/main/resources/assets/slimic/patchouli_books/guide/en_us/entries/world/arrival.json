@@ -1,0 +1,20 @@
+{
+  "name": "Entering The Slimic",
+  "icon": "minecraft:slime_block",
+  "category": "slimic:world",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Build an upright frame of vanilla slime blocks in the Overworld. Use the same sizes as a Nether portal: an interior 2–21 blocks wide and 3–21 blocks tall. The smallest outer frame is 4×5. Corners are optional."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Hold a slimeball and right-click a frame face pointing into the empty interior. Activation uses one slimeball in Survival. Stand inside to travel to The Slimic. Existing nearby portals serve as exits; otherwise a safe frame and landing platform are created."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Portals connect the Overworld and The Slimic at a 1:1 coordinate scale. Dismount before entering. A return portal remains at your arrival point. Breaking a required slime frame block closes the portal; repair the frame and activate it again."
+    }
+  ]
+}

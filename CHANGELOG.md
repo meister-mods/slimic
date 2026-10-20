@@ -4,6 +4,46 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-20
+
+### Changed
+
+- Rename the world tabs to Slimic Blocks and Slimic Decorations and remove repeated decoration tooltips and generic decoration JEI information.
+- Craft the Slime Scanner with a centered Slime Tuner and four glass blocks in a cross. Update English and Korean gameplay, JEI, and guidebook instructions.
+- Animate the slime portal with sixteen interpolated frames. Use native single-chest proportions and UV layout for the Slime Chest, including a lid-mounted latch and matching item model.
+- Give Damp Grass a full soil face with the native irregular grass fringe instead of a straight horizontal cap.
+
+### Validation
+
+- All 71 focused native server checks pass with JEI and Patchouli present and absent, covering the shaped scanner recipe and invalid layouts, work-area interactions, storage, transport, portals, and guidebook resources.
+- English and Korean native clients verify short tab names, all 32 decoration tooltips, 86 world models, the chest body/lid/latch and four facings, grass fringes, and sixteen portal frames with changing GPU pixels. The final scene is also visually inspected.
+- Both guidebook fonts render all 50 entries and 157 pages in English, Korean, and English fallback, including the new cross recipe, item lookups, links, and localized searches. Google Java Format, the Java 17 build, documentation, resources, and runtime references pass verification.
+
+## [0.3.0] - 2026-10-20
+
+### Added
+
+- Explore The Slimic, a separate dimension with the Damp Plains biome, gel-covered Overworld terrain, native wildlife, abandoned workshops, supply depots, and broken roads. Ruin chests contain supplies and a translated written ledger.
+- Activate a vertical vanilla slime-block frame with a slimeball. Nether portal dimensions and optional corners apply. Portals connect the Overworld and The Slimic at a 1:1 coordinate scale, reuse saved exits, and create safe return platforms when needed.
+- Add 32 independent base materials, eight stairs, eight slabs, six walls, and 32 decorations. Building blocks and decorations each have their own Creative tab, recipes, models, loot, and bilingual names. Nine dedicated textures establish the world palette.
+- Add six bilingual guidebook entries and detailed dimension guides. The guide now contains seven categories, 50 entries, and 157 pages per language. JEI provides world-material guidance alongside recipes.
+
+### Changed
+
+- Companions crossing a slime portal retain their identity, owner, vitals, upgrades, equipment, and cargo and arrive in Wait. Their work areas follow the existing relocation rules.
+
+### Fixed
+
+- Cross-dimension player travel rechecks permissions and landing safety before removal from the source dimension. Canceled Ender travel leaves the player registered in the original world.
+
+### Validation
+
+- All 586 native server regressions pass with JEI and Patchouli present and absent. Bucket-supply fixtures isolate exterior fluids so unrelated quarry wall-lining jobs do not interfere with supply checks.
+- Native clients verify portal activation and round trips, all 86 material and decoration models, separate Creative tabs, generated workshops, and translated ruin records. Both guidebook fonts render all 50 entries and 157 pages in English, Korean, and English fallback, including item lookups, links, and localized searches.
+- Actual server restarts preserve all twenty-two companion identities, saved traits, and both portal indexes. Native terrain checks cover 64 generated chunks, ores, wildlife spawning, ruin storage, and written records.
+- Over two hours of independent review include a 100-minute native stress run: 26,334 companion transfers preserve unique identities, vitals, equipment, cargo, and waiting arrivals. Nineteen additional chunks retain the dimension's biome.
+- Google Java Format, the Java 17 build, bilingual documentation, resource references, release contents, and runtime linkage checks pass.
+
 ## [0.2.4] - 2026-10-19
 
 ### Documentation

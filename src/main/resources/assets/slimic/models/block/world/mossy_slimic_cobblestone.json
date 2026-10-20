@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:solid",
+  "textures": {
+    "all": "minecraft:block/mossy_cobblestone",
+    "particle": "minecraft:block/mossy_cobblestone"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

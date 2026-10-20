@@ -1,0 +1,20 @@
+{
+  "name": "Companion travel",
+  "icon": "slimic:slime_scanner",
+  "category": "slimic:world",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Companions can cross a slime portal while unmounted. Identity, owner, health, stamina, upgrades, equipment, and cargo travel with them. Every transferred companion arrives in Wait, so a worker will not immediately alter the arrival area."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Work areas follow each profession's normal relocation rules. A miner begins a new quarry plan in a new dimension; fixed work origins are rebased where appropriate. Review the area with a Slime Scanner before starting work."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recovering a companion as an item is another way to travel. Releasing it also starts in Wait and retains its saved traits. Remember your return portal and take supplies for the journey. If no safe exit can be placed, travel is refused and the source remains intact."
+    }
+  ]
+}

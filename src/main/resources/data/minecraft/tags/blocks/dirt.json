@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "slimic:slimic_soil",
+    "slimic:damp_grass_block",
+    "slimic:slime_mud"
+  ]
+}

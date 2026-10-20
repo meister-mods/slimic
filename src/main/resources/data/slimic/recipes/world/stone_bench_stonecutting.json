@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:slime_marble"
+  },
+  "result": "slimic:stone_bench",
+  "count": 1
+}

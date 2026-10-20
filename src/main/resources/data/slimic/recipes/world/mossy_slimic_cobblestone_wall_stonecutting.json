@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:mossy_slimic_cobblestone"
+  },
+  "result": "slimic:mossy_slimic_cobblestone_wall",
+  "count": 1
+}

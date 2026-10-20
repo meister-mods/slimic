@@ -14,6 +14,7 @@ import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
 import io.github.meistermods.slimic.registry.ModItems;
+import io.github.meistermods.slimic.registry.ModWorldBlocks;
 import java.util.ArrayList;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
@@ -259,6 +260,13 @@ public final class SlimicJeiPlugin implements IModPlugin {
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
+    registration.addIngredientInfo(
+        ModWorldBlocks.entries().stream()
+            .filter(entry -> entry.category() == ModWorldBlocks.Category.BUILDING)
+            .map(entry -> new ItemStack(entry.item().get()))
+            .toList(),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.world_building"));
     registration.addIngredientInfo(
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),
         VanillaTypes.ITEM_STACK,

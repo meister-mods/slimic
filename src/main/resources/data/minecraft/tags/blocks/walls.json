@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "slimic:slimic_cobblestone_wall",
+    "slimic:mossy_slimic_cobblestone_wall",
+    "slimic:slimic_stone_bricks_wall",
+    "slimic:mossy_slimic_stone_bricks_wall",
+    "slimic:slimic_slate_bricks_wall",
+    "slimic:slime_marble_bricks_wall"
+  ]
+}

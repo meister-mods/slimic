@@ -1,0 +1,84 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout_mipped",
+  "textures": {
+    "particle": "slimic:block/world/slimic_soil",
+    "soil": "slimic:block/world/slimic_soil",
+    "top": "slimic:block/world/damp_grass_top",
+    "overlay": "minecraft:block/grass_block_side_overlay"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#top",
+          "cullface": "up"
+        },
+        "down": {
+          "texture": "#soil",
+          "cullface": "down"
+        },
+        "north": {
+          "texture": "#soil",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#soil",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#soil",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#soil",
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#overlay",
+          "cullface": "north",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#overlay",
+          "cullface": "south",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#overlay",
+          "cullface": "east",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#overlay",
+          "cullface": "west",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:chiseled_slimic_stone_bricks"
+  },
+  "result": "slimic:stone_tablet",
+  "count": 1
+}

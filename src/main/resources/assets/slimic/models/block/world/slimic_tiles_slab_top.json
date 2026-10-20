@@ -1,0 +1,8 @@
+{
+  "parent": "slimic:block/world/templates/slab_top",
+  "textures": {
+    "top": "slimic:block/world/slimic_tiles",
+    "bottom": "slimic:block/world/slimic_tiles",
+    "side": "slimic:block/world/slimic_tiles"
+  }
+}

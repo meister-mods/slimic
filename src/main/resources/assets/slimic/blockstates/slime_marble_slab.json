@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "slimic:block/world/slime_marble_slab"
+    },
+    "type=top": {
+      "model": "slimic:block/world/slime_marble_slab_top"
+    },
+    "type=double": {
+      "model": "slimic:block/world/slime_marble"
+    }
+  }
+}

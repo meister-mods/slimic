@@ -1,0 +1,129 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:solid",
+  "textures": {
+    "all": "minecraft:block/mangrove_planks",
+    "particle": "minecraft:block/mangrove_planks",
+    "metal": "minecraft:block/iron_block",
+    "gel": "slimic:block/world/congealed_slime",
+    "cloth": "minecraft:block/lime_wool"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        2,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#all",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        2,
+        7
+      ],
+      "to": [
+        9,
+        16,
+        9
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#all",
+          "tintindex": 0,
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#all",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#all",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        8,
+        8
+      ],
+      "to": [
+        13,
+        15,
+        9
+      ],
+      "faces": {
+        "down": {
+          "texture": "#cloth",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#cloth",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#cloth",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#cloth",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#cloth",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#cloth",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}

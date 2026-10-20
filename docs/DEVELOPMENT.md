@@ -40,7 +40,7 @@ Package only runtime assets used by the mod in `src/main/resources`; keep refere
 
 ## Versions and changes
 
-Early development releases use the `0.2.x` series, with a patch increment for each release. Update `mod_version` in `gradle.properties` and [CHANGELOG.md](../CHANGELOG.md) together; the build verifies the changelog entry.
+Early development releases use the `0.3.x` series, with a patch increment for each release. Update `mod_version` in `gradle.properties` and [CHANGELOG.md](../CHANGELOG.md) together; the build verifies the changelog entry.
 
 Keep the development test-mod version in sync when changing the release version.
 
@@ -216,7 +216,7 @@ The reserve slot accepts up to 64 matching totems. Manual withdrawal takes one; 
 
 Surface workers plan collision-free standing cells within action reach instead of targeting occupied logs or crops. Candidate stands and path endpoints use native `WalkNodeEvaluator.getFloorLevel`, including reduced-height collision surfaces such as mud. Lumberjacks cache unavailable roots briefly, keep the specific missing sapling and stump count in synchronized data, continue searching other species, and invalidate discovery caches after bag changes. Farming and lumberjack have separate localization namespaces. Miners exclude wood/axe/hoe targets, revalidate path endpoints, retain native step approaches, and measure real progress toward the target so stationary hopping cannot postpone retries indefinitely. Escape navigation keeps its route during airborne hops and replaces it only with a grounded path whose endpoint increases distance from the attacker.
 
-Slime Chest keeps its block entity inventory, item capabilities and block drops. A native opener counter drives chest sounds and block events; a client lid controller interpolates the angle. The block entity renderer uses cropped original base/lid models around a rear hinge. The closed item remains a baked 3D block model.
+Slime Chest keeps its block entity inventory, item capabilities and block drops. A native opener counter drives chest sounds and block events; a client lid controller interpolates the angle. The block entity renderer uses the native single-chest body, lid, and latch proportions and 64×64 UV layout around a rear hinge. The latch moves with the lid; the closed item uses the same atlas and geometry in a baked 3D block model.
 
 ## Boundary regression coverage
 
@@ -368,3 +368,15 @@ Roster presentation resolves profession-specific labels from the saved type: Abu
 `SlimeWorkArea` builds a read-only snapshot from profession getters without serializing entities or advancing field surveys. At most eight validated boxes or radial bounds travel in the server-to-client `WorkAreaPacket`; the server requires a held Slime Scanner, management permission, same dimension, life, nonspectator state, and eight-block range. The client associates the snapshot with both entity ID and UUID, clears it on tool/identity/dimension changes or expiry, and draws bounded outlines without depth writes. Coordinates are made relative to the camera before float conversion. Requests do not mutate work orders or load chunks. Quarry previews share the starting-floor clamp used by quarry initialization, including minimum and maximum build heights. Active farming and logging use their registered home after relocation, so worker travel does not shift the preview; a waiting farmer previews the position of its next survey.
 
 `SlimeWorkWarning` localizes type, custom name, and every common blocking reason. Tool requirements retain the miner’s exact pickaxe/shovel distinction, and lumberjack saplings remain separate from farming seeds. Fishing warnings distinguish a missing suitable spot from a failed approach; storage warnings include both chests and warehouses. A successfully spawned automatic herald signal revalidates the worker’s blocked state and cooperation before messaging authorized online owners. Existing per-worker signal cooldowns also throttle chat. World saves retain commands; item release and revival override only the command to Wait. Network protocol 16 requires matching client and server builds; data schema 1 is unchanged.
+
+## The Slimic
+
+`ModWorldBlocks` maintains a shared catalog for 54 building entries and 32 decorations. Separate block/item deferred registers keep world materials out of the companion tab. Models use Forge render types and tint indices; soil and construction shapes retain native tool and placement behavior.
+
+`slimic:the_slimic` uses a fixed `slimic:damp_plains` biome with an Overworld noise router, local surface rules, native ores and caves, and three bounded terrain/vegetation/ruin features. Spawn-placement additions apply only to native Slimes in this dimension and biome. Ruin loot contains a localized written record.
+
+`SlimicPortalShape` validates vanilla Nether frame dimensions using vanilla slime blocks. `SlimicPortalTravel` handles activation, transactional Forge placement events, safe exits, native dimension events, cooldowns, and waiting arrivals. Per-dimension `slimic_portals` saved data indexes known exits; every candidate is checked against the live frame. It neither creates portal items nor modifies vanilla Nether or End portal behavior. Companion data continues to use the ordinary entity save/load format.
+
+Companion portal travel inserts and validates the destination copy before removing the original. Spawn vetoes or changed source state discard the copy and preserve the original; removal hooks release source lights, rally tickets, and anchor tickets. Player travel resolves a safe landing before native transfer. A temporary listener runs at the lowest Forge event priority and rechecks permissions and landing safety before the native API sends a respawn packet or removes the player. Slime portals and Ender travel share this player guard.
+
+World GameTests cover geometry, protection rollback, item use, saved exits, all companion professions, tools, loot, and waterlogging. Client checks include models, tinting, the separate Creative tabs, dimension travel, translated records, and bilingual guidebook rendering. See [The Slimic](THE_SLIMIC.md).

@@ -1,6 +1,15 @@
 {
   "replace": false,
   "values": [
-    "slimic:slime_chest"
+    "slimic:slime_chest",
+    "slimic:slime_infused_planks",
+    "slimic:slime_infused_planks_stairs",
+    "slimic:slime_infused_planks_slab",
+    "slimic:abandoned_crate",
+    "slimic:broken_crate",
+    "slimic:tool_rack",
+    "slimic:broken_workbench",
+    "slimic:ruined_bench",
+    "slimic:old_slime_banner"
   ]
 }

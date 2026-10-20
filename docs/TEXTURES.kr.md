@@ -63,6 +63,19 @@
 ```sh
 JAVA_TOOL_OPTIONS="-Dslimic.accessoryTexturesOnly=true" ./gradlew runClient -PclientSmoke=true
 JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -PclientSmoke=true
+JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
 클라이언트 스모크 검증에 `-Dslimic.accessoryTexturesOnly=true`를 지정하면 불러온 PNG 크기와 Minecraft 모델의 실제 UV가 가리키는 면의 불투명도를 확인합니다. 이어서 스물두 직업과 갑옷 외형 8종의 앞뒤 모습을 촬영하며, 가죽 염색·몸체 염색·마법 부여 광택·장착 도구·날개를 포함합니다. 임시 512×512 리소스 팩 교체와 원래 256×256 GPU 텍스처 복원도 확인합니다. `-Dslimic.textureReloadCycles=100`을 추가하면 교체·복원 주기를 반복해 장시간 재로딩을 검사합니다. 기존 `-Dslimic.inventoryLayoutOnly=true` 검증은 동기화된 한·영 관리 화면 배치를 확인합니다. 이 옵션들은 개발 클라이언트의 설정된 실행 폴더에 `slimic-smoke`라는 월드가 미리 준비되어 있어야 합니다. 검증 중 인벤토리와 게임 모드를 바꾸므로 전용 검사 월드를 사용합니다.
+
+시각 검증은 번역된 자재 탭, 간결한 장식 툴팁, 모든 월드 모델, 상자 아틀라스와 개폐, 바닐라 잔디 경계, 실제 GPU 아틀라스의 차원문 애니메이션 갱신을 확인합니다.
+
+## 월드 자재
+
+The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/assets/slimic/textures/block/world)의 불투명한 **32×32** 자재 텍스처 8종과 애니메이션 차원문 스트립 1종을 사용합니다. 돌, 벽돌, 타일, 흙, 눅눅한 잔디, 미사, 응고된 점액, 대리석과 차원문 표면입니다. 픽셀 아트 원본을 최근접 보간으로 축소했으며, 차원문은 32×32 프레임 16장을 세로로 이은 **32×512** 이미지이며 알파를 보존합니다. `.png.mcmeta`는 3틱마다 다음 프레임으로 이동하고 프레임 사이를 보간하므로 이미지와 함께 유지하세요. 눅눅한 잔디는 전용 윗면·흙에 Minecraft의 불규칙한 잔디 옆면 오버레이를 겹칩니다.
+
+`models/block/world`의 블록 모델은 이 텍스처 및 참조하는 Minecraft 표면과 색상 인덱스 0을 조합합니다. `SlimicWorldClient`가 목록에 정의된 색상을 블록과 아이템에 적용합니다. 계단·반 블록·담장, 잘라내기 식물, 반투명 유리와 차원문은 JSON에서 Forge 렌더 유형을 지정합니다. 리소스 팩으로 충돌 범위나 월드 생성 규칙을 바꾸지 않고 표면을 교체할 수 있습니다.
+
+## 슬라임 상자
+
+`textures/block/slime_chest.png`는 바닐라 단일 상자의 **64×64 UV 아틀라스** 배치를 따릅니다. 월드와 아이템 모델의 본체·뚜껑·걸쇠가 같은 파일을 공유합니다. 내부와 사용하지 않는 투명 영역을 유지하세요. `slime_chest_particle.png`는 파괴 입자의 표면입니다.

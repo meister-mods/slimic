@@ -78,6 +78,18 @@ public final class OrderNineGameTests {
     return bucket;
   }
 
+  private static void sealBucketSupplyArea(GameTestHelper h, LoadedWorkArea a) {
+    // External natural water would start an unrelated quarry wall-lining job.
+    for (int x = -1; x <= 16; x++)
+      for (int z = -1; z <= 16; z++) {
+        if (x != -1 && x != 16 && z != -1 && z != 16) continue;
+        for (int y = 100; y <= 102; y++)
+          h.getLevel()
+              .setBlockAndUpdate(
+                  BlockPos.containing(a.point(x, y, z)), Blocks.BEDROCK.defaultBlockState());
+      }
+  }
+
   @GameTest(template = "empty", batch = "order_nine")
   public static void soggyRecipePreservesStoredTraitsAndRejectsExtraIngredients(GameTestHelper h) {
     var pet = ModEntities.FRIENDLY_SLIME.get().create(h.getLevel());
@@ -580,6 +592,7 @@ public final class OrderNineGameTests {
   @GameTest(template = "empty", batch = "order_nine", timeoutTicks = 360)
   public static void transportDeliversOneExactBucketAndMiningResumes(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
+    sealBucketSupplyArea(h, a);
     var pet = miner(h, a);
     var pos = basin(h, a, Blocks.WATER.defaultBlockState());
     var chest = a.chest(4, 101, 6);
@@ -609,6 +622,7 @@ public final class OrderNineGameTests {
   @GameTest(template = "empty", batch = "order_nine", timeoutTicks = 500)
   public static void transportUnloadsAFullBagBeforeSupplyingItsMissingBucket(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
+    sealBucketSupplyArea(h, a);
     var pet = miner(h, a);
     for (int i = 0; i < pet.getCapacity(); i++)
       pet.getBag().setStackInSlot(i, new ItemStack(Items.COBBLESTONE, 64));
@@ -621,7 +635,22 @@ public final class OrderNineGameTests {
         () -> {
           h.assertTrue(
               pet.hasBucket() && h.getLevel().getFluidState(pos).isEmpty() && !carrier.hasCargo(),
-              "Full worker bag unloaded before bucket supply");
+              "Full worker bag unloaded before bucket supply; miner="
+                  + pet.getWorkStatus()
+                  + "; minerAlive="
+                  + pet.isAlive()
+                  + "; carrier="
+                  + carrier.getWorkStatus()
+                  + "; carrierAlive="
+                  + carrier.isAlive()
+                  + "; cargo="
+                  + carrier.hasCargo()
+                  + "; buckets="
+                  + count(chest.inventory(), Items.BUCKET)
+                  + "; workerPos="
+                  + pet.position()
+                  + "; carrierPos="
+                  + carrier.position());
           h.assertTrue(
               count(pet.getBag(), Items.COBBLESTONE)
                           + count(carrier.getBag(), Items.COBBLESTONE)

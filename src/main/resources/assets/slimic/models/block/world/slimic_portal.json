@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "portal": "slimic:block/world/slimic_portal",
+    "particle": "slimic:block/world/slimic_portal"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        6
+      ],
+      "to": [
+        16,
+        16,
+        10
+      ],
+      "faces": {
+        "down": {
+          "texture": "#portal"
+        },
+        "up": {
+          "texture": "#portal"
+        },
+        "north": {
+          "texture": "#portal"
+        },
+        "south": {
+          "texture": "#portal"
+        },
+        "west": {
+          "texture": "#portal"
+        },
+        "east": {
+          "texture": "#portal"
+        }
+      }
+    }
+  ]
+}

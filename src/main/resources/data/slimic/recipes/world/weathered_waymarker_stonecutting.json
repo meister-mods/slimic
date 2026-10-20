@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:mossy_slimic_stone_bricks"
+  },
+  "result": "slimic:weathered_waymarker",
+  "count": 1
+}

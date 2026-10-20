@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "slimic:slimic_stone_slab",
+    "slimic:slimic_cobblestone_slab",
+    "slimic:slimic_stone_bricks_slab",
+    "slimic:mossy_slimic_stone_bricks_slab",
+    "slimic:slimic_tiles_slab",
+    "slimic:slime_marble_slab",
+    "slimic:black_slime_stone_slab",
+    "slimic:slime_infused_planks_slab"
+  ]
+}

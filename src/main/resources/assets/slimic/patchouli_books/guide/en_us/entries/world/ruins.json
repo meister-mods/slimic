@@ -1,0 +1,20 @@
+{
+  "name": "Abandoned workshops",
+  "icon": "slimic:broken_workbench",
+  "category": "slimic:world",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Broken workshops, supply depots, and road fragments lie across the plains. Mossy foundations and scattered masonry surround deserted workbenches, empty Slime Chests, lamps, and ruined storage furniture."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A surviving ordinary chest contains supplies and a written ledger. Its translated pages describe a failing delivery network and lamps left burning for an absent traveler. The buildings tell only fragments of the old kingdom's story."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Gather materials or restore a workshop for your own companions. Real Slime Chests in ruins work with your normal logistics team. Repairing the surroundings does not issue commands to companions; start each worker through its management screen."
+    }
+  ]
+}

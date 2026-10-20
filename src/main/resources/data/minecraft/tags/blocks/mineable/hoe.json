@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "slimic:slime_roots",
+    "slimic:slime_tuft",
+    "slimic:gel_cap",
+    "slimic:glowing_bloom"
+  ]
+}

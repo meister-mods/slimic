@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "slimic:block/world/damp_grass_block"
+    }
+  }
+}

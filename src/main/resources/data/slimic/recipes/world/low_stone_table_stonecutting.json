@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:slimic_tiles"
+  },
+  "result": "slimic:low_stone_table",
+  "count": 1
+}

@@ -69,8 +69,35 @@ public final class SlimeClientSmoke {
                   - 1);
     if (++ticks > timeout)
       throw new IllegalStateException("Client smoke timed out in phase " + phase);
+    if (client.level == null
+        && client.screen != null
+        && client
+            .screen
+            .getTitle()
+            .getString()
+            .equals(
+                Component.translatable("selectWorld.backupQuestion.experimental").getString())) {
+      client.screen.children().stream()
+          .filter(Button.class::isInstance)
+          .map(Button.class::cast)
+          .filter(
+              b ->
+                  b.getMessage()
+                      .getString()
+                      .equals(Component.translatable("gui.proceed").getString()))
+          .findFirst()
+          .ifPresent(Button::onPress);
+    }
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.visualPolishOnly")) {
+      if (VisualPolishClientSmoke.tick(client)) client.stop();
+      return;
+    }
+    if (Boolean.getBoolean("slimic.worldOnly")) {
+      if (SlimicWorldClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.workAreaOnly")) {
       if (WorkAreaClientSmoke.tick(client)) client.stop();
       return;

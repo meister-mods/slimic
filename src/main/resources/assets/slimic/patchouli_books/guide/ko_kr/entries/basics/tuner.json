@@ -20,7 +20,7 @@
     {
       "type": "patchouli:crafting",
       "recipe": "slimic:slime_scanner",
-      "text": "슬라임 조작기 1개와 유리 4개를 모양 없이 조합합니다."
+      "text": "작업대 가운데에 슬라임 조작기를 놓고 상하좌우에 유리 4개를 놓아 십자 모양으로 조합합니다."
     },
     {
       "type": "patchouli:text",

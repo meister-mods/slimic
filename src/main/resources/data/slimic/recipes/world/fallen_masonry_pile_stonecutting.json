@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "slimic:ruined_bricks"
+  },
+  "result": "slimic:fallen_masonry_pile",
+  "count": 1
+}

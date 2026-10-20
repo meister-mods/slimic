@@ -150,29 +150,31 @@ public final class CompanionTeleport {
     if (player.level() == level) {
       player.teleportTo(level, target.x, target.y, target.z, player.getYRot(), player.getXRot());
     } else {
-      player.changeDimension(
-          level,
-          new ITeleporter() {
-            @Override
-            public Entity placeEntity(
-                Entity entity,
-                ServerLevel origin,
-                ServerLevel destination,
-                float yaw,
-                Function<Boolean, Entity> reposition) {
-              return reposition.apply(false);
-            }
-
-            @Override
-            public PortalInfo getPortalInfo(
-                Entity entity,
-                ServerLevel destination,
-                Function<ServerLevel, PortalInfo> fallback) {
-              return authorized.getAsBoolean() && safe(destination, player, target)
-                  ? new PortalInfo(target, Vec3.ZERO, player.getYRot(), player.getXRot())
-                  : null;
-            }
-          });
+      var origin = player.level();
+      java.util.function.Consumer<net.minecraftforge.event.entity.EntityTravelToDimensionEvent>
+          guard =
+              travel -> {
+                if (travel.getEntity() == player
+                    && travel.getDimension().equals(level.dimension())
+                    && (!player.isAlive()
+                        || player.isRemoved()
+                        || player.isSpectator()
+                        || player.isSleeping()
+                        || player.level() != origin
+                        || !authorized.getAsBoolean()
+                        || !safe(level, player, target))) travel.setCanceled(true);
+              };
+      MinecraftForge.EVENT_BUS.addListener(
+          net.minecraftforge.eventbus.api.EventPriority.LOWEST,
+          false,
+          net.minecraftforge.event.entity.EntityTravelToDimensionEvent.class,
+          guard);
+      try {
+        // Revalidate before the native API removes the player or sends a respawn packet.
+        player.teleportTo(level, target.x, target.y, target.z, player.getYRot(), player.getXRot());
+      } finally {
+        MinecraftForge.EVENT_BUS.unregister(guard);
+      }
     }
     boolean moved = player.level() == level && player.position().distanceToSqr(target) < .01;
     if (moved) {

@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
-    "slimic:slime_trail"
+    "slimic:slime_trail",
+    "slimic:slimic_soil",
+    "slimic:damp_grass_block",
+    "slimic:slime_silt",
+    "slimic:slimic_clay",
+    "slimic:slime_mud"
   ]
 }
