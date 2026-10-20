@@ -7,6 +7,7 @@ import io.github.meistermods.slimic.entity.SlimeData;
 import io.github.meistermods.slimic.registry.ModEntities;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -279,12 +280,38 @@ public class FriendlySlimeItem extends Item {
           Component.translatable("message.slimic.ender_anchor_limit"), true);
       return false;
     }
-    if (slime == null
-        || slime.isSpawnCancelled()
-        || !level.noCollision(slime)
-        || !level.addFreshEntity(slime)) {
+    if (slime == null || slime.isSpawnCancelled() || !level.noCollision(slime)) {
       return false;
     }
+    UUID identity = slime.getUUID();
+    UUID owner = slime.getOwnerUUID();
+    boolean admitted = false;
+    slime.setPendingSpawn(true);
+    try {
+      admitted =
+          level.addFreshEntity(slime)
+              && slime.isAddedToWorld()
+              && slime.isAlive()
+              && slime.level() == level
+              && identity.equals(slime.getUUID())
+              && Objects.equals(owner, slime.getOwnerUUID());
+      if (admitted
+          && slime instanceof io.github.meistermods.slimic.entity.EnderSlime ender
+          && ender.isPinned()
+          && !ender.hasAnchorCapacity()) {
+        admitted = false;
+        player.displayClientMessage(
+            Component.translatable("message.slimic.ender_anchor_limit"), true);
+      }
+    } finally {
+      slime.setPendingSpawn(false);
+      if (!admitted) {
+        // Admission callbacks may remove an entity before native registration completes.
+        if (slime.isAddedToWorld() && slime.isRemoved()) slime.revive();
+        slime.discard();
+      }
+    }
+    if (!admitted) return false;
     slime.onReleased();
     slime.setWaiting(true);
     if (!restoring) {

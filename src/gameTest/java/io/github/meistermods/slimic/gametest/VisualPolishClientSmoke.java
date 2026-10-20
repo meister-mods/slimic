@@ -252,8 +252,8 @@ public final class VisualPolishClientSmoke {
         next();
       }
       case 5 -> {
-        presentation(c, true);
         if (ticks < 20) return false;
+        presentation(c, true);
         shot(c, "ko_kr-closed");
         next();
       }

@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Store cargo, spare tools, empty buckets, cobblestone, and slimeballs for carriers. Locked Slime Chests are excluded. Regular chests are crafting ingredients, not automatic storage endpoints."
+      "text": "Store cargo, spare tools, empty buckets, cobblestone, and slimeballs for carriers. Locked Slime Chests are excluded. Regular chests are crafting ingredients, not automatic storage endpoints. Breaking and replacing a Slime Chest preserves its custom name; contents drop separately."
     }
   ],
   "extra_recipe_mappings": {

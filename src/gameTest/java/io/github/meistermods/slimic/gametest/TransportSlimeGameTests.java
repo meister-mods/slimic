@@ -330,6 +330,7 @@ public final class TransportSlimeGameTests {
   @GameTest(template = "empty", timeoutTicks = 400)
   public static void brokenToolIsAutomaticallyReplaced(GameTestHelper helper) {
     var area = new LoadedWorkArea(helper);
+    area.sealSurroundingFluids();
     TransportSlime carrier = area.carrier(new Vec3(6, 101, 6));
     ItemStack worn = new ItemStack(Items.IRON_PICKAXE);
     worn.setDamageValue(worn.getMaxDamage() - 1);
@@ -344,18 +345,21 @@ public final class TransportSlimeGameTests {
     var chest = area.chest(9, 101, 6);
     chest.setItem(0, new ItemStack(Items.DIAMOND_PICKAXE));
     var ore = BlockPos.containing(area.point(8, 101, 8));
+    var remainingOre = ore.east();
     helper.getLevel().setBlockAndUpdate(ore, Blocks.STONE.defaultBlockState());
+    helper.getLevel().setBlockAndUpdate(remainingOre, Blocks.STONE.defaultBlockState());
     helper.assertTrue(helper.getLevel().noCollision(miner), "Miner starts clear of the work block");
     helper.succeedWhen(
         () -> {
           helper.assertTrue(
-              helper.getLevel().getBlockState(ore).isAir(),
-              "The worn tool mines the requested stone");
+              helper.getLevel().getBlockState(ore).isAir()
+                  && helper.getLevel().getBlockState(remainingOre).isAir(),
+              "Mining resumes after the worn tool breaks and its replacement arrives");
           helper.assertTrue(
               miner.getPickaxe().is(Items.DIAMOND_PICKAXE) && chest.getItem(0).isEmpty(),
               "A miner whose last durability was consumed must receive a new tool");
           helper.assertTrue(
-              count(miner.getBag(), Items.COBBLESTONE) == 1,
+              count(miner.getBag(), Items.COBBLESTONE) == 2,
               "Replacing a tool must preserve mined resources");
           miner.discard();
           carrier.discard();
@@ -581,20 +585,46 @@ public final class TransportSlimeGameTests {
   @GameTest(template = "empty", timeoutTicks = 40)
   public static void breakingChestDropsCargoExactlyOnce(GameTestHelper helper) {
     SlimeChestBlockEntity chest = chest(helper, CHEST);
+    Component name = Component.literal("Quarry supplies");
+    chest.setCustomName(name);
     chest.setItem(0, new ItemStack(Items.DIAMOND, 17));
     helper.getLevel().destroyBlock(helper.absolutePos(CHEST), true);
     helper.runAfterDelay(
         4,
         () -> {
           int diamonds = 0, boxes = 0;
+          ItemStack recovered = ItemStack.EMPTY;
           for (ItemEntity drop :
               helper.getEntities(net.minecraft.world.entity.EntityType.ITEM, CHEST, 4)) {
             if (drop.getItem().is(Items.DIAMOND)) diamonds += drop.getItem().getCount();
-            if (drop.getItem().is(ModItems.SLIME_CHEST.get())) boxes += drop.getItem().getCount();
+            if (drop.getItem().is(ModItems.SLIME_CHEST.get())) {
+              boxes += drop.getItem().getCount();
+              helper.assertTrue(
+                  drop.getItem().hasCustomHoverName() && drop.getItem().getHoverName().equals(name),
+                  "Breaking a named Slime Chest must preserve its custom name");
+              recovered = drop.getItem().copy();
+              drop.discard();
+            }
           }
           helper.assertTrue(
               diamonds == 17 && boxes == 1,
               "Breaking a Slime Chest must drop its block and contents once");
+          helper.setBlock(CHEST.below(), Blocks.STONE);
+          Player player = helper.makeMockSurvivalPlayer();
+          BlockPos floor = helper.absolutePos(CHEST.below());
+          var hit = new BlockHitResult(Vec3.atCenterOf(floor), Direction.UP, floor, false);
+          helper.assertTrue(
+              recovered
+                  .useOn(
+                      new UseOnContext(
+                          helper.getLevel(), player, InteractionHand.MAIN_HAND, recovered, hit))
+                  .consumesAction(),
+              "The recovered chest must be placeable");
+          helper.assertTrue(
+              helper.getBlockEntity(CHEST) instanceof SlimeChestBlockEntity placed
+                  && placed.getDisplayName().equals(name)
+                  && placed.isEmpty(),
+              "Placing the recovered chest restores its name without duplicating the contents");
           helper.succeed();
         });
   }

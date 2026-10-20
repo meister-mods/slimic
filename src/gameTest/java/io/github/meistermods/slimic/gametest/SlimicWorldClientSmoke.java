@@ -67,6 +67,7 @@ public final class SlimicWorldClientSmoke {
 
   static void checkModels(Minecraft c) {
     var missing = c.getModelManager().getMissingModel();
+    int checkedStates = 0;
     CreativeModeTabs.tryRebuildTabContents(
         c.level.enabledFeatures(), true, c.level.registryAccess());
     for (var entry : ModWorldBlocks.entries()) {
@@ -95,6 +96,22 @@ public final class SlimicWorldClientSmoke {
         check(
             !quad.getSprite().contents().name().getPath().contains("missingno"),
             "Texture " + entry.id());
+      for (var variant : entry.block().get().getStateDefinition().getPossibleStates()) {
+        var variantModel = c.getBlockRenderer().getBlockModel(variant);
+        check(variantModel != missing, "World model variant " + variant);
+        check(
+            !variantModel.getParticleIcon().contents().name().getPath().contains("missingno"),
+            "Particle texture " + variant);
+        var variantQuads =
+            new ArrayList<>(variantModel.getQuads(variant, null, RandomSource.create(1)));
+        for (var face : Direction.values())
+          variantQuads.addAll(variantModel.getQuads(variant, face, RandomSource.create(1)));
+        for (var quad : variantQuads)
+          check(
+              !quad.getSprite().contents().name().getPath().contains("missingno"),
+              "Variant texture " + variant);
+        checkedStates++;
+      }
       var tab =
           entry.category() == ModWorldBlocks.Category.BUILDING
               ? ModCreativeTabs.BUILDING.get()
@@ -111,6 +128,7 @@ public final class SlimicWorldClientSmoke {
         ModCreativeTabs.BUILDING.get().getDisplayItems().size() == 54
             && ModCreativeTabs.DECORATIONS.get().getDisplayItems().size() == 32,
         "Separate 54/32 Creative tabs");
+    System.out.println("SLIMIC WORLD MODEL STATES PASSED: " + checkedStates);
   }
 
   private static final class Gallery extends Screen {

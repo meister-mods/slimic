@@ -167,7 +167,7 @@ Unfinished wall cells survive saves and same-chunk recovery, including the remai
 
 ## Slime Chests
 
-Craft eight wooden planks around a slimeball to make a **Slime Chest**. Any plank type, including mixed types, works. Right-click to open its 27-slot inventory. It stores both resources and spare tools, retains its inventory across world saves, and supports standard item automation and comparator output. Breaking it drops the chest and its contents separately.
+Craft eight wooden planks around a slimeball to make a **Slime Chest**. Any plank type, including mixed types, works. Right-click to open its 27-slot inventory. It stores both resources and spare tools, retains its inventory across world saves, and supports standard item automation and comparator output. Breaking it drops the chest and its contents separately. A custom name stays on the chest item and is restored when it is placed again.
 
 Slime Chests are shared logistics containers for nearby transport slimes. Ordinary chests are used to craft transport slimes and are not automatic pickup or delivery endpoints. Locked Slime Chests are not used by transport slimes.
 
