@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Starts waiting. Select Fight to assign its current position as the guard post. It fights eligible targets within Detection Range of the post and returns when idle. Select Fight again after moving it to assign a new post."
+      "text": "Base maximum health is 160, matching a Guardian Angel. Normal Health training still adds four. It starts in Wait. Select Fight to assign the current guard post. It fights targets within Detection Range and returns when idle. Select Fight elsewhere to move the post."
     },
     {
       "type": "patchouli:text",

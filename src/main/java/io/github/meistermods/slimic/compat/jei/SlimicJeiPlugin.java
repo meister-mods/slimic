@@ -268,6 +268,10 @@ public final class SlimicJeiPlugin implements IModPlugin {
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(relic).getPath()));
     registration.addIngredientInfo(
+        new ItemStack(ModWorldBlocks.block("command_pedestal")),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.command_pedestal"));
+    registration.addIngredientInfo(
         ModWorldBlocks.entries().stream()
             .filter(entry -> entry.category() == ModWorldBlocks.Category.BUILDING)
             .map(entry -> new ItemStack(entry.item().get()))

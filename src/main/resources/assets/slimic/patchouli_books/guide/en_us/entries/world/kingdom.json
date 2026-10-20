@@ -6,15 +6,19 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Supply depots retain guards, carriers, usable storage, and restoration materials. Look for lit lamps, old roads, and masonry. Written ledgers explain how damaged cores can receive new orders."
+      "text": "Supply depots still contain guards, carriers, working storage, and restoration materials. Follow their lamps and stone paths to inspect nearby remains. Chests have a 20% chance to contain one seal; recovered books leave clues to core restoration."
     },
     {
       "type": "patchouli:text",
-      "text": "Archives contain bookshelves, tablets, extra defenders, and an ancient commander. Records describe the kingdom’s beginnings and orders left after the traveler vanished. Chests contain seals and supplies."
+      "text": "Archives hold bookshelves, tablets, extra guards, and an ancient commander. Slime-written records recall the kingdom’s beginning and the silence after XXX left. Each chest has a 35% chance to contain one seal, alongside supplies."
     },
     {
       "type": "patchouli:text",
-      "text": "Rarer royal wards hold crests, banners, a castellan, and additional guards. Recover the last watch’s record and extra seals. Ruins generate in new chunks; existing builds and saved companions remain intact."
+      "text": "Rarer old royal wards bear crests and banners, with a commander and extra guards. Their chests hold the last watch’s record and have a 50% chance to contain one seal. Ruins appear in new chunks without changing existing builds or saved companions."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Reach The Slimic through a slime-block portal, then explore new surface chunks. Royal wards are rare ruins with crests, old banners, a commander, and extra guards. They have no fixed coordinates or separate entrance."
     }
   ]
 }

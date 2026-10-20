@@ -272,13 +272,19 @@ public final class ModEntities {
     event.put(ROYAL_GUARD_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(
         ANCIENT_GUARD_SLIME.get(),
-        io.github.meistermods.slimic.entity.AncientSlime.createAttributes().build());
+        io.github.meistermods.slimic.entity.AncientSlime.createAttributes(
+                io.github.meistermods.slimic.entity.AncientSlime.Role.GUARD)
+            .build());
     event.put(
         FORGOTTEN_TRANSPORT_SLIME.get(),
-        io.github.meistermods.slimic.entity.AncientSlime.createAttributes().build());
+        io.github.meistermods.slimic.entity.AncientSlime.createAttributes(
+                io.github.meistermods.slimic.entity.AncientSlime.Role.TRANSPORT)
+            .build());
     event.put(
         ANCIENT_COMMANDER_SLIME.get(),
-        io.github.meistermods.slimic.entity.AncientSlime.createAttributes().build());
+        io.github.meistermods.slimic.entity.AncientSlime.createAttributes(
+                io.github.meistermods.slimic.entity.AncientSlime.Role.COMMANDER)
+            .build());
     event.put(GLOW_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(COMMANDER_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ENDER_SLIME.get(), FriendlySlime.createAttributes().build());

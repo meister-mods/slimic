@@ -6,7 +6,7 @@ The old kingdom's slimes still follow orders left at their ruins. Forgotten Orde
 
 ## Occupied ruins
 
-Newly generated workshops and supply depots contain an Ancient Guard, a Forgotten Transport, linked Slime Chests, an intact Command Pedestal, and an ordinary loot chest. Road fragments remain unoccupied. Archives add bookshelves, tablets, an Ancient Commander, and **The Missing Traveler** record, which links the kingdom’s beginnings to the traveler’s disappearance. Rarer royal wards add royal insignia, another guard, and **The Last Watch** record. These are weathered sections of the old capital, built within individual chunks.
+Newly generated workshops and supply depots contain an Ancient Guard, a Forgotten Transport, linked Slime Chests, an intact Slime Restoration Station, and an ordinary loot chest. Road fragments remain unoccupied. Archives add bookshelves, tablets, an Ancient Commander, and **Waiting for XXX** record, which links the kingdom’s beginnings to XXX’s absence. Rarer royal wards add royal insignia, another guard, and **The Last Watch** record. These are weathered sections of the old capital, built within individual chunks.
 
 | Remnant | Duty |
 | --- | --- |
@@ -18,12 +18,22 @@ Remnants are distinct hostile entities, with no player owner or companion recove
 
 Ancient carriers never search for arbitrary player storage. Their two depots must retain matching ruin identities. Opening a linked chest removes its ancient link, so it can be claimed for ordinary use. Breaking and replacing a chest also removes that link. Ancient hauling respects `mobGriefing`; it does not force-load chunks. Loot and protection mods can continue to cancel attacks or drops through the normal Forge events. Peaceful difficulty removes hostile remnants under native monster rules.
 
+## Finding a royal ward
+
+Enter The Slimic through a slime-block portal and explore newly generated surface chunks. Royal wards are rare variants among the ruins, marked by royal crests, old slime banners, a commander, and extra guards. They have no fixed coordinates, separate portal, or entry requirement. Flat land above sea level can contain ruins; steep terrain and existing containers prevent placement. Ruins are world-generation features, so `/locate structure` does not locate them. Older generated chunks do not gain new ruins automatically.
+
+Base health, attack damage, and armor are 64/8/8 for Ancient Guards, 48/6/6 for Forgotten Transports, and 96/12/12 for Ancient Commanders. Unmodified remnants from earlier saves receive the new defaults once while retaining their health proportion, ruin, cargo, and name. Custom attributes remain unchanged. Creative provides one ordinary spawn egg per hostile role. Spawn eggs create unowned remnants; carriers without linked ruin depots have no delivery route.
+
+The recovered books speak in the voices of slimes who kept supplies, pressed records into clay, and stood watch. The name `XXX` obscures a missing figure. Their experiences leave restoration clues without describing player controls or progression systems.
+
 ## Restore a remnant
 
-Defeating a remnant yourself or with a tamed Slimic companion yields one **Damaged Ancient Slime Core** and one **Ancient Command Seal**, subject to ordinary mob-loot rules and drop events. Loot chests also guarantee seals: one in workshops and depots, two in archives, and three in royal wards. Supplies and translated records provide the first restoration clues.
+The **Slime Restoration Station** is the intact pedestal found in ruins. Find it beside the seal in the main Slimic Creative tab. Right-click without a core for instructions, or look up the station in the guidebook’s **Slime restoration** entry.
+
+Defeating a remnant yourself or with a tamed Slimic companion yields one **Damaged Ancient Slime Core** and one **Ancient Command Seal**, subject to ordinary mob-loot rules and drop events. Chest chances for one seal are 20% in workshops and depots, 35% in archives, and 50% in royal wards. Supplies and translated records provide the first restoration clues.
 
 1. Hold the core and keep one seal and one slimeball in the player inventory.
-2. Right-click an intact **Command Pedestal**. Cracked pedestals do not work. A pedestal can also be cut from Chiseled Slimic Stone Bricks using a stonecutter.
+2. Right-click an intact **Slime Restoration Station**. Cracked pedestals do not work. A pedestal can also be cut from Chiseled Slimic Stone Bricks using a stonecutter.
 3. The two materials are consumed once, and the held core becomes a stored companion item. No space elsewhere in the inventory is required. The same material cost applies in Creative.
 4. Release the companion in a clear location. It starts in **Wait at one health**. Heal it before assigning work.
 
@@ -44,6 +54,8 @@ Combine a **Combat Slime item and one Ancient Command Seal** without a fixed arr
 Restoration provides a new veteran with ancient collection traits. Specialization develops the existing companion the player has raised. Both paths lead to the same guard abilities.
 
 ## Royal Guard Slime
+
+Base maximum health is 160 (80 hearts), matching the Guardian Angel. A permanent +144 profession bonus retains the original base and Health training; each normal Health upgrade still adds four. Existing guards keep their current health when the bonus is applied. Recovery, crafting, and reload never stack the bonus or heal the companion.
 
 Royal Guards accept the Combat Slime's sword, shield, armor, bag, and six independent target filters. Select **Fight** to assign the current position as a guard post. Eligible targets must remain within Detection Range of the post. With no target the guard returns to its post. Follow or Wait ends active guarding; selecting Fight again assigns a new post. Recovery and portal travel relocate the post and return the guard to Wait; ordinary saving preserves an explicit work order and post.
 

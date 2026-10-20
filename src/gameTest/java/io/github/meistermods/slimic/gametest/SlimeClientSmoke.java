@@ -19,6 +19,7 @@ import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModCreativeTabs;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
+import io.github.meistermods.slimic.registry.ModWorldBlocks;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -598,10 +599,11 @@ public final class SlimeClientSmoke {
       var expectedItems = new java.util.HashSet<>(registeredItems);
       expectedItems.remove(ModItems.SLIME_TELEPORTER.get());
       expectedItems.remove(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get());
+      expectedItems.add(ModWorldBlocks.block("command_pedestal").asItem());
       var displayedItems =
           items.stream()
               .map(ItemStack::getItem)
-              .filter(registeredItems::contains)
+              .filter(expectedItems::contains)
               .collect(java.util.stream.Collectors.toSet());
       if (!displayedItems.equals(expectedItems)
           || items.size() != expectedItems.size() + (ModList.get().isLoaded("patchouli") ? 1 : 0))

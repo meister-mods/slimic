@@ -113,27 +113,38 @@ public final class SlimicWorldClientSmoke {
         checkedStates++;
       }
       var tab =
-          entry.category() == ModWorldBlocks.Category.BUILDING
-              ? ModCreativeTabs.BUILDING.get()
-              : ModCreativeTabs.DECORATIONS.get();
+          switch (entry.category()) {
+            case BUILDING -> ModCreativeTabs.BUILDING.get();
+            case DECORATION -> ModCreativeTabs.DECORATIONS.get();
+            case FUNCTIONAL -> ModCreativeTabs.SLIMIC.get();
+          };
       check(
           tab.getDisplayItems().stream().anyMatch(i -> i.is(stack.getItem())),
           "Correct Creative tab " + entry.id());
+      for (var other :
+          List.of(
+              ModCreativeTabs.SLIMIC.get(),
+              ModCreativeTabs.BUILDING.get(),
+              ModCreativeTabs.DECORATIONS.get()))
+        check(
+            other == tab || other.getDisplayItems().stream().noneMatch(i -> i.is(stack.getItem())),
+            "No duplicate world item in another Creative tab " + entry.id());
       check(
-          ModCreativeTabs.SLIMIC.get().getDisplayItems().stream()
-              .noneMatch(i -> i.is(stack.getItem())),
-          "World material stays in its own tab " + entry.id());
+          (entry.category() == ModWorldBlocks.Category.FUNCTIONAL)
+              == ModCreativeTabs.SLIMIC.get().getDisplayItems().stream()
+                  .anyMatch(i -> i.is(stack.getItem())),
+          "Only functional stations enter the main tab " + entry.id());
     }
     check(
         ModCreativeTabs.BUILDING.get().getDisplayItems().size() == 54
-            && ModCreativeTabs.DECORATIONS.get().getDisplayItems().size() == 32,
-        "Separate 54/32 Creative tabs");
+            && ModCreativeTabs.DECORATIONS.get().getDisplayItems().size() == 31,
+        "Separate 54/31 Creative tabs");
     System.out.println("SLIMIC WORLD MODEL STATES PASSED: " + checkedStates);
   }
 
   private static final class Gallery extends Screen {
     Gallery() {
-      super(Component.literal("The Slimic — 54 building blocks / 32 decorations"));
+      super(Component.literal("The Slimic — 54 building blocks / 31 decorations / 1 station"));
     }
 
     @Override
@@ -152,9 +163,11 @@ public final class SlimicWorldClientSmoke {
         g.drawString(
             font,
             Component.translatable(
-                category == ModWorldBlocks.Category.BUILDING
-                    ? "itemGroup.slimic.building"
-                    : "itemGroup.slimic.decorations"),
+                switch (category) {
+                  case BUILDING -> "itemGroup.slimic.building";
+                  case DECORATION -> "itemGroup.slimic.decorations";
+                  case FUNCTIONAL -> "itemGroup.slimic";
+                }),
             8,
             y,
             0xaacb92);
@@ -340,7 +353,7 @@ public final class SlimicWorldClientSmoke {
         try {
           Files.writeString(
               out,
-              "PASS: 86 models and textures; 54/32 separate tabs; EN/KR names; native player portal"
+              "PASS: 86 models and textures; 54/31 separate tabs; EN/KR names; native player portal"
                   + " round trip; Damp Plains; translated ruin ledger; returned="
                   + returned
                   + "\n");

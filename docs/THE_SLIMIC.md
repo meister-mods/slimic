@@ -61,9 +61,11 @@ A stonecutter processes Slimic Stone into the masonry palette. Stairs, slabs, an
 
 Stairs and slabs: Slimic Stone, Slimic Cobblestone, Slimic Stone Bricks, Mossy Slimic Stone Bricks, Slimic Tiles, Slime Marble, Black Slime Stone, and Slime-Infused Planks. Walls: Slimic Cobblestone, Mossy Slimic Cobblestone, Slimic Stone Bricks, Mossy Slimic Stone Bricks, Slimic Slate Bricks, and Slime Marble Bricks.
 
+The **Slime Restoration Station** (`slimic:command_pedestal`) appears beside the ancient seal in the main Slimic Creative tab. See [core restoration](FORGOTTEN_ORDERS.md#restore-a-remnant) for its materials and procedure.
+
 ## Decorations
 
-The separate **Slimic Decorations** Creative tab has **32 entries**. Most solid props face their placer, require a sturdy upper floor face, have matching collision shapes, and support waterlogging. Removing their support drops the prop and preserves contained water. Plants need suitable soil. Lighting follows each block's visible design; the Dormant Beacon is unlit.
+The separate **Slimic Decorations** Creative tab has **31 entries**. Most solid props face their placer, require a sturdy upper floor face, have matching collision shapes, and support waterlogging. Removing their support drops the prop and preserves contained water. Plants need suitable soil. Lighting follows each block's visible design; the Dormant Beacon is unlit.
 
 Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. Use an actual Slime Chest for item storage and companion logistics, and an ordinary crafting table for crafting.
 
@@ -72,8 +74,7 @@ Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. U
 | Gel Lantern | `slimic:gel_lantern` |
 | Ancient Brazier | `slimic:ancient_brazier` |
 | Dormant Beacon | `slimic:dormant_beacon` |
-| Command Pedestal | `slimic:command_pedestal` |
-| Cracked Command Pedestal | `slimic:cracked_command_pedestal` |
+| Cracked Slime Restoration Station | `slimic:cracked_command_pedestal` |
 | Fallen Pillar | `slimic:fallen_pillar` |
 | Broken Pillar | `slimic:broken_pillar` |
 | Royal Waymarker | `slimic:royal_waymarker` |
@@ -104,9 +105,9 @@ Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. U
 
 ## Ruins and records
 
-Scattered workshops, supply depots, road fragments, archives, and royal wards use local masonry, broken furniture, lamps, and weathered markers. Newly generated occupied ruins contain ancient guards, carriers, and sometimes commanders still obeying the lost kingdom's orders. Their actual Slime Chests move supplies, while ordinary chests contain guaranteed command seals, supplies, and translated records.
+Scattered workshops, supply depots, road fragments, archives, and royal wards use local masonry, broken furniture, lamps, and weathered markers. Newly generated occupied ruins contain ancient guards, carriers, and sometimes commanders still obeying the lost kingdom's orders. Their actual Slime Chests move supplies, while ordinary chests contain supplies and translated records, with a chance to find a command seal.
 
-Defeat a remnant and restore its core at an intact Command Pedestal, or use a seal to specialize an existing Combat Slime. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for both acquisition paths, occupied depots, archives, and old royal wards. Opening an ancient Slime Chest removes its carrier link. The intact pedestal now restores cores; other ornamental furniture retains its decorative role. Records describe the missing traveler, the kingdom's fading supply routes, and the last watch.
+Defeat a remnant and restore its core at an intact Slime Restoration Station, or use a seal to specialize an existing Combat Slime. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for both acquisition paths, occupied depots, archives, and old royal wards. Opening an ancient Slime Chest removes its carrier link. The intact pedestal now restores cores; other ornamental furniture retains its decorative role. Records describe the absent XXX, the kingdom's fading supply routes, and the last watch.
 
 ## Companion travel
 

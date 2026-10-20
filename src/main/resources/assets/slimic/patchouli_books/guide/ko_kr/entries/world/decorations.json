@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Slimic 장식 탭에는 소품과 식물 32종이 있습니다. 받침대, 기둥, 기록판, 항아리, 가구, 수정, 조명과 풍화된 이정표로 정착지의 역사를 표현할 수 있습니다. 현지 석재와 점액이 밴 목재, 점액, 익숙한 식물로 제작하세요."
+      "text": "Slimic 장식 탭에는 소품과 식물 31종이 있습니다. 받침대, 기둥, 기록판, 항아리, 가구, 수정, 조명과 풍화된 이정표로 정착지의 역사를 표현할 수 있습니다. 현지 석재와 점액이 밴 목재, 점액, 익숙한 식물로 제작하세요."
     },
     {
       "type": "patchouli:text",
@@ -21,7 +21,6 @@
     "slimic:gel_lantern": 0,
     "slimic:ancient_brazier": 0,
     "slimic:dormant_beacon": 0,
-    "slimic:command_pedestal": 0,
     "slimic:cracked_command_pedestal": 0,
     "slimic:fallen_pillar": 0,
     "slimic:broken_pillar": 0,

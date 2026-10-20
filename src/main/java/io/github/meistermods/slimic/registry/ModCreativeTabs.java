@@ -49,6 +49,10 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SLIME_TRAIL.get());
                         output.accept(ModItems.SLIME_SLAG.get());
                         output.accept(ModItems.ANCIENT_COMMAND_SEAL.get());
+                        output.accept(ModWorldBlocks.block("command_pedestal"));
+                        output.accept(ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get());
+                        output.accept(ModItems.FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG.get());
+                        output.accept(ModItems.ANCIENT_COMMANDER_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.SLIME_CHEST.get());
                         output.accept(ModItems.BROKEN_SLIME.get());
                         for (var chestplate :

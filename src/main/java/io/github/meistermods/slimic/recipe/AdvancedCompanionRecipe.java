@@ -116,6 +116,8 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     CompanionBase.copyData(source, result);
     if (result.getOrCreateTag().contains("SlimeData")) {
       var data = result.getTag().getCompound("SlimeData");
+      if (kind == Kind.ROYAL_GUARD)
+        io.github.meistermods.slimic.entity.RoyalGuardSlime.addHealthBonusToData(data);
       data.putBoolean("Sitting", true);
       for (var key : List.of("MiningWorking", "CombatWorking", "HealingWorking"))
         data.putBoolean(key, false);

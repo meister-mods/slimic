@@ -82,3 +82,5 @@ Block models under `models/block/world` combine these textures with referenced M
 ## Slime Chest
 
 `textures/block/slime_chest.png` follows the native single-chest **64×64 UV atlas**. Body, lid, and latch share it in both the world and item models. Keep the native transparent interior and unused regions; `slime_chest_particle.png` provides the breaking-particle surface.
+
+The Ancient Command Seal uses a dedicated transparent 32×32 item texture at `assets/slimic/textures/item/ancient_command_seal.png`: a weathered gold tablet with a purple slime insignia. Its model uses one layer; hostile spawn eggs use the native tinted egg model.

@@ -124,7 +124,7 @@
           "functions": [
             {
               "function": "minecraft:set_nbt",
-              "tag": "{title:\"The Slimic\",author:\"The Slimic\",pages:[\"{\\\"translate\\\": \\\"lore.slimic.royal.page1\\\"}\",\"{\\\"translate\\\": \\\"lore.slimic.royal.page2\\\"}\"],display:{Name:\"{\\\"translate\\\": \\\"lore.slimic.royal.title\\\"}\"}}"
+              "tag": "{title:\"The Slimic\",author:\"XXX\",pages:[\"{\\\"translate\\\": \\\"lore.slimic.royal.page1\\\"}\",\"{\\\"translate\\\": \\\"lore.slimic.royal.page2\\\"}\"],display:{Name:\"{\\\"translate\\\": \\\"lore.slimic.royal.title\\\"}\"}}"
             }
           ]
         }
@@ -135,13 +135,13 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "slimic:ancient_command_seal",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": 3
-            }
-          ]
+          "name": "slimic:ancient_command_seal"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.5
         }
       ]
     }

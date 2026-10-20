@@ -107,8 +107,12 @@ public final class SlimicWorldGameTests {
             && ModWorldBlocks.entries().stream()
                     .filter(e -> e.category() == ModWorldBlocks.Category.DECORATION)
                     .count()
-                == 32,
-        "Building and decoration have separate, complete catalogs");
+                == 31
+            && ModWorldBlocks.entries().stream()
+                    .filter(e -> e.category() == ModWorldBlocks.Category.FUNCTIONAL)
+                    .count()
+                == 1,
+        "Building, decoration and functional stations have separate, complete catalogs");
     h.assertTrue(
         ModWorldBlocks.PORTAL.get().asItem() == Items.AIR,
         "The technical portal has no inventory item");

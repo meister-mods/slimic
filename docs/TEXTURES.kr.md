@@ -82,3 +82,5 @@ The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/asset
 ## 슬라임 상자
 
 `textures/block/slime_chest.png`는 바닐라 단일 상자의 **64×64 UV 아틀라스** 배치를 따릅니다. 월드와 아이템 모델의 본체·뚜껑·걸쇠가 같은 파일을 공유합니다. 내부와 사용하지 않는 투명 영역을 유지하세요. `slime_chest_particle.png`는 파괴 입자의 표면입니다.
+
+고대 명령 인장은 `assets/slimic/textures/item/ancient_command_seal.png`의 투명한 32×32 전용 텍스처를 사용합니다. 낡은 금색 인장에 보라색 슬라임 문양을 새겼으며 모델은 한 레이어를 사용합니다. 적대 슬라임 생성 알은 바닐라 색상 적용 모델을 사용합니다.

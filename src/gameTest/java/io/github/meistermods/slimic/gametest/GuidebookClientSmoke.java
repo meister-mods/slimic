@@ -365,12 +365,12 @@ public final class GuidebookClientSmoke {
           openEntry(c);
           return false;
         }
-        if (rendered != 171)
-          throw new IllegalStateException("Expected 171 content pages, rendered " + rendered);
+        if (rendered != 173)
+          throw new IllegalStateException("Expected 173 content pages, rendered " + rendered);
         System.out.println(
             "SLIMIC GUIDEBOOK LANGUAGE PASSED: "
                 + LANGUAGES.get(language)
-                + "; 54 entries; 171 rendered pages");
+                + "; 54 entries; 173 rendered pages");
         if (++language < LANGUAGES.size()) {
           phase = 3;
           return false;
@@ -386,7 +386,7 @@ public final class GuidebookClientSmoke {
                 "entries",
                 54,
                 "pages_per_language",
-                171,
+                173,
                 "item_lookups",
                 checkedLookups,
                 "entry_links",

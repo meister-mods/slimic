@@ -1,6 +1,6 @@
 {
-  "name": "Core restoration",
-  "icon": "slimic:damaged_ancient_slime_core",
+  "name": "Slime restoration",
+  "icon": "slimic:command_pedestal",
   "category": "slimic:world",
   "sortnum": 8,
   "pages": [
@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Hold a damaged core and use it on an intact $(item)Command Pedestal$(). One seal and one slimeball are consumed from your inventory, and the held core becomes a companion item. Cracked pedestals cannot restore cores."
+      "text": "Hold a damaged core and right-click a $(item)Slime Restoration Station$(). Keep one seal and one slimeball in your inventory. They are consumed and the core becomes a summon item. Find an intact station in ruins or cut Chiseled Slimic Stone Bricks with a stonecutter. Cracked stations do not work."
     },
     {
       "type": "patchouli:text",
@@ -22,7 +22,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "slimic:damaged_ancient_slime_core": 0,
-    "slimic:ancient_command_seal": 0
+    "slimic:command_pedestal": 1,
+    "slimic:damaged_ancient_slime_core": 1,
+    "slimic:ancient_command_seal": 1
   }
 }

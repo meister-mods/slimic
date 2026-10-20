@@ -61,6 +61,45 @@ public final class JeiClientSmoke implements IModPlugin {
     return true;
   }
 
+  public static boolean restorationInformationReady() {
+    if (runtime == null) return false;
+    var expectedItems =
+        java.util.Set.of(
+            io.github.meistermods.slimic.registry.ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
+            io.github.meistermods.slimic.registry.ModItems.ANCIENT_COMMAND_SEAL.get(),
+            io.github.meistermods.slimic.registry.ModWorldBlocks.block("command_pedestal")
+                .asItem());
+    var found = new java.util.HashSet<net.minecraft.world.item.Item>();
+    runtime
+        .getRecipeManager()
+        .createRecipeLookup(RecipeTypes.INFORMATION)
+        .get()
+        .forEach(
+            recipe -> {
+              for (var ingredient : recipe.getIngredients()) {
+                var stack =
+                    ingredient.getIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK);
+                if (stack.isEmpty() || !expectedItems.contains(stack.get().getItem())) continue;
+                var item = stack.get().getItem();
+                var id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item);
+                var expected =
+                    net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
+                        .getString();
+                var actual =
+                    recipe.getDescription().stream()
+                        .map(net.minecraft.network.chat.FormattedText::getString)
+                        .collect(java.util.stream.Collectors.joining());
+                if (!actual.replaceAll("\\s+", "").equals(expected.replaceAll("\\s+", "")))
+                  throw new IllegalStateException(
+                      "Wrong restoration ingredient information: " + id);
+                found.add(item);
+              }
+            });
+    if (!found.equals(expectedItems))
+      throw new IllegalStateException("Missing restoration ingredient information: " + found);
+    return true;
+  }
+
   public static long healingRecipes() {
     return recipes("healing_slime/");
   }

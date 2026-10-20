@@ -77,10 +77,14 @@ public final class AncientSlime extends Monster {
   }
 
   public static AttributeSupplier.Builder createAttributes() {
+    return createAttributes(Role.GUARD);
+  }
+
+  public static AttributeSupplier.Builder createAttributes(Role role) {
     return Monster.createMonsterAttributes()
-        .add(Attributes.MAX_HEALTH, 28)
-        .add(Attributes.ATTACK_DAMAGE, 4)
-        .add(Attributes.ARMOR, 3)
+        .add(Attributes.MAX_HEALTH, role == Role.COMMANDER ? 96 : role == Role.TRANSPORT ? 48 : 64)
+        .add(Attributes.ATTACK_DAMAGE, role == Role.COMMANDER ? 12 : role == Role.TRANSPORT ? 6 : 8)
+        .add(Attributes.ARMOR, role == Role.COMMANDER ? 12 : role == Role.TRANSPORT ? 6 : 8)
         .add(Attributes.MOVEMENT_SPEED, .25)
         .add(Attributes.FOLLOW_RANGE, 16);
   }
@@ -114,10 +118,6 @@ public final class AncientSlime extends Monster {
     sourceDepot = source == null ? null : source.immutable();
     destinationDepot = destination == null ? null : destination.immutable();
     experience = Math.max(0, Math.min(3, rank));
-    if (role() == Role.COMMANDER) {
-      getAttribute(Attributes.MAX_HEALTH).setBaseValue(40);
-      getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(5);
-    }
     setHealth(getMaxHealth());
     setCustomName(
         Component.translatable(
@@ -142,6 +142,12 @@ public final class AncientSlime extends Monster {
   @Override
   public boolean canChangeDimensions() {
     return false;
+  }
+
+  @Override
+  public ItemStack getPickResult() {
+    var egg = net.minecraftforge.common.ForgeSpawnEggItem.fromEntityType(getType());
+    return egg == null ? ItemStack.EMPTY : new ItemStack(egg);
   }
 
   public boolean mayAttack(LivingEntity target) {
@@ -337,6 +343,7 @@ public final class AncientSlime extends Monster {
     tag.putBoolean("AncientReturning", returning);
     tag.putBoolean("AncientCoreDropped", coreDropped);
     tag.putInt("AncientVeterancy", experience);
+    tag.putInt("AncientCombatVersion", 1);
   }
 
   @Override
@@ -359,6 +366,22 @@ public final class AncientSlime extends Monster {
     returning = tag.getBoolean("AncientReturning");
     coreDropped = tag.getBoolean("AncientCoreDropped");
     experience = Math.max(0, Math.min(3, tag.getInt("AncientVeterancy")));
+    if (tag.getInt("AncientCombatVersion") < 1) {
+      float health = getHealth();
+      float oldMaximum = getMaxHealth();
+      var maximum = getAttribute(Attributes.MAX_HEALTH);
+      double oldBase = role() == Role.COMMANDER ? 40 : 28;
+      if (maximum.getBaseValue() == oldBase) {
+        maximum.setBaseValue(role() == Role.COMMANDER ? 96 : role() == Role.TRANSPORT ? 48 : 64);
+        setHealth(health * getMaxHealth() / oldMaximum);
+      }
+      var attack = getAttribute(Attributes.ATTACK_DAMAGE);
+      if (attack.getBaseValue() == (role() == Role.COMMANDER ? 5 : 4))
+        attack.setBaseValue(role() == Role.COMMANDER ? 12 : role() == Role.TRANSPORT ? 6 : 8);
+      var armor = getAttribute(Attributes.ARMOR);
+      if (armor.getBaseValue() == 3)
+        armor.setBaseValue(role() == Role.COMMANDER ? 12 : role() == Role.TRANSPORT ? 6 : 8);
+    }
     setTarget(null);
     pathDestination = null;
     getNavigation().stop();

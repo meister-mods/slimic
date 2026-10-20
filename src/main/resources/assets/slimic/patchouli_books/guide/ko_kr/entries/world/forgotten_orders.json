@@ -15,6 +15,15 @@
     {
       "type": "patchouli:text",
       "text": "추격 범위는 유적 중심에서 24블록까지입니다. 멀리 달아나면 경계를 풀고 돌아갑니다. 직접 또는 동료와 함께 제압하면 코어와 인장을 하나씩 확정적으로 얻습니다. 전리품 규칙과 이벤트는 그대로 적용됩니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "기본 생명력/공격력/방어력은 수호 64/8/8, 운반 48/6/6, 지휘 96/12/12입니다. 크리에이티브에 각 역할의 생성 알이 있습니다. 알로 소환해도 소유권은 없으며, 운반에는 유적에 연결된 보급함이 필요합니다."
     }
-  ]
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_guard_slime_spawn_egg": 3,
+    "slimic:forgotten_transport_slime_spawn_egg": 3,
+    "slimic:ancient_commander_slime_spawn_egg": 3
+  }
 }

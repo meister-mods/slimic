@@ -3,6 +3,7 @@ package io.github.meistermods.slimic.gametest;
 import io.github.meistermods.slimic.client.SlimeScreen;
 import io.github.meistermods.slimic.entity.*;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
+import io.github.meistermods.slimic.item.SlimeTunerItem;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.*;
 import java.nio.file.*;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;
 
@@ -25,7 +27,9 @@ public final class ForgottenOrdersClientSmoke {
   private static final List<ItemStack> relics = new ArrayList<>();
   private static int phase, ticks;
   private static CompletableFuture<Void> reload;
-  private static RoyalGuardSlime royal;
+  private static RoyalGuardSlime royal, serverRoyal;
+  private static CompletableFuture<Void> serverTask;
+  private static boolean menuRequested;
 
   public static boolean tick(Minecraft c) {
     if (phase == 0) {
@@ -37,6 +41,18 @@ public final class ForgottenOrdersClientSmoke {
       }
       if (!reload.isDone() || c.getOverlay() != null) return false;
       reload.join();
+      if (net.minecraftforge.fml.ModList.get().isLoaded("jei")
+          && !JeiClientSmoke.restorationInformationReady()) return false;
+      SlimicWorldClientSmoke.checkModels(c);
+      var station = new ItemStack(ModWorldBlocks.block("command_pedestal"));
+      if (station.getTooltipLines(c.player, TooltipFlag.NORMAL).stream()
+          .noneMatch(
+              line ->
+                  line.getString()
+                      .equals(
+                          Component.translatable("block.slimic.command_pedestal.tooltip")
+                              .getString())))
+        throw new IllegalStateException("Station item must explain its restoration materials");
       c.options.forceUnicodeFont().set(false);
       c.options.guiScale().set(1);
       c.resizeDisplay();
@@ -74,7 +90,11 @@ public final class ForgottenOrdersClientSmoke {
           List.of(
               ModItems.ROYAL_GUARD_SLIME.get(),
               ModItems.ANCIENT_COMMAND_SEAL.get(),
-              ModItems.DAMAGED_ANCIENT_SLIME_CORE.get())) {
+              ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
+              ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get(),
+              ModItems.FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG.get(),
+              ModItems.ANCIENT_COMMANDER_SLIME_SPAWN_EGG.get(),
+              ModWorldBlocks.block("command_pedestal").asItem())) {
         var stack = new ItemStack(item);
         var model = c.getItemRenderer().getModel(stack, c.level, c.player, 0);
         if (model == c.getModelManager().getMissingModel()
@@ -82,6 +102,16 @@ public final class ForgottenOrdersClientSmoke {
           throw new IllegalStateException("Missing relic model: " + item);
         relics.add(stack);
       }
+      if (royal.getMaxHealth() != 160)
+        throw new IllegalStateException("Royal Guard client maximum health must be 160");
+      if (!c.getItemRenderer()
+          .getModel(new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()), c.level, c.player, 0)
+          .getParticleIcon()
+          .contents()
+          .name()
+          .getPath()
+          .equals("item/ancient_command_seal"))
+        throw new IllegalStateException("Seal must use its dedicated sprite");
       c.setScreen(new Portraits());
       phase = 1;
       ticks = 0;
@@ -93,21 +123,47 @@ public final class ForgottenOrdersClientSmoke {
       ticks = 0;
       phase++;
       if (phase == 3) {
-        royal.setOwnerUUID(c.player.getUUID());
-        royal.setTame(true);
-        royal.setWaiting(true);
-        c.setScreen(
-            new SlimeScreen(
-                new SlimeMenu(81, c.player.getInventory(), royal),
-                c.player.getInventory(),
-                Component.translatable("entity.slimic.royal_guard_slime")));
+        c.setScreen(null);
+        serverTask =
+            CompletableFuture.runAsync(
+                () -> {
+                  var owner =
+                      c.getSingleplayerServer().getPlayerList().getPlayer(c.player.getUUID());
+                  owner.closeContainer();
+                  owner.setItemInHand(
+                      InteractionHand.OFF_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
+                  serverRoyal = ModEntities.ROYAL_GUARD_SLIME.get().create(owner.serverLevel());
+                  serverRoyal.tame(owner);
+                  serverRoyal.setNoAi(true);
+                  serverRoyal.setNoGravity(true);
+                  serverRoyal.moveTo(owner.position().add(1, 0, 0));
+                  serverRoyal.setEquipment(0, new ItemStack(Items.IRON_SWORD));
+                  serverRoyal.setEquipment(1, new ItemStack(Items.SHIELD));
+                  serverRoyal.setEquipment(
+                      2, SlimeArmorItem.fromChestplate(new ItemStack(Items.IRON_CHESTPLATE)));
+                  owner.serverLevel().addFreshEntity(serverRoyal);
+                  serverRoyal.onReleased();
+                },
+                c.getSingleplayerServer());
       }
       return false;
     }
+    if (serverTask != null) {
+      if (!serverTask.isDone()) return false;
+      serverTask.join();
+      serverTask = null;
+    }
     if (phase == 3) {
-      if (++ticks < 20) return false;
+      if (!menuRequested) {
+        if (c.level.getEntity(serverRoyal.getId()) == null) return false;
+        openMenu(c);
+        menuRequested = true;
+        ticks = 0;
+        return false;
+      }
+      if (!ready(c) || ++ticks < 20) return false;
       shot(c, "management-en");
-      c.setScreen(null);
+      c.player.closeContainer();
       c.getLanguageManager().setSelected("ko_kr");
       c.options.languageCode = "ko_kr";
       reload = c.reloadResourcePacks();
@@ -121,20 +177,46 @@ public final class ForgottenOrdersClientSmoke {
       if (!Component.translatable("entity.slimic.royal_guard_slime")
           .getString()
           .equals("왕실 근위 슬라임")) throw new IllegalStateException("Missing Korean guard name");
-      c.setScreen(
-          new SlimeScreen(
-              new SlimeMenu(82, c.player.getInventory(), royal),
-              c.player.getInventory(),
-              Component.translatable("entity.slimic.royal_guard_slime")));
+      SlimicWorldClientSmoke.checkModels(c);
+      if (net.minecraftforge.fml.ModList.get().isLoaded("jei")
+          && !JeiClientSmoke.restorationInformationReady()) return false;
+      openMenu(c);
       phase = 5;
       return false;
     }
-    if (++ticks < 20) return false;
-    shot(c, "management-ko");
-    c.setScreen(null);
+    if (phase == 5) {
+      if (!ready(c) || ++ticks < 20) return false;
+      shot(c, "management-ko");
+      c.player.closeContainer();
+      serverTask =
+          CompletableFuture.runAsync(() -> serverRoyal.discard(), c.getSingleplayerServer());
+      phase = 6;
+      return false;
+    }
     System.out.println(
         "SLIMIC FORGOTTEN ORDERS CLIENT SMOKE PASSED: three hostile roles, both guard paths,"
-            + " restored professions, three relic models, English and Korean management");
+            + " restored professions, seven relic, egg and station models, English and Korean"
+            + " synchronized management at 160 maximum and current health");
+    return true;
+  }
+
+  private static void openMenu(Minecraft c) {
+    serverTask =
+        CompletableFuture.runAsync(
+            () -> {
+              var owner = c.getSingleplayerServer().getPlayerList().getPlayer(c.player.getUUID());
+              if (!SlimeTunerItem.open(owner, serverRoyal).consumesAction())
+                throw new IllegalStateException("Real Royal Guard menu could not open");
+            },
+            c.getSingleplayerServer());
+  }
+
+  private static boolean ready(Minecraft c) {
+    if (!(c.screen instanceof SlimeScreen screen) || !screen.getMenu().isSynchronized())
+      return false;
+    var menu = screen.getMenu();
+    if (menu.value(SlimeStat.HEALTH) != 160 || menu.data(SlimeMenu.HEALTH) != 1600)
+      throw new IllegalStateException("Synchronized Royal Guard menu must display 160/160 health");
     return true;
   }
 
@@ -173,7 +255,7 @@ public final class ForgottenOrdersClientSmoke {
         g.drawCenteredString(font, names.get(i), px, py - 270, 0xffffff);
       }
       for (int i = 0; i < relics.size(); i++) {
-        g.renderItem(relics.get(i), width / 2 - 60 + i * 40, height - 55);
+        g.renderItem(relics.get(i), width / 2 - (relics.size() - 1) * 20 + i * 40, height - 55);
       }
     }
   }

@@ -50,6 +50,28 @@ public final class ModItems {
               new io.github.meistermods.slimic.item.AncientSlimeCoreItem(
                   new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
 
+  public static final RegistryObject<Item> ANCIENT_GUARD_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "ancient_guard_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.ANCIENT_GUARD_SLIME, 0x476339, 0xD5AC44, new Item.Properties()));
+  public static final RegistryObject<Item> FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "forgotten_transport_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.FORGOTTEN_TRANSPORT_SLIME,
+                  0x476339,
+                  0x8A582C,
+                  new Item.Properties()));
+  public static final RegistryObject<Item> ANCIENT_COMMANDER_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "ancient_commander_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.ANCIENT_COMMANDER_SLIME, 0x476339, 0x713C91, new Item.Properties()));
+
   public static final RegistryObject<Item> FRIENDLY_SLIME =
       ITEMS.register("friendly_slime", () -> new FriendlySlimeItem(new Item.Properties()));
 

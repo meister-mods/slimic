@@ -4,6 +4,28 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.4] - 2026-10-20
+
+### Changed
+
+- Give the Ancient Command Seal a dedicated gold-and-purple item texture.
+- Raise Ancient Guard base health/attack/armor to 64/8/8, Forgotten Transport to 48/6/6, and Ancient Commander to 96/12/12. Earlier default remnants migrate once while retaining health proportion and saved traits; custom attributes remain intact.
+- Match the Royal Guard's base maximum health to the Guardian Angel at 160. Its permanent profession bonus preserves existing health training and current health without stacking on crafting or reload. Stored roster maximum health includes attribute modifiers.
+- Rewrite recovered records as slime-authored accounts with the missing figure obscured as XXX. Keep restoration clues in their experiences and add bilingual royal-ward exploration guidance.
+- Make chest seals optional: a 20% chance in workshops and depots, 35% in archives, and 50% in royal wards, with at most one seal per chest. Defeated remnant drops are unchanged.
+- Name the functional pedestal Slime Restoration Station, move it from decorations to beside seals in the main Creative tab, and add item, interaction, JEI, and guidebook restoration instructions. Existing block identities remain compatible.
+
+### Added
+
+- Native spawn eggs for all three ancient hostile roles, available in the Slimic Creative tab.
+
+### Validation
+
+- All 633 native server regressions pass with JEI and Patchouli present and absent. Focused cases cover restoration through either hand, exact ingredient consumption, permission vetoes, 768 seeded chest rolls, stronger ancient defaults, legacy migration, royal health training, stored vitals, and native spawn eggs.
+- Native clients verify all 2,892 world block states in English and Korean, exclusive station placement in the main Creative tab, station tooltips and JEI information, the dedicated seal and hostile eggs, and synchronized Royal Guard management at 160/160 health.
+- Both fonts render all 54 guidebook entries and 173 pages in English, Korean, and English fallback. All 42 recovered-record page renders also pass, with unchanged record text and book data verified against the release.
+- Google Java Format, the Java 17 build, bilingual documentation, resource resolution, release contents, and runtime linkage checks pass. Release code and resources match both complete server runs.
+
 ## [0.3.3] - 2026-10-20
 
 ### Added

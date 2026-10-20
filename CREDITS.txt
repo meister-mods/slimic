@@ -89,3 +89,6 @@ to Mojang Studios. The animated portal surface was created for Slimic.
 The gold-and-purple royal guard accessory atlas was created for Slimic and
 exported to the shared 64x64 logical UV layout at 256x256 pixels. Ancient relic
 item models combine referenced Minecraft slimeball, flint, gold, and amethyst artwork.
+
+The Ancient Command Seal uses original 32x32 gold-and-purple slime insignia artwork
+created for Slimic. Hostile spawn eggs reference Minecraft's native tinted egg model.

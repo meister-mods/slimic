@@ -373,7 +373,7 @@ Roster presentation resolves profession-specific labels from the saved type: Abu
 
 ## The Slimic
 
-`ModWorldBlocks` maintains a shared catalog for 54 building entries and 32 decorations. Separate block/item deferred registers keep world materials out of the companion tab. Models use Forge render types and tint indices; soil and construction shapes retain native tool and placement behavior.
+`ModWorldBlocks` maintains a shared catalog for 54 building entries, 31 decorations, and one functional station. Building and decoration entries have separate Creative tabs; functional stations appear in the main Slimic tab. Models use Forge render types and tint indices; soil and construction shapes retain native tool and placement behavior.
 
 `slimic:the_slimic` uses a fixed `slimic:damp_plains` biome with an Overworld noise router, local surface rules, native ores and caves, and three bounded terrain/vegetation/ruin features. Spawn-placement additions apply only to native Slimes in this dimension and biome. Ruin loot contains a localized written record.
 

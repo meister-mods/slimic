@@ -403,7 +403,9 @@ public final class ForgottenOrdersGameTests {
     h.assertTrue(guard.canProtect(ally, attacker), "Visible cooperating ally in reach");
     float damage = hit(s, ally, attacker);
     h.assertTrue(
-        Math.abs(damage - 5.2F) < .02 && guard.getHealth() < 16 && guard.getStamina() < stamina,
+        Math.abs(damage - 5.2F) < .02
+            && guard.getHealth() < guard.getMaxHealth()
+            && guard.getStamina() < stamina,
         "35% interception changes actual damage and costs resources");
     attacker.moveTo(s.area.point(15, 101, 15));
     h.assertTrue(!guard.mayAttack(attacker), "Target outside post range is excluded");
@@ -444,7 +446,9 @@ public final class ForgottenOrdersGameTests {
     var attacker = attacker(s);
     float damage = hit(s, ally, attacker);
     h.assertTrue(
-        Math.abs(damage - 5.2F) < .02 && first.getHealth() < 16 && second.getHealth() == 16,
+        Math.abs(damage - 5.2F) < .02
+            && first.getHealth() < first.getMaxHealth()
+            && second.getHealth() == second.getMaxHealth(),
         "One closest guard redirects once");
     h.assertTrue(!second.canProtect(first, attacker), "Guard-to-guard redirection cannot recurse");
     s.area.close();
@@ -476,7 +480,7 @@ public final class ForgottenOrdersGameTests {
               Math.abs(hit(s, ally, enemy) - 5.2F) < .02,
               "A fully shielded redirected hit still protects the ally");
           h.assertTrue(
-              guard.getHealth() == 16
+              guard.getHealth() == guard.getMaxHealth()
                   && guard.getOffhandItem().getDamageValue() == 0
                   && Math.abs(stamina - guard.getStamina() - 5.6F) < .02,
               "A small blocked hit costs stamina even below the native shield-wear threshold");
@@ -516,7 +520,9 @@ public final class ForgottenOrdersGameTests {
           MinecraftForge.EVENT_BUS.addListener(cancelDamage);
           try {
             h.assertTrue(
-                hit(s, ally, enemy) == 8 && guard.getHealth() == 16 && guard.getStamina() == 100,
+                hit(s, ally, enemy) == 8
+                    && guard.getHealth() == guard.getMaxHealth()
+                    && guard.getStamina() == 100,
                 "Canceled shield blocking and canceled guard damage never erase an ally hit");
           } finally {
             MinecraftForge.EVENT_BUS.unregister(cancelShield);
@@ -540,7 +546,9 @@ public final class ForgottenOrdersGameTests {
     MinecraftForge.EVENT_BUS.addListener(cancel);
     try {
       h.assertTrue(
-          hit(s, ally, attacker) == 8 && guard.getHealth() == 16 && guard.getStamina() == 100,
+          hit(s, ally, attacker) == 8
+              && guard.getHealth() == guard.getMaxHealth()
+              && guard.getStamina() == 100,
           "Canceled guard hit does not erase ally damage or consume stamina");
     } finally {
       MinecraftForge.EVENT_BUS.unregister(cancel);
@@ -800,30 +808,97 @@ public final class ForgottenOrdersGameTests {
   }
 
   @GameTest(template = "empty", batch = "forgotten_orders")
-  public static void allRuinLootTablesGuaranteeSealsAndLocalizedRecords(GameTestHelper h) {
+  public static void ruinChestsHaveOptionalSingleSealsAndGuaranteedRecords(GameTestHelper h) {
     for (var path : new String[] {"slimic_ruins", "slimic_archive", "slimic_royal_ward"}) {
       var table =
           h.getLevel().getServer().getLootData().getLootTable(SlimicWorld.id("chests/" + path));
-      for (int i = 0; i < 20; i++) {
-        var params =
-            new net.minecraft.world.level.storage.loot.LootParams.Builder(h.getLevel())
-                .withParameter(
-                    net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN,
-                    Vec3.ZERO)
-                .create(
-                    net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
-        var loot = table.getRandomItems(params);
-        int expected = path.equals("slimic_archive") ? 2 : path.equals("slimic_royal_ward") ? 3 : 1;
-        h.assertTrue(
+      var params =
+          new net.minecraft.world.level.storage.loot.LootParams.Builder(h.getLevel())
+              .withParameter(
+                  net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN,
+                  Vec3.ZERO)
+              .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
+      int found = 0;
+      for (int i = 0; i < 256; i++) {
+        var loot = table.getRandomItems(params, 17L + i * 104729L);
+        int count =
             loot.stream()
-                        .filter(item -> item.is(ModItems.ANCIENT_COMMAND_SEAL.get()))
-                        .mapToInt(ItemStack::getCount)
-                        .sum()
-                    == expected
-                && loot.stream().anyMatch(item -> item.is(Items.WRITTEN_BOOK)),
-            "Guaranteed seals and a record: " + path);
+                .filter(item -> item.is(ModItems.ANCIENT_COMMAND_SEAL.get()))
+                .mapToInt(ItemStack::getCount)
+                .sum();
+        h.assertTrue(
+            count <= 1 && loot.stream().anyMatch(item -> item.is(Items.WRITTEN_BOOK)),
+            "At most one seal and a guaranteed record: " + path);
+        found += count;
       }
+      double chance =
+          path.equals("slimic_archive") ? .35 : path.equals("slimic_royal_ward") ? .5 : .2;
+      h.assertTrue(
+          Math.abs(found / 256.0 - chance) < .12,
+          "Seeded native loot samples reflect the optional seal rate: " + path + " " + found);
     }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "forgotten_orders")
+  public static void stationExplainsRestorationWithoutConsumingMaterials(GameTestHelper h) {
+    var s = site(h);
+    var player =
+        net.minecraftforge.common.util.FakePlayerFactory.get(
+            h.getLevel(), new com.mojang.authlib.GameProfile(UUID.randomUUID(), "StationHelp"));
+    player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+    player.moveTo(Vec3.atCenterOf(s.pedestal));
+    player.getInventory().setItem(9, new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()));
+    player.getInventory().setItem(10, new ItemStack(Items.SLIME_BALL));
+    var result =
+        player.gameMode.useItemOn(
+            player,
+            h.getLevel(),
+            ItemStack.EMPTY,
+            InteractionHand.MAIN_HAND,
+            new BlockHitResult(Vec3.atCenterOf(s.pedestal), Direction.UP, s.pedestal, false));
+    h.assertTrue(
+        result.consumesAction()
+            && player.getMainHandItem().isEmpty()
+            && player.getInventory().getItem(9).getCount() == 1
+            && player.getInventory().getItem(10).getCount() == 1,
+        "Empty-hand station help is handled without spending restoration materials");
+    s.area.close();
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "forgotten_orders")
+  public static void stationHelpAllowsNativeRestorationInEitherHand(GameTestHelper h) {
+    var s = site(h);
+    for (var hand : InteractionHand.values()) {
+      var player =
+          net.minecraftforge.common.util.FakePlayerFactory.get(
+              h.getLevel(), new com.mojang.authlib.GameProfile(UUID.randomUUID(), "StationCore"));
+      player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+      player.moveTo(Vec3.atCenterOf(s.pedestal));
+      var core = core(s, AncientSlime.Role.GUARD);
+      player.setItemInHand(hand, core);
+      player.getInventory().setItem(9, new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()));
+      player.getInventory().setItem(10, new ItemStack(Items.SLIME_BALL));
+      var hit = new BlockHitResult(Vec3.atCenterOf(s.pedestal), Direction.UP, s.pedestal, false);
+      if (hand == InteractionHand.OFF_HAND)
+        h.assertTrue(
+            !player
+                .gameMode
+                .useItemOn(player, h.getLevel(), ItemStack.EMPTY, InteractionHand.MAIN_HAND, hit)
+                .consumesAction(),
+            "Station help must let an offhand core handle the click");
+      var result = player.gameMode.useItemOn(player, h.getLevel(), core, hand, hit);
+      h.assertTrue(
+          result.consumesAction()
+              && player.getItemInHand(hand).is(ModItems.ROYAL_GUARD_SLIME.get())
+              && player.getItemInHand(hand).getTag().getCompound("SlimeData").getFloat("Health")
+                  == 1
+              && player.getInventory().getItem(9).isEmpty()
+              && player.getInventory().getItem(10).isEmpty(),
+          "Native station use restores at one health and consumes each ingredient once: " + hand);
+    }
+    s.area.close();
     h.succeed();
   }
 

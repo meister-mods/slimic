@@ -15,6 +15,15 @@
     {
       "type": "patchouli:text",
       "text": "Pursuit ends 24 blocks from the ruin’s center. Escape the boundary and the remnant returns home. Defeating one yourself or with a companion guarantees one core and one seal, subject to normal mob loot rules and events."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Base health / attack / armor: Guard 64 / 8 / 8, Transport 48 / 6 / 6, Commander 96 / 12 / 12. Creative has a spawn egg for each role. Egg-spawned remnants have no player owner; carriers need their ruin’s linked depots to haul."
     }
-  ]
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_guard_slime_spawn_egg": 3,
+    "slimic:forgotten_transport_slime_spawn_egg": 3,
+    "slimic:ancient_commander_slime_spawn_egg": 3
+  }
 }

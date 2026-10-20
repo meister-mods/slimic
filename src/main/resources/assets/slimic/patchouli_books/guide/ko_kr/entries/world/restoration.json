@@ -1,6 +1,6 @@
 {
-  "name": "고대 코어 복원",
-  "icon": "slimic:damaged_ancient_slime_core",
+  "name": "슬라임 복구",
+  "icon": "slimic:command_pedestal",
   "category": "slimic:world",
   "sortnum": 8,
   "pages": [
@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "손상된 코어를 들고 온전한 $(item)명령 받침대$()를 우클릭합니다. 플레이어 인벤토리에서 고대 명령 인장 1개와 슬라임볼 1개를 소비하며, 손에 든 코어가 동료 소환 아이템으로 바뀝니다. 금이 간 받침대는 사용할 수 없습니다."
+      "text": "손상된 코어를 들고 $(item)슬라임 복구 스테이션$()을 우클릭합니다. 인벤토리의 인장·슬라임볼을 하나씩 소비하고 코어가 소환 아이템으로 바뀝니다. 유적의 온전한 스테이션을 쓰거나 석재 절단기에서 조각된 슬라이믹 석재 벽돌로 만드세요. 금 간 스테이션은 사용할 수 없습니다."
     },
     {
       "type": "patchouli:text",
@@ -22,7 +22,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "slimic:damaged_ancient_slime_core": 0,
-    "slimic:ancient_command_seal": 0
+    "slimic:command_pedestal": 1,
+    "slimic:damaged_ancient_slime_core": 1,
+    "slimic:ancient_command_seal": 1
   }
 }
