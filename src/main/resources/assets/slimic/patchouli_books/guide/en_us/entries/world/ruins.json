@@ -6,15 +6,15 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Broken workshops, supply depots, and road fragments lie across the plains. Mossy foundations and scattered masonry surround deserted workbenches, empty Slime Chests, lamps, and ruined storage furniture."
+      "text": "Workshops, supply depots, broken roads, archives, and royal wards remain across the plains. Newly generated occupied ruins contain ancient slimes still carrying out forgotten orders."
     },
     {
       "type": "patchouli:text",
-      "text": "A surviving ordinary chest contains supplies and a written ledger. Its translated pages describe a failing delivery network and lamps left burning for an absent traveler. The buildings tell only fragments of the old kingdom's story."
+      "text": "Ordinary chests contain supplies, written records, and Ancient Command Seals. Ledgers explain $(l:world/restoration)core restoration$(). Archives and royal wards hold further records of their own."
     },
     {
       "type": "patchouli:text",
-      "text": "Gather materials or restore a workshop for your own companions. Real Slime Chests in ruins work with your normal logistics team. Repairing the surroundings does not issue commands to companions; start each worker through its management screen."
+      "text": "Slime Chests remain usable by your logistics team. Opening one removes its ancient carrier link. Ruin remnants are hostile kingdom entities, so assess the guards before settling in."
     }
   ]
 }

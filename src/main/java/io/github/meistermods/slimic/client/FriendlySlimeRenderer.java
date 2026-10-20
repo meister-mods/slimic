@@ -35,6 +35,7 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
     addLayer(new AdvancedSlimeLayer(this, context));
     addLayer(new HealingSlimeLayer(this, context));
     addLayer(new ProfessionSlimeLayer(this, context));
+    addLayer(new RoyalSlimeLayer(this, context));
     addLayer(new HeraldSlimeLayer(this));
   }
 

@@ -264,7 +264,7 @@ public final class OrderSixGameTests {
     List<LoadedWorkArea> areas = new ArrayList<>();
     List<Mob> enemies = new ArrayList<>();
     List<FriendlySlime> pets = new ArrayList<>();
-    var allTypes = ModEntities.ENTITY_TYPES.getEntries().stream().map(r -> r.get()).toList();
+    var allTypes = ModEntities.companionTypes().stream().map(r -> r.get()).toList();
     boolean[] acquired = new boolean[allTypes.size()];
     for (int i = 0; i < allTypes.size(); i++) {
       LoadedWorkArea a = new LoadedWorkArea(h);

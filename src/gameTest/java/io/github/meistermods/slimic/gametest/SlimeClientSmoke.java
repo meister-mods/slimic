@@ -90,6 +90,14 @@ public final class SlimeClientSmoke {
     }
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.ancientRecordsOnly")) {
+      if (AncientRecordsClientSmoke.tick(client)) client.stop();
+      return;
+    }
+    if (Boolean.getBoolean("slimic.forgottenOrdersOnly")) {
+      if (ForgottenOrdersClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.visualPolishOnly")) {
       if (VisualPolishClientSmoke.tick(client)) client.stop();
       return;
@@ -589,6 +597,7 @@ public final class SlimeClientSmoke {
               .collect(java.util.stream.Collectors.toSet());
       var expectedItems = new java.util.HashSet<>(registeredItems);
       expectedItems.remove(ModItems.SLIME_TELEPORTER.get());
+      expectedItems.remove(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get());
       var displayedItems =
           items.stream()
               .map(ItemStack::getItem)
@@ -597,7 +606,8 @@ public final class SlimeClientSmoke {
       if (!displayedItems.equals(expectedItems)
           || items.size() != expectedItems.size() + (ModList.get().isLoaded("patchouli") ? 1 : 0))
         throw new IllegalStateException(
-            "Creative tab must contain each listed item once and omit unbound teleporters");
+            "Creative tab must contain each listed item once and omit unbound or unidentified"
+                + " items");
       ItemStack miner =
           items.stream()
               .filter(stack -> stack.is(ModItems.MINING_SLIME.get()))

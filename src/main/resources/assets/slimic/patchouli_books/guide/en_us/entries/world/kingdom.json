@@ -1,0 +1,20 @@
+{
+  "name": "Kingdom relics",
+  "icon": "slimic:royal_crest",
+  "category": "slimic:world",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Supply depots retain guards, carriers, usable storage, and restoration materials. Look for lit lamps, old roads, and masonry. Written ledgers explain how damaged cores can receive new orders."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Archives contain bookshelves, tablets, extra defenders, and an ancient commander. Records describe the kingdom’s beginnings and orders left after the traveler vanished. Chests contain seals and supplies."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Rarer royal wards hold crests, banners, a castellan, and additional guards. Recover the last watch’s record and extra seals. Ruins generate in new chunks; existing builds and saved companions remain intact."
+    }
+  ]
+}

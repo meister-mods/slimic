@@ -358,7 +358,7 @@ public final class OrderThirteenGameTests {
               var registry = CompanionRegistry.get(h.getLevel());
               registry.setRelation(primary.getUUID(), shared.getUUID(), true, true);
               int count = 0;
-              for (var value : ModEntities.ENTITY_TYPES.getEntries()) {
+              for (var value : ModEntities.companionTypes()) {
                 var type = value.get();
                 var slime = (FriendlySlime) type.create(h.getLevel());
                 slime.tame(primary);
@@ -378,7 +378,7 @@ public final class OrderThirteenGameTests {
                 registry.setRelation(primary.getUUID(), shared.getUUID(), true, true);
                 count++;
               }
-              h.assertTrue(count == 22, "Permission coverage includes all twenty-two types");
+              h.assertTrue(count == 23, "Permission coverage includes all twenty-three types");
               a.close();
             })
         .thenSucceed();
@@ -518,7 +518,7 @@ public final class OrderThirteenGameTests {
     var commander = pet(h, destination, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
     commander.setNoAi(true);
     var registry = CompanionRegistry.get(h.getLevel());
-    for (var registered : ModEntities.ENTITY_TYPES.getEntries()) {
+    for (var registered : ModEntities.companionTypes()) {
       var slime = (FriendlySlime) registered.get().create(h.getLevel());
       slime.tame(owner);
       slime.setNoAi(true);
@@ -539,14 +539,14 @@ public final class OrderThirteenGameTests {
       registry.setTag(owner.getUUID(), slime.getUUID(), "waiting");
       companions.add(slime);
     }
-    h.assertTrue(companions.size() == 22, "All companion professions are covered");
+    h.assertTrue(companions.size() == 23, "All companion professions are covered");
     h.assertTrue(commander.gather(owner, "waiting"), "Gather every active profession");
     h.startSequence()
         .thenWaitUntil(() -> h.assertTrue(!commander.isGathering(), "All companions arrive"))
         .thenIdle(20)
         .thenExecute(
             () -> {
-              h.assertTrue(commander.gathered() == 22, "Every profession was gathered");
+              h.assertTrue(commander.gathered() == 23, "Every profession was gathered");
               for (var slime : companions) {
                 var label = EntityType.getKey(slime.getType()).toString();
                 h.assertTrue(

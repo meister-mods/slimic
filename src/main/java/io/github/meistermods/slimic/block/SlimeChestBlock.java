@@ -98,8 +98,11 @@ public final class SlimeChestBlock extends BaseEntityBlock {
       Player player,
       InteractionHand hand,
       BlockHitResult hit) {
-    if (!level.isClientSide && level.getBlockEntity(pos) instanceof SlimeChestBlockEntity chest)
+    if (!level.isClientSide && level.getBlockEntity(pos) instanceof SlimeChestBlockEntity chest) {
+      chest.getPersistentData().remove(io.github.meistermods.slimic.entity.AncientSlime.DEPOT_KEY);
+      chest.setChanged();
       player.openMenu(chest);
+    }
     return InteractionResult.sidedSuccess(level.isClientSide);
   }
 

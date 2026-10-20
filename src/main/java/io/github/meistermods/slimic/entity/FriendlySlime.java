@@ -61,6 +61,8 @@ public class FriendlySlime extends TamableAnimal {
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
   private static final EntityDataAccessor<Integer> DYE_COLOR =
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.INT);
+  private static final EntityDataAccessor<Boolean> ANCIENT_ORIGIN =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.BOOLEAN);
   private static final EntityDataAccessor<CompoundTag> OWNER_ACCESS =
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
   private static final EntityDataAccessor<java.util.Optional<java.util.UUID>> FOLLOWING_OWNER =
@@ -141,12 +143,21 @@ public class FriendlySlime extends TamableAnimal {
     entityData.define(STAT_LEVELS, new CompoundTag());
     entityData.define(TUNED_STATS, new CompoundTag());
     entityData.define(DYE_COLOR, -1);
+    entityData.define(ANCIENT_ORIGIN, false);
     entityData.define(OWNER_ACCESS, new CompoundTag());
     entityData.define(FOLLOWING_OWNER, java.util.Optional.empty());
   }
 
   public void setFollowingOwner(Player player) {
     if (canManage(player)) entityData.set(FOLLOWING_OWNER, java.util.Optional.of(player.getUUID()));
+  }
+
+  public final boolean hasAncientOrigin() {
+    return entityData.get(ANCIENT_ORIGIN);
+  }
+
+  public final void setAncientOrigin(boolean value) {
+    entityData.set(ANCIENT_ORIGIN, value);
   }
 
   @Override
@@ -443,6 +454,7 @@ public class FriendlySlime extends TamableAnimal {
     tag.putFloat("Stamina", stamina);
     tag.put("TunedStats", entityData.get(TUNED_STATS).copy());
     tag.putInt("SlimeDyeColor", getDyeColorId());
+    tag.putBoolean("AncientOrigin", hasAncientOrigin());
     entityData.get(FOLLOWING_OWNER).ifPresent(id -> tag.putUUID("FollowingOwner", id));
     tag.putString("CompanionTag", getCompanionTag());
     tag.putInt("BlockedWorkTicks", blockedWorkTicks);
@@ -456,6 +468,7 @@ public class FriendlySlime extends TamableAnimal {
   public void readAdditionalSaveData(CompoundTag saved) {
     CompoundTag tag = SlimeData.migrate(saved);
     super.readAdditionalSaveData(tag);
+    setAncientOrigin(tag.getBoolean("AncientOrigin"));
     try {
       companionTag = CompanionRegistry.normalizeTag(tag.getString("CompanionTag"));
     } catch (IllegalArgumentException invalid) {
@@ -793,6 +806,10 @@ public class FriendlySlime extends TamableAnimal {
   protected void hurtCurrentlyUsedShield(float damage) {
     shieldHit = true;
     super.hurtCurrentlyUsedShield(damage);
+  }
+
+  protected final boolean blockedLastHit() {
+    return shieldHit;
   }
 
   public int hopDelayTicks() {

@@ -124,9 +124,18 @@
           "functions": [
             {
               "function": "minecraft:set_nbt",
-              "tag": "{\"title\":\"The Slimic\",\"author\":\"The Slimic\",\"pages\":[\"{\\\"translate\\\": \\\"lore.slimic.supply_ledger.page1\\\"}\",\"{\\\"translate\\\": \\\"lore.slimic.supply_ledger.page2\\\"}\"],\"display\":{\"Name\":\"{\\\"translate\\\": \\\"lore.slimic.supply_ledger.title\\\"}\"}}"
+              "tag": "{title:\"The Slimic\",author:\"The Slimic\",pages:[\"{\\\"translate\\\": \\\"lore.slimic.supply_ledger.page1\\\"}\",\"{\\\"translate\\\": \\\"lore.slimic.supply_ledger.page2\\\"}\",\"{\\\"translate\\\": \\\"lore.slimic.supply_ledger.page3\\\"}\"],display:{Name:\"{\\\"translate\\\": \\\"lore.slimic.supply_ledger.title\\\"}\"}}"
             }
           ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "slimic:ancient_command_seal"
         }
       ]
     }

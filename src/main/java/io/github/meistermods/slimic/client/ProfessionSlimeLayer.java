@@ -106,7 +106,7 @@ public final class ProfessionSlimeLayer
     if (slime instanceof CleaningSlime) {
       draw("cleaning_cap", CLEANING, pose, buffers, light);
       draw("cleaning_badge", CLEANING, pose, buffers, light);
-    } else if (slime instanceof CombatSlime) {
+    } else if (slime instanceof CombatSlime && !(slime instanceof RoyalGuardSlime)) {
       draw("combat_band", COMBAT, pose, buffers, light);
       draw("combat_crest", COMBAT, pose, buffers, light);
     } else if (slime instanceof SaddleSlime) {

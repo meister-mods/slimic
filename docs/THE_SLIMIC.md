@@ -104,9 +104,9 @@ Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. U
 
 ## Ruins and records
 
-Scattered workshops, supply depots, and road fragments use local masonry, broken furniture, lamps, and weathered markers. Workshops and supply depots contain an actual empty Slime Chest and a surviving ordinary chest with supplies and **The Interrupted Ledger**. The ledger's pages follow the client's language and describe interrupted deliveries and lamps kept lit for an absent traveler.
+Scattered workshops, supply depots, road fragments, archives, and royal wards use local masonry, broken furniture, lamps, and weathered markers. Newly generated occupied ruins contain ancient guards, carriers, and sometimes commanders still obeying the lost kingdom's orders. Their actual Slime Chests move supplies, while ordinary chests contain guaranteed command seals, supplies, and translated records.
 
-Ruins can be dismantled or restored as a companion work site. Decorations remain ornaments; the actual Slime Chest participates in the existing logistics network. Buildings and records introduce fragments of the old kingdom's history without requiring a quest sequence.
+Defeat a remnant and restore its core at an intact Command Pedestal, or use a seal to specialize an existing Combat Slime. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for both acquisition paths, occupied depots, archives, and old royal wards. Opening an ancient Slime Chest removes its carrier link. The intact pedestal now restores cores; other ornamental furniture retains its decorative role. Records describe the missing traveler, the kingdom's fading supply routes, and the last watch.
 
 ## Companion travel
 

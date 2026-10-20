@@ -58,7 +58,7 @@ public final class VanillaSlimeAggroGameTests {
     List<LoadedWorkArea> areas = new ArrayList<>();
     List<Slime> wildSlimes = new ArrayList<>();
     List<FriendlySlime> companions = new ArrayList<>();
-    for (var registered : ModEntities.ENTITY_TYPES.getEntries()) {
+    for (var registered : ModEntities.companionTypes()) {
       var area = new LoadedWorkArea(h);
       areas.add(area);
       companions.add(waiting(h, area, registered.get(), owner, 7));
@@ -96,7 +96,7 @@ public final class VanillaSlimeAggroGameTests {
         .thenIdle(80)
         .thenExecute(
             () -> {
-              h.assertTrue(wildSlimes.size() == 22, "All professions are covered");
+              h.assertTrue(wildSlimes.size() == 23, "All professions are covered");
               for (int i = 0; i < wildSlimes.size(); i++)
                 h.assertTrue(
                     !unwantedTargets[i] && wildSlimes.get(i).getLastHurtByMob() == null,

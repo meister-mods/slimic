@@ -29,6 +29,27 @@ public final class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Slimic.MOD_ID);
 
+  public static final RegistryObject<Item> ROYAL_GUARD_SLIME =
+      ITEMS.register(
+          "royal_guard_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties(), ModEntities.ROYAL_GUARD_SLIME));
+  public static final RegistryObject<Item> ANCIENT_COMMAND_SEAL =
+      ITEMS.register(
+          "ancient_command_seal",
+          () ->
+              new Item(
+                  new Item.Properties()
+                      .rarity(net.minecraft.world.item.Rarity.UNCOMMON)
+                      .fireResistant()));
+  public static final RegistryObject<Item> DAMAGED_ANCIENT_SLIME_CORE =
+      ITEMS.register(
+          "damaged_ancient_slime_core",
+          () ->
+              new io.github.meistermods.slimic.item.AncientSlimeCoreItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
+
   public static final RegistryObject<Item> FRIENDLY_SLIME =
       ITEMS.register("friendly_slime", () -> new FriendlySlimeItem(new Item.Properties()));
 

@@ -39,6 +39,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.TRANSPORT_SLIME.get());
                         output.accept(ModItems.HERALD_SLIME.get());
                         output.accept(ModItems.COMBAT_SLIME.get());
+                        output.accept(ModItems.ROYAL_GUARD_SLIME.get());
                         output.accept(ModItems.CLEANING_SLIME.get());
                         output.accept(ModItems.SADDLE_SLIME.get());
                         output.accept(ModItems.FARMER_SLIME.get());
@@ -47,6 +48,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SOGGY_SLIME.get());
                         output.accept(ModItems.SLIME_TRAIL.get());
                         output.accept(ModItems.SLIME_SLAG.get());
+                        output.accept(ModItems.ANCIENT_COMMAND_SEAL.get());
                         output.accept(ModItems.SLIME_CHEST.get());
                         output.accept(ModItems.BROKEN_SLIME.get());
                         for (var chestplate :

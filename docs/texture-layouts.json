@@ -1503,6 +1503,89 @@
           "material": "netherite"
         }
       ]
+    },
+    "royal_guard": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        256,
+        256
+      ],
+      "renderer": "RoyalSlimeLayer",
+      "boxes": [
+        {
+          "part": "crown",
+          "cube": 1,
+          "uv": [
+            1,
+            1
+          ],
+          "size": [
+            9.1,
+            0.8,
+            9.1
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "crown",
+          "cube": 2,
+          "uv": [
+            12,
+            2
+          ],
+          "size": [
+            1,
+            1.5,
+            1
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "crown",
+          "cube": 3,
+          "uv": [
+            12,
+            2
+          ],
+          "size": [
+            1,
+            2,
+            1
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "crown",
+          "cube": 4,
+          "uv": [
+            12,
+            2
+          ],
+          "size": [
+            1,
+            1.5,
+            1
+          ],
+          "material": "gold"
+        },
+        {
+          "part": "relic_crest",
+          "cube": 1,
+          "uv": [
+            40,
+            1
+          ],
+          "size": [
+            1.2,
+            1.5,
+            6.2
+          ],
+          "material": "purple"
+        }
+      ]
     }
   }
 }

@@ -38,6 +38,37 @@ public final class ModEntities {
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
       DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Slimic.MOD_ID);
 
+  public static final RegistryObject<
+          EntityType<io.github.meistermods.slimic.entity.RoyalGuardSlime>>
+      ROYAL_GUARD_SLIME =
+          ENTITY_TYPES.register(
+              "royal_guard_slime",
+              () ->
+                  EntityType.Builder.of(
+                          io.github.meistermods.slimic.entity.RoyalGuardSlime::new,
+                          MobCategory.CREATURE)
+                      .sized(1.04F, 1.04F)
+                      .clientTrackingRange(10)
+                      .build(Slimic.MOD_ID + ":royal_guard_slime"));
+  public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
+      ANCIENT_GUARD_SLIME = ancient("ancient_guard_slime");
+  public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
+      FORGOTTEN_TRANSPORT_SLIME = ancient("forgotten_transport_slime");
+  public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
+      ANCIENT_COMMANDER_SLIME = ancient("ancient_commander_slime");
+
+  private static RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
+      ancient(String name) {
+    return ENTITY_TYPES.register(
+        name,
+        () ->
+            EntityType.Builder.of(
+                    io.github.meistermods.slimic.entity.AncientSlime::new, MobCategory.MONSTER)
+                .sized(1.04F, 1.04F)
+                .clientTrackingRange(10)
+                .build(Slimic.MOD_ID + ":" + name));
+  }
+
   public static final RegistryObject<EntityType<FriendlySlime>> FRIENDLY_SLIME =
       ENTITY_TYPES.register(
           "friendly_slime",
@@ -211,6 +242,13 @@ public final class ModEntities {
 
   private ModEntities() {}
 
+  /** Companion-only catalogs exclude hostile remnants, which have no summon-item contract. */
+  public static java.util.Collection<RegistryObject<EntityType<?>>> companionTypes() {
+    return ENTITY_TYPES.getEntries().stream()
+        .filter(entry -> entry.get().getCategory() != MobCategory.MONSTER)
+        .toList();
+  }
+
   public static final RegistryObject<EntityType<SoggySlime>> SOGGY_SLIME =
       ENTITY_TYPES.register(
           "soggy_slime",
@@ -231,6 +269,16 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(ROYAL_GUARD_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(
+        ANCIENT_GUARD_SLIME.get(),
+        io.github.meistermods.slimic.entity.AncientSlime.createAttributes().build());
+    event.put(
+        FORGOTTEN_TRANSPORT_SLIME.get(),
+        io.github.meistermods.slimic.entity.AncientSlime.createAttributes().build());
+    event.put(
+        ANCIENT_COMMANDER_SLIME.get(),
+        io.github.meistermods.slimic.entity.AncientSlime.createAttributes().build());
     event.put(GLOW_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(COMMANDER_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ENDER_SLIME.get(), FriendlySlime.createAttributes().build());

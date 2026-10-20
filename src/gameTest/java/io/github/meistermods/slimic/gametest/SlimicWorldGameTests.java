@@ -341,7 +341,7 @@ public final class SlimicWorldGameTests {
           18);
     frame(target, end, Direction.Axis.X, 2, 3, true, true);
     int[] count = {0};
-    for (var entry : ModEntities.ENTITY_TYPES.getEntries()) {
+    for (var entry : ModEntities.companionTypes()) {
       var entity = entry.get().create(h.getLevel());
       if (!(entity instanceof FriendlySlime slime)) continue;
       count[0]++;
@@ -388,7 +388,7 @@ public final class SlimicWorldGameTests {
             "Worker cargo survives while work stays paused");
       pet.discard();
     }
-    h.assertTrue(count[0] == 22, "All 22 companion professions are covered");
+    h.assertTrue(count[0] == 23, "All 23 companion professions are covered");
     target.setChunkForced(chunk.x, chunk.z, false);
     area.close();
     h.succeed();
@@ -623,10 +623,11 @@ public final class SlimicWorldGameTests {
           "Every ruin supply chest contains one ledger and ordinary supplies");
       var pages = books.get(0).getTag().getList("pages", 8);
       h.assertTrue(
-          pages.size() == 2
+          pages.size() == 3
               && net.minecraft.network.chat.Component.Serializer.fromJson(pages.getString(0))
                   != null
-              && pages.getString(0).contains("lore.slimic.supply_ledger.page1"),
+              && pages.getString(0).contains("lore.slimic.supply_ledger.page1")
+              && pages.getString(2).contains("lore.slimic.supply_ledger.page3"),
           "Ledger pages retain client-localized text components");
     }
     h.succeed();

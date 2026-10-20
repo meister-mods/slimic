@@ -148,6 +148,7 @@ public final class OrderTwelveGameTests {
                 case COMMANDER -> Items.BOOK;
                 case ENDER -> Items.ENDER_PEARL;
                 case ATTENTION -> Items.REDSTONE;
+                case ROYAL_GUARD -> ModItems.ANCIENT_COMMAND_SEAL.get();
 
                 case TUNNEL -> Items.NETHER_STAR;
                 case DRAGON -> Items.DRAGON_HEAD;

@@ -28,7 +28,7 @@ public final class CompanionTooltipGameTests {
   @GameTest(template = "empty", timeoutTicks = 20)
   public static void everyFreshProfessionHasExactlyItsOwnDescription(GameTestHelper h) {
     int count = 0;
-    for (var type : ModEntities.ENTITY_TYPES.getEntries()) {
+    for (var type : ModEntities.companionTypes()) {
       var item = ForgeRegistries.ITEMS.getValue(type.getId());
       var stack = new ItemStack(item);
       var lines = keys(stack, h);
@@ -43,13 +43,13 @@ public final class CompanionTooltipGameTests {
       h.assertTrue(!stack.hasTag(), "Reading a fresh tooltip cannot add data");
       count++;
     }
-    h.assertTrue(count == 22, "Every registered profession is covered");
+    h.assertTrue(count == 23, "Every registered profession is covered");
     h.succeed();
   }
 
   @GameTest(template = "empty", timeoutTicks = 20)
   public static void everyStoredProfessionRetainsItsDescriptionAndExactData(GameTestHelper h) {
-    for (var type : ModEntities.ENTITY_TYPES.getEntries()) {
+    for (var type : ModEntities.companionTypes()) {
       var slime = (FriendlySlime) type.get().create(h.getLevel());
       slime.setOwnerUUID(UUID.randomUUID());
       slime.setTame(true);

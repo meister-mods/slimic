@@ -56,7 +56,7 @@ public final class JeiClientSmoke implements IModPlugin {
                 found.add(id);
               }
             });
-    if (found.size() != 22)
+    if (found.size() != 23)
       throw new IllegalStateException("Missing JEI profession information: " + found);
     return true;
   }
