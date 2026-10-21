@@ -4,6 +4,12 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.11] - 2026-10-21
+
+### Changed
+
+- Redraw the Ancient Command Seal at 16×16 with a stronger gold bevel, clipped dark outline, and larger purple spiral for clearer inventory visibility.
+
 ## [0.3.10] - 2026-10-21
 
 ### Fixed

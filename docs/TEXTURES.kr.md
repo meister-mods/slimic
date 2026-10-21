@@ -83,6 +83,6 @@ The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/asset
 
 `textures/block/slime_chest.png`는 바닐라 단일 상자의 **64×64 UV 아틀라스** 배치를 따릅니다. 월드와 아이템 모델의 본체·뚜껑·걸쇠가 같은 파일을 공유합니다. 내부와 사용하지 않는 투명 영역을 유지하세요. `slime_chest_particle.png`는 파괴 입자의 표면입니다.
 
-고대 명령 인장은 `assets/slimic/textures/item/ancient_command_seal.png`의 투명한 16×16 전용 텍스처를 사용합니다. 금색 인장에 보라색 나선 문양을 새겼으며 모델은 한 레이어를 사용합니다. 적대 슬라임 생성 알은 바닐라 색상 적용 모델을 사용합니다.
+고대 명령 인장은 `assets/slimic/textures/item/ancient_command_seal.png`의 투명한 16×16 전용 텍스처를 사용합니다. 모서리를 깎은 금색 인장에 어두운 외곽선과 왼쪽 위의 밝은 테두리, 큼직한 보라색 나선 문양을 적용합니다. 모델은 한 레이어를 사용합니다. 적대 슬라임 생성 알은 바닐라 색상 적용 모델을 사용합니다.
 
 고대 채굴·고대 터널 소환 모델은 `slime_summon_base`에 자수정 테두리와 채굴·터널 코어 문장을 적용합니다. 안전모·수레·도구·문양은 기존 교체 가능한 텍스처를 사용합니다. 광물화 시체 모델은 망가진 슬라임 표면에 블록 모델 요소로 자수정 코어 면을 추가합니다. 코어와 명령 파편은 `assets/slimic/textures/item/`의 투명한 16×16 전용 스프라이트를 사용합니다. 코어 아이템 모델은 `slimic:ancient_core_role` 속성으로 역할별 외형을 선택합니다. 인장·코어·파편은 각각 최대 12색과 선명한 픽셀 경계를 사용해 바닐라 아이템과 해상도를 맞춥니다.
