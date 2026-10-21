@@ -336,6 +336,11 @@ public class FriendlySlime extends TamableAnimal {
     return (int) SlimeStat.CAPACITY.value(this);
   }
 
+  /** Profession bonus applied only when the held tool is effective on this block. */
+  public double blockWorkMultiplier(net.minecraft.world.level.block.state.BlockState state) {
+    return 1;
+  }
+
   public int detectionMultiplier() {
     return 1;
   }

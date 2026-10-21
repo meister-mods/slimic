@@ -44,6 +44,15 @@ public final class SlimicClient {
         ModEntities.FORGOTTEN_TRANSPORT_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(
         ModEntities.ANCIENT_COMMANDER_SLIME.get(), AncientSlimeRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.ANCIENT_MINING_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.ANCIENT_TUNNEL_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.FORGOTTEN_MINER_SLIME.get(), AncientSlimeRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.FORGOTTEN_TUNNEL_SLIME.get(), AncientSlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.MINE_GUARDIAN_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.GLOW_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.COMMANDER_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ENDER_SLIME.get(), FriendlySlimeRenderer::new);
@@ -100,6 +109,25 @@ public final class SlimicClient {
                 ModItems.SLIME_ARMOR.get(),
                 ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "armor_material"),
                 (stack, level, entity, seed) -> SlimeArmorItem.materialIndex(stack)));
+  }
+
+  @SubscribeEvent
+  public static void coreModels(FMLClientSetupEvent event) {
+    event.enqueueWork(
+        () ->
+            ItemProperties.register(
+                ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
+                ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "ancient_core_role"),
+                (stack, level, entity, seed) -> {
+                  var role = io.github.meistermods.slimic.item.AncientSlimeCoreItem.role(stack);
+                  if (role == null) return 0;
+                  return switch (role) {
+                    case MINER -> 1;
+                    case TUNNEL -> 2;
+                    case MINE_GUARD -> 3;
+                    default -> 0;
+                  };
+                }));
   }
 
   @SubscribeEvent

@@ -1,0 +1,23 @@
+{
+  "name": "고대 터널 슬라임",
+  "icon": "slimic:ancient_tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 25,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "갱도의 시체나 잊혀진 터널 슬라임에게서 얻은 코어를 $(l:world/mine_recovery)폐광 코어 복원$()으로 되살립니다. 제작 조합법은 없습니다. 보라색 테두리의 터널 코어 문장, 안전모·수레와 고대 문양으로 구분합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "작업·이동 기력을 절반만 소비합니다. 적합한 도구로 태그에 속한 슬라이믹 돌·조약돌·석재 벽돌·조각된 벽돌·고대 주춧돌을 50% 빠르게 캡니다. 맞지 않는 도구나 부족한 채굴 등급에는 보너스를 적용하지 않습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "일반 $(l:companions/tunnel)터널 슬라임$()과 같은 방향 설정과 비소모성 내벽 견본을 사용합니다. 내벽은 가방 재료를 실제로 소비하고 기존 굴착 계단을 보호하며 재료 부족 시 멈춥니다. 운반 보급도 같습니다. 거미줄과 시체를 먼저 치워 주세요. 단단한 잔해를 통과하는 능력은 없습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_tunnel_slime": 0
+  }
+}

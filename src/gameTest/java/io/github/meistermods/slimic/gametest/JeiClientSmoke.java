@@ -56,15 +56,58 @@ public final class JeiClientSmoke implements IModPlugin {
                 found.add(id);
               }
             });
-    if (found.size() != 23)
+    if (found.size() != 25)
       throw new IllegalStateException("Missing JEI profession information: " + found);
     return true;
   }
 
   public static boolean restorationInformationReady() {
     if (runtime == null) return false;
+    var visibleCoreRoles =
+        runtime
+            .getIngredientManager()
+            .getAllIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK)
+            .stream()
+            .filter(
+                stack ->
+                    stack.is(
+                        io.github.meistermods.slimic.registry.ModItems.DAMAGED_ANCIENT_SLIME_CORE
+                            .get()))
+            .map(io.github.meistermods.slimic.item.AncientSlimeCoreItem::role)
+            .collect(java.util.stream.Collectors.toSet());
+    if (visibleCoreRoles.size() != 6 || visibleCoreRoles.contains(null))
+      throw new IllegalStateException(
+          "JEI must expose six searchable core roles: " + visibleCoreRoles);
+    for (var role : io.github.meistermods.slimic.entity.AncientSlime.Role.values()) {
+      var natural =
+          io.github.meistermods.slimic.item.AncientSlimeCoreItem.fromRemains(
+              role, java.util.UUID.randomUUID(), 2);
+      boolean linked = false;
+      for (var focusRole :
+          java.util.List.of(
+              mezz.jei.api.recipe.RecipeIngredientRole.INPUT,
+              mezz.jei.api.recipe.RecipeIngredientRole.OUTPUT,
+              mezz.jei.api.recipe.RecipeIngredientRole.CATALYST)) {
+        var focus =
+            runtime
+                .getJeiHelpers()
+                .getFocusFactory()
+                .createFocus(focusRole, mezz.jei.api.constants.VanillaTypes.ITEM_STACK, natural);
+        if (runtime
+            .getRecipeManager()
+            .createRecipeLookup(RecipeTypes.INFORMATION)
+            .limitFocus(java.util.List.of(focus))
+            .get()
+            .findAny()
+            .isPresent()) linked = true;
+      }
+      if (!linked)
+        throw new IllegalStateException(
+            "Naturally recovered core has no focused JEI information: " + role);
+    }
     var expectedItems =
         java.util.Set.of(
+            io.github.meistermods.slimic.registry.ModItems.OLD_COMMAND_FRAGMENT.get(),
             io.github.meistermods.slimic.registry.ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
             io.github.meistermods.slimic.registry.ModItems.ANCIENT_COMMAND_SEAL.get(),
             io.github.meistermods.slimic.registry.ModWorldBlocks.block("command_pedestal")

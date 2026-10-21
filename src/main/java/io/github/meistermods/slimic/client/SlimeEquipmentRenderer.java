@@ -2,10 +2,10 @@ package io.github.meistermods.slimic.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.github.meistermods.slimic.entity.FriendlySlime;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ToolActions;
@@ -18,7 +18,7 @@ public final class SlimeEquipmentRenderer {
       PoseStack pose,
       MultiBufferSource buffers,
       int light,
-      FriendlySlime slime,
+      LivingEntity slime,
       ItemStack stack,
       boolean left) {
     if (stack.isEmpty()) return;

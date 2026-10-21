@@ -389,7 +389,7 @@ World GameTests cover geometry, protection rollback, item use, saved exits, all 
 
 Forgotten Orders uses separate `AncientSlime` hostile entities and a `RoyalGuardSlime` combat companion. Ancient cores store a versioned identity, role, name, and bounded veterancy, never a `SlimeData` snapshot. `ForgottenOrders` persists redeemed core identities across dimensions and reserves in-flight restorations against callback re-entry. Pedestal restoration validates materials and held state again after constructing the result, then replaces the held core and consumes one seal and one slimeball. Normal companion summon admission remains responsible for the resulting item's release and population limits.
 
-Network protocol 17 requires matching clients and servers for the new entity types and synchronized ancient-origin appearance. Existing saved companions default to ordinary appearance when the added field is absent; their payload schema remains version 1.
+Network protocol 18 requires matching clients and servers for the new entity types and synchronized ancient-origin appearance. Existing saved companions default to ordinary appearance when the added field is absent; their payload schema remains version 1.
 
 Pedestal restoration respects both Forge block-use and item-use vetoes. Ancient carriers may route up to twelve blocks from their ruin origin; the guards' smaller idle patrol radius must not interrupt a valid delivery route.
 
@@ -397,8 +397,10 @@ Ruin generation confines structures and native entity insertion to The Slimic's 
 
 ## Collapsed mines
 
-`CollapsedMineFeature` plans chunk-contained tunnel or quarry sites, validates the entire dry terrain volume, and only then writes blocks. Quarry geometry uses `QuarryPlan`; its profile is registered through the server executor because feature placement can run on a generation worker. Ruin Broken Slime Blocks use the existing block with an empty block entity, so no ownership, companion snapshot, or revival entitlement is created.
+`CollapsedMineFeature` plans chunk-contained tunnel or quarry sites, validates the entire dry terrain volume, and only then writes blocks. Quarry geometry uses `QuarryPlan`; its profile is registered through the server executor because feature placement can run on a generation worker. Mine Broken Slime Blocks use a mineralized state and an `AncientCore` payload separate from owned `Slime` snapshots. Core loot replaces block-item loot; each persisted ancient identity is restored once through `ForgottenOrders`. Earlier empty remains stay empty.
 
 Tunnel height follows the actual rotated surface entrance. A surface remnant keeps that entrance within the existing ruin feature's block-entity collision checks, preventing later surface ruins from paving over a covered tunnel. Quarry treads use stable cobblestone rather than unsupported falling terrain.
 
 Loaded work navigation includes the horizontal detours of perimeter stairs when estimating routes to a different height. Its search remains limited to 4,096 nodes and loaded chunks. This allows carriers to collect from deeper excavation layers and return to storage without changing terrain or bypassing normal reach checks.
+
+Ancient work companions subclass the existing quarry and tunnel workers. Ore selection changes only active-layer priority; a stamina override halves actual work expenditure. `blockWorkMultiplier` applies only to effective tools, with ancient tunnel masonry configured by `slimic:ancient_masonry`. Mine-remnant work is bounded to one saved 3×3 face and nine blocks, and revalidates terrain, protections, entity state, and griefing after Forge callbacks. See [mine recovery](MINE_RECOVERY.md).

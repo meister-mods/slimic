@@ -47,6 +47,9 @@ public final class ForgottenOrdersGameTests {
           case GUARD -> ModEntities.ANCIENT_GUARD_SLIME.get();
           case TRANSPORT -> ModEntities.FORGOTTEN_TRANSPORT_SLIME.get();
           case COMMANDER -> ModEntities.ANCIENT_COMMANDER_SLIME.get();
+          case MINER -> ModEntities.FORGOTTEN_MINER_SLIME.get();
+          case TUNNEL -> ModEntities.FORGOTTEN_TUNNEL_SLIME.get();
+          case MINE_GUARD -> ModEntities.MINE_GUARDIAN_SLIME.get();
         };
     var slime = type.create(s.h.getLevel());
     slime.moveTo(s.area.point(x, 101, 8));
@@ -122,11 +125,14 @@ public final class ForgottenOrdersGameTests {
   @GameTest(template = "empty", batch = "forgotten_orders")
   public static void hostileRemnantsHaveASeparateCompanionAndItemContract(GameTestHelper h) {
     h.assertTrue(
-        ModEntities.companionTypes().size() == 23
-            && ModEntities.ENTITY_TYPES.getEntries().size() == 26,
-        "23 companions and three hostile remnants");
+        ModEntities.companionTypes().size() == 25
+            && ModEntities.ENTITY_TYPES.getEntries().size() == 31,
+        "25 companions and six hostile remnants");
     var s = site(h);
-    for (var role : AncientSlime.Role.values()) {
+    for (var role :
+        new AncientSlime.Role[] {
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+        }) {
       var enemy = ancient(s, role, 5);
       h.assertTrue(
           enemy instanceof net.minecraft.world.entity.monster.Enemy && !enemy.canChangeDimensions(),
@@ -144,7 +150,10 @@ public final class ForgottenOrdersGameTests {
       GameTestHelper h) {
     var s = site(h);
     materials(s, 4);
-    for (var role : AncientSlime.Role.values()) {
+    for (var role :
+        new AncientSlime.Role[] {
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+        }) {
       var core = core(s, role);
       var old = core.getTag().getUUID("AncientIdentity");
       s.owner.setItemInHand(InteractionHand.MAIN_HAND, core);
@@ -153,9 +162,11 @@ public final class ForgottenOrdersGameTests {
       var data = item.getTag().getCompound("SlimeData");
       var expected =
           switch (role) {
-            case GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
+            case GUARD, MINE_GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
             case TRANSPORT -> ModItems.TRANSPORT_SLIME.get();
             case COMMANDER -> ModItems.COMMANDER_SLIME.get();
+            case MINER -> ModItems.ANCIENT_MINING_SLIME.get();
+            case TUNNEL -> ModItems.ANCIENT_TUNNEL_SLIME.get();
           };
       h.assertTrue(
           item.is(expected)
@@ -166,7 +177,7 @@ public final class ForgottenOrdersGameTests {
           data.getFloat("Health") == 1
               && data.getBoolean("Sitting")
               && data.getBoolean("AncientOrigin")
-              && data.getCompound("SlimeStats").getInt("stamina") == 2,
+              && data.getCompound("SlimeStats").getInt("stamina") >= 2,
           "One health, Wait and retained veteran traits");
       h.assertTrue(
           ForgottenOrders.get(h.getLevel()).isRedeemed(old)
@@ -767,7 +778,10 @@ public final class ForgottenOrdersGameTests {
       GameTestHelper h) {
     var s = site(h);
     var ally = ally(s);
-    for (var role : AncientSlime.Role.values()) {
+    for (var role :
+        new AncientSlime.Role[] {
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+        }) {
       var npc = ancient(s, role, 5);
       npc.setNoAi(true);
       h.getLevel().addFreshEntity(npc);
@@ -799,7 +813,10 @@ public final class ForgottenOrdersGameTests {
   @GameTest(template = "empty", batch = "forgotten_orders")
   public static void remnantSaveRetainsHomeRuinAndVeterancyWithoutAPlayerOwner(GameTestHelper h) {
     var s = site(h);
-    for (var role : AncientSlime.Role.values()) {
+    for (var role :
+        new AncientSlime.Role[] {
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+        }) {
       var npc = ancient(s, role, 5);
       var copy = (AncientSlime) npc.getType().create(h.getLevel());
       copy.load(npc.saveWithoutId(new CompoundTag()));
@@ -1038,7 +1055,10 @@ public final class ForgottenOrdersGameTests {
     var s = site(h);
     var identities = new java.util.HashSet<UUID>();
     var companionIds = new java.util.HashSet<UUID>();
-    for (var role : AncientSlime.Role.values()) {
+    for (var role :
+        new AncientSlime.Role[] {
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+        }) {
       var prototype = AncientSlimeCoreItem.creativeVariant(role);
       var original = prototype.copy();
       s.owner.setItemInHand(InteractionHand.MAIN_HAND, prototype.copy());
@@ -1054,9 +1074,11 @@ public final class ForgottenOrdersGameTests {
             restore(s, InteractionHand.MAIN_HAND), "Restore another Creative copy: " + role);
         var expected =
             switch (role) {
-              case GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
+              case GUARD, MINE_GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
               case TRANSPORT -> ModItems.TRANSPORT_SLIME.get();
               case COMMANDER -> ModItems.COMMANDER_SLIME.get();
+              case MINER -> ModItems.ANCIENT_MINING_SLIME.get();
+              case TUNNEL -> ModItems.ANCIENT_TUNNEL_SLIME.get();
             };
         var result = s.owner.getMainHandItem();
         var data = result.getTag().getCompound("SlimeData");

@@ -4,6 +4,8 @@ English | [한국어](FORGOTTEN_ORDERS.kr.md) · [The Slimic](THE_SLIMIC.md) · 
 
 The old kingdom's slimes still follow orders left at their ruins. Forgotten Orders connects exploration of The Slimic to raising companions: defeat a remnant, recover its damaged core, replace its ancient command, and bring a new companion home. Existing trained companions can also learn the royal guard profession without losing their growth.
 
+[Collapsed Mine Recovery](MINE_RECOVERY.md) extends this system with three mine remnants, corpse cores, command fragments, and ancient work companions. Mine cores use fragments rather than seals and must be restored in the Overworld.
+
 ## Occupied ruins
 
 Newly generated workshops and supply depots contain an Ancient Guard, a Forgotten Transport, linked Slime Chests, an intact Slime Restoration Station, and an ordinary loot chest. Road fragments remain unoccupied. Archives add bookshelves, tablets, an Ancient Commander, and **Waiting for XXX** record, which links the kingdom’s beginnings to XXX’s absence. Rarer royal wards add royal insignia, another guard, and **The Last Watch** record. These are weathered sections of the old capital, built within individual chunks.
@@ -35,7 +37,7 @@ The **Slime Restoration Station** is the intact pedestal found in ruins. Find it
 Defeating a remnant yourself or with a tamed Slimic companion yields one **Damaged Ancient Slime Core** and one **Ancient Command Seal**, subject to ordinary mob-loot rules and drop events. Chest chances for one seal are 20% in workshops and depots, 35% in archives, and 50% in royal wards. Supplies and translated records provide the first restoration clues.
 
 1. Hold the core and keep one seal and one slimeball in the player inventory.
-2. Right-click an intact **Slime Restoration Station**. Cracked pedestals do not work. A pedestal can also be cut from Chiseled Slimic Stone Bricks using a stonecutter.
+2. Right-click an intact **Slime Restoration Station**. Cracked pedestals do not work. Craft a station with a slimeball, gold ingot, two redstone dust, and three Stone Bricks.
 3. The two materials are consumed once, and the held core becomes a stored companion item. No space elsewhere in the inventory is required. The same material cost applies in Creative.
 4. Release the companion in a clear location. It starts in **Wait at one health**. Heal it before assigning work.
 
@@ -45,7 +47,7 @@ Defeating a remnant yourself or with a tamed Slimic companion yields one **Damag
 | Transport | Transport Slime |
 | Commander | Commander Slime |
 
-The restored companion receives a new UUID and the restoring player's ownership. It retains an ancient name, a weathered purple insignia, and one to three Endurance upgrades according to its former training. No hostile entity snapshot, target, old order, or old ownership is imported. Ancient carriers' physical cargo remains ordinary loot rather than being copied into the new companion.
+The restored companion receives a new UUID and the restoring player's ownership. It retains an ancient name, a white insignia, and inherited Endurance training. Restoration also distributes a core-stable total of 12–28 invested points among useful profession stats. No hostile entity snapshot, target, old order, or old ownership is imported. Ancient carriers' physical cargo remains ordinary loot rather than being copied into the new companion.
 
 Each ancient identity can be redeemed only once across all dimensions of the saved world, including after restart. Missing materials, invalid or already restored cores, and unavailable pedestals preserve the core and materials. The usual Commander limit still applies when releasing a restored commander: one spawned Commander per connected co-owner group across the world. Restored companions then use the same recovery, revival, growth, sharing, portal, logistics, and command rules as their profession.
 
@@ -65,4 +67,4 @@ While working with a shield, a guard can intercept **35%** of an owner's or coop
 
 Protection costs at least four stamina, or twice the intercepted damage when larger. At least four stamina and more than one health are required. Redirection is capped at the guard's health above one; normal armor and protection still apply to the guard's hit. Blocking the redirected hit with a raised shield still spends stamina. Interception also contributes to growth. With insufficient stamina, missing equipment, no eligible attacker, or a Wait/Follow order, the original hit proceeds normally. It does not grant passive invulnerability.
 
-Transport and Warehouse Slimes can resupply swords and unload combat loot, healers can tend the guard, Heralds report blocked orders, and Commanders gather it into Wait. A Slime Scanner shows the guard-post detection range and its smaller protection radius. Gold crowns identify Royal Guards; restored veterans additionally carry weathered purple insignia.
+Transport and Warehouse Slimes can resupply swords and unload combat loot, healers can tend the guard, Heralds report blocked orders, and Commanders gather it into Wait. A Slime Scanner shows the guard-post detection range and its smaller protection radius. Gold crowns identify Royal Guards; restored veterans additionally carry white insignia.

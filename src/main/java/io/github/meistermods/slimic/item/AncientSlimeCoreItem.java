@@ -40,14 +40,20 @@ public final class AncientSlimeCoreItem extends Item {
   }
 
   public static ItemStack fromSlime(AncientSlime slime) {
+    var stack = fromRemains(slime.role(), slime.getUUID(), slime.getVeterancy());
+    var data = stack.getOrCreateTag();
+    if (slime.hasCustomName())
+      data.putString("AncientName", Component.Serializer.toJson(slime.getCustomName()));
+    return stack;
+  }
+
+  public static ItemStack fromRemains(AncientSlime.Role role, UUID identity, int rank) {
     var stack = new ItemStack(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get());
     var data = stack.getOrCreateTag();
     data.putInt("AncientCoreVersion", 1);
-    data.putUUID("AncientIdentity", slime.getUUID());
-    data.putString("AncientRole", slime.role().name());
-    data.putInt("AncientVeterancy", slime.getVeterancy());
-    if (slime.hasCustomName())
-      data.putString("AncientName", Component.Serializer.toJson(slime.getCustomName()));
+    data.putUUID("AncientIdentity", identity);
+    data.putString("AncientRole", role.name());
+    data.putInt("AncientVeterancy", Math.max(0, Math.min(3, rank)));
     return stack;
   }
 
@@ -108,9 +114,13 @@ public final class AncientSlimeCoreItem extends Item {
     if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
     var role = role(stack);
     if (role == null || stack.getCount() != 1) return fail(player, "ancient_core_invalid");
-    if (count(player, ModItems.ANCIENT_COMMAND_SEAL.get()) < 1
-        || count(player, Items.SLIME_BALL) < 1)
-      return fail(player, "ancient_restoration_materials");
+    if (role.isMine() && server.dimension() != Level.OVERWORLD)
+      return fail(player, "mine_restoration_overworld");
+    Item catalyst =
+        role.isMine() ? ModItems.OLD_COMMAND_FRAGMENT.get() : ModItems.ANCIENT_COMMAND_SEAL.get();
+    if (count(player, catalyst) < 1 || count(player, Items.SLIME_BALL) < 1)
+      return fail(
+          player, role.isMine() ? "mine_restoration_materials" : "ancient_restoration_materials");
     if (!stack.getTag().hasUUID("AncientIdentity")) {
       stack.getTag().putUUID("AncientIdentity", UUID.randomUUID());
       stack.getTag().remove("AncientCreativeTemplate");
@@ -123,9 +133,11 @@ public final class AncientSlimeCoreItem extends Item {
       var original = stack.copy();
       FriendlySlime companion =
           switch (role) {
-            case GUARD -> ModEntities.ROYAL_GUARD_SLIME.get().create(server);
+            case GUARD, MINE_GUARD -> ModEntities.ROYAL_GUARD_SLIME.get().create(server);
             case TRANSPORT -> ModEntities.TRANSPORT_SLIME.get().create(server);
             case COMMANDER -> ModEntities.COMMANDER_SLIME.get().create(server);
+            case MINER -> ModEntities.ANCIENT_MINING_SLIME.get().create(server);
+            case TUNNEL -> ModEntities.ANCIENT_TUNNEL_SLIME.get().create(server);
           };
       if (companion == null) return InteractionResult.FAIL;
       companion.setUUID(UUID.randomUUID());
@@ -135,6 +147,7 @@ public final class AncientSlimeCoreItem extends Item {
       var saved = companion.saveWithoutId(new CompoundTag());
       saved.getCompound("SlimeStats").putInt(SlimeStat.STAMINA.key(), rank);
       companion.load(saved);
+      AncientTraining.applyOnce(companion, identity, rank);
       companion.setHealth(1);
       companion.setWaiting(true);
       if (original.getTag().contains("AncientName", 8)) {
@@ -148,12 +161,12 @@ public final class AncientSlimeCoreItem extends Item {
       var result = FriendlySlimeItem.fromSlime(companion);
       // Entity-construction callbacks may alter the held item or material inventory.
       if (!ItemStack.matches(original, player.getItemInHand(context.getHand()))
-          || count(player, ModItems.ANCIENT_COMMAND_SEAL.get()) < 1
+          || count(player, catalyst) < 1
           || count(player, Items.SLIME_BALL) < 1
           || !server
               .getBlockState(context.getClickedPos())
               .is(ModWorldBlocks.block("command_pedestal"))) return InteractionResult.FAIL;
-      consumeOne(player, ModItems.ANCIENT_COMMAND_SEAL.get());
+      consumeOne(player, catalyst);
       consumeOne(player, Items.SLIME_BALL);
       player.setItemInHand(context.getHand(), result);
       player.getInventory().setChanged();
@@ -173,12 +186,29 @@ public final class AncientSlimeCoreItem extends Item {
   }
 
   @Override
+  public Component getName(ItemStack stack) {
+    var role = role(stack);
+    return role != null && role.isMine()
+        ? Component.translatable(
+            "item.slimic.damaged_ancient_slime_core."
+                + role.name().toLowerCase(java.util.Locale.ROOT))
+        : super.getName(stack);
+  }
+
+  @Override
   public void appendHoverText(
       ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
     lines.add(
-        Component.translatable("item.slimic.damaged_ancient_slime_core.tooltip")
+        Component.translatable(
+                role(stack) != null && role(stack).isMine()
+                    ? "item.slimic.damaged_ancient_slime_core.mine_tooltip"
+                    : "item.slimic.damaged_ancient_slime_core.tooltip")
             .withStyle(ChatFormatting.GRAY));
     var role = role(stack);
+    if (role != null)
+      lines.add(
+          Component.translatable("item.slimic.damaged_ancient_slime_core.training_tooltip")
+              .withStyle(ChatFormatting.GRAY));
     if (role != null)
       lines.add(
           Component.translatable(

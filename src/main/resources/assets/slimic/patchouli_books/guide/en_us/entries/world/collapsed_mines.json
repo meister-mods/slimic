@@ -18,7 +18,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "These Broken Slime Blocks are empty, dried remains. Slimeballs cannot revive them. Clear remains, rubble, and webs before assigning workers; Mining Slimes cannot remove the webs. Your own fallen companions still use normal $(l:care/revival)revival$(). New workers start waiting."
+      "text": "Mineralized corpses contain damaged cores. Break them and follow $(l:world/mine_recovery)mine recovery$() to restore ancient workers in the Overworld. Slimeballs cannot revive corpses directly. Clear remains, rubble, and webs before assigning workers. Your own fallen companions still use normal $(l:care/revival)revival$()."
     }
   ]
 }

@@ -38,7 +38,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 /** A three-by-three horizontal bore with a nonconsumable lining template. */
-public final class TunnelSlime extends MiningSlime {
+public class TunnelSlime extends MiningSlime {
   public enum Status {
     IDLE,
     MINING,

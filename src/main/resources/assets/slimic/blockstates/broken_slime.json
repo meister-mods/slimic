@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "mineralized=false": {
       "model": "slimic:block/broken_slime"
+    },
+    "mineralized=true": {
+      "model": "slimic:block/mineralized_slime"
     }
   }
 }

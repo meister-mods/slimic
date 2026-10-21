@@ -142,7 +142,7 @@ public final class GuidebookClientSmoke {
     var landing = c.screen;
     var type = Class.forName("vazkii.patchouli.client.book.gui.GuiBookIndex");
     c.setScreen((Screen) type.getConstructor(book.getClass()).newInstance(book));
-    if (((List<?>) field(c.screen, "allEntries")).size() != 55)
+    if (((List<?>) field(c.screen, "allEntries")).size() != 58)
       throw new IllegalStateException("The searchable index must include all guide entries");
     String query = language == 1 ? "치유 슬라임" : "Healing Slime";
     for (char letter : query.toCharArray()) c.screen.charTyped(letter, 0);
@@ -267,7 +267,7 @@ public final class GuidebookClientSmoke {
           throw new IllegalStateException(
               "Guide contents failed to build: " + invoke(contents, "getException"));
         var all = (Map<?, ?>) field(contents, "entries");
-        if (all.size() != 55 || ((Map<?, ?>) field(contents, "categories")).size() != 7)
+        if (all.size() != 58 || ((Map<?, ?>) field(contents, "categories")).size() != 7)
           throw new IllegalStateException("Incomplete guide contents: " + all.size());
         for (var item : ForgeRegistries.ITEMS.getEntries()) {
           if (!item.getKey().location().getNamespace().equals("slimic")) continue;
@@ -343,7 +343,12 @@ public final class GuidebookClientSmoke {
                 || id.endsWith("/mining")
                 || id.endsWith("/warehouse")
                 || id.endsWith("/flight")
-                || id.endsWith("/guardian"))) shot(c, id.replace(':', '-').replace('/', '-'));
+                || id.endsWith("/guardian")
+                || id.endsWith("/mine_recovery")
+                || id.endsWith("/ancient_mining")
+                || id.endsWith("/ancient_tunnel")
+                || id.endsWith("/restoration"))) shot(c, id.replace(':', '-').replace('/', '-'));
+        if (id.endsWith("/restoration") && spread == 2) shot(c, "restoration-crafting");
         var original = c.screen;
         for (var link : links) {
           if (!link.get()
@@ -365,12 +370,12 @@ public final class GuidebookClientSmoke {
           openEntry(c);
           return false;
         }
-        if (rendered != 177)
-          throw new IllegalStateException("Expected 177 content pages, rendered " + rendered);
+        if (rendered != 188)
+          throw new IllegalStateException("Expected 188 content pages, rendered " + rendered);
         System.out.println(
             "SLIMIC GUIDEBOOK LANGUAGE PASSED: "
                 + LANGUAGES.get(language)
-                + "; 55 entries; 177 rendered pages");
+                + "; 58 entries; 188 rendered pages");
         if (++language < LANGUAGES.size()) {
           phase = 3;
           return false;
@@ -384,9 +389,9 @@ public final class GuidebookClientSmoke {
                 "languages",
                 LANGUAGES,
                 "entries",
-                55,
+                58,
                 "pages_per_language",
-                177,
+                188,
                 "item_lookups",
                 checkedLookups,
                 "entry_links",

@@ -4,6 +4,39 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.7] - 2026-10-21
+
+### Added
+
+- Collapsed Mine Recovery: mineralized mine corpses break into unique damaged cores; each new site provides command fragments and restoration supplies in a Slime Chest.
+- Forgotten Miner and Forgotten Tunnel Slimes slowly work bounded old faces; Mine Guardians defend the site. All three roles have Creative spawn eggs and drop cores with command fragments when defeated by players or companions.
+- Restore mining cores in the Overworld with one Old Command Fragment and one slimeball at a Slime Restoration Station. Ancient Mining Slimes prioritize visible active-layer ores and use half work and movement stamina; Ancient Tunnel Slimes use half work and movement stamina and mine tagged ancient masonry 50% faster with effective tools. Mine Guardians restore as Royal Guards.
+- Bilingual acquisition, cooperation, and preservation guides, JEI information, and three new Patchouli entries. The guide now contains 58 entries and 188 pages per language.
+
+### Changed
+
+- Craft Slime Restoration Stations with a shaped workbench recipe of slimeball, gold, redstone, and Stone Bricks; remove the stonecutting recipe.
+- Dedicated transparent 16×16 item textures for the Ancient Command Seal, generic and profession cores, and Old Command Fragments. A limited palette and clear pixels match vanilla inventory artwork.
+- All newly restored ancient companions receive 12–28 invested upgrades randomly distributed among useful profession stats, with a fixed per-core result, ordinary level caps, and matching growth costs.
+- Tamed ancient companions use white head insignia; hostile remnants retain purple insignia. New summon crests share the existing base with distinct ancient profession symbols.
+- Network protocol 18 requires matching clients and servers for the added entity types. Existing companion and core payload schemas remain compatible.
+
+### Fixed
+
+- Keep old mine workers progressing through visible cells when rubble hides the first cell of their bounded work face.
+
+### Validation
+
+- More than two hours of independent review cover recovery, companion cooperation, rendering, documentation, and saved-world compatibility. All 664 native server regressions pass with JEI and Patchouli present and absent.
+- Native cases verify corpse drops, exact restoration costs, one-time identities, random useful training, initial Wait, appropriate tools, canceled Forge events, and visible mining targets. A blocked-face regression fails before the correction and passes afterward.
+- Actual generation samples 8,192 chunks, finding six tunnels and one quarry with twenty core-bearing remains. Separate generated-site checks verify both shapes, all four tunnel rotations, working hostile remnants, and fourteen preserved corpses.
+- Independent native cooperation runs last thirty and fifteen minutes, delivering 384 and 835 cargo items respectively with three tool resupplies each. All shared stair treads remain protected. Four ancient tunnel workers also resume all rotated faces in a separate twenty-minute run.
+- A two-hour preservation run completes 35,900 dimension transfers and 119 core restorations across all twenty-five professions, retaining trained stats, ownership, identity, vitals, gear, cargo, and duplicate-redemption protection. These are preservation checks with AI disabled; separate runs exercise actual work and waiting behavior.
+- Actual server restarts preserve new cores, trained companions, supplies, and redemption data. A 0.3.6 save upgrade retains earlier companions and cores; eight empty remains in three old generated mines remain empty and keep their quarry stair protection.
+- Native clients verify all twenty-five companion appearances, equipment, six core variants, naturally recovered core information in JEI, and the 16×16 item sprites. Both fonts render all 58 guidebook entries and 188 pages in English, Korean, and English fallback. Final guidebook prose passes its own native and client checks.
+- A separate native AI observation checks all twenty-five newly summoned companions for more than 86 minutes across four day cycles, retaining Wait and stable positions without disabling AI.
+- Google Java Format, the Java 17 build, bilingual documentation, resources, release contents, and runtime linkage checks pass. Release Java classes match both complete server runs; the final guidebook resources match the later book-specific verification.
+
 ## [0.3.6] - 2026-10-21
 
 ### Added

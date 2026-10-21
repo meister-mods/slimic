@@ -212,7 +212,7 @@ public final class CollapsedMineGameTests {
   }
 
   @GameTest(template = "empty", batch = "collapsed_mine", timeoutTicks = 400)
-  public static void ancientBrokenWorkersNeverReviveAndTheirDropsStayEmpty(GameTestHelper h) {
+  public static void ancientBrokenWorkersNeverReviveDirectlyAndDropTheirCore(GameTestHelper h) {
     for (boolean quarry : new boolean[] {false, true})
       try (var p = plot(h)) {
         h.assertTrue(place(p, seed(quarry, 0)), "Mine places");
@@ -235,11 +235,15 @@ public final class CollapsedMineGameTests {
                   p.level.getBlockState(pos), p.level, pos, broken);
           h.assertTrue(
               drops.size() == 1
-                  && drops.get(0).is(ModBlocks.BROKEN_SLIME.get().asItem())
+                  && drops
+                      .get(0)
+                      .is(
+                          io.github.meistermods.slimic.registry.ModItems.DAMAGED_ANCIENT_SLIME_CORE
+                              .get())
                   && (net.minecraft.world.item.BlockItem.getBlockEntityData(drops.get(0)) == null
                       || !net.minecraft.world.item.BlockItem.getBlockEntityData(drops.get(0))
                           .contains("Slime")),
-              "Broken remnants drop no recoverable companion snapshot");
+              "Ancient corpses yield one core and no owned companion snapshot");
         }
       }
     h.succeed();

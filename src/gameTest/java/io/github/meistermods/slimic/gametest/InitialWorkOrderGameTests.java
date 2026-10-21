@@ -42,6 +42,8 @@ public final class InitialWorkOrderGameTests {
         ModEntities.HEALING_SLIME.get(),
         ModEntities.WAREHOUSE_SLIME.get(),
         ModEntities.MINING_SLIME.get(),
+        ModEntities.ANCIENT_MINING_SLIME.get(),
+        ModEntities.ANCIENT_TUNNEL_SLIME.get(),
         ModEntities.TRANSPORT_SLIME.get(),
         ModEntities.HERALD_SLIME.get(),
         ModEntities.COMBAT_SLIME.get(),
@@ -167,7 +169,7 @@ public final class InitialWorkOrderGameTests {
             () -> {
               for (int i = 0; i < companions().size(); i++) {
                 var preview = companions().get(i).create(h.getLevel());
-                var floor = BlockPos.containing(a.point(3 + (i % 6) * 2, 100, 3 + (i / 6) * 3));
+                var floor = BlockPos.containing(a.point(2 + (i % 5) * 2.5, 100, 2 + (i / 5) * 2.5));
                 var pet = release(h, owner, preview.getPickResult(), floor);
                 pets.add(pet);
                 positions.add(pet.position());
@@ -212,7 +214,7 @@ public final class InitialWorkOrderGameTests {
               for (int i = 0; i < companions().size(); i++) {
                 var type = companions().get(i);
                 var preview = type.create(h.getLevel());
-                var floor = BlockPos.containing(a.point(3 + (i % 6) * 2, 100, 3 + (i / 6) * 3));
+                var floor = BlockPos.containing(a.point(2 + (i % 5) * 2.5, 100, 2 + (i / 5) * 2.5));
                 var pet = release(h, owner, preview.getPickResult(), floor);
                 h.assertTrue(
                     pet.getType() == type && pet.isOrderedToSit() && !pet.isWorking(),
@@ -290,7 +292,7 @@ public final class InitialWorkOrderGameTests {
                         h,
                         owner,
                         specialized,
-                        BlockPos.containing(a.point(3 + (i % 6) * 2, 100, 3 + (i / 6) * 3)));
+                        BlockPos.containing(a.point(2 + (i % 5) * 2.5, 100, 2 + (i / 5) * 2.5)));
                 h.assertTrue(
                     pet.isOrderedToSit()
                         && !pet.isWorking()

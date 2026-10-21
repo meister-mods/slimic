@@ -116,7 +116,7 @@ Collapsed mines can appear in newly generated chunks of The Slimic, on dry groun
 - **Tunnel sites** use a descending entrance and a 3×3 horizontal passage, with support frames, rubble, cobwebs, and a solid unfinished face.
 - **Chunk quarries** expose a 16×16 excavation 12–18 blocks deep, leaving the Mining Slime’s two-block-wide perimeter stairs. A remaining lower ledge marks an interrupted layer. Stair protection persists with the world and applies to later mining companions.
 
-The Broken Slime Blocks scattered through the mines contain no companion data and cannot be revived, even with slimeballs. Breaking and replacing these remains does not make them recoverable. Owned companions that fall elsewhere retain their normal revival behavior. Clear the old remains, rubble, and cobwebs before assigning new workers: Mining Slimes cannot remove cobwebs with their mining tools. New workers still start waiting; inspect and equip them before explicitly starting work.
+Mineralized corpses drop one damaged core when broken. Recover Old Command Fragments and slimeballs from the mine’s supply chest, then restore Ancient Mining or Ancient Tunnel Slimes in the Overworld. Remaining workers and Mine Guardians attack intruders. See [Collapsed Mine Recovery](MINE_RECOVERY.md) for the full procedure and older empty remains. Slimeballs cannot revive a corpse directly; owned companions retain their ordinary revival procedure.
 
 Generation stays within one chunk and rejects wet sites, existing block entities, unbreakable blocks, and non-terrain construction before carving.
 

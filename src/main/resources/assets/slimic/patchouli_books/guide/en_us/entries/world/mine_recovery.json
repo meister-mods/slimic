@@ -1,0 +1,30 @@
+{
+  "name": "Mine recovery",
+  "icon": "slimic:old_command_fragment",
+  "category": "slimic:world",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Follow timber frames or an open shaft into a $(l:world/collapsed_mines)collapsed mine$(). Mineralized fallen workers show a purple core on their faces. Break a corpse to collect exactly one damaged core. Slimeballs cannot revive a corpse directly."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Supply chests contain one Old Command Fragment and one slimeball per corpse, a pickaxe, and cobblestone. Forgotten workers and a Mine Guardian remain on watch. Defeating a mine remnant yourself or with a companion yields one core and one fragment under normal mob-loot rules."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Return to the Overworld. Hold a mine core and use a $(l:world/restoration)Slime Restoration Station$() with one fragment and one slimeball in your inventory. A mining core becomes an $(l:companions/ancient_mining)Ancient Mining Slime$(); a tunnel core becomes an $(l:companions/ancient_tunnel)Ancient Tunnel Slime$(). Mine Guardians become Royal Guards."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The restored summon item is a new owned companion. It starts waiting at one health; heal and equip it before ordering work. A core can be restored once across the saved world. Older empty remains have no core. Your fallen companions keep their ordinary $(l:care/revival)revival$() procedure."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:old_command_fragment": 2,
+    "slimic:forgotten_miner_slime_spawn_egg": 1,
+    "slimic:forgotten_tunnel_slime_spawn_egg": 1,
+    "slimic:mine_guardian_slime_spawn_egg": 1
+  }
+}

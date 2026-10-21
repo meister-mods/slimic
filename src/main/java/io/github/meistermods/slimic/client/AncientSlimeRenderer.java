@@ -16,10 +16,11 @@ public final class AncientSlimeRenderer
     extends MobRenderer<AncientSlime, SlimeModel<AncientSlime>> {
   private static final ResourceLocation BODY =
       ResourceLocation.fromNamespaceAndPath("slimic", "textures/entity/friendly_slime.png");
-  private final ModelPart crown, pack, commander;
+  private final ModelPart crown, pack, commander, helmet;
 
   public AncientSlimeRenderer(EntityRendererProvider.Context context) {
     super(context, new SlimeModel<>(context.bakeLayer(ModelLayers.SLIME)), .5F);
+    helmet = context.bakeLayer(MiningSlimeLayer.HELMET);
     crown = context.bakeLayer(RoyalSlimeLayer.CROWN);
     pack = context.bakeLayer(TransportSlimeLayer.PACK);
     commander = context.bakeLayer(AdvancedSlimeLayer.DETAILS);
@@ -52,14 +53,60 @@ public final class AncientSlimeRenderer
             var sink =
                 buffers.getBuffer(
                     RenderType.entityCutoutNoCull(SlimeTextures.accessory("royal_guard")));
+            pose.pushPose();
+            if (slime.role() == AncientSlime.Role.MINER || slime.role() == AncientSlime.Role.TUNNEL)
+              pose.translate(0, -.2, 0);
             crown
                 .getChild("relic_crest")
                 .render(pose, sink, light, OverlayTexture.NO_OVERLAY, .7F, .8F, .7F, 1);
+            pose.popPose();
             if (slime.role() == AncientSlime.Role.GUARD
-                || slime.role() == AncientSlime.Role.COMMANDER)
+                || slime.role() == AncientSlime.Role.COMMANDER
+                || slime.role() == AncientSlime.Role.MINE_GUARD)
               crown
                   .getChild("crown")
                   .render(pose, sink, light, OverlayTexture.NO_OVERLAY, .65F, .7F, .6F, 1);
+            if (slime.role() == AncientSlime.Role.MINER
+                || slime.role() == AncientSlime.Role.TUNNEL) {
+              var metal =
+                  buffers.getBuffer(
+                      RenderType.entityCutoutNoCull(SlimeTextures.accessory("mining")));
+              helmet
+                  .getChild("helmet")
+                  .render(pose, metal, light, OverlayTexture.NO_OVERLAY, .65F, .7F, .6F, 1);
+              helmet
+                  .getChild("lamp")
+                  .render(pose, metal, 15728880, OverlayTexture.NO_OVERLAY, .8F, .7F, .6F, 1);
+              SlimeEquipmentRenderer.held(
+                  context, pose, buffers, light, slime, slime.getMainHandItem(), false);
+            }
+            if (slime.role() == AncientSlime.Role.TUNNEL) {
+              var metal =
+                  buffers.getBuffer(
+                      RenderType.entityCutoutNoCull(SlimeTextures.accessory("tunnel")));
+              for (var part : new String[] {"cart", "wheels"})
+                commander
+                    .getChild(part)
+                    .render(pose, metal, light, OverlayTexture.NO_OVERLAY, .7F, .7F, .6F, 1);
+            }
+            if (slime.role() == AncientSlime.Role.MINE_GUARD) {
+              SlimeEquipmentRenderer.held(
+                  context,
+                  pose,
+                  buffers,
+                  light,
+                  slime,
+                  new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_SWORD),
+                  false);
+              SlimeEquipmentRenderer.held(
+                  context,
+                  pose,
+                  buffers,
+                  light,
+                  slime,
+                  new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SHIELD),
+                  true);
+            }
             if (slime.role() == AncientSlime.Role.TRANSPORT) {
               var wood =
                   buffers.getBuffer(

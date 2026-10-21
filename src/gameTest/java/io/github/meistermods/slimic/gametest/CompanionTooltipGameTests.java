@@ -43,7 +43,7 @@ public final class CompanionTooltipGameTests {
       h.assertTrue(!stack.hasTag(), "Reading a fresh tooltip cannot add data");
       count++;
     }
-    h.assertTrue(count == 23, "Every registered profession is covered");
+    h.assertTrue(count == 25, "Every registered profession is covered");
     h.succeed();
   }
 

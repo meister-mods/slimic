@@ -38,6 +38,10 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
     final int top;
     final Rotation rotation;
     final Map<BlockPos, BlockState> blocks = new LinkedHashMap<>();
+    final Map<BlockPos, io.github.meistermods.slimic.entity.AncientSlime.Role> remains =
+        new LinkedHashMap<>();
+    BlockPos supplies, worker, guardian, face;
+    io.github.meistermods.slimic.entity.AncientSlime.Role workRole;
 
     Layout(ChunkPos chunk, int top, Rotation rotation) {
       this.chunk = chunk;
@@ -70,8 +74,15 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
     }
 
     void broken(int x, int y, int z) {
-      // Empty broken-slime block entities hold no owner or companion snapshot to revive.
-      put(x, y, z, ModBlocks.BROKEN_SLIME.get().defaultBlockState());
+      put(
+          x,
+          y,
+          z,
+          ModBlocks.BROKEN_SLIME
+              .get()
+              .defaultBlockState()
+              .setValue(io.github.meistermods.slimic.block.BrokenSlimeBlock.MINERALIZED, true));
+      remains.put(position(x, y, z), workRole);
     }
 
     void air(int x, int y, int z) {
@@ -128,6 +139,47 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
       tunnel(layout);
     }
     for (var entry : layout.blocks.entrySet()) level.setBlock(entry.getKey(), entry.getValue(), 2);
+    var ruin = new java.util.UUID(random.nextLong(), random.nextLong());
+    for (var entry : layout.remains.entrySet()) {
+      if (level.getBlockEntity(entry.getKey())
+          instanceof io.github.meistermods.slimic.block.BrokenSlimeBlockEntity corpse)
+        corpse.setAncientCore(
+            io.github.meistermods.slimic.item.AncientSlimeCoreItem.fromRemains(
+                entry.getValue(), new java.util.UUID(random.nextLong(), random.nextLong()), 2));
+    }
+    if (level.getBlockEntity(layout.supplies)
+        instanceof io.github.meistermods.slimic.block.SlimeChestBlockEntity chest) {
+      chest.setItem(
+          0,
+          new net.minecraft.world.item.ItemStack(
+              io.github.meistermods.slimic.registry.ModItems.OLD_COMMAND_FRAGMENT.get(),
+              layout.remains.size()));
+      chest.setItem(
+          1,
+          new net.minecraft.world.item.ItemStack(
+              net.minecraft.world.item.Items.SLIME_BALL, layout.remains.size()));
+      chest.setItem(
+          2,
+          new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 32));
+      chest.setItem(
+          3, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+    }
+    spawn(
+        level,
+        layout.worker,
+        ruin,
+        layout.workRole,
+        layout.face,
+        quarry
+            ? net.minecraft.core.Direction.EAST
+            : rotation.rotate(net.minecraft.core.Direction.SOUTH));
+    spawn(
+        level,
+        layout.guardian,
+        ruin,
+        io.github.meistermods.slimic.entity.AncientSlime.Role.MINE_GUARD,
+        null,
+        net.minecraft.core.Direction.NORTH);
     if (plan != null) {
       var profile = plan;
       var serverLevel = level.getLevel();
@@ -139,7 +191,40 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
     return true;
   }
 
+  private static void spawn(
+      WorldGenLevel level,
+      BlockPos pos,
+      java.util.UUID ruin,
+      io.github.meistermods.slimic.entity.AncientSlime.Role role,
+      BlockPos face,
+      net.minecraft.core.Direction direction) {
+    var type =
+        role == io.github.meistermods.slimic.entity.AncientSlime.Role.MINER
+            ? io.github.meistermods.slimic.registry.ModEntities.FORGOTTEN_MINER_SLIME.get()
+            : role == io.github.meistermods.slimic.entity.AncientSlime.Role.TUNNEL
+                ? io.github.meistermods.slimic.registry.ModEntities.FORGOTTEN_TUNNEL_SLIME.get()
+                : io.github.meistermods.slimic.registry.ModEntities.MINE_GUARDIAN_SLIME.get();
+    var slime = type.create(level.getLevel());
+    if (slime == null) return;
+    slime.moveTo(pos.getX() + .5, pos.getY(), pos.getZ() + .5, 0, 0);
+    slime.bindToRuin(pos, ruin, null, null, 2);
+    if (face != null) slime.bindMineFace(face, direction);
+    net.minecraftforge.event.ForgeEventFactory.onFinalizeSpawn(
+        slime,
+        level,
+        level.getCurrentDifficultyAt(pos),
+        net.minecraft.world.entity.MobSpawnType.STRUCTURE,
+        null,
+        null);
+    if (!slime.isSpawnCancelled()
+        && slime.isAlive()
+        && slime.level() == level.getLevel()
+        && slime.blockPosition().equals(pos)
+        && level.noCollision(slime)) level.addFreshEntity(slime);
+  }
+
   private static void tunnel(Layout l) {
+    l.workRole = io.github.meistermods.slimic.entity.AncientSlime.Role.TUNNEL;
     for (int x = 1; x <= 13; x++)
       for (int z = 0; z <= 5; z++) {
         for (int y = l.top - 2; y <= l.top; y++) l.put(x, y, z, state("slimic_cobblestone"));
@@ -162,8 +247,19 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
     int bottom = l.top - 6;
     for (int x = 4; x <= 6; x++)
       for (int y = 1; y <= 3; y++) l.put(x, bottom + y, 14, state("slimic_stone"));
-    l.broken(4, bottom + 1, 11);
-    l.broken(6, bottom + 1, 12);
+    // A widened terminal alcove keeps living remnants clear of their fallen coworkers.
+    for (int x = 3; x <= 7; x++)
+      for (int z = 11; z <= 12; z++) {
+        l.put(x, bottom, z, state("slimic_cobblestone"));
+        for (int y = 1; y <= 3; y++) l.air(x, bottom + y, z);
+      }
+    l.broken(3, bottom + 1, 11);
+    l.broken(7, bottom + 1, 12);
+    l.worker = l.position(5, bottom + 1, 11);
+    l.guardian = l.position(5, bottom + 1, 9);
+    l.face = l.position(5, bottom + 1, 14);
+    l.supplies = l.position(8, l.top + 1, 2);
+    l.put(8, l.top + 1, 2, ModBlocks.SLIME_CHEST.get().defaultBlockState());
     // Keep a surface remnant within every ruin footprint so later features preserve the entrance.
     l.broken(9, l.top + 1, 4);
     l.put(4, bottom + 2, 8, Blocks.COBWEB.defaultBlockState());
@@ -173,11 +269,12 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
     l.put(6, bottom + 2, 13, Blocks.GRAVEL.defaultBlockState());
     l.put(10, l.top + 1, 3, state("broken_workbench"));
     l.put(2, l.top + 1, 1, state("weathered_waymarker"));
-    l.put(8, l.top + 1, 2, state("broken_crate"));
+
     l.put(5, l.top + 3, 2, Blocks.COBWEB.defaultBlockState());
   }
 
   private static void quarry(Layout l, WorldGenLevel level, QuarryPlan plan, int bottom) {
+    l.workRole = io.github.meistermods.slimic.entity.AncientSlime.Role.MINER;
     for (int x = 0; x < 16; x++)
       for (int z = 0; z < 16; z++) {
         var floor = new BlockPos(l.chunk.getMinBlockX() + x, bottom, l.chunk.getMinBlockZ() + z);
@@ -192,6 +289,11 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
     // A remaining shelf and fallen workers mark an interrupted layer, above the undug rock.
     for (int x = 10; x <= 13; x++)
       for (int z = 6; z <= 10; z++) l.put(x, bottom + 1, z, state("slimic_stone"));
+    l.worker = l.position(5, bottom + 1, 8);
+    l.guardian = l.position(12, bottom + 2, 6);
+    l.face = l.position(10, bottom + 1, 8);
+    l.supplies = l.position(4, bottom + 1, 6);
+    l.put(4, bottom + 1, 6, ModBlocks.SLIME_CHEST.get().defaultBlockState());
     l.broken(7, bottom + 1, 8);
     l.broken(11, bottom + 2, 8);
     l.put(8, bottom + 1, 9, state("slimic_cobblestone"));

@@ -1115,8 +1115,9 @@ public class MiningSlime extends BagSlime {
             } else needsTier = true;
             continue;
           }
-          double distance = pos.distToCenterSqr(position());
-          if (!canSee(pos)) distance += 1024;
+          boolean visible = canSee(pos);
+          double distance = targetPriority(pos, state, visible);
+          if (!visible) distance += 1024;
           if (distance < nearest) {
             best = pos;
             nearest = distance;
@@ -1136,6 +1137,11 @@ public class MiningSlime extends BagSlime {
     }
     status = Status.IDLE;
     return null;
+  }
+
+  /** Selection stays within the safe active layer, including stair and tool checks. */
+  protected double targetPriority(BlockPos pos, BlockState state, boolean visible) {
+    return pos.distToCenterSqr(position());
   }
 
   private boolean canStore(List<ItemStack> drops) {

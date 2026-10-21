@@ -1,0 +1,30 @@
+{
+  "name": "폐광 코어 복원",
+  "icon": "slimic:old_command_fragment",
+  "category": "slimic:world",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "목재 틀이나 열린 굴착 구덩이를 따라 $(l:world/collapsed_mines)무너진 광산$()에 진입하세요. 광물화된 시체 표면에는 보라색 코어가 보입니다. 시체를 부수면 손상된 코어 1개를 얻으며, 슬라임볼로 직접 부활시킬 수 없습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "보급 상자에는 시체 수만큼의 오래된 명령 파편과 슬라임볼, 곡괭이와 조약돌이 있습니다. 잊혀진 작업자와 폐광 수호 슬라임이 남아 있습니다. 직접 또는 동료와 함께 제압하면 일반 몹 전리품 규칙에 따라 코어와 파편을 1개씩 얻습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "오버월드로 돌아와 광산 코어를 들고 $(l:world/restoration)슬라임 복구 스테이션$()을 사용하세요. 인벤토리의 파편 1개와 슬라임볼 1개를 소비합니다. 채굴 코어는 $(l:companions/ancient_mining)고대 채굴 슬라임$(), 터널 코어는 $(l:companions/ancient_tunnel)고대 터널 슬라임$(), 폐광 수호 코어는 왕실 근위 슬라임으로 바뀝니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "복원된 소환 아이템은 새 소유권을 가진 동료입니다. 생명력 1의 대기로 시작하므로 먼저 치유하고 장비를 주세요. 각 코어는 저장 세계 전체에서 한 번만 복원됩니다. 이전 버전의 빈 잔해에는 코어가 없습니다. 플레이어 동료의 $(l:care/revival)부활$() 절차는 기존과 같습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:old_command_fragment": 2,
+    "slimic:forgotten_miner_slime_spawn_egg": 1,
+    "slimic:forgotten_tunnel_slime_spawn_egg": 1,
+    "slimic:mine_guardian_slime_spawn_egg": 1
+  }
+}

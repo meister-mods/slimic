@@ -38,6 +38,8 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.WAREHOUSE_SLIME.get());
                         output.accept(ModItems.HEALING_SLIME.get());
                         output.accept(ModItems.MINING_SLIME.get());
+                        output.accept(ModItems.ANCIENT_MINING_SLIME.get());
+                        output.accept(ModItems.ANCIENT_TUNNEL_SLIME.get());
                         output.accept(ModItems.TRANSPORT_SLIME.get());
                         output.accept(ModItems.HERALD_SLIME.get());
                         output.accept(ModItems.COMBAT_SLIME.get());
@@ -53,10 +55,14 @@ public final class ModCreativeTabs {
                         for (var role : AncientSlime.Role.values())
                           output.accept(AncientSlimeCoreItem.creativeVariant(role));
                         output.accept(ModItems.ANCIENT_COMMAND_SEAL.get());
+                        output.accept(ModItems.OLD_COMMAND_FRAGMENT.get());
                         output.accept(ModWorldBlocks.block("command_pedestal"));
                         output.accept(ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.ANCIENT_COMMANDER_SLIME_SPAWN_EGG.get());
+                        output.accept(ModItems.FORGOTTEN_MINER_SLIME_SPAWN_EGG.get());
+                        output.accept(ModItems.FORGOTTEN_TUNNEL_SLIME_SPAWN_EGG.get());
+                        output.accept(ModItems.MINE_GUARDIAN_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.SLIME_CHEST.get());
                         output.accept(ModItems.BROKEN_SLIME.get());
                         for (var chestplate :

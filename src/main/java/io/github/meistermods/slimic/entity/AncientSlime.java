@@ -36,7 +36,14 @@ public final class AncientSlime extends Monster {
   public enum Role {
     GUARD,
     TRANSPORT,
-    COMMANDER
+    COMMANDER,
+    MINER,
+    TUNNEL,
+    MINE_GUARD;
+
+    public boolean isMine() {
+      return this == MINER || this == TUNNEL || this == MINE_GUARD;
+    }
   }
 
   public static final String DEPOT_KEY = "SlimicAncientDepot";
@@ -46,6 +53,7 @@ public final class AncientSlime extends Monster {
   private boolean returning, coreDropped;
   private int attackCooldown, patrolStep, experience;
   private Vec3 pathDestination;
+  private final AncientMineWork mineWork = new AncientMineWork();
 
   public AncientSlime(EntityType<? extends AncientSlime> type, Level level) {
     super(type, level);
@@ -74,6 +82,12 @@ public final class AncientSlime extends Monster {
           }
         };
     xpReward = 5;
+    if (role() == Role.MINER || role() == Role.TUNNEL) {
+      setItemInHand(
+          net.minecraft.world.InteractionHand.MAIN_HAND,
+          new ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+      setDropChance(net.minecraft.world.entity.EquipmentSlot.MAINHAND, 0);
+    }
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -82,17 +96,44 @@ public final class AncientSlime extends Monster {
 
   public static AttributeSupplier.Builder createAttributes(Role role) {
     return Monster.createMonsterAttributes()
-        .add(Attributes.MAX_HEALTH, role == Role.COMMANDER ? 96 : role == Role.TRANSPORT ? 48 : 64)
-        .add(Attributes.ATTACK_DAMAGE, role == Role.COMMANDER ? 12 : role == Role.TRANSPORT ? 6 : 8)
-        .add(Attributes.ARMOR, role == Role.COMMANDER ? 12 : role == Role.TRANSPORT ? 6 : 8)
-        .add(Attributes.MOVEMENT_SPEED, .25)
+        .add(Attributes.MAX_HEALTH, health(role))
+        .add(
+            Attributes.ATTACK_DAMAGE,
+            role == Role.COMMANDER
+                ? 12
+                : role == Role.TRANSPORT || role == Role.MINER || role == Role.TUNNEL
+                    ? 6
+                    : role == Role.MINE_GUARD ? 10 : 8)
+        .add(
+            Attributes.ARMOR,
+            role == Role.COMMANDER || role == Role.MINE_GUARD
+                ? 12
+                : role == Role.TRANSPORT || role == Role.MINER || role == Role.TUNNEL ? 6 : 8)
+        .add(Attributes.MOVEMENT_SPEED, role == Role.MINER || role == Role.TUNNEL ? .18 : .25)
         .add(Attributes.FOLLOW_RANGE, 16);
   }
 
+  private static double health(Role role) {
+    return switch (role) {
+      case COMMANDER -> 96;
+      case TRANSPORT, MINER -> 48;
+      case TUNNEL -> 56;
+      case MINE_GUARD -> 96;
+      default -> 64;
+    };
+  }
+
   public Role role() {
+    if (getType() == ModEntities.FORGOTTEN_MINER_SLIME.get()) return Role.MINER;
+    if (getType() == ModEntities.FORGOTTEN_TUNNEL_SLIME.get()) return Role.TUNNEL;
+    if (getType() == ModEntities.MINE_GUARDIAN_SLIME.get()) return Role.MINE_GUARD;
     return getType() == ModEntities.FORGOTTEN_TRANSPORT_SLIME.get()
         ? Role.TRANSPORT
         : getType() == ModEntities.ANCIENT_COMMANDER_SLIME.get() ? Role.COMMANDER : Role.GUARD;
+  }
+
+  public void bindMineFace(BlockPos face, net.minecraft.core.Direction direction) {
+    mineWork.bind(face, direction);
   }
 
   public BlockPos getRuinHome() {
@@ -215,6 +256,8 @@ public final class AncientSlime extends Monster {
     if (level().isClientSide || !isAlive() || isNoAi()) return;
     if (attackCooldown > 0) attackCooldown--;
     if (home == null) home = blockPosition().immutable();
+    if (getTarget() == null && (role() == Role.MINER || role() == Role.TUNNEL)) mineWork.tick(this);
+    else mineWork.resetProgress(this);
     if ((tickCount + getId()) % 10 != 0) return;
     var victim = getTarget();
     if (victim != null && (!mayAttack(victim) || distanceToSqr(Vec3.atCenterOf(home)) > 24 * 24)) {
@@ -250,6 +293,7 @@ public final class AncientSlime extends Monster {
       navigateTo(Vec3.atBottomCenterOf(home), 1);
       return;
     }
+    if ((role() == Role.MINER || role() == Role.TUNNEL) && mineWork.hasWorkFace()) return;
     if (role() == Role.TRANSPORT && tickCount % 40 < 10) haul();
     else if (role() != Role.TRANSPORT && tickCount % 80 < 10 && getNavigation().isDone()) {
       int[][] points = {{3, 2}, {-3, 2}, {-3, -2}, {3, -2}};
@@ -313,7 +357,11 @@ public final class AncientSlime extends Monster {
             || source.getEntity() instanceof FriendlySlime companion && companion.isTame())) return;
     coreDropped = true;
     spawnAtLocation(AncientSlimeCoreItem.fromSlime(this));
-    spawnAtLocation(new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()));
+    spawnAtLocation(
+        new ItemStack(
+            role().isMine()
+                ? ModItems.OLD_COMMAND_FRAGMENT.get()
+                : ModItems.ANCIENT_COMMAND_SEAL.get()));
   }
 
   @Override
@@ -344,6 +392,7 @@ public final class AncientSlime extends Monster {
     tag.putBoolean("AncientCoreDropped", coreDropped);
     tag.putInt("AncientVeterancy", experience);
     tag.putInt("AncientCombatVersion", 1);
+    mineWork.save(tag);
   }
 
   @Override
@@ -366,7 +415,8 @@ public final class AncientSlime extends Monster {
     returning = tag.getBoolean("AncientReturning");
     coreDropped = tag.getBoolean("AncientCoreDropped");
     experience = Math.max(0, Math.min(3, tag.getInt("AncientVeterancy")));
-    if (tag.getInt("AncientCombatVersion") < 1) {
+    mineWork.load(tag);
+    if (!role().isMine() && tag.getInt("AncientCombatVersion") < 1) {
       float health = getHealth();
       float oldMaximum = getMaxHealth();
       var maximum = getAttribute(Attributes.MAX_HEALTH);
