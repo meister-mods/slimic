@@ -76,7 +76,7 @@
   "screen.slimic.apply": "적용",
   "screen.slimic.refresh": "새로고침",
   "screen.slimic.no_target": "주변에 관리할 슬라임이 없습니다.",
-  "screen.slimic.tuner_help": "직업별 배율 적용 전의 기본 능력치를 조정합니다. 가디언 생명력 ×10, 관심 이동 속도 ×1.5. 적재량·탐지 범위 배율은 직업에 따릅니다. 입력 범위는 도움말에서 확인합니다.",
+  "screen.slimic.tuner_help": "상한 없이 기본값을 조정합니다. 가디언·왕실 근위 생명력 ×4, 관심 이동 속도 ×1.5. 노란 값은 권장 범위를 넘지만 적용할 수 있습니다.",
   "screen.slimic.monitor": "감시",
   "screen.slimic.herald_help": "작업 중단 후 신호를 보낼 때까지:",
   "screen.slimic.alert_minutes": "%s분",
@@ -146,8 +146,8 @@
   "entity.slimic.guardian_angel_slime": "가디언 엔젤 슬라임",
   "screen.slimic.fire_signal": "폭죽 발사",
   "screen.slimic.guardian_help": "토템 보관 칸: 최대 64개.\n주인이나 자신을 공격한 대상에게 광선으로 반격합니다. 16블록 안의 주인이 치명상을 입으면 토템 1개로 보호합니다.",
-  "jei.slimic.creative_slime_tuner": "크리에이티브 전용 편집 도구입니다. 기본 능력치·현재 생명력·현재 기력·미사용 포인트를 조정합니다. 가디언 엔젤 슬라임의 최대 생명력은 공통 값의 10배이며, 기본 생명력 입력 한도는 102.4입니다.",
-  "jei.slimic.guardian_angel_slime": "친근한 슬라임·네더의 별·불사의 토템을 모양 없이 조합하면 사용한 토템 1개를 보관합니다. 따라오기 명령을 받으면 주인 곁을 날아다닙니다. 주인이나 자신을 공격한 대상에게 광선으로 반격하고, 16블록 안의 주인이 치명상을 입으면 토템으로 보호합니다. 대기 중에도 반격과 보호는 유지됩니다. 최대 생명력은 공통 값의 10배입니다.",
+  "jei.slimic.creative_slime_tuner": "크리에이티브 전용 편집 도구입니다. 기본 능력치·현재 생명력·현재 기력·미사용 포인트를 조정하며, 권장 범위를 넘어도 가벼운 안내와 함께 적용합니다. 가디언 엔젤과 왕실 근위의 최대 생명력은 기본값의 4배입니다. 유한수만 사용할 수 있고 가방 칸·포인트는 정수여야 합니다. 현재 자원은 실제 최대치에 맞추며, 적재량을 줄이려면 제외될 칸을 먼저 비워야 합니다.",
+  "jei.slimic.guardian_angel_slime": "친근한 슬라임·네더의 별·불사의 토템을 모양 없이 조합하면 사용한 토템 1개를 보관합니다. 따라오기 명령을 받으면 주인 곁을 날아다닙니다. 주인이나 자신을 공격한 대상에게 광선으로 반격하고, 16블록 안의 주인이 치명상을 입으면 토템으로 보호합니다. 대기 중에도 반격과 보호는 유지됩니다. 최대 생명력은 공통 값의 4배입니다.",
   "status.slimic.farmer.idle": "등록한 농지를 살펴보고 있습니다.",
   "status.slimic.lumberjack.idle": "자연 나무를 찾고 있습니다.",
   "status.slimic.farmer.surveying": "경작지를 등록하고 있습니다.",
@@ -574,5 +574,9 @@
   "jei.slimic.restoration.overworld": "오버월드 전용",
   "jei.slimic.restoration.any_dimension": "모든 차원에서 복원",
   "jei.slimic.restoration.arrival": "생명력 1 · 대기 상태",
-  "jei.slimic.restoration.training": "능력치 강화 12~28회"
+  "jei.slimic.restoration.training": "능력치 강화 12~28회",
+  "screen.slimic.recommended_range": "권장: %s~%s. 더 큰 값도 적용할 수 있습니다.",
+  "screen.slimic.recommended_warning": "권장 범위를 넘습니다. 그대로 적용할 수 있습니다.",
+  "screen.slimic.tuned_recommended_warning": "저장했습니다. 일부 값이 권장 범위를 넘습니다.",
+  "screen.slimic.invalid_tuning": "유효한 유한수를 입력하세요. 가방 칸과 포인트는 정수입니다."
 }

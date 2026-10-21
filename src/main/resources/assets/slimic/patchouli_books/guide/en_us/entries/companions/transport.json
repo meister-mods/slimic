@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Capacity is always twice a normal bag at the same stats: 18 slots, +6 per upgrade, up to 54. A second bag page opens above 27 slots; use the arrows to change pages. $(l:cooperation/network)Warehouse storage$() has priority over Slime Chests."
+      "text": "Capacity is always twice a normal bag at the same stats: 18 slots, +6 per upgrade, up to 54 through normal training. A second bag page opens above 27 slots; use the arrows to change pages. $(l:cooperation/network)Warehouse storage$() has priority over Slime Chests."
     }
   ],
   "extra_recipe_mappings": {

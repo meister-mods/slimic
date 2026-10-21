@@ -34,9 +34,8 @@ public final class AbundanceSlime extends HealingSlime {
     if (ballSlot() >= 0) return result;
     var requests = new java.util.HashSet<>(result.requests());
     requests.add(WorkStatus.Request.SLIMEBALL_SUPPLY);
-    if (!net.minecraftforge.items.ItemHandlerHelper.insertItemStacked(
-            getBag(), new ItemStack(Items.SLIME_BALL), true)
-        .isEmpty()) requests.add(WorkStatus.Request.CARGO_PICKUP);
+    if (!SlimeBag.insertItemStacked(getBag(), new ItemStack(Items.SLIME_BALL), true).isEmpty())
+      requests.add(WorkStatus.Request.CARGO_PICKUP);
     return new WorkStatus(result.order(), result.state(), result.reason(), requests);
   }
 

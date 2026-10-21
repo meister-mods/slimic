@@ -19,7 +19,10 @@ public final class SlimeData {
 
   public static CompoundTag migrate(CompoundTag tag) {
     CompoundTag migrated = tag.copy();
-    if (canLoad(migrated)) migrated.putInt(VERSION_KEY, VERSION);
+    if (canLoad(migrated)) {
+      migrated.putInt(VERSION_KEY, VERSION);
+      ProfessionHealth.migrate(migrated);
+    }
     return migrated;
   }
 }

@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 /** A remnant of the old kingdom, bound to its own ruin and never a player-owned companion. */
 public final class AncientSlime extends Monster {
@@ -340,7 +339,7 @@ public final class AncientSlime extends Monster {
       }
       if (parcel.isEmpty()) returning = !returning;
     } else {
-      parcel = ItemHandlerHelper.insertItemStacked(chest.inventory(), parcel, false);
+      parcel = SlimeBag.insertItemStacked(chest.inventory(), parcel, false);
       if (parcel.isEmpty()) returning = !returning;
     }
   }

@@ -61,6 +61,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   protected void init() {
     super.init();
     directionButton = null;
+    previousPage = nextPage = null;
     lightButton = null;
     upgrades.clear();
     filters.clear();
@@ -185,17 +186,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     if (menu.slime() instanceof TransportSlime)
       addOrder(SlimeMenu.WORK, menu.slime() instanceof WarehouseSlime ? "store" : "transport", 308);
-    if (menu.slime() instanceof TransportSlime) {
+    if (menu.slime() instanceof BagSlime) {
       previousPage =
           addRenderableWidget(
               Button.builder(Component.literal("<"), button -> sendButton(SlimeMenu.PREVIOUS_PAGE))
-                  .bounds(leftPos + 288, topPos + 75, 12, 12)
+                  .bounds(leftPos + 288, topPos + SlimeMenu.INVENTORY_LABEL_Y - 3, 12, 12)
                   .tooltip(Tooltip.create(Component.translatable("screen.slimic.previous_page")))
                   .build());
       nextPage =
           addRenderableWidget(
               Button.builder(Component.literal(">"), button -> sendButton(SlimeMenu.NEXT_PAGE))
-                  .bounds(leftPos + 346, topPos + 75, 12, 12)
+                  .bounds(leftPos + 346, topPos + SlimeMenu.INVENTORY_LABEL_Y - 3, 12, 12)
                   .tooltip(Tooltip.create(Component.translatable("screen.slimic.next_page")))
                   .build());
     }
@@ -256,7 +257,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
       directionButton.setMessage(
           Component.translatable("direction.slimic." + tunnel.getTunnelDirection().getName()));
     if (previousPage != null) {
-      previousPage.visible = nextPage.visible = menu.bagPages() > 1;
+      previousPage.visible = nextPage.visible = menu.isBagVisible() && menu.bagPages() > 1;
       previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;
       nextPage.active = menu.data(SlimeMenu.BAG_PAGE) + 1 < menu.bagPages();
     }
@@ -291,6 +292,19 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
   }
 
+  private static String formatNumber(double value, String pattern) {
+    return String.format(Locale.ROOT, Math.abs(value) >= 1000000 ? "%.2e" : pattern, value);
+  }
+
+  private void drawVital(GuiGraphics graphics, Component text, int x, int y) {
+    float scale = Math.min(1, (imageWidth - x - 10f) / Math.max(1, font.width(text)));
+    graphics.pose().pushPose();
+    graphics.pose().translate(x, y, 0);
+    graphics.pose().scale(scale, scale, 1);
+    graphics.drawString(font, text, 0, 0, 0xffe5e9e9, false);
+    graphics.pose().popPose();
+  }
+
   @Override
   protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     graphics.drawString(font, menu.slime().getDisplayName(), 10, 7, 0xffe9f6df, false);
@@ -317,20 +331,19 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           font, Component.translatable(stat.translationKey()), 10, y, 0xffe2e9e9, false);
       double value = menu.value(stat);
       String formatted =
-          String.format(
-              Locale.ROOT,
+          formatNumber(
+              value,
               stat == SlimeStat.MOVEMENT_SPEED
                   ? "%.3f"
-                  : stat == SlimeStat.WORK_SPEED || stat == SlimeStat.REACH ? "%.2f" : "%.0f",
-              value);
+                  : stat == SlimeStat.WORK_SPEED || stat == SlimeStat.REACH ? "%.2f" : "%.0f");
       graphics.drawString(font, formatted, 158 - font.width(formatted), y, 0xff9de080, false);
     }
-    graphics.drawString(
-        font,
+    drawVital(
+        graphics,
         Component.translatable(
             "screen.slimic.health",
-            menu.data(SlimeMenu.HEALTH) / 10.0F,
-            (int) menu.value(SlimeStat.HEALTH)),
+            formatNumber(menu.health(), "%.1f"),
+            formatNumber(menu.value(SlimeStat.HEALTH), "%.0f")),
         (menu.slime() instanceof CombatSlime
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
@@ -342,15 +355,13 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                         || menu.slime() instanceof FishingSlime
                     ? 218
                     : SlimeMenu.SLOTS_X,
-        49,
-        0xffe5e9e9,
-        false);
-    graphics.drawString(
-        font,
+        49);
+    drawVital(
+        graphics,
         Component.translatable(
             "screen.slimic.stamina",
-            menu.data(SlimeMenu.STAMINA) / 10,
-            (int) menu.value(SlimeStat.STAMINA)),
+            formatNumber(menu.stamina(), "%.1f"),
+            formatNumber(menu.value(SlimeStat.STAMINA), "%.0f")),
         (menu.slime() instanceof CombatSlime
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
@@ -362,9 +373,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                         || menu.slime() instanceof FishingSlime
                     ? 218
                     : SlimeMenu.SLOTS_X,
-        62,
-        0xffe5e9e9,
-        false);
+        62);
     if (menu.slime() instanceof BagSlime) {
       graphics.drawString(
           font,
@@ -430,12 +439,12 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           216,
           174,
           0xffb4c9d1);
-      if (menu.slime() instanceof TransportSlime && menu.bagPages() > 1)
+      if (menu.isBagVisible() && menu.bagPages() > 1)
         graphics.drawCenteredString(
             font,
             Component.literal((menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages()),
             323,
-            SlimeMenu.BAG_LABEL_Y,
+            SlimeMenu.INVENTORY_LABEL_Y,
             0xffe5e9e9);
     } else if (menu.slime() instanceof MeowSlime cat) {
       graphics.drawWordWrap(

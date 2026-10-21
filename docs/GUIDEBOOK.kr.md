@@ -99,5 +99,4 @@
 | 왕국의 흔적 | [점거된 유적](FORGOTTEN_ORDERS.kr.md#점거된-유적) |
 | 왕실 근위 슬라임 | [왕실 근위 슬라임](FORGOTTEN_ORDERS.kr.md#왕실-근위-슬라임) |
 | 무너진 광산 | [무너진 광산](THE_SLIMIC.kr.md#무너진-광산) |
-
 | 폐광 코어 복원 | [폐광 코어 복원](MINE_RECOVERY.kr.md) |

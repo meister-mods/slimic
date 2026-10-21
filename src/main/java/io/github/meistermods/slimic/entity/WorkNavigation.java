@@ -10,7 +10,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
 
 /** Work routes use loaded terrain; ordinary following retains native navigation. */
-final class WorkNavigation extends GroundPathNavigation {
+class WorkNavigation extends GroundPathNavigation {
   private static final int MAX_WORK_NODES = 4096;
   private PathFinder loadedFinder;
   private BlockPos workTarget;
@@ -20,7 +20,10 @@ final class WorkNavigation extends GroundPathNavigation {
   }
 
   private boolean working() {
-    return level instanceof ServerLevel && ((FriendlySlime) mob).isWorking();
+    return level instanceof ServerLevel
+        && (((FriendlySlime) mob).isWorking()
+            || (((FriendlySlime) mob).hasTunedStat(SlimeStat.DETECTION_RANGE)
+                && SlimeStat.DETECTION_RANGE.value((FriendlySlime) mob) > 1024));
   }
 
   @Override
@@ -63,7 +66,7 @@ final class WorkNavigation extends GroundPathNavigation {
       range = Math.max(range, (float) Math.abs(target.getY() - mob.getY()) * 4 + 16);
     }
     range = Math.max(24, range);
-    int radius = (int) Math.ceil(range) + padding;
+    int radius = CreativeStats.asInt(Math.ceil(range) + padding);
     var origin = mob.blockPosition();
     var region = new LoadedPathRegion((ServerLevel) level, origin, radius);
     float effort = Math.min(1, Math.max(512, range * 64) / MAX_WORK_NODES);

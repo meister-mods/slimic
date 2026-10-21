@@ -27,8 +27,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -57,8 +55,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
       BAG_PAGE = 16,
       ALERT_MINUTES = 17;
   private final FriendlySlime slime;
-  private final ContainerData data;
-  private final IntContainerData wireData;
+  private final NumericContainerData wireData;
   private final int petSlots;
   private int bagPage;
   private int targetPage;
@@ -88,76 +85,67 @@ public final class SlimeMenu extends AbstractContainerMenu {
   public SlimeMenu(int id, Inventory inventory, FriendlySlime slime) {
     super(ModMenus.SLIME.get(), id);
     this.slime = slime;
-    this.data =
-        inventory.player.level().isClientSide
-            ? new SimpleContainerData(20)
-            : new ContainerData() {
-              @Override
-              public int get(int index) {
-                if (index < SlimeStat.values().length) {
-                  SlimeStat stat = SlimeStat.values()[index];
-                  return (int) Math.round(stat.value(slime) * stat.syncScale());
-                }
-                return switch (index) {
-                  case POINTS -> slime.getStatPoints();
-                  case ACTIVITY -> slime.getActivityProgress();
-                  case NEXT_POINT -> slime.getNextPointCost();
-                  case STAMINA -> (int) (slime.getStamina() * 10);
-                  case HEALTH -> (int) (slime.getHealth() * 10);
-                  case MODE ->
-                      slime.isOrderedToSit()
-                          ? WAIT
-                          : (slime instanceof SoggySlime soggy && soggy.isRoaming())
-                                  || (slime instanceof MeowSlime cat && cat.isRoaming())
-                                  || (slime
-                                          instanceof
-                                          io.github.meistermods.slimic.entity.AttentionSlime
-                                              attention
-                                      && attention.isRoaming())
-                              ? ROAM
-                              : slime.isWorking() ? WORK : FOLLOW;
-                  case STATUS ->
-                      slime instanceof FishingSlime fisher
-                          ? fisher.getFishingStatus().ordinal()
-                          : slime instanceof TunnelSlime tunnel
-                              ? tunnel.getTunnelStatus().ordinal()
-                              : slime instanceof HealingSlime healer
-                                  ? healer.getHealingStatus().ordinal()
-                                  : slime instanceof FieldSlime field
-                                      ? field.getFieldStatus().ordinal()
-                                      : slime instanceof MiningSlime miner
-                                          ? miner.getMiningStatus().ordinal()
-                                          : slime instanceof TransportSlime carrier
-                                              ? carrier.getTransportStatus().ordinal()
-                                              : slime instanceof CombatSlime fighter
-                                                  ? fighter.getCombatStatus().ordinal()
-                                                  : slime instanceof CleaningSlime cleaner
-                                                      ? cleaner.getCleaningStatus().ordinal()
-                                                      : 0;
-                  case FILTERS -> {
-                    int mask = 0;
-                    if (slime instanceof CombatSlime fighter)
-                      for (CombatTarget kind : CombatTarget.values())
-                        if (fighter.allows(kind)) mask |= 1 << kind.ordinal();
-                    yield mask;
+    wireData =
+        new NumericContainerData(
+            20,
+            inventory.player.level().isClientSide,
+            inventory.player.level().isClientSide
+                ? null
+                : index -> {
+                  if (index < SlimeStat.values().length) {
+                    SlimeStat stat = SlimeStat.values()[index];
+                    return stat.value(slime);
                   }
-                  case TARGET_PAGE -> targetPage;
-                  case BAG_PAGE -> bagPage;
-                  case ALERT_MINUTES ->
-                      slime instanceof HeraldSlime herald ? herald.getDelayMinutes() : 0;
-                  default -> 0;
-                };
-              }
-
-              @Override
-              public void set(int index, int value) {}
-
-              @Override
-              public int getCount() {
-                return 20;
-              }
-            };
-    wireData = new IntContainerData(data, inventory.player.level().isClientSide);
+                  return switch (index) {
+                    case POINTS -> slime.getStatPoints();
+                    case ACTIVITY -> slime.getActivityProgress();
+                    case NEXT_POINT -> slime.getNextPointCost();
+                    case STAMINA -> slime.getStamina();
+                    case HEALTH -> slime.getHealth();
+                    case MODE ->
+                        slime.isOrderedToSit()
+                            ? WAIT
+                            : (slime instanceof SoggySlime soggy && soggy.isRoaming())
+                                    || (slime instanceof MeowSlime cat && cat.isRoaming())
+                                    || (slime
+                                            instanceof
+                                            io.github.meistermods.slimic.entity.AttentionSlime
+                                                attention
+                                        && attention.isRoaming())
+                                ? ROAM
+                                : slime.isWorking() ? WORK : FOLLOW;
+                    case STATUS ->
+                        slime instanceof FishingSlime fisher
+                            ? fisher.getFishingStatus().ordinal()
+                            : slime instanceof TunnelSlime tunnel
+                                ? tunnel.getTunnelStatus().ordinal()
+                                : slime instanceof HealingSlime healer
+                                    ? healer.getHealingStatus().ordinal()
+                                    : slime instanceof FieldSlime field
+                                        ? field.getFieldStatus().ordinal()
+                                        : slime instanceof MiningSlime miner
+                                            ? miner.getMiningStatus().ordinal()
+                                            : slime instanceof TransportSlime carrier
+                                                ? carrier.getTransportStatus().ordinal()
+                                                : slime instanceof CombatSlime fighter
+                                                    ? fighter.getCombatStatus().ordinal()
+                                                    : slime instanceof CleaningSlime cleaner
+                                                        ? cleaner.getCleaningStatus().ordinal()
+                                                        : 0;
+                    case FILTERS -> {
+                      int mask = 0;
+                      if (slime instanceof CombatSlime fighter)
+                        for (CombatTarget kind : CombatTarget.values())
+                          if (fighter.allows(kind)) mask |= 1 << kind.ordinal();
+                      yield mask;
+                    }
+                    case TARGET_PAGE -> targetPage;
+                    case BAG_PAGE -> bagPage;
+                    case ALERT_MINUTES ->
+                        slime instanceof HeraldSlime herald ? herald.getDelayMinutes() : 0;
+                    default -> 0;
+                  };
+                });
     addDataSlots(wireData);
     int toolSlots = equipmentSlots(slime);
     for (int tool = 0; tool < toolSlots; tool++) {
@@ -186,19 +174,22 @@ public final class SlimeMenu extends AbstractContainerMenu {
           });
     }
     if (slime instanceof BagSlime carrier) {
-      for (int index = 0; index < carrier.getBag().getSlots(); index++) {
+      var view =
+          new BagView(
+              carrier.getBag(), () -> data(BAG_PAGE), inventory.player.level().isClientSide);
+      for (int index = 0; index < view.getSlots(); index++) {
         final int slot = index;
         addSlot(
             new SlotItemHandler(
-                carrier.getBag(),
+                view,
                 index,
                 SLOTS_X + index % SLOT_COLUMNS * SLOT_SPACING,
                 BAG_Y + index % BAG_PAGE_SIZE / SLOT_COLUMNS * SLOT_SPACING) {
               @Override
               public boolean isActive() {
                 return isBagVisible()
-                    && slot < (int) value(SlimeStat.CAPACITY)
-                    && slot / BAG_PAGE_SIZE == data(BAG_PAGE);
+                    && view.logicalSlot(slot) < getSynchronizedCapacity()
+                    && view.logicalSlot(slot) / BAG_PAGE_SIZE == data(BAG_PAGE);
               }
 
               @Override
@@ -214,11 +205,11 @@ public final class SlimeMenu extends AbstractContainerMenu {
               @Override
               public void setChanged() {
                 // Vanilla transfers can mutate an existing stack without calling Slot.set.
-                carrier.getBag().setStackInSlot(slot, getItem());
+                view.setStackInSlot(slot, getItem());
               }
             });
       }
-      petSlots = toolSlots + carrier.getBag().getSlots();
+      petSlots = toolSlots + view.getSlots();
     } else petSlots = toolSlots;
     for (int row = 0; row < 3; row++) {
       for (int column = 0; column < SLOT_COLUMNS; column++)
@@ -265,19 +256,34 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   public int data(int index) {
-    return data.get(index);
+    double value = wireData.value(index);
+    if (index < SlimeStat.values().length) value *= SlimeStat.values()[index].syncScale();
+    else if (index == HEALTH || index == STAMINA) value *= 10;
+    return io.github.meistermods.slimic.entity.CreativeStats.asInt(Math.round(value));
   }
 
   public double value(SlimeStat stat) {
-    return data.get(stat.ordinal()) / (double) stat.syncScale();
+    return wireData.value(stat.ordinal());
+  }
+
+  public float health() {
+    return (float) wireData.value(HEALTH);
+  }
+
+  public float stamina() {
+    return (float) wireData.value(STAMINA);
   }
 
   public boolean isBagVisible() {
     return slime instanceof BagSlime && !(slime instanceof CombatSlime && data(TARGET_PAGE) == 1);
   }
 
+  private int getSynchronizedCapacity() {
+    return (int) value(SlimeStat.CAPACITY);
+  }
+
   public int bagPages() {
-    return Math.max(1, ((int) value(SlimeStat.CAPACITY) + BAG_PAGE_SIZE - 1) / BAG_PAGE_SIZE);
+    return Math.max(1, (getSynchronizedCapacity() - 1) / BAG_PAGE_SIZE + 1);
   }
 
   @Override
@@ -436,7 +442,9 @@ public final class SlimeMenu extends AbstractContainerMenu {
       if (!equipped) {
         if (!(slime instanceof BagSlime)) return ItemStack.EMPTY;
         if (slime instanceof CombatSlime && data(TARGET_PAGE) == 1) return ItemStack.EMPTY;
-        int start = equipmentSlots + data(BAG_PAGE) * BAG_PAGE_SIZE;
+        int normalPages = (petSlots - equipmentSlots - 1) / BAG_PAGE_SIZE + 1;
+        int start =
+            equipmentSlots + (data(BAG_PAGE) >= normalPages ? 0 : data(BAG_PAGE) * BAG_PAGE_SIZE);
         int end =
             Math.min(
                 petSlots,

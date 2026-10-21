@@ -32,7 +32,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.player.ItemFishedEvent;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 /** Shore fishing uses the native fishing loot table, hook conditions and rod enchantments. */
 public final class FishingSlime extends BagSlime {
@@ -313,8 +312,7 @@ public final class FishingSlime extends BagSlime {
 
   private boolean storeCatch() {
     for (int i = 0; i < pendingCatch.size(); ) {
-      ItemStack remaining =
-          ItemHandlerHelper.insertItemStacked(getBag(), pendingCatch.get(i).copy(), false);
+      ItemStack remaining = SlimeBag.insertItemStacked(getBag(), pendingCatch.get(i).copy(), false);
       if (remaining.isEmpty()) pendingCatch.remove(i);
       else {
         pendingCatch.set(i, remaining);
@@ -405,7 +403,7 @@ public final class FishingSlime extends BagSlime {
         return;
       }
       if (!isRod(getRod())) {
-        for (int i = 0; i < getCapacity(); i++)
+        for (int i : getBag().occupiedSlots())
           if (isRod(getBag().getStackInSlot(i))) {
             setRod(getBag().extractItem(i, 1, false));
             break;

@@ -29,7 +29,6 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class CombatSlime extends BagSlime {
   public static final String LOOT_COLLECTOR = "SlimicCombatCollector";
@@ -229,7 +228,7 @@ public class CombatSlime extends BagSlime {
         && getUUID().equals(item.getPersistentData().getUUID(LOOT_COLLECTOR))
         && (!data.hasUUID("Owner")
             || CompanionOwnership.cooperates(level(), data.getUUID("Owner"), getOwnerUUID()))
-        && ItemHandlerHelper.insertItemStacked(getBag(), item.getItem().copy(), true).getCount()
+        && SlimeBag.insertItemStacked(getBag(), item.getItem().copy(), true).getCount()
             < item.getItem().getCount();
   }
 
@@ -237,7 +236,8 @@ public class CombatSlime extends BagSlime {
     double range = SlimeStat.DETECTION_RANGE.value(this);
     ItemEntity nearest = null;
     double distance = range * range;
-    for (var item : level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(range))) {
+    for (var item :
+        WorkSearch.entities(level(), ItemEntity.class, getBoundingBox().inflate(range))) {
       if (!ownLoot(item) || !hasLineOfSight(item)) continue;
       double next = distanceToSqr(item);
       if (next <= SlimeStat.REACH.value(this) * SlimeStat.REACH.value(this)) {
@@ -250,7 +250,7 @@ public class CombatSlime extends BagSlime {
             || !canContinueWork(player)
             || !ownLoot(item)) continue;
         var before = item.getItem().copy();
-        var remaining = ItemHandlerHelper.insertItemStacked(getBag(), before.copy(), false);
+        var remaining = SlimeBag.insertItemStacked(getBag(), before.copy(), false);
         int moved = before.getCount() - remaining.getCount();
         if (moved > 0) {
           take(item, moved);
@@ -340,7 +340,7 @@ public class CombatSlime extends BagSlime {
   private void equipSpares() {
     for (int equip = 0; equip < 3; equip++) {
       if (!getEquipment(equip).isEmpty()) continue;
-      for (int slot = 0; slot < getBag().getSlots(); slot++)
+      for (int slot : getBag().occupiedSlots())
         if (matchesEquipment(equip, getBag().getStackInSlot(slot))) {
           setEquipment(equip, getBag().extractItem(slot, 1, false));
           break;
@@ -458,7 +458,7 @@ public class CombatSlime extends BagSlime {
         LivingEntity nearest = null;
         double distance = range * range;
         for (LivingEntity candidate :
-            level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(range))) {
+            WorkSearch.entities(level(), LivingEntity.class, getBoundingBox().inflate(range))) {
           double next = distanceToSqr(candidate);
           if (next <= distance && mayAttack(candidate) && getSensing().hasLineOfSight(candidate)) {
             nearest = candidate;

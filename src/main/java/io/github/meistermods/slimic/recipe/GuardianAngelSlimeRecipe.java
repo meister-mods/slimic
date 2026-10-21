@@ -31,6 +31,10 @@ public final class GuardianAngelSlimeRecipe extends CustomRecipe {
   public static ItemStack specialize(ItemStack friendly, ItemStack totem) {
     var result = new ItemStack(ModItems.GUARDIAN_ANGEL_SLIME.get());
     CompanionBase.copyData(friendly, result);
+    if (result.hasTag() && result.getTag().contains("SlimeData"))
+      io.github.meistermods.slimic.entity.ProfessionHealth.addToData(
+          result.getTag().getCompound("SlimeData"),
+          io.github.meistermods.slimic.entity.ProfessionHealth.GUARDIAN);
     result
         .getOrCreateTag()
         .put("InitialGuardianTotem", totem.copyWithCount(1).save(new CompoundTag()));

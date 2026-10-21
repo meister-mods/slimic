@@ -192,7 +192,7 @@ public final class FarmerSlime extends FieldSlime {
       if (crop.isAir()) {
         int seed = -1;
         BlockState state = null;
-        for (int i = 0; i < getCapacity(); i++) {
+        for (int i : getBag().occupiedSlots()) {
           state = seedState(level, above, getBag().getStackInSlot(i));
           if (state != null && (!crops.containsKey(plot) || state.is(crops.get(plot)))) {
             seed = i;

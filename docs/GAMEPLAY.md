@@ -102,12 +102,12 @@ Use a **Slime Tuner** on an owned slime to open its management screen. The name 
 | Defense | 0 | +1 | Minecraft's standard armor attribute and damage calculation. |
 | Movement Speed | 0.30 | +0.015 | Shortens the pause between ground hops; launch speed and hop distance stay fixed. Also scales mounted flight speed. |
 | Work Speed | 1.0× | +0.1× | Mining progress and action intervals for transport, combat, cleaning, farming, logging, healing, warehouse logistics, fishing, plant growth, dragon breath, beams, and trails. |
-| Capacity | 9 slots / transport: 18 / warehouse: 72 | +3 / +6 / +24 slots | Usable bag slots, up to 27 / 54 / 216 respectively. |
+| Capacity | 9 slots / transport: 18 / warehouse: 72 | +3 / +6 / +24 slots | Usable bag slots; ordinary upgrades reach 27 / 54 / 216 respectively. Creative editing can expand them. |
 | Stamina | 100 | +20 | Maximum stamina for continuous work and proportional recovery. |
 | Reach | 3 blocks | +0.25 blocks | Maximum distance for job actions, attacks, healing, and item transfers. |
 | Detection Range | 8 blocks | +1 block | Worker target/work-area range and herald monitoring radius. Cleaning uses 5× the common base; farming/logging/healing/abundance use 2×. |
 
-These are common base values. Guardian Angel Health is ten times the corresponding common value, and Attention Slime effective Movement Speed is 1.5 times its base value.
+These are common base values. Guardian Angel and Royal Guard Health are four times the corresponding common value, and Attention Slime effective Movement Speed is 1.5 times its base value.
 
 Capacity supports six upgrades; the other stats support twenty. Primary and shared owners can spend points, rename the companion, and use its management inventory. All stats, unused points, activity progress, and current stamina survive world saves and recovery.
 
@@ -131,7 +131,7 @@ A full working bag issues a cargo-pickup request. A worker missing its required 
 
 Existing activity is recalculated against the current thresholds when a companion is loaded. Newly earned points are granted and remaining activity is retained; existing points and stat investments remain intact. For example, 200 activity at the first tier becomes two points and 72 remaining activity. Subsequent recovery does not grant those points again.
 
-The Slimic Creative tab groups all twenty-five companion items first, followed by Slime Trail, Slime Slag, the Ancient Command Seal, the Slime Chest and Broken Slime Block, six armor materials from leather through netherite, the Survival Slime Tuner, the Slime Scanner, and the Creative Slime Tuner. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime.
+The Slimic Creative tab groups all twenty-five companion items first, followed by Slime Trail and Slime Slag; six core variants, the Ancient Command Seal, Old Command Fragment, and Slime Restoration Station; six hostile spawn eggs; Slime Chest and Broken Slime Block; six armor materials; the Slime Tuners and Slime Scanner. Patchouli adds the guidebook. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime.
 
 ## Mining slimes
 
@@ -181,7 +181,7 @@ Slime Chests use dedicated wooden face textures with green slime trim. The inven
 
 Craft a Friendly Slime item with a **regular chest**, without a fixed shape, to make a **Transport Slime**. Stored companion traits survive specialization. A transport slime has no equipment slot: even tools travel in its normal bag.
 
-Its Capacity is always exactly twice the common bag capacity at the same upgrade level: 18 slots initially, six additional slots per Capacity upgrade, and 54 slots at the maximum. The management screen shows up to 27 usable slots per page. Arrow buttons open the second page once Capacity exceeds 27 slots. Shift-click moves cargo between the visible bag page and the player's inventory.
+Its Capacity is always exactly twice the common bag capacity at the same upgrade level: 18 slots initially, six additional slots per Capacity upgrade, and 54 slots at the normal upgrade maximum. Creative editing can expand the bag further. The management screen shows up to 27 usable slots per page. Arrow buttons open the second page once Capacity exceeds 27 slots. Shift-click moves cargo between the visible bag page and the player's inventory.
 
 New transport slimes wait when summoned. Select **Haul** in management to start logistics. Their release position is the center of a work area whose radius is their Detection Range. They find loaded Slime Chests and same-owner or mutually shared warehouses and workers inside this area, walk between them, and transfer items within Reach and line of sight. The area remains centered on the release position while they travel; recovery and release establish a new center. They do not load neighbouring chunks to find work. Changes to Detection Range also apply to previously selected chests before deposits or tool pickups.
 
@@ -195,7 +195,7 @@ Transport travel failures are based on stalled movement. A delivery that keeps a
 
 ## JEI
 
-JEI is optional. When installed, it shows crafting recipes and information for all twenty-five companion types, Slime Chests, Slime Slag recycling, and Slime Armor. Tool-based specialization previews include registered pickaxes, swords, hoes, axes, and fishing rods and retain the matching tool. Armor previews show each supported registered chestplate conversion. With Patchouli also installed, JEI shows the guidebook recipe. Slimic also runs without JEI.
+JEI 15.62 or newer is optional. It shows companion crafting recipes and information, Slime Chests, Slime Slag recycling, and Slime Armor. All twenty-five professions have information pages; the two ancient workers use the separate Slime Restoration category instead of crafting recipes. Tool-based specialization previews include registered pickaxes, swords, hoes, axes, and fishing rods and retain the matching tool. Armor previews show each supported registered chestplate conversion. With Patchouli also installed, JEI shows the guidebook recipe. Slimic also runs without JEI.
 
 ## Dye colors
 
@@ -221,27 +221,33 @@ Place one **Slime Tuner** in the center of a crafting table, with **glass blocks
 
 The **Creative Slime Tuner** is available in the Slimic creative tab and has no Survival recipe. Hold it and right-click to open a separate stat editor for the companion under the crosshair within 16 blocks, falling back to the nearest companion in that range. Right-clicking a companion directly also opens it. The editor requires Creative mode and a held tuner throughout use.
 
-The Creative Slime Tuner edits base stats, current health, current stamina, and unused stat points. Permanent attribute modifiers remain applied. Guardian Health is ten times its base, and Attention Movement Speed is 1.5 times its base. Transport Capacity is twice the entered common base, and Warehouse Capacity is eight times that base; Cleaning Detection Range is five times its entered base; Farming, Lumberjack, Healing, and Abundance Detection Range is twice its entered base. Apply saves valid changes together; Refresh reloads the current values. Reducing Capacity requires emptying every bag slot that would become unavailable. Changing maximum health does not automatically refill current health.
+The Creative Slime Tuner edits base stats, current health, current stamina, and unused stat points. Permanent attribute modifiers remain applied. Guardian Angel and Royal Guard Health are four times their base, and Attention Movement Speed is 1.5 times its base. Transport Capacity is twice the entered common base, and Warehouse Capacity is eight times that base; Cleaning Detection Range is five times its entered base; Farming, Lumberjack, Healing, and Abundance Detection Range is twice its entered base. Apply saves valid changes together; Refresh reloads the current values. Reducing Capacity requires emptying every bag slot that would become unavailable. Changing maximum health does not automatically refill current health.
 
-| Field | Range |
+Creative fields have no gameplay upper limit. The following values are recommendations: exceeding them highlights the field and leaves Apply available. The saved confirmation mentions the recommendation without requiring another approval.
+
+| Field | Recommended range |
 | --- | --- |
-| Health | 1–1,024; guardian base: 1–102.4 |
+| Base Health | 1–1,024 |
 | Attack | 0–2,048 |
 | Defense | 0–30 |
 | Movement Speed | 0–10 |
 | Work Speed | 0.1–32 |
-| Capacity | 1–27 whole slots; transport receives 2–54; warehouses receive 8–216 |
+| Base Capacity | 1–27 whole slots; transport and warehouse multipliers apply |
 | Stamina | 1–2,000 |
 | Reach | 0–32 |
 | Detection Range | 0–64 |
 | Current health / stamina | 0 to the resulting maximum |
 | Unused points | 0–32,767 whole points |
 
-Tuned stats and current values survive recovery and release. Normal upgrades remain available within their level limits.
+Inputs must be finite and meet their minimum; Capacity and points must be whole numbers. Java's numeric representation still applies: stats use doubles, current health/stamina use floats, and points/slot addresses use nonnegative signed integers. Values are synchronized without scaled-integer truncation. Current health and stamina fit the resulting maximum rather than refilling automatically.
+
+Larger Capacity creates additional usable pages, preserving the profession's multiplier. Empty space is stored sparsely, so selecting a large Capacity does not allocate a stack for every empty slot. Cargo must be removed before shrinking past its occupied slots. Extreme movement or work ranges can affect playability and performance; the editor warns without preventing their use.
+
+Tuned stats, high current values, points, and expanded cargo survive recovery and release. Normal upgrades retain their usual level limits.
 
 ## Dimension travel and work areas
 
-Portal travel rebases fixed work areas at the arrival point. Companions restored into another dimension by a command also update their area before their first work tick. Mining slimes establish a new quarry while retaining their active or paused command; transport and cleaning slimes retain their follow, wait, or work order. Matching X/Z chunk coordinates in different dimensions identify separate work areas. Health, stamina, growth, ownership, equipment, and cargo remain intact.
+Slimic portal travel rebases fixed work areas at the arrival point and selects Wait. Other Forge or command-based dimension transfers also update work areas before the first work tick, while retaining saved commands where the profession supports it. Mining establishes a new quarry in another dimension. Matching X/Z chunk coordinates in different dimensions identify separate work areas. Health, stamina, growth, ownership, equipment, and cargo remain intact.
 
 Ordinary reloads within the same dimension retain the saved work area. Cancelled dimension transfers leave the original area unchanged.
 
@@ -272,7 +278,7 @@ The owner, the owner's other tamed companions, allies, spectators, and Creative 
 
 Craft any chestplate with **one slimeball**, without a fixed shape, to make **Slime Armor**. Leather, chainmail, iron, gold, diamond, and netherite variants appear in the Slimic creative tab; other registered chestplates can also be converted. Helmets, leggings, boots, and already converted armor do not qualify.
 
-The result stores the original chestplate and retains its material attributes, maximum and current durability, enchantments, custom name, leather color, and other item data. Wear and enchantment changes remain authoritative after conversion. Place it in a Combat, Dragon, or Saddle Slime's armor slot. Ordinary chestplates are crafting ingredients and do not fit that slot directly. All six variants share the same icon silhouette and green slime badge; their colors distinguish materials, and leather armor displays its dye color.
+The result stores the original chestplate and retains its material attributes, maximum and current durability, enchantments, custom name, leather color, and other item data. Wear and enchantment changes remain authoritative after conversion. Place it in a Combat, Dragon, Saddle, or Royal Guard Slime's armor slot. Ordinary chestplates are crafting ingredients and do not fit that slot directly. All six variants share the same icon silhouette and green slime badge; their colors distinguish materials, and leather armor displays its dye color.
 
 ## Cleaning slimes
 
@@ -356,7 +362,7 @@ Management has one **totem reserve** slot holding up to 64 matching totems. Cust
 
 When the owner would take lethal damage within 16 blocks, one available guardian consumes one reserve totem and applies native totem-style protection: one health, regeneration, absorption, and fire resistance. This includes lethal falls, lava, drowning, and fire, as well as attacks. Normal held totems act first. Totem-use cancellation and damage that bypasses invulnerability remain respected. A guardian removed, transferred, moved out of range, or given a different reserve during the protection event cannot finish that rescue. Multiple guardians consume only one totem for the same rescue. A successful rescue grants four activity units.
 
-Maximum health is always ten times the corresponding common value: initially **160**, with **40** added by each Health upgrade. Current health is preserved when specializing a stored companion and during recovery. Native maximum-health limits still apply; the Creative editor limits guardian base Health to 102.4.
+Maximum health is **four times** the corresponding common value: initially **64** (32 hearts), with **16** added by each Health upgrade. Royal Guards use the same scaling. Stored companions retain their training; legacy profession modifiers are replaced once. Current health is retained up to the new maximum, without healing. Creative base Health can exceed the recommended range.
 
 ## Worker movement and saplings
 
@@ -384,7 +390,7 @@ Both Follow and Roam leave trails with the existing stamina cost, growth, and re
 
 Craft a **Friendly Slime + golden carrot**, without a fixed shape. New Healing Slimes wait; select **Search** in management to begin. Follow and Wait suspend treatment. The release point anchors an area bounded by Detection Range, independent of the owner's presence. Searches use loaded terrain only. The healer approaches injured companions and Broken Slime Blocks with the same primary owner or mutual sharing authorization, prioritizing revival, and acts within Reach and line of sight. It can also heal itself.
 
-Each successful treatment consumes **one slimeball from its own usable bag and one stamina**. Living companions recover up to **4 health**; revival restores the preserved companion at **1 health**, retaining identity, equipment, cargo, stats, and orders. Later treatment can restore more health. No ball or stamina is spent on a full-health target, cancelled healing, protected block, obstructed revival, invalid data, or duplicate UUID. One successful treatment earns one activity unit. Work Speed shortens the treatment interval. Exhaustion pauses treatment until 25% stamina, with 2% of maximum restored each second while idle or resting.
+Each successful treatment consumes **one slimeball from its own usable bag and one stamina**. Living companions recover up to **4 health**; revival restores the preserved companion at **1 health**, retaining identity, equipment, cargo, stats, and saved work data while selecting Wait. Later treatment can restore more health. No ball or stamina is spent on a full-health target, cancelled healing, protected block, obstructed revival, invalid data, or duplicate UUID. One successful treatment earns one activity unit. Work Speed shortens the treatment interval. Exhaustion pauses treatment until 25% stamina, with 2% of maximum restored each second while idle or resting.
 
 Missing slimeballs request transport supply of up to one stack. A bag with no room for a ball requests unloading first. Saved health, bag, stamina, and growth survive recovery; release anchors a new search area and starts in Wait.
 

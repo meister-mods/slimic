@@ -23,18 +23,17 @@ final class BlockSurvey {
     this.center = center;
     this.radiusSquared = radius * radius;
     this.predicate = predicate;
-    int r = (int) Math.ceil(radius);
-    for (int x = (center.getX() - r) >> 4; x <= (center.getX() + r) >> 4; x++) {
-      for (int z = (center.getZ() - r) >> 4; z <= (center.getZ() + r) >> 4; z++) {
-        var chunk = level.getChunkSource().getChunkNow(x, z);
-        if (chunk == null) continue;
-        for (int i = 0; i < chunk.getSections().length; i++) {
-          int y = level.getSectionYFromSectionIndex(i) << 4;
-          if (y > center.getY() + r || y + 15 < center.getY() - r) continue;
-          var section = chunk.getSections()[i];
-          if (section.maybeHas(predicate))
-            sections.add(new Section(new BlockPos(x << 4, y, z << 4), section.getStates().copy()));
-        }
+    double r = Math.ceil(radius);
+    for (var chunk : WorkSearch.loadedChunks(level, center, radius)) {
+      for (int i = 0; i < chunk.getSections().length; i++) {
+        int y = level.getSectionYFromSectionIndex(i) << 4;
+        if (y > center.getY() + r || y + 15 < center.getY() - r) continue;
+        var section = chunk.getSections()[i];
+        if (section.maybeHas(predicate))
+          sections.add(
+              new Section(
+                  new BlockPos(chunk.getPos().getMinBlockX(), y, chunk.getPos().getMinBlockZ()),
+                  section.getStates().copy()));
       }
     }
   }

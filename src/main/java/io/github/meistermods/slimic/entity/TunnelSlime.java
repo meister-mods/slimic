@@ -34,8 +34,6 @@ import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
 /** A three-by-three horizontal bore with a nonconsumable lining template. */
 public class TunnelSlime extends MiningSlime {
@@ -210,7 +208,7 @@ public class TunnelSlime extends MiningSlime {
   }
 
   private int materialSlot() {
-    for (int i = 0; i < getCapacity(); i++)
+    for (int i : getBag().occupiedSlots())
       if (!getLiningTemplate().isEmpty()
           && getBag().getStackInSlot(i).is(getLiningTemplate().getItem())) return i;
     return -1;
@@ -222,11 +220,11 @@ public class TunnelSlime extends MiningSlime {
       return !getLiningTemplate().isEmpty()
           && stack.is(getLiningTemplate().getItem())
           && materialSlot() < 0
-          && ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
+          && SlimeBag.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
     if (tunnelStatus == Status.NO_BUCKET)
       return !hasBucket()
           && stack.is(Items.BUCKET)
-          && ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
+          && SlimeBag.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
     return matchesToolSlot(requiredTool, stack) && SlimeBlockBreaking.usable(stack);
   }
 
@@ -252,8 +250,7 @@ public class TunnelSlime extends MiningSlime {
     if (!isWorking() || !acceptsWorkTool(stack)) return 0;
     var offered = stack.copyWithCount(Math.min(workSupplyLimit(), stack.getCount()));
     int moved =
-        offered.getCount()
-            - ItemHandlerHelper.insertItemStacked(getBag(), offered, false).getCount();
+        offered.getCount() - SlimeBag.insertItemStacked(getBag(), offered, false).getCount();
     if (moved > 0) tunnelStatus = Status.IDLE;
     return moved;
   }
@@ -436,11 +433,9 @@ public class TunnelSlime extends MiningSlime {
   }
 
   private boolean canStore(List<ItemStack> drops) {
-    var test = new ItemStackHandler(getCapacity());
-    for (int i = 0; i < getCapacity(); i++)
-      test.setStackInSlot(i, getBag().getStackInSlot(i).copy());
+    var test = getBag().copyForSimulation();
     for (var drop : drops)
-      if (!ItemHandlerHelper.insertItemStacked(test, drop.copy(), false).isEmpty()) return false;
+      if (!SlimeBag.insertItemStacked(test, drop.copy(), false).isEmpty()) return false;
     return true;
   }
 
@@ -549,7 +544,7 @@ public class TunnelSlime extends MiningSlime {
         return false;
       }
       state.getBlock().destroy(server, pos, state);
-      for (var drop : drops) ItemHandlerHelper.insertItemStacked(getBag(), drop, false);
+      for (var drop : drops) SlimeBag.insertItemStacked(getBag(), drop, false);
       tool.mineBlock(server, state, pos, player);
       spendStamina(1);
       recordCompletedWork();

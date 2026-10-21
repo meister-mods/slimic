@@ -54,8 +54,6 @@ import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class MiningSlime extends BagSlime {
   public enum Status {
@@ -215,10 +213,10 @@ public class MiningSlime extends BagSlime {
     if (status == Status.NO_COBBLESTONE)
       return needsWallMaterial()
           && stack.is(Items.COBBLESTONE)
-          && ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
+          && SlimeBag.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
     if (status == Status.NO_BUCKET && !hasBucket())
       return stack.is(Items.BUCKET)
-          && ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
+          && SlimeBag.insertItemStacked(getBag(), stack.copyWithCount(1), true).isEmpty();
     return matchesToolSlot(requiredTool, stack)
         && (!stack.isDamageableItem() || stack.getDamageValue() < stack.getMaxDamage());
   }
@@ -228,7 +226,7 @@ public class MiningSlime extends BagSlime {
     if (status == Status.NO_COBBLESTONE) return receiveWallMaterial(stack, 1) > 0;
     if (status == Status.NO_BUCKET && !hasBucket()) {
       if (!acceptsWorkTool(stack)) return false;
-      if (!ItemHandlerHelper.insertItemStacked(getBag(), stack.copyWithCount(1), false).isEmpty())
+      if (!SlimeBag.insertItemStacked(getBag(), stack.copyWithCount(1), false).isEmpty())
         return false;
       status = Status.IDLE;
       fullRevision = -1;
@@ -240,7 +238,7 @@ public class MiningSlime extends BagSlime {
   }
 
   private boolean hasCobblestone() {
-    for (int slot = 0; slot < getCapacity(); slot++)
+    for (int slot : getBag().occupiedSlots())
       if (getBag().getStackInSlot(slot).is(Items.COBBLESTONE)) return true;
     return false;
   }
@@ -267,8 +265,7 @@ public class MiningSlime extends BagSlime {
     if (!isWorking() || !acceptsWorkTool(stack)) return 0;
     var offered = stack.copyWithCount(Math.min(limit, stack.getCount()));
     int moved =
-        offered.getCount()
-            - ItemHandlerHelper.insertItemStacked(getBag(), offered, false).getCount();
+        offered.getCount() - SlimeBag.insertItemStacked(getBag(), offered, false).getCount();
     if (moved > 0) {
       status = Status.IDLE;
       fullRevision = -1;
@@ -293,8 +290,7 @@ public class MiningSlime extends BagSlime {
               : WorkStatus.blocked(
                   order,
                   WorkStatus.Reason.COBBLESTONE_MISSING,
-                  ItemHandlerHelper.insertItemStacked(
-                              getBag(), new ItemStack(Items.COBBLESTONE), true)
+                  SlimeBag.insertItemStacked(getBag(), new ItemStack(Items.COBBLESTONE), true)
                           .isEmpty()
                       ? new WorkStatus.Request[] {WorkStatus.Request.COBBLESTONE_SUPPLY}
                       : new WorkStatus.Request[] {
@@ -306,8 +302,7 @@ public class MiningSlime extends BagSlime {
               : WorkStatus.blocked(
                   order,
                   WorkStatus.Reason.BUCKET_MISSING,
-                  ItemHandlerHelper.insertItemStacked(getBag(), new ItemStack(Items.BUCKET), true)
-                          .isEmpty()
+                  SlimeBag.insertItemStacked(getBag(), new ItemStack(Items.BUCKET), true).isEmpty()
                       ? new WorkStatus.Request[] {WorkStatus.Request.BUCKET_SUPPLY}
                       : new WorkStatus.Request[] {
                         WorkStatus.Request.BUCKET_SUPPLY, WorkStatus.Request.CARGO_PICKUP
@@ -420,7 +415,7 @@ public class MiningSlime extends BagSlime {
   protected void restockTools() {
     for (int tool = 0; tool < 2; tool++) {
       if (!getTool(tool).isEmpty()) continue;
-      for (int slot = 0; slot < getBag().getSlots(); slot++) {
+      for (int slot : getBag().occupiedSlots()) {
         ItemStack stack = getBag().getStackInSlot(slot);
         if (matchesToolSlot(tool, stack)
             && (!stack.isDamageableItem() || stack.getDamageValue() < stack.getMaxDamage())) {
@@ -501,7 +496,7 @@ public class MiningSlime extends BagSlime {
   }
 
   public boolean hasBucket() {
-    for (int slot = 0; slot < getCapacity(); slot++)
+    for (int slot : getBag().occupiedSlots())
       if (getBag().getStackInSlot(slot).is(Items.BUCKET)) return true;
     return false;
   }
@@ -890,7 +885,7 @@ public class MiningSlime extends BagSlime {
       return false;
     }
     int material = -1;
-    for (int i = 0; i < getCapacity(); i++)
+    for (int i : getBag().occupiedSlots())
       if (getBag().getStackInSlot(i).is(Items.COBBLESTONE)) {
         material = i;
         break;
@@ -984,7 +979,7 @@ public class MiningSlime extends BagSlime {
         }
       }
       int material = -1;
-      for (int slot = 0; slot < getBag().getSlots(); slot++) {
+      for (int slot : getBag().occupiedSlots()) {
         ItemStack stack = getBag().getStackInSlot(slot);
         if (stack.is(QUARRY_SUPPORTS)
             && stack.getItem() instanceof BlockItem block
@@ -1145,12 +1140,9 @@ public class MiningSlime extends BagSlime {
   }
 
   private boolean canStore(List<ItemStack> drops) {
-    ItemStackHandler simulation = new ItemStackHandler(getCapacity());
-    for (int slot = 0; slot < simulation.getSlots(); slot++)
-      simulation.setStackInSlot(slot, getBag().getStackInSlot(slot).copy());
+    var simulation = getBag().copyForSimulation();
     for (ItemStack drop : drops)
-      if (!ItemHandlerHelper.insertItemStacked(simulation, drop.copy(), false).isEmpty())
-        return false;
+      if (!SlimeBag.insertItemStacked(simulation, drop.copy(), false).isEmpty()) return false;
     return true;
   }
 
@@ -1222,7 +1214,7 @@ public class MiningSlime extends BagSlime {
         return;
       }
       state.getBlock().destroy(server, mined, state);
-      for (ItemStack drop : drops) ItemHandlerHelper.insertItemStacked(getBag(), drop, false);
+      for (ItemStack drop : drops) SlimeBag.insertItemStacked(getBag(), drop, false);
       tool.mineBlock(server, state, mined, worker);
       spendStamina(1);
       recordCompletedWork();

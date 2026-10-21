@@ -17,7 +17,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class CleaningSlime extends BagSlime {
   public enum Status {
@@ -135,14 +134,14 @@ public final class CleaningSlime extends BagSlime {
   }
 
   private boolean fits(ItemEntity item) {
-    return ItemHandlerHelper.insertItemStacked(getBag(), item.getItem().copy(), true).getCount()
+    return SlimeBag.insertItemStacked(getBag(), item.getItem().copy(), true).getCount()
         < item.getItem().getCount();
   }
 
   private ItemEntity find(ServerLevel level, UUID exclude, boolean requireSpace) {
     double radius = SlimeStat.DETECTION_RANGE.value(this);
-    return level
-        .getEntitiesOfClass(
+    return WorkSearch.entities(
+            level,
             ItemEntity.class,
             new net.minecraft.world.phys.AABB(getCleaningHome(), getCleaningHome()).inflate(radius))
         .stream()
@@ -174,7 +173,7 @@ public final class CleaningSlime extends BagSlime {
         || !canContinueWork(player)
         || !available(item)) return false;
     ItemStack before = item.getItem().copy();
-    ItemStack left = ItemHandlerHelper.insertItemStacked(getBag(), before.copy(), false);
+    ItemStack left = SlimeBag.insertItemStacked(getBag(), before.copy(), false);
     int count = before.getCount() - left.getCount();
     if (count == 0) return false;
     take(item, count);

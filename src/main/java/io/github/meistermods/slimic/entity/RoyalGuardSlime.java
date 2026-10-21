@@ -1,21 +1,17 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.registry.ModItems;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 /** A combat companion whose work order defends a fixed post instead of pursuing indefinitely. */
 public final class RoyalGuardSlime extends CombatSlime {
-  private static final UUID HEALTH_BONUS = UUID.fromString("b7856207-49f4-4778-a3b1-5da279b702f4");
   private BlockPos post;
 
   public RoyalGuardSlime(EntityType<? extends RoyalGuardSlime> type, Level level) {
@@ -24,42 +20,12 @@ public final class RoyalGuardSlime extends CombatSlime {
     setHealth(getMaxHealth());
   }
 
-  private static AttributeModifier healthBonus() {
-    return new AttributeModifier(
-        HEALTH_BONUS, "Royal guard health", 144, AttributeModifier.Operation.ADDITION);
-  }
-
   private void ensureHealthBonus() {
-    var attribute = getAttribute(Attributes.MAX_HEALTH);
-    if (attribute.getModifier(HEALTH_BONUS) == null) attribute.addPermanentModifier(healthBonus());
+    ProfessionHealth.apply(this, ProfessionHealth.ROYAL_GUARD);
   }
 
-  /**
-   * Apply the same profession bonus before a crafted companion is released or listed in a roster.
-   */
   public static void addHealthBonusToData(CompoundTag data) {
-    var attributes = data.getList("Attributes", 10);
-    CompoundTag health = null;
-    for (var value : attributes) {
-      var attribute = (CompoundTag) value;
-      if (attribute.getString("Name").equals("minecraft:generic.max_health")) {
-        health = attribute;
-        break;
-      }
-    }
-    if (health == null) {
-      health = new CompoundTag();
-      health.putString("Name", "minecraft:generic.max_health");
-      health.putDouble("Base", 16);
-      attributes.add(health);
-    }
-    var modifiers = health.getList("Modifiers", 10);
-    for (var value : modifiers)
-      if (((CompoundTag) value).hasUUID("UUID")
-          && ((CompoundTag) value).getUUID("UUID").equals(HEALTH_BONUS)) return;
-    modifiers.add(healthBonus().save());
-    health.put("Modifiers", modifiers);
-    data.put("Attributes", attributes);
+    ProfessionHealth.addToData(data, ProfessionHealth.ROYAL_GUARD);
   }
 
   public BlockPos getGuardPost() {

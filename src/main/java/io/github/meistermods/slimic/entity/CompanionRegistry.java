@@ -276,7 +276,7 @@ public final class CompanionRegistry extends SavedData {
       net.minecraft.world.item.ItemStack item, ServerLevel level, BlockPos pos) {
     if (!(item.getItem() instanceof io.github.meistermods.slimic.item.FriendlySlimeItem)
         || !item.hasTag()) return;
-    var data = item.getTag().getCompound("SlimeData");
+    var data = SlimeData.migrate(item.getTag().getCompound("SlimeData"));
     if (!data.hasUUID("UUID")
         || !data.hasUUID("Owner")
         || !data.contains("Health", Tag.TAG_ANY_NUMERIC)
@@ -303,9 +303,15 @@ public final class CompanionRegistry extends SavedData {
             new net.minecraft.world.entity.ai.attributes.AttributeInstance(
                 net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, ignored -> {});
         instance.load(attribute);
-        maximum = Math.max(health, finiteHealth((float) instance.getValue()));
+        maximum =
+            finiteHealth(
+                CreativeStats.asFloat(
+                    data.getCompound("TunedStats").contains("health")
+                        ? CreativeStats.attributeValue(instance)
+                        : instance.getValue()));
       }
     }
+    health = Math.min(health, maximum);
     var entry =
         new Entry(
             data.getUUID("UUID"),
@@ -402,7 +408,7 @@ public final class CompanionRegistry extends SavedData {
   }
 
   private static float finiteHealth(float value) {
-    return Float.isFinite(value) ? Math.max(0, Math.min(1024, value)) : 0;
+    return Float.isFinite(value) ? Math.max(0, value) : 0;
   }
 
   private static void loadRelations(ListTag list, Map<UUID, Set<UUID>> target, int limit) {

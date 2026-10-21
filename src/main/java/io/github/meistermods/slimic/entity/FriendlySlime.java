@@ -261,6 +261,18 @@ public class FriendlySlime extends TamableAnimal {
     return true;
   }
 
+  @Override
+  public double getAttributeValue(net.minecraft.world.entity.ai.attributes.Attribute attribute) {
+    for (var stat : SlimeStat.values()) {
+      if (stat.usesAttribute(attribute) && hasTunedStat(stat)) {
+        double value =
+            Math.max(stat.minTunedValue(), CreativeStats.attributeValue(getAttribute(attribute)));
+        return stat == SlimeStat.HEALTH ? CreativeStats.asFloat(value) : value;
+      }
+    }
+    return super.getAttributeValue(attribute);
+  }
+
   public boolean hasTunedStat(SlimeStat stat) {
     return entityData.get(TUNED_STATS).contains(stat.key());
   }
@@ -282,7 +294,7 @@ public class FriendlySlime extends TamableAnimal {
   public void setTunedVitals(float health, float energy, int points) {
     setHealth(Mth.clamp(health, 0, getMaxHealth()));
     stamina = Mth.clamp(energy, 0, getMaxStamina());
-    statPoints = Mth.clamp(points, 0, 32767);
+    statPoints = Math.max(0, points);
   }
 
   public boolean isWorkBlocked() {
@@ -329,7 +341,7 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public float getMaxStamina() {
-    return (float) SlimeStat.STAMINA.value(this);
+    return CreativeStats.asFloat(SlimeStat.STAMINA.value(this));
   }
 
   public int getCapacity() {
@@ -418,7 +430,7 @@ public class FriendlySlime extends TamableAnimal {
     while (activityProgress >= getNextPointCost()) {
       activityProgress -= getNextPointCost();
       earnedPoints = Math.min(1_000_000, earnedPoints + 1);
-      statPoints = Math.min(32767, statPoints + 1);
+      statPoints = (int) Math.min(Integer.MAX_VALUE, (long) statPoints + 1);
     }
   }
 
@@ -472,6 +484,14 @@ public class FriendlySlime extends TamableAnimal {
   @Override
   public void readAdditionalSaveData(CompoundTag saved) {
     CompoundTag tag = SlimeData.migrate(saved);
+    CompoundTag tuned = new CompoundTag();
+    for (SlimeStat stat : SlimeStat.values()) {
+      if (tag.getCompound("TunedStats").contains(stat.key())) {
+        double value = tag.getCompound("TunedStats").getDouble(stat.key());
+        if (stat.acceptsTunedValue(value)) tuned.putDouble(stat.key(), value);
+      }
+    }
+    entityData.set(TUNED_STATS, tuned);
     super.readAdditionalSaveData(tag);
     setAncientOrigin(tag.getBoolean("AncientOrigin"));
     try {
@@ -509,20 +529,12 @@ public class FriendlySlime extends TamableAnimal {
           Mth.clamp(tag.getCompound("SlimeStats").getInt(stat.key()), 0, stat.maxLevel()));
     }
     entityData.set(STAT_LEVELS, levels);
-    CompoundTag tuned = new CompoundTag();
-    for (SlimeStat stat : SlimeStat.values()) {
-      if (tag.getCompound("TunedStats").contains(stat.key())) {
-        double value = tag.getCompound("TunedStats").getDouble(stat.key());
-        if (stat.acceptsTunedValue(value)) tuned.putDouble(stat.key(), value);
-      }
-    }
-    entityData.set(TUNED_STATS, tuned);
     entityData.set(
         DYE_COLOR,
         tag.contains("SlimeDyeColor") ? Mth.clamp(tag.getInt("SlimeDyeColor"), -1, 15) : -1);
     blockedWorkTicks = Mth.clamp(tag.getInt("BlockedWorkTicks"), 0, Integer.MAX_VALUE);
     blockedEpisode = Math.max(0, tag.getLong("BlockedEpisode"));
-    statPoints = Mth.clamp(tag.getInt("StatPoints"), 0, 32767);
+    statPoints = Math.max(0, tag.getInt("StatPoints"));
     earnedPoints = Mth.clamp(tag.getInt("EarnedPoints"), 0, 1_000_000);
     // Older saves can contain more activity than the reduced threshold. Pay the
     // earned points before retaining the remainder rather than truncating it.

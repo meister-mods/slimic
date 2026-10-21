@@ -1,12 +1,10 @@
 package io.github.meistermods.slimic.client;
 
-import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
 import io.github.meistermods.slimic.network.ModNetwork;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -39,12 +37,8 @@ public final class CreativeSlimeTunerScreen
       EditBox box = field(110, 38 + stat.ordinal() * 18, stat.translationKey());
       box.setTooltip(
           Tooltip.create(
-              Component.literal(
-                  stat.minTunedValue()
-                      + " – "
-                      + (stat == SlimeStat.HEALTH && menu.slime() instanceof GuardianAngelSlime
-                          ? 102.4
-                          : stat.maxTunedValue()))));
+              Component.translatable(
+                  "screen.slimic.recommended_range", stat.minTunedValue(), stat.maxTunedValue())));
     }
     field(280, 38, "screen.slimic.current_health");
     field(280, 56, "screen.slimic.current_stamina");
@@ -65,14 +59,14 @@ public final class CreativeSlimeTunerScreen
     EditBox box =
         addRenderableWidget(
             new EditBox(font, leftPos + x, topPos + y, 64, 16, Component.translatable(key)));
-    box.setMaxLength(16);
+    box.setMaxLength(64);
     fields.add(box);
     return box;
   }
 
   private void refresh() {
     for (SlimeStat stat : SlimeStat.values())
-      fields.get(stat.ordinal()).setValue(String.format(Locale.ROOT, "%.3f", menu.value(stat)));
+      fields.get(stat.ordinal()).setValue(Double.toString(menu.value(stat)));
     fields.get(9).setValue(Float.toString(menu.health()));
     fields.get(10).setValue(Float.toString(menu.stamina()));
     fields.get(11).setValue(Integer.toString(menu.points()));
@@ -89,10 +83,7 @@ public final class CreativeSlimeTunerScreen
           || !Float.isFinite(stamina)
           || health < 0
           || stamina < 0
-          || health > 1024
-          || stamina > values[6]
-          || points < 0
-          || points > 32767) return;
+          || points < 0) return;
       for (SlimeStat stat : SlimeStat.values())
         if (!stat.acceptsTunedValue(values[stat.ordinal()])) return;
       ModNetwork.CHANNEL.sendToServer(
@@ -112,7 +103,45 @@ public final class CreativeSlimeTunerScreen
       refresh();
       loaded = true;
     }
-    apply.active = loaded;
+    apply.active = loaded && validInput();
+  }
+
+  private boolean validInput() {
+    if (!loaded) return false;
+    try {
+      for (SlimeStat stat : SlimeStat.values()) {
+        double value = Double.parseDouble(fields.get(stat.ordinal()).getValue());
+        boolean valid = stat.acceptsTunedValue(value);
+        fields
+            .get(stat.ordinal())
+            .setTextColor(
+                !valid ? 0xffff7777 : stat.isRecommendedValue(value) ? 0xffe0e0e0 : 0xffffd77e);
+        if (!valid) return false;
+      }
+      float health = Float.parseFloat(fields.get(9).getValue());
+      float stamina = Float.parseFloat(fields.get(10).getValue());
+      int points = Integer.parseInt(fields.get(11).getValue());
+      return Float.isFinite(health)
+          && Float.isFinite(stamina)
+          && health >= 0
+          && stamina >= 0
+          && points >= 0;
+    } catch (NumberFormatException invalid) {
+      return false;
+    }
+  }
+
+  private boolean beyondRecommendations() {
+    try {
+      for (SlimeStat stat : SlimeStat.values())
+        if (!stat.isRecommendedValue(Double.parseDouble(fields.get(stat.ordinal()).getValue())))
+          return true;
+      return Float.parseFloat(fields.get(9).getValue()) > SlimeStat.HEALTH.maxTunedValue()
+          || Float.parseFloat(fields.get(10).getValue()) > SlimeStat.STAMINA.maxTunedValue()
+          || Integer.parseInt(fields.get(11).getValue()) > 32767;
+    } catch (NumberFormatException invalid) {
+      return false;
+    }
   }
 
   @Override
@@ -165,15 +194,18 @@ public final class CreativeSlimeTunerScreen
           false);
     graphics.drawWordWrap(
         font, Component.translatable("screen.slimic.tuner_help"), 192, 106, 156, 0xffb4c9d1);
-    if (menu.result() != 0)
-      graphics.drawString(
-          font,
-          Component.translatable(
-              menu.result() == 1 ? "screen.slimic.tuned" : "screen.slimic.capacity_occupied"),
-          10,
-          212,
-          0xffffd77e,
-          false);
+    String status =
+        menu.result() == 3
+            ? "screen.slimic.capacity_occupied"
+            : !validInput() && loaded
+                ? "screen.slimic.invalid_tuning"
+                : menu.result() == 2
+                    ? "screen.slimic.tuned_recommended_warning"
+                    : beyondRecommendations()
+                        ? "screen.slimic.recommended_warning"
+                        : menu.result() == 1 ? "screen.slimic.tuned" : null;
+    if (status != null)
+      graphics.drawWordWrap(font, Component.translatable(status), 10, 208, 338, 0xffffd77e);
   }
 
   @Override

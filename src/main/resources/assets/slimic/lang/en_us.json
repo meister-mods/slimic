@@ -76,7 +76,7 @@
   "screen.slimic.apply": "Apply",
   "screen.slimic.refresh": "Refresh",
   "screen.slimic.no_target": "No nearby slime to manage.",
-  "screen.slimic.tuner_help": "Edits base stats before profession multipliers. Guardian Health ×10; Attention speed ×1.5. Capacity and Detection Range vary by job. Hover fields for limits.",
+  "screen.slimic.tuner_help": "No gameplay caps. Guardian/Royal Health ×4; Attention speed ×1.5. Job multipliers still apply. Amber values exceed recommendations.",
   "screen.slimic.monitor": "Watch",
   "screen.slimic.herald_help": "Signal delay after work stops:",
   "screen.slimic.alert_minutes": "%s min",
@@ -146,8 +146,8 @@
   "entity.slimic.guardian_angel_slime": "Guardian Angel Slime",
   "screen.slimic.fire_signal": "Fire signal",
   "screen.slimic.guardian_help": "Totem reserve: up to 64.\nRetaliates with a beam against attackers of itself or its owner. Uses one totem to protect its owner from lethal damage within 16 blocks.",
-  "jei.slimic.creative_slime_tuner": "Creative-only editor for base stats, current health, current stamina, and unspent points. Guardian Angel Slime maximum health is ten times the common value; its base Health input is limited to 102.4.",
-  "jei.slimic.guardian_angel_slime": "Craft a Friendly Slime, nether star, and totem of undying to store that exact totem. Select Follow to fly beside its owner. Retaliates against attackers of itself or its owner and uses a totem to prevent lethal owner damage within 16 blocks. Retaliation and protection remain available during Wait. Maximum health is ten times the common value.",
+  "jei.slimic.creative_slime_tuner": "Creative-only editor for base stats, current health, stamina, and unspent points. Values above recommendations remain usable with a mild warning. Guardian Angel and Royal Guard maximum health are four times their base Health. Finite numbers and whole slot/point counts are required; current resources fit the actual maximum. Empty occupied slots before reducing Capacity.",
+  "jei.slimic.guardian_angel_slime": "Craft a Friendly Slime, nether star, and totem of undying to store that exact totem. Select Follow to fly beside its owner. Retaliates against attackers of itself or its owner and uses a totem to prevent lethal owner damage within 16 blocks. Retaliation and protection remain available during Wait. Maximum health is four times the common value.",
   "status.slimic.farmer.idle": "Watching registered farmland",
   "status.slimic.lumberjack.idle": "Watching for natural trees",
   "status.slimic.farmer.surveying": "Registering farmland",
@@ -574,5 +574,9 @@
   "jei.slimic.restoration.overworld": "Overworld only",
   "jei.slimic.restoration.any_dimension": "Any dimension",
   "jei.slimic.restoration.arrival": "Starts waiting at 1 health",
-  "jei.slimic.restoration.training": "12–28 invested stat points"
+  "jei.slimic.restoration.training": "12–28 invested stat points",
+  "screen.slimic.recommended_range": "Recommended: %s–%s. Higher values are allowed.",
+  "screen.slimic.recommended_warning": "Above the recommended range; you can still apply.",
+  "screen.slimic.tuned_recommended_warning": "Saved. Some values exceed recommendations.",
+  "screen.slimic.invalid_tuning": "Enter finite, valid numbers; slots and points need whole numbers."
 }

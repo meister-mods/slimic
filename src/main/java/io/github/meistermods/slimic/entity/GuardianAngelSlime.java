@@ -2,7 +2,6 @@ package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.EnumSet;
-import java.util.UUID;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +19,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -34,7 +32,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 
 public final class GuardianAngelSlime extends FriendlySlime {
-  private static final UUID HEALTH_SCALE = UUID.fromString("67eaa475-2b01-4cdb-9636-ae9ce0e8a847");
   private static final EntityDataAccessor<ItemStack> TOTEMS =
       SynchedEntityData.defineId(GuardianAngelSlime.class, EntityDataSerializers.ITEM_STACK);
   private static final EntityDataAccessor<Integer> BEAM =
@@ -54,14 +51,7 @@ public final class GuardianAngelSlime extends FriendlySlime {
   }
 
   private void ensureHealthScale() {
-    var attribute = getAttribute(Attributes.MAX_HEALTH);
-    attribute.setBaseValue(Math.min(102.4, attribute.getBaseValue()));
-    if (!attribute.hasModifier(
-        new AttributeModifier(
-            HEALTH_SCALE, "Guardian health", 9, AttributeModifier.Operation.MULTIPLY_TOTAL)))
-      attribute.addPermanentModifier(
-          new AttributeModifier(
-              HEALTH_SCALE, "Guardian health", 9, AttributeModifier.Operation.MULTIPLY_TOTAL));
+    ProfessionHealth.apply(this, ProfessionHealth.GUARDIAN);
   }
 
   @Override
@@ -121,12 +111,6 @@ public final class GuardianAngelSlime extends FriendlySlime {
 
   public int getBeamTargetId() {
     return entityData.get(BEAM);
-  }
-
-  @Override
-  public boolean upgradeStat(SlimeStat stat) {
-    return !(stat == SlimeStat.HEALTH && getAttributeBaseValue(Attributes.MAX_HEALTH) + 4 > 102.4)
-        && super.upgradeStat(stat);
   }
 
   private boolean hostileToOwner(LivingEntity attacker) {

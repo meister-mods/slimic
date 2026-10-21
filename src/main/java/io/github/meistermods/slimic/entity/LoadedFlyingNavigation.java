@@ -62,7 +62,8 @@ final class LoadedFlyingNavigation extends FlyingPathNavigation {
       range = Math.max(range, (float) Math.sqrt(target.distToCenterSqr(mob.position())) * 2 + 8);
     range = Math.max(24, range);
     var region =
-        new LoadedPathRegion(server, mob.blockPosition(), (int) Math.ceil(range) + padding);
+        new LoadedPathRegion(
+            server, mob.blockPosition(), CreativeStats.asInt(Math.ceil(range) + padding));
     float effort = Math.min(1, Math.max(512, range * 64) / MAX_NODES);
     Path result = loadedFinder.findPath(region, mob, targets, range, accuracy, effort);
     if (result != null) {

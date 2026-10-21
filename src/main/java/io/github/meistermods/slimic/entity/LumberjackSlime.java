@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class LumberjackSlime extends FieldSlime {
   private static final EntityDataAccessor<ItemStack> REQUIRED_SAPLING =
@@ -156,7 +155,7 @@ public final class LumberjackSlime extends FieldSlime {
     clearSaplingRequirement();
     // Old stumps remain world edits at their original coordinates; return reserved seeds to cargo.
     for (var seed : plantings.values()) {
-      var left = ItemHandlerHelper.insertItemStacked(getBag(), seed.copy(), false);
+      var left = SlimeBag.insertItemStacked(getBag(), seed.copy(), false);
       if (!left.isEmpty()) spawnAtLocation(left);
     }
     plantings.clear();
@@ -272,7 +271,7 @@ public final class LumberjackSlime extends FieldSlime {
     }
     Block sapling = TREES.get(treeBlock);
     int available = 0;
-    for (int i = 0; i < getCapacity(); i++)
+    for (int i : getBag().occupiedSlots())
       if (getBag().getStackInSlot(i).is(sapling.asItem()))
         available += getBag().getStackInSlot(i).getCount();
     if (available < roots.size()) {
@@ -305,7 +304,7 @@ public final class LumberjackSlime extends FieldSlime {
     for (var pos : tree)
       if (level.getBlockState(pos).is(Blocks.MANGROVE_ROOTS)) plannedRoots.add(pos);
     for (BlockPos root : roots) {
-      for (int i = 0; i < getCapacity(); i++)
+      for (int i : getBag().occupiedSlots())
         if (getBag().getStackInSlot(i).is(sapling.asItem())) {
           plantings.put(root, getBag().extractItem(i, 1, false));
           break;
@@ -330,7 +329,7 @@ public final class LumberjackSlime extends FieldSlime {
       var current = level.getBlockState(pos);
       boolean water = seed == Blocks.MANGROVE_PROPAGULE && current.is(Blocks.WATER);
       if ((!current.isAir() && !water) || !root(level, pos)) {
-        var left = ItemHandlerHelper.insertItemStacked(getBag(), entry.getValue().copy(), false);
+        var left = SlimeBag.insertItemStacked(getBag(), entry.getValue().copy(), false);
         if (!left.isEmpty()) {
           status = Status.FULL;
           return true;
@@ -360,8 +359,9 @@ public final class LumberjackSlime extends FieldSlime {
     unavailablePickups.values().removeIf(until -> until <= level.getGameTime());
     double r = SlimeStat.DETECTION_RANGE.value(this);
     var items =
-        level.getEntitiesOfClass(
-            ItemEntity.class, new AABB(getWorkHome()).inflate(r), this::collectible);
+        WorkSearch.entities(level, ItemEntity.class, new AABB(getWorkHome()).inflate(r)).stream()
+            .filter(this::collectible)
+            .toList();
     var item =
         items.stream()
             .filter(e -> !unavailablePickups.containsKey(e.getUUID()))
@@ -393,7 +393,7 @@ public final class LumberjackSlime extends FieldSlime {
       return false;
     }
     var before = item.getItem().copy();
-    var left = ItemHandlerHelper.insertItemStacked(getBag(), before.copy(), false);
+    var left = SlimeBag.insertItemStacked(getBag(), before.copy(), false);
     int count = before.getCount() - left.getCount();
     if (count == 0) {
       status = Status.FULL;

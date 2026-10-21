@@ -5,41 +5,23 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.ItemStackHandler;
 
 public abstract class BagSlime extends FriendlySlime {
-  private final ItemStackHandler bag;
+  private final SlimeBag bag;
   protected int bagRevision;
 
   protected BagSlime(EntityType<? extends BagSlime> type, Level level, int slots) {
     super(type, level);
     setWaiting(true);
-    bag =
-        new ItemStackHandler(slots) {
-          @Override
-          public int getSlotLimit(int slot) {
-            return slot < getCapacity() ? 64 : 0;
-          }
-
-          @Override
-          public boolean isItemValid(int slot, ItemStack stack) {
-            return slot < getCapacity();
-          }
-
-          @Override
-          protected void onContentsChanged(int slot) {
-            bagRevision++;
-          }
-        };
+    bag = new SlimeBag(slots, this::getCapacity, () -> bagRevision++);
   }
 
-  public final ItemStackHandler getBag() {
+  public final SlimeBag getBag() {
     return bag;
   }
 
   public final boolean hasCargo() {
-    for (int slot = 0; slot < bag.getSlots(); slot++)
-      if (!bag.getStackInSlot(slot).isEmpty()) return true;
+    for (int slot : bag.occupiedSlots()) if (!bag.getStackInSlot(slot).isEmpty()) return true;
     return false;
   }
 
@@ -108,7 +90,7 @@ public abstract class BagSlime extends FriendlySlime {
   @Override
   protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHit) {
     super.dropCustomDeathLoot(source, looting, recentlyHit);
-    for (int slot = 0; slot < bag.getSlots(); slot++) {
+    for (int slot : bag.occupiedSlots()) {
       if (!bag.getStackInSlot(slot).isEmpty()) spawnAtLocation(bag.getStackInSlot(slot).copy());
       bag.setStackInSlot(slot, ItemStack.EMPTY);
     }
