@@ -189,6 +189,7 @@ final class OrderEightClientSmoke {
                     + ".png")
             .normalize();
     try (var im = Screenshot.takeScreenshot(c.getMainRenderTarget())) {
+      java.nio.file.Files.createDirectories(p.getParent());
       im.writeToFile(p);
     } catch (java.io.IOException e) {
       throw new IllegalStateException(e);

@@ -108,6 +108,7 @@ public final class CreativeFreedomClientSmoke {
           c,
           p -> {
             p.closeContainer();
+            p.stopRiding();
             p.setGameMode(GameType.CREATIVE);
             p.getInventory().clearContent();
             p.getInventory().selected = 0;

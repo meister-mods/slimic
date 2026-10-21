@@ -34,7 +34,7 @@ Creative provides Guard, Transport, and Commander core variants in the main Slim
 
 The **Slime Restoration Station** is the intact pedestal found in ruins. Find it beside the seal in the main Slimic Creative tab. Right-click without a core for instructions, or look up the station in the guidebook’s **Slime restoration** entry.
 
-Defeating a remnant yourself or with a tamed Slimic companion yields one **Damaged Ancient Slime Core** and one **Ancient Command Seal**, subject to ordinary mob-loot rules and drop events. Chest chances for one seal are 20% in workshops and depots, 35% in archives, and 50% in royal wards. Supplies and translated records provide the first restoration clues.
+Defeating a ruin remnant yourself or with a tamed Slimic companion yields one **Damaged Ancient Slime Core** and one **Ancient Command Seal**, subject to ordinary mob-loot rules and drop events. Chest chances for one seal are 20% in workshops and depots, 35% in archives, and 50% in royal wards. Supplies and translated records provide the first restoration clues.
 
 1. Hold the core and keep one seal and one slimeball in the player inventory.
 2. Right-click an intact **Slime Restoration Station**. Cracked pedestals do not work. Craft a station with a slimeball, gold ingot, two redstone dust, and three Stone Bricks.

@@ -106,6 +106,8 @@ Quarry navigation uses a bounded 4,096-node search through loaded terrain. Route
 
 Large Creative search ranges use loaded chunk positions and accessible entities instead of iterating empty coordinate windows. Chunk load/unload and level unload maintain the index. Normal searches retain small local windows; work routes and extreme Creative follow routes use bounded loaded-terrain navigation without overflowing the radius. Stats remain unchanged.
 
+Creative Health and Attack are converted through `CreativeStats.asFloat` at native attribute reads. Input bases remain doubles. This prevents infinite outgoing damage from producing NaN in vanilla absorption subtraction; the same attribute path covers melee, Guardian beams, and Dragon breath. Compatible payload migration clears older nonfinite absorption to zero without changing valid absorption, current health, or the source item.
+
 ## Patchouli guidebook
 
 Development runs use optional runtime dependency Patchouli `1.20.1-84.1-FORGE`. Disable it with `-PenablePatchouli=false`, independently of `-PenableJei=false`. Common game logic has no Patchouli Java API dependency, and the release JAR does not bundle the library.
@@ -166,7 +168,7 @@ Herald warning history keeps the latest signaled episode for each worker UUID wi
 
 Player target selection checks the server PVP flag and the loaded owner's player-damage permissions before both target acquisition and melee damage. Native team/alliance exclusions remain in effect. Tests restore server PVP and scoreboard fixtures after checking each rule.
 
-Native container-data packets carry signed 16-bit values. `NumericContainerData` sends each double through four raw-bit halves and an initial-snapshot marker. Both menus preserve exact stats, current health/stamina, and points without scaled-integer truncation. Editors wait for the marker before loading initial values. Protocol 19 includes this layout. Native packet tests cover high values and reductions; client checks cover both menus.
+Native container-data packets carry signed 16-bit values. `NumericContainerData` sends each double through four 16-bit segments and an initial-snapshot marker. Both menus preserve exact stats, current health/stamina, and points without scaled-integer truncation. Editors wait for the marker before loading initial values. Protocol 19 includes this layout. Native packet tests cover high values and reductions; client checks cover both menus. Commander roster components format health above the signed-integer range in scientific notation while retaining the recorded float values.
 
 ## Saddle equipment and riding
 

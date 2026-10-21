@@ -286,4 +286,66 @@ public final class CreativeFreedomGameTests {
               "Search optimization never caps the stored stat");
         });
   }
+
+  @GameTest(template = "empty", batch = "creative_freedom")
+  public static void extremeAttackPreservesStoredInputAndFiniteNativeDamage(GameTestHelper h) {
+    for (var type :
+        List.of(
+            ModEntities.COMBAT_SLIME.get(),
+            ModEntities.ROYAL_GUARD_SLIME.get(),
+            ModEntities.DRAGON_SLIME.get())) {
+      var fighter = (CombatSlime) type.create(h.getLevel());
+      fighter.tame(h.makeMockSurvivalPlayer());
+      fighter.setEquipment(0, new ItemStack(Items.DIAMOND_SWORD));
+      fighter.setWorking(true);
+      SlimeStat.ATTACK.tune(fighter, Double.MAX_VALUE);
+      var victim = net.minecraft.world.entity.EntityType.ZOMBIE.create(h.getLevel());
+      victim.setAbsorptionAmount(10);
+      h.assertTrue(fighter.doHurtTarget(victim), "Actual native melee executes");
+      h.assertTrue(
+          Float.isFinite(victim.getHealth()) && Float.isFinite(victim.getAbsorptionAmount()),
+          "Large finite attacks never create NaN health or absorption");
+      h.assertTrue(
+          fighter.getAttributeValue(Attributes.ATTACK_DAMAGE) == Float.MAX_VALUE
+              && SlimeStat.ATTACK.tunerValue(fighter) == Double.MAX_VALUE,
+          "Only the native float conversion saturates; the Creative base remains unchanged");
+      var restored = (FriendlySlime) type.create(h.getLevel());
+      restored.load(FriendlySlimeItem.fromSlime(fighter).getTag().getCompound("SlimeData"));
+      h.assertTrue(
+          SlimeStat.ATTACK.tunerValue(restored) == Double.MAX_VALUE
+              && restored.getAttributeValue(Attributes.ATTACK_DAMAGE) == Float.MAX_VALUE,
+          "The exact large input survives recovery");
+      victim.discard();
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "creative_freedom")
+  public static void legacyNonfiniteAbsorptionLoadsWithoutChangingValidHealth(GameTestHelper h) {
+    for (float absorption :
+        new float[] {Float.NaN, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, 12}) {
+      var slime = ModEntities.MINING_SLIME.get().create(h.getLevel());
+      slime.tame(h.makeMockSurvivalPlayer());
+      slime.setHealth(7);
+      var saved = slime.saveWithoutId(new CompoundTag());
+      saved.putFloat("AbsorptionAmount", absorption);
+      var original = saved.copy();
+      var loaded = ModEntities.MINING_SLIME.get().create(h.getLevel());
+      loaded.load(saved);
+      float expected = Float.isFinite(absorption) ? absorption : 0;
+      h.assertTrue(saved.equals(original), "Migration preserves the source item or world payload");
+      h.assertTrue(
+          loaded.getHealth() == 7 && loaded.getAbsorptionAmount() == expected,
+          "Only invalid absorption is cleared without healing");
+      h.assertTrue(
+          loaded.hurt(loaded.damageSources().generic(), 1),
+          "Loaded companion still takes native damage");
+      h.assertTrue(
+          Float.isFinite(loaded.getHealth())
+              && Float.isFinite(loaded.getAbsorptionAmount())
+              && loaded.getHealth() == (expected == 0 ? 6 : 7),
+          "Damage after a legacy load keeps finite, correct resources");
+    }
+    h.succeed();
+  }
 }

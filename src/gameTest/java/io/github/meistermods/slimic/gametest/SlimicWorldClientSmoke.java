@@ -298,8 +298,8 @@ public final class SlimicWorldClientSmoke {
               ledger =
                   drops.stream().filter(s -> s.is(Items.WRITTEN_BOOK)).findFirst().orElseThrow();
               check(
-                  ledger.getTag().getList("pages", 8).size() == 2,
-                  "The actual ruin loot includes two written pages");
+                  ledger.getTag().getList("pages", 8).size() == 3,
+                  "The actual ruin loot includes all three written pages and restoration clues");
             });
         next();
       }
@@ -332,7 +332,11 @@ public final class SlimicWorldClientSmoke {
             Component.Serializer.fromJson(ledger.getTag().getList("pages", 8).getString(0))
                 .getString();
         check(
-            !text.contains("lore.slimic") && text.contains("보급"), "Ledger pages render in Korean");
+            !text.contains("lore.slimic")
+                && text.equals(
+                    Component.translatable("lore.slimic.supply_ledger.page1").getString())
+                && text.codePoints().anyMatch(ch -> ch >= 0xac00 && ch <= 0xd7a3),
+            "Ledger pages render in Korean");
         shot(c, "ledger");
         c.setScreen(null);
         server(

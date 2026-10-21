@@ -267,7 +267,11 @@ public class FriendlySlime extends TamableAnimal {
       if (stat.usesAttribute(attribute) && hasTunedStat(stat)) {
         double value =
             Math.max(stat.minTunedValue(), CreativeStats.attributeValue(getAttribute(attribute)));
-        return stat == SlimeStat.HEALTH ? CreativeStats.asFloat(value) : value;
+        // Native health and outgoing damage are floats. Infinity would contaminate absorption
+        // arithmetic (infinity - infinity), even though the saved Creative base is finite.
+        return stat == SlimeStat.HEALTH || stat == SlimeStat.ATTACK
+            ? CreativeStats.asFloat(value)
+            : value;
       }
     }
     return super.getAttributeValue(attribute);

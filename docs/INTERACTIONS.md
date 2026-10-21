@@ -63,6 +63,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I53 | Ancient worker / logistics / growth | Shares ordinary tool, stair, bag, and supply contracts; restored ancient roles retain random invested training across recovery, portals, and saves. |
 | I54 | Guardian / Royal Guard / persistence | Apply fourfold common Health once, retain training, clamp legacy excess health without healing, and preserve Creative health. |
 | I55 | Creative editor / bags / logistics | Accept values beyond recommendations, synchronize exact values, preserve sparse cargo across pages and recovery, and reject occupied-slot removal. |
+| I56 | Creative attacks / recovery | Keep native damage and victim absorption finite at extreme Attack; retain the exact saved base and clear nonfinite absorption from older payloads without healing. |
 
 Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 

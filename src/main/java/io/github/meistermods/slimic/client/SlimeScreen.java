@@ -43,6 +43,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
   private Button previousPage;
   private Button nextPage;
+  private String pageCounter;
   private Button directionButton;
   private Button lightButton;
 
@@ -62,6 +63,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     super.init();
     directionButton = null;
     previousPage = nextPage = null;
+    pageCounter = null;
     lightButton = null;
     upgrades.clear();
     filters.clear();
@@ -260,6 +262,18 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
       previousPage.visible = nextPage.visible = menu.isBagVisible() && menu.bagPages() > 1;
       previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;
       nextPage.active = menu.data(SlimeMenu.BAG_PAGE) + 1 < menu.bagPages();
+      String counter = (menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages();
+      if (!counter.equals(pageCounter)) {
+        pageCounter = counter;
+        previousPage.setTooltip(
+            Tooltip.create(
+                Component.translatable("screen.slimic.previous_page")
+                    .append("\n")
+                    .append(counter)));
+        nextPage.setTooltip(
+            Tooltip.create(
+                Component.translatable("screen.slimic.next_page").append("\n").append(counter)));
+      }
     }
   }
 
@@ -439,13 +453,15 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           216,
           174,
           0xffb4c9d1);
-      if (menu.isBagVisible() && menu.bagPages() > 1)
-        graphics.drawCenteredString(
-            font,
-            Component.literal((menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages()),
-            323,
-            SlimeMenu.INVENTORY_LABEL_Y,
-            0xffe5e9e9);
+      if (menu.isBagVisible() && menu.bagPages() > 1) {
+        String counter = (menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages();
+        float scale = Math.min(1, 42f / Math.max(1, font.width(counter)));
+        graphics.pose().pushPose();
+        graphics.pose().translate(323, SlimeMenu.INVENTORY_LABEL_Y, 0);
+        graphics.pose().scale(scale, scale, 1);
+        graphics.drawCenteredString(font, counter, 0, 0, 0xffe5e9e9);
+        graphics.pose().popPose();
+      }
     } else if (menu.slime() instanceof MeowSlime cat) {
       graphics.drawWordWrap(
           font,

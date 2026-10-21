@@ -211,8 +211,8 @@ public final class CommanderMenu extends AbstractContainerMenu {
                 location,
                 order,
                 status,
-                (int) Math.ceil(e.health()),
-                (int) Math.ceil(e.maximumHealth()));
+                healthText(e.health()),
+                healthText(e.maximumHealth()));
         var pos =
             Component.literal(
                 e.dimension()
@@ -237,6 +237,13 @@ public final class CommanderMenu extends AbstractContainerMenu {
         commander.requested(),
         player.getUUID().equals(commander.getOwnerUUID()),
         rows);
+  }
+
+  private static String healthText(float value) {
+    double rounded = Math.ceil(value);
+    return rounded <= Integer.MAX_VALUE
+        ? Integer.toString((int) rounded)
+        : String.format(Locale.ROOT, "%.2e", rounded);
   }
 
   private void send(ServerPlayer player) {

@@ -4,6 +4,15 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.14] - 2026-10-21
+
+### Fixed
+
+- Keep large recorded companion health visible in Commander rosters without integer truncation.
+- Keep large bag page counters inside their controls and expose exact counts in paging tooltips.
+- Clear invalid nonfinite absorption in older companion saves without healing or changing valid absorption.
+- Keep outgoing companion damage finite when Creative Attack exceeds Minecraft’s float representation. Preserve the exact tuned base through saves and recovery while preventing nonfinite victim absorption during native melee, beams, and breath.
+
 ## [0.3.13] - 2026-10-21
 
 - Reduce Guardian Angel and Royal Guard maximum health to four times common Health: initially 64, with 16 per ordinary Health upgrade. Normalize saved profession modifiers without stacking or healing.
