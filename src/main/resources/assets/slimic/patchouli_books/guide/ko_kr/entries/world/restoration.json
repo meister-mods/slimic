@@ -23,7 +23,7 @@
     {
       "type": "patchouli:crafting",
       "recipe": "slimic:world/command_pedestal",
-      "text": "작업대에서 복구 스테이션을 제작합니다. 금 간 스테이션은 코어를 복원할 수 없습니다."
+      "text": "스테이션은 작업대에서 만듭니다. 금 간 스테이션은 사용할 수 없습니다. JEI의 슬라임 복원 항목에서 코어별 재료·결과·차원 조건을 확인하세요."
     }
   ],
   "extra_recipe_mappings": {

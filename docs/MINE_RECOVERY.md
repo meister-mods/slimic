@@ -39,6 +39,8 @@ Each core's identity can be redeemed once across the entire saved world. A faile
 
 The main Slimic Creative tab contains both new companions, all three hostile spawn eggs, command fragments, and three mining core variants beside the existing restoration materials. Core variants taken from Creative receive independent identities when used. JEI supplies acquisition instructions; these ancient work professions have no crafting recipe.
 
+With JEI installed, open a core’s uses or a companion’s recipes to view the **Slime Restoration** category. All six core roles show one matching seal or command fragment, one slimeball, and the resulting companion. The station is a reusable catalyst. Mine entries state the Overworld requirement and all entries show the one-health Wait state and invested training.
+
 ## Ancient Mining Slime
 
 Uses the ordinary [Mining Slime](GAMEPLAY.md#mining-slimes) equipment, Mine order, quarry plan, stairs, fluid handling, and wall reinforcement. It prioritizes visible Forge-tagged ores **within the active layer** and spends half the normal stamina on work and movement. It does not reveal distant deposits, skip layers, bypass unsuitable tools, or change item drops.

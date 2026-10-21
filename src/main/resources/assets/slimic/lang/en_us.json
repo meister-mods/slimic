@@ -568,5 +568,11 @@
   "name.slimic.ancient_miner": "Forgotten Miner",
   "name.slimic.ancient_tunnel": "Forgotten Tunneler",
   "name.slimic.ancient_mine_guard": "Mine Watchkeeper",
-  "item.slimic.damaged_ancient_slime_core.training_tooltip": "Restores with 12–28 invested upgrades in useful stats; each core keeps its own roll."
+  "item.slimic.damaged_ancient_slime_core.training_tooltip": "Restores with 12–28 invested upgrades in useful stats; each core keeps its own roll.",
+  "jei.slimic.restoration.title": "Slime Restoration",
+  "jei.slimic.restoration.interact": "Right-click with core",
+  "jei.slimic.restoration.overworld": "Overworld only",
+  "jei.slimic.restoration.any_dimension": "Any dimension",
+  "jei.slimic.restoration.arrival": "Starts waiting at 1 health",
+  "jei.slimic.restoration.training": "12–28 invested stat points"
 }

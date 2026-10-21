@@ -51,6 +51,8 @@ The restored companion receives a new UUID and the restoring player's ownership.
 
 Each ancient identity can be redeemed only once across all dimensions of the saved world, including after restart. Missing materials, invalid or already restored cores, and unavailable pedestals preserve the core and materials. The usual Commander limit still applies when releasing a restored commander: one spawned Commander per connected co-owner group across the world. Restored companions then use the same recovery, revival, growth, sharing, portal, logistics, and command rules as their profession.
 
+JEI’s **Slime Restoration** category shows all six station restoration paths. View a core’s uses, a catalyst’s uses, or a resulting companion’s recipes to see the matching ingredients and result. The intact station is the reusable recipe catalyst; mine cores require the Overworld and use command fragments instead of seals.
+
 ## Specialize a trained companion
 
 Combine a **Combat Slime item and one Ancient Command Seal** without a fixed arrangement to make a Royal Guard Slime. This works in a 2×2 inventory grid or at a crafting table. The exact identity, owners, name, current health and stamina, invested stats, growth progress, sword, shield, armor, and cargo are retained. The new specialization starts in Wait. An equipped or spare tool is never recreated separately.

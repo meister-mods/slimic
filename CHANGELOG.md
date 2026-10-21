@@ -4,6 +4,23 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.9] - 2026-10-21
+
+### Added
+
+- A JEI Slime Restoration category for all six core roles, showing exact ingredients, companion results, the reusable restoration station, dimension requirements, and restored health, waiting state, and training. Natural and Creative cores resolve by role while retaining their information pages.
+- English and Korean documentation and guidebook instructions for finding station restoration recipes.
+
+### Changed
+
+- Require JEI 15.62 or newer when the optional integration is installed, matching the supported recipe UI API.
+
+### Validation
+
+- Native JEI clients verify all six restoration paths, exact costs, natural and Creative core lookup, reagent and result searches, reusable station registration, and English/Korean screens with both fonts.
+- A dedicated server passes eight focused checks without JEI or Patchouli. A native client without JEI renders all 58 guidebook entries and 188 pages in English, Korean, and English fallback.
+- Google Java Format, the Java 17 build, bilingual documents, guidebook links, and packaged resources pass verification.
+
 ## [0.3.8] - 2026-10-21
 
 ### Fixed
