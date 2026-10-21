@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "slimic:item/crushed_tunnel_slime_core"
+    "layer0": "slimic:item/damaged_tunnel_slime_core"
   }
 }

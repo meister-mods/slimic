@@ -4,6 +4,12 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.8] - 2026-10-21
+
+### Fixed
+
+- Standardize the Damaged Tunnel Slime Core name in English and Korean, documentation, internal model and texture paths, and client checks.
+
 ## [0.3.7] - 2026-10-21
 
 ### Added

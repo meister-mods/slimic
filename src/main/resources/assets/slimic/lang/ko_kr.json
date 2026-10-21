@@ -551,7 +551,7 @@
   "item.slimic.ancient_tunnel_slime.tooltip": "작업·이동 기력을 절반만 소비하며 적합한 도구로 고대 슬라이믹 석재를 50% 빠르게 캐는 복원된 굴착병입니다.",
   "item.slimic.old_command_fragment": "오래된 명령 파편",
   "item.slimic.damaged_ancient_slime_core.miner": "손상된 채굴 슬라임 코어",
-  "item.slimic.damaged_ancient_slime_core.tunnel": "찌그러진 터널 슬라임 코어",
+  "item.slimic.damaged_ancient_slime_core.tunnel": "손상된 터널 슬라임 코어",
   "item.slimic.damaged_ancient_slime_core.mine_guard": "손상된 폐광 수호 슬라임 코어",
   "item.slimic.damaged_ancient_slime_core.mine_tooltip": "오버월드의 슬라임 복구 스테이션에서 오래된 명령 파편 1개와 슬라임볼 1개로 복원합니다.",
   "message.slimic.mine_restoration_overworld": "이 광산 코어는 오버월드의 슬라임 복구 스테이션에서 복원할 수 있습니다.",

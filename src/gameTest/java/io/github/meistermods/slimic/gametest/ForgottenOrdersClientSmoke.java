@@ -64,7 +64,7 @@ public final class ForgottenOrdersClientSmoke {
         var expected =
             switch (role) {
               case MINER -> "item/damaged_mining_slime_core";
-              case TUNNEL -> "item/crushed_tunnel_slime_core";
+              case TUNNEL -> "item/damaged_tunnel_slime_core";
               case MINE_GUARD -> "item/damaged_mine_guardian_core";
               default -> "item/damaged_ancient_slime_core";
             };
@@ -79,7 +79,7 @@ public final class ForgottenOrdersClientSmoke {
               "ancient_command_seal",
               "damaged_ancient_slime_core",
               "damaged_mining_slime_core",
-              "crushed_tunnel_slime_core",
+              "damaged_tunnel_slime_core",
               "damaged_mine_guardian_core",
               "old_command_fragment")) {
         var texture =
