@@ -426,7 +426,7 @@ Healing still requires slimeballs, with normal transport/warehouse supply. Plant
 
 ## Tunnel slimes
 
-Combine a Mining Slime and a nether star. Its tools, bag, health, identity, and growth remain intact; the new specialization starts waiting. It wears a minecart-shaped shell.
+Combine a Mining Slime and one regular minecart without a fixed arrangement. Its tools, bag, health, identity, and growth remain intact; the new specialization starts waiting. It wears a minecart-shaped shell.
 
 Management provides a horizontal direction selector and one **lining template** slot beside the pickaxe and shovel. The initial direction is north and the initial lining is cobblestone. Click the template with a suitable solid block on the cursor to copy its type, or with an empty cursor to clear it. The held stack is unchanged. The displayed sample is never consumed, extracted, or used as real inventory. Falling blocks, explosives, and blocks with inventories are unsuitable. Changing the direction or template pauses work; select **Tunnel** to resume.
 

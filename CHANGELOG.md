@@ -4,6 +4,12 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.12] - 2026-10-21
+
+### Changed
+
+- Craft a Tunnel Slime from a Mining Slime and one regular minecart in a shapeless recipe. Update JEI, English/Korean gameplay instructions, and guidebook diagrams to match.
+
 ## [0.3.11] - 2026-10-21
 
 ### Changed

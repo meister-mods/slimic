@@ -8,10 +8,10 @@
       "type": "slimic:combination",
       "title": "순서 없는 조합",
       "input1": "slimic:mining_slime",
-      "input2": "minecraft:nether_star",
+      "input2": "minecraft:minecart",
       "result": "slimic:tunnel_slime",
       "label": "조합 → 결과 1개",
-      "text": "채굴 슬라임 + 네더의 별. 기존 도구·가방·생명력·성장을 보존합니다. 처음에는 대기하며 마인카트 모양의 외장을 착용합니다."
+      "text": "채굴 슬라임 + 일반 마인카트 1개. 기존 도구·가방·생명력·성장을 보존합니다. 처음에는 대기하며 마인카트 모양의 외장을 착용합니다."
     },
     {
       "type": "patchouli:text",

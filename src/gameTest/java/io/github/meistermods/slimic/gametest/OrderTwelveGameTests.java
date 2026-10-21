@@ -150,7 +150,7 @@ public final class OrderTwelveGameTests {
                 case ATTENTION -> Items.REDSTONE;
                 case ROYAL_GUARD -> ModItems.ANCIENT_COMMAND_SEAL.get();
 
-                case TUNNEL -> Items.NETHER_STAR;
+                case TUNNEL -> Items.MINECART;
                 case DRAGON -> Items.DRAGON_HEAD;
                 case MEOW -> Items.COD;
               });

@@ -87,7 +87,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case ATTENTION -> stack.is(Items.REDSTONE);
       case ROYAL_GUARD -> stack.is(ModItems.ANCIENT_COMMAND_SEAL.get());
 
-      case TUNNEL -> stack.is(Items.NETHER_STAR);
+      case TUNNEL -> stack.is(Items.MINECART);
       case DRAGON -> stack.is(Items.DRAGON_HEAD);
       case MEOW ->
           stack.is(Items.COD)
