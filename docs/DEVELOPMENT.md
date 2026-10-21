@@ -395,6 +395,8 @@ Pedestal restoration respects both Forge block-use and item-use vetoes. Ancient 
 
 Ruin generation confines structures and native entity insertion to The Slimic's current chunk. Patrol navigation and sight checks use loaded terrain with bounded path effort. Carriers require two block entities with their own ruin UUID; opening a depot claims it. Royal interception runs on final living damage, admits one eligible guard, prevents recursion, respects canceled guard damage, and reuses combat ownership and target checks. `ModEntities.companionTypes()` excludes hostile remnants from companion item, menu, and recovery contracts. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for player-visible behavior.
 
+Optional JEI integration requires JEI 15.62 or newer and registers `slimic:slime_restoration` as a display-only category for the six station interactions, with explicit ingredients, companion outputs, and an intact-station catalyst. Core subtypes depend only on the validated role, so natural identity, name, and veterancy do not prevent recipe lookup. Each role also keeps its information page. No workbench recipe or common-side JEI dependency is introduced.
+
 ## Collapsed mines
 
 `CollapsedMineFeature` plans chunk-contained tunnel or quarry sites, validates the entire dry terrain volume, and only then writes blocks. Quarry geometry uses `QuarryPlan`; its profile is registered through the server executor because feature placement can run on a generation worker. Mine Broken Slime Blocks use a mineralized state and an `AncientCore` payload separate from owned `Slime` snapshots. Core loot replaces block-item loot; each persisted ancient identity is restored once through `ForgottenOrders`. Earlier empty remains stay empty.

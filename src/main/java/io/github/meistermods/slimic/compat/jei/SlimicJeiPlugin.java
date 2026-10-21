@@ -6,6 +6,7 @@ import io.github.meistermods.slimic.entity.FarmerSlime;
 import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.LumberjackSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.item.AncientSlimeCoreItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.recipe.CompanionBase;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
@@ -21,7 +22,12 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +48,43 @@ public final class SlimicJeiPlugin implements IModPlugin {
   }
 
   @Override
+  public void registerItemSubtypes(ISubtypeRegistration registration) {
+    registration.registerSubtypeInterpreter(
+        ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
+        new ISubtypeInterpreter<ItemStack>() {
+          @Override
+          public Object getSubtypeData(ItemStack stack, UidContext context) {
+            return AncientSlimeCoreItem.role(stack);
+          }
+
+          @Override
+          public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
+            var role = AncientSlimeCoreItem.role(stack);
+            return role == null ? "" : role.name();
+          }
+        });
+  }
+
+  @Override
+  public void registerCategories(IRecipeCategoryRegistration registration) {
+    registration.addRecipeCategories(
+        new SlimeRestorationCategory(registration.getJeiHelpers().getGuiHelper()));
+  }
+
+  @Override
+  public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+    registration.addRecipeCatalyst(
+        ModWorldBlocks.block("command_pedestal"), SlimeRestorationCategory.TYPE);
+  }
+
+  @Override
   public void registerRecipes(IRecipeRegistration registration) {
+    var restorations = SlimeRestorationRecipe.all();
+    registration.addRecipes(SlimeRestorationCategory.TYPE, restorations);
+    registration.addIngredientInfo(
+        restorations.stream().map(SlimeRestorationRecipe::core).toList(),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.damaged_ancient_slime_core"));
     List<CraftingRecipe> recipes = new ArrayList<>();
     recipes.add(
         new ShapelessRecipe(
@@ -263,7 +305,6 @@ public final class SlimicJeiPlugin implements IModPlugin {
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
     for (var relic :
         new Item[] {
-          ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
           ModItems.ANCIENT_COMMAND_SEAL.get(),
           ModItems.OLD_COMMAND_FRAGMENT.get(),
           ModItems.ANCIENT_MINING_SLIME.get(),

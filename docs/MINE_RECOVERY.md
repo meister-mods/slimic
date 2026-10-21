@@ -10,7 +10,7 @@ Look for timber frames or an open quarry shaft in newly generated dry, fairly le
 
 Mineralized Broken Slime Blocks have a purple core visible on their faces. **Break a corpse to receive one damaged core.** Any tool works; Silk Touch does not produce a second corpse. The corpse does not contain an owner or a stored companion, and a slimeball cannot revive it directly. Normal block-drop rules and protection events still apply.
 
-Quarry corpses yield Damaged Mining Slime Cores; tunnel corpses yield Crushed Tunnel Slime Cores. Each newly generated site has a Slime Chest containing one Old Command Fragment and one slimeball per corpse, an iron pickaxe, and 32 cobblestone. This chest is usable by ordinary companion logistics and has no ancient carrier link.
+Quarry corpses yield Damaged Mining Slime Cores; tunnel corpses yield Damaged Tunnel Slime Cores. Each newly generated site has a Slime Chest containing one Old Command Fragment and one slimeball per corpse, an iron pickaxe, and 32 cobblestone. This chest is usable by ordinary companion logistics and has no ancient carrier link.
 
 Older, empty remains generated before 0.3.7 have no core. A player's fallen companion continues to preserve its identity and belongings in a normal Broken Slime Block and uses the existing [revival procedure](GAMEPLAY.md#hostile-encounters-and-revival).
 
@@ -38,6 +38,8 @@ Defeating a mine remnant yourself or with a tamed Slimic companion yields one ro
 Each core's identity can be redeemed once across the entire saved world. A failed attempt preserves the core and materials. Restoration creates a new UUID and owner; it retains limited veteran Endurance training and a name when present. Tamed ancient companions have a **white head insignia**. Hostile remnants retain purple insignia.
 
 The main Slimic Creative tab contains both new companions, all three hostile spawn eggs, command fragments, and three mining core variants beside the existing restoration materials. Core variants taken from Creative receive independent identities when used. JEI supplies acquisition instructions; these ancient work professions have no crafting recipe.
+
+With JEI installed, open a core’s uses or a companion’s recipes to view the **Slime Restoration** category. All six core roles show one matching seal or command fragment, one slimeball, and the resulting companion. The station is a reusable catalyst. Mine entries state the Overworld requirement and all entries show the one-health Wait state and invested training.
 
 ## Ancient Mining Slime
 

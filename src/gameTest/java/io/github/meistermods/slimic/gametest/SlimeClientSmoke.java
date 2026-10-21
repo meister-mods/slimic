@@ -99,6 +99,10 @@ public final class SlimeClientSmoke {
       if (AncientRecordsClientSmoke.tick(client)) client.stop();
       return;
     }
+    if (Boolean.getBoolean("slimic.restorationJeiOnly")) {
+      if (RestorationJeiClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.forgottenOrdersOnly")) {
       if (ForgottenOrdersClientSmoke.tick(client)) client.stop();
       return;

@@ -23,7 +23,7 @@
     {
       "type": "patchouli:crafting",
       "recipe": "slimic:world/command_pedestal",
-      "text": "A station is crafted at a workbench. Cracked stations cannot restore cores."
+      "text": "Craft at a workbench; cracked stations cannot restore cores. JEI’s Slime Restoration category shows all six recipes."
     }
   ],
   "extra_recipe_mappings": {

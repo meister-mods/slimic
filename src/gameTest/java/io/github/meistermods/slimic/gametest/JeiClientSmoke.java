@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 @JeiPlugin
 public final class JeiClientSmoke implements IModPlugin {
   private static IJeiRuntime runtime;
+  private static final java.util.Map<ResourceLocation, String> registeredInformation =
+      new java.util.HashMap<>();
 
   @Override
   public ResourceLocation getPluginUid() {
@@ -18,6 +20,20 @@ public final class JeiClientSmoke implements IModPlugin {
   @Override
   public void onRuntimeAvailable(IJeiRuntime value) {
     runtime = value;
+    // JEI expands information components in its registration language, before later GUI reloads.
+    registeredInformation.clear();
+    for (var item : net.minecraftforge.registries.ForgeRegistries.ITEMS.getValues()) {
+      var id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item);
+      if (id.getNamespace().equals("slimic"))
+        registeredInformation.put(
+            id,
+            net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
+                .getString());
+    }
+  }
+
+  static IJeiRuntime runtime() {
+    return runtime;
   }
 
   public static boolean companionInformationReady() {
@@ -38,9 +54,7 @@ public final class JeiClientSmoke implements IModPlugin {
                 var id =
                     net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(
                         stack.get().getItem());
-                var expected =
-                    net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
-                        .getString();
+                var expected = registeredInformation.get(id);
                 var text =
                     recipe.getDescription().stream()
                         .map(net.minecraft.network.chat.FormattedText::getString)
@@ -125,9 +139,7 @@ public final class JeiClientSmoke implements IModPlugin {
                 if (stack.isEmpty() || !expectedItems.contains(stack.get().getItem())) continue;
                 var item = stack.get().getItem();
                 var id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item);
-                var expected =
-                    net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
-                        .getString();
+                var expected = registeredInformation.get(id);
                 var actual =
                     recipe.getDescription().stream()
                         .map(net.minecraft.network.chat.FormattedText::getString)

@@ -1,7 +1,7 @@
 {
   "parent": "slimic:item/slime_summon_base",
   "textures": {
-    "crest": "slimic:item/crushed_tunnel_slime_core",
+    "crest": "slimic:item/damaged_tunnel_slime_core",
     "rim": "minecraft:block/amethyst_block"
   }
 }

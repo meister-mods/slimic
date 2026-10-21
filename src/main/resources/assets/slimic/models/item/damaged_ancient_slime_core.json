@@ -14,7 +14,7 @@
       "predicate": {
         "slimic:ancient_core_role": 2
       },
-      "model": "slimic:item/crushed_tunnel_slime_core"
+      "model": "slimic:item/damaged_tunnel_slime_core"
     },
     {
       "predicate": {

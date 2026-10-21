@@ -551,7 +551,7 @@
   "item.slimic.ancient_tunnel_slime.tooltip": "작업·이동 기력을 절반만 소비하며 적합한 도구로 고대 슬라이믹 석재를 50% 빠르게 캐는 복원된 굴착병입니다.",
   "item.slimic.old_command_fragment": "오래된 명령 파편",
   "item.slimic.damaged_ancient_slime_core.miner": "손상된 채굴 슬라임 코어",
-  "item.slimic.damaged_ancient_slime_core.tunnel": "찌그러진 터널 슬라임 코어",
+  "item.slimic.damaged_ancient_slime_core.tunnel": "손상된 터널 슬라임 코어",
   "item.slimic.damaged_ancient_slime_core.mine_guard": "손상된 폐광 수호 슬라임 코어",
   "item.slimic.damaged_ancient_slime_core.mine_tooltip": "오버월드의 슬라임 복구 스테이션에서 오래된 명령 파편 1개와 슬라임볼 1개로 복원합니다.",
   "message.slimic.mine_restoration_overworld": "이 광산 코어는 오버월드의 슬라임 복구 스테이션에서 복원할 수 있습니다.",
@@ -568,5 +568,11 @@
   "name.slimic.ancient_miner": "잊혀진 채굴병",
   "name.slimic.ancient_tunnel": "잊혀진 굴착병",
   "name.slimic.ancient_mine_guard": "폐광의 파수병",
-  "item.slimic.damaged_ancient_slime_core.training_tooltip": "직업에 쓰이는 스탯에 12~28포인트가 강화됩니다. 같은 코어의 결과는 고정됩니다."
+  "item.slimic.damaged_ancient_slime_core.training_tooltip": "직업에 쓰이는 스탯에 12~28포인트가 강화됩니다. 같은 코어의 결과는 고정됩니다.",
+  "jei.slimic.restoration.title": "슬라임 복원",
+  "jei.slimic.restoration.interact": "코어를 들고 우클릭",
+  "jei.slimic.restoration.overworld": "오버월드 전용",
+  "jei.slimic.restoration.any_dimension": "모든 차원에서 복원",
+  "jei.slimic.restoration.arrival": "생명력 1 · 대기 상태",
+  "jei.slimic.restoration.training": "능력치 강화 12~28회"
 }
