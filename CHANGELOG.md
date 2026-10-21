@@ -4,6 +4,12 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.10] - 2026-10-21
+
+### Fixed
+
+- Replace the deprecated JEI restoration background API with explicit recipe dimensions, preserving the 168×121 layout.
+
 ## [0.3.9] - 2026-10-21
 
 ### Added

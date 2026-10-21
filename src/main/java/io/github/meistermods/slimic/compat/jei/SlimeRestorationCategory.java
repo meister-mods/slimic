@@ -21,13 +21,11 @@ import net.minecraft.world.item.Items;
 public final class SlimeRestorationCategory implements IRecipeCategory<SlimeRestorationRecipe> {
   public static final RecipeType<SlimeRestorationRecipe> TYPE =
       RecipeType.create("slimic", "slime_restoration", SlimeRestorationRecipe.class);
-  private final IDrawable background;
   private final IDrawable icon;
   private final IDrawableStatic arrow;
   private final IDrawableStatic plus;
 
   public SlimeRestorationCategory(IGuiHelper gui) {
-    background = gui.createBlankDrawable(168, 121);
     icon = gui.createDrawableItemLike(ModWorldBlocks.block("command_pedestal"));
     arrow = gui.getRecipeArrow();
     plus = gui.getRecipePlusSign();
@@ -44,8 +42,13 @@ public final class SlimeRestorationCategory implements IRecipeCategory<SlimeRest
   }
 
   @Override
-  public IDrawable getBackground() {
-    return background;
+  public int getWidth() {
+    return 168;
+  }
+
+  @Override
+  public int getHeight() {
+    return 121;
   }
 
   @Override
