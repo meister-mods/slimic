@@ -1,0 +1,23 @@
+{
+  "name": "Ancient Tunnel Slime",
+  "icon": "slimic:ancient_tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 25,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Restore a tunnel corpse’s core, or one recovered from a Forgotten Tunnel Slime, through $(l:world/mine_recovery)mine recovery$(). No crafting recipe exists. Its purple-framed tunnel-core crest, helmet, cart, and ancient insignia identify it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Work and movement use half the normal stamina. An effective tool mines tagged ancient Slimic stone and masonry 50% faster, including stone, cobblestone, stone bricks, chiseled bricks, and ancient foundations. Incorrect tools and insufficient tiers never receive the bonus."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Use the normal $(l:companions/tunnel)Tunnel Slime$() direction and nonconsumable lining template. Lining consumes actual bag materials, protects existing quarry stairs, and stops when supplies run out. Carriers supply it normally. Clear old webs and corpses first; this worker cannot pass through solid rubble."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_tunnel_slime": 0
+  }
+}

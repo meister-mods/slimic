@@ -220,6 +220,10 @@ public final class FriendlySlimeGameTests {
     Vec3 position = helper.absoluteVec(new Vec3(8.5D, 2.0D, 5.5D));
     owner.moveTo(position.x, position.y, position.z);
     helper.getLevel().addNewPlayer(owner);
+    LoadedWorkArea.awaitEntityTicks(
+        helper,
+        helper.absolutePos(new BlockPos(3, 2, 5)),
+        helper.absolutePos(new BlockPos(8, 2, 5)));
     FriendlySlime slime = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), new BlockPos(3, 2, 5));
     slime.tame(owner);
     slime.setWaiting(false);

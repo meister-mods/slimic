@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "slimic:slimic_stone",
+    "slimic:slimic_cobblestone",
+    "slimic:slimic_stone_bricks",
+    "slimic:ancient_foundation",
+    "slimic:ancient_foundation_bricks",
+    "slimic:chiseled_slimic_stone_bricks"
+  ]
+}

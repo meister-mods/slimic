@@ -183,6 +183,25 @@ final class LoadedWorkArea {
     return true;
   }
 
+  static void awaitEntityTicks(GameTestHelper helper, BlockPos... positions) {
+    var level = helper.getLevel();
+    for (var pos : positions) level.getChunk(pos.getX() >> 4, pos.getZ() >> 4);
+    long readyBy = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(30);
+    level
+        .getServer()
+        .managedBlock(
+            () -> {
+              level.getChunkSource().pollTask();
+              for (var pos : positions)
+                if (!level.isPositionEntityTicking(pos)) return System.nanoTime() >= readyBy;
+              return true;
+            });
+    for (var pos : positions)
+      helper.assertTrue(
+          level.isPositionEntityTicking(pos),
+          "Test entities can tick before their action deadlines begin: " + pos);
+  }
+
   void close() {
     force(false);
   }

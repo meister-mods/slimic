@@ -109,6 +109,17 @@ Scattered workshops, supply depots, road fragments, archives, and royal wards us
 
 Defeat a remnant and restore its core at an intact Slime Restoration Station, or use a seal to specialize an existing Combat Slime. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for both acquisition paths, occupied depots, archives, and old royal wards. Opening an ancient Slime Chest removes its carrier link. The intact pedestal now restores cores; other ornamental furniture retains its decorative role. Records describe the absent XXX, the kingdom's fading supply routes, and the last watch.
 
+## Collapsed mines
+
+Collapsed mines can appear in newly generated chunks of The Slimic, on dry ground with little surface slope. Look for timber entrance frames, abandoned equipment, or a visibly open quarry shaft. Existing chunks are not regenerated.
+
+- **Tunnel sites** use a descending entrance and a 3×3 horizontal passage, with support frames, rubble, cobwebs, and a solid unfinished face.
+- **Chunk quarries** expose a 16×16 excavation 12–18 blocks deep, leaving the Mining Slime’s two-block-wide perimeter stairs. A remaining lower ledge marks an interrupted layer. Stair protection persists with the world and applies to later mining companions.
+
+Mineralized corpses drop one damaged core when broken. Recover Old Command Fragments and slimeballs from the mine’s supply chest, then restore Ancient Mining or Ancient Tunnel Slimes in the Overworld. Remaining workers and Mine Guardians attack intruders. See [Collapsed Mine Recovery](MINE_RECOVERY.md) for the full procedure and older empty remains. Slimeballs cannot revive a corpse directly; owned companions retain their ordinary revival procedure.
+
+Generation stays within one chunk and rejects wet sites, existing block entities, unbreakable blocks, and non-terrain construction before carving.
+
 ## Companion travel
 
 Unmounted companions can enter slime portals. Their UUID, owner, health, stamina, stat upgrades, equipment, and cargo are preserved. **Every companion arrives in Wait.** Work origins follow each profession's relocation rules; miners establish a new quarry plan in the new dimension. Inspect the destination with a Slime Scanner and explicitly start work when ready.

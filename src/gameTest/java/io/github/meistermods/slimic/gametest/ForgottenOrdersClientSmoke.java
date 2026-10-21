@@ -48,20 +48,59 @@ public final class ForgottenOrdersClientSmoke {
           ModCreativeTabs.SLIMIC.get().getDisplayItems().stream()
               .filter(stack -> stack.is(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get()))
               .toList();
-      if (coreEntries.size() != 3
+      if (coreEntries.size() != 6
           || coreEntries.stream()
                   .map(io.github.meistermods.slimic.item.AncientSlimeCoreItem::role)
                   .distinct()
                   .count()
-              != 3
+              != 6
           || coreEntries.stream().anyMatch(stack -> stack.getTag().hasUUID("AncientIdentity")))
         throw new IllegalStateException(
-            "Creative must expose three independently redeemable core variants");
+            "Creative must expose six independently redeemable core variants");
       for (var core : coreEntries) {
+        relics.add(core.copy());
         var model = c.getItemRenderer().getModel(core, c.level, c.player, 0);
+        var role = io.github.meistermods.slimic.item.AncientSlimeCoreItem.role(core);
+        var expected =
+            switch (role) {
+              case MINER -> "item/damaged_mining_slime_core";
+              case TUNNEL -> "item/crushed_tunnel_slime_core";
+              case MINE_GUARD -> "item/damaged_mine_guardian_core";
+              default -> "item/damaged_ancient_slime_core";
+            };
+        if (!model.getParticleIcon().contents().name().getPath().equals(expected))
+          throw new IllegalStateException("Core role selects the wrong texture: " + role);
         if (model == c.getModelManager().getMissingModel()
             || core.getTooltipLines(c.player, TooltipFlag.NORMAL).size() < 3)
           throw new IllegalStateException("Creative core must have a model and role description");
+      }
+      for (String sprite :
+          List.of(
+              "ancient_command_seal",
+              "damaged_ancient_slime_core",
+              "damaged_mining_slime_core",
+              "crushed_tunnel_slime_core",
+              "damaged_mine_guardian_core",
+              "old_command_fragment")) {
+        var texture =
+            net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                "slimic", "textures/item/" + sprite + ".png");
+        try (var input = c.getResourceManager().open(texture);
+            var bitmap = com.mojang.blaze3d.platform.NativeImage.read(input)) {
+          if (bitmap.getWidth() != 16 || bitmap.getHeight() != 16)
+            throw new IllegalStateException("Invalid item sprite dimensions " + sprite);
+          int empty = 0, solid = 0;
+          for (int x = 0; x < 16; x++)
+            for (int y = 0; y < 16; y++) {
+              int alpha = bitmap.getPixelRGBA(x, y) >>> 24;
+              if (alpha == 0) empty++;
+              if (alpha >= 240) solid++;
+            }
+          if (empty < 16 || solid < 32)
+            throw new IllegalStateException("Invalid item alpha or empty sprite " + sprite);
+        } catch (java.io.IOException error) {
+          throw new IllegalStateException(error);
+        }
       }
       var station = new ItemStack(ModWorldBlocks.block("command_pedestal"));
       if (station.getTooltipLines(c.player, TooltipFlag.NORMAL).stream()
@@ -91,10 +130,20 @@ public final class ForgottenOrdersClientSmoke {
           List.of(
               ModEntities.ANCIENT_GUARD_SLIME.get(),
               ModEntities.FORGOTTEN_TRANSPORT_SLIME.get(),
-              ModEntities.ANCIENT_COMMANDER_SLIME.get())) {
+              ModEntities.ANCIENT_COMMANDER_SLIME.get(),
+              ModEntities.FORGOTTEN_MINER_SLIME.get(),
+              ModEntities.FORGOTTEN_TUNNEL_SLIME.get(),
+              ModEntities.MINE_GUARDIAN_SLIME.get())) {
         var slime = type.create(c.level);
         models.add(slime);
         names.add(slime.getType().getDescription().getString());
+      }
+      for (var type :
+          List.of(ModEntities.ANCIENT_MINING_SLIME.get(), ModEntities.ANCIENT_TUNNEL_SLIME.get())) {
+        var worker = (MiningSlime) type.create(c.level);
+        worker.setTool(0, new ItemStack(Items.IRON_PICKAXE));
+        models.add(worker);
+        names.add(worker.getName().getString());
       }
       var transport = ModEntities.TRANSPORT_SLIME.get().create(c.level);
       transport.setAncientOrigin(true);
@@ -108,6 +157,9 @@ public final class ForgottenOrdersClientSmoke {
       for (var item :
           List.of(
               ModItems.ROYAL_GUARD_SLIME.get(),
+              ModItems.ANCIENT_MINING_SLIME.get(),
+              ModItems.ANCIENT_TUNNEL_SLIME.get(),
+              ModItems.OLD_COMMAND_FRAGMENT.get(),
               ModItems.ANCIENT_COMMAND_SEAL.get(),
               ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
               ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get(),
@@ -213,8 +265,8 @@ public final class ForgottenOrdersClientSmoke {
       return false;
     }
     System.out.println(
-        "SLIMIC FORGOTTEN ORDERS CLIENT SMOKE PASSED: three hostile roles, both guard paths,"
-            + " restored professions, seven relic, egg and station models, English and Korean"
+        "SLIMIC FORGOTTEN ORDERS CLIENT SMOKE PASSED: six hostile roles, both guard paths,"
+            + " restored professions, role-specific relic models, English and Korean"
             + " synchronized management at 160 maximum and current health");
     return true;
   }
@@ -267,15 +319,17 @@ public final class ForgottenOrdersClientSmoke {
       g.drawCenteredString(
           font, "Forgotten Orders / " + (phase == 1 ? "Front" : "Rear"), width / 2, 20, 0xffffff);
       for (int i = 0; i < models.size(); i++) {
-        int px = width / 2 - 450 + (i % 4) * 300, py = 370 + (i / 4) * 350;
-        g.fill(px - 140, py - 280, px + 140, py + 15, 0xff263849);
+        int px = width / 2 - 450 + (i % 4) * 300, py = 300 + (i / 4) * 250;
+        g.fill(px - 140, py - 230, px + 140, py + 20, 0xff263849);
         InventoryScreen.renderEntityInInventoryFollowsAngle(
-            g, px, py - 35, 90, phase == 1 ? .4F : 9.4F, .16F, models.get(i));
-        g.drawCenteredString(font, names.get(i), px, py - 270, 0xffffff);
+            g, px, py - 35, 75, phase == 1 ? .4F : 9.4F, .16F, models.get(i));
+        g.drawCenteredString(font, names.get(i), px, py - 220, 0xffffff);
       }
-      for (int i = 0; i < relics.size(); i++) {
-        g.renderItem(relics.get(i), width / 2 - (relics.size() - 1) * 20 + i * 40, height - 55);
-      }
+      g.pose().pushPose();
+      g.pose().translate(width / 2 - (relics.size() - 1) * 24, height - 60, 0);
+      g.pose().scale(2, 2, 1);
+      for (int i = 0; i < relics.size(); i++) g.renderItem(relics.get(i), i * 24, 0);
+      g.pose().popPose();
     }
   }
 }

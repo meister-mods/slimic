@@ -24,8 +24,31 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class BrokenSlimeBlock extends BaseEntityBlock {
+  public static final net.minecraft.world.level.block.state.properties.BooleanProperty MINERALIZED =
+      net.minecraft.world.level.block.state.properties.BooleanProperty.create("mineralized");
+
   public BrokenSlimeBlock(Properties properties) {
     super(properties);
+    registerDefaultState(stateDefinition.any().setValue(MINERALIZED, false));
+  }
+
+  @Override
+  protected void createBlockStateDefinition(
+      net.minecraft.world.level.block.state.StateDefinition.Builder<
+              net.minecraft.world.level.block.Block, BlockState>
+          builder) {
+    builder.add(MINERALIZED);
+  }
+
+  @Override
+  public java.util.List<ItemStack> getDrops(
+      BlockState state, net.minecraft.world.level.storage.loot.LootParams.Builder params) {
+    var entity =
+        params.getOptionalParameter(
+            net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY);
+    if (entity instanceof BrokenSlimeBlockEntity broken && !broken.getAncientCore().isEmpty())
+      return java.util.List.of(broken.getAncientCore());
+    return super.getDrops(state, params);
   }
 
   @Override
@@ -80,6 +103,10 @@ public final class BrokenSlimeBlock extends BaseEntityBlock {
         && player.getAbilities().instabuild
         && level.getBlockEntity(pos) instanceof BrokenSlimeBlockEntity broken
         && !broken.getSlime().isEmpty()) popResource(level, pos, recoveryItem(broken.getSlime()));
+    if (!level.isClientSide
+        && player.getAbilities().instabuild
+        && level.getBlockEntity(pos) instanceof BrokenSlimeBlockEntity broken
+        && !broken.getAncientCore().isEmpty()) popResource(level, pos, broken.getAncientCore());
     super.playerWillDestroy(level, pos, state, player);
   }
 

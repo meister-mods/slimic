@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-/** A permanent gold crown; restored veterans also retain a weathered purple crest. */
+/** A permanent gold crown; restored veterans bear a white crest. */
 public final class RoyalSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel<FriendlySlime>> {
   public static final ModelLayerLocation CROWN =
       new ModelLayerLocation(
@@ -72,9 +72,25 @@ public final class RoyalSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel
       crown
           .getChild("crown")
           .render(pose, sink, light, OverlayTexture.NO_OVERLAY, shade, shade, shade, 1);
-    if (slime.hasAncientOrigin())
+    if (slime.hasAncientOrigin()) {
+      pose.pushPose();
+      if (slime instanceof io.github.meistermods.slimic.entity.MiningSlime)
+        pose.translate(0, -.2, 0);
       crown
           .getChild("relic_crest")
-          .render(pose, sink, light, OverlayTexture.NO_OVERLAY, .7F, .8F, .7F, 1);
+          .render(
+              pose,
+              buffers.getBuffer(
+                  RenderType.entityCutoutNoCull(
+                      ResourceLocation.fromNamespaceAndPath(
+                          "minecraft", "textures/block/white_concrete.png"))),
+              light,
+              OverlayTexture.NO_OVERLAY,
+              1,
+              1,
+              1,
+              1);
+      pose.popPose();
+    }
   }
 }

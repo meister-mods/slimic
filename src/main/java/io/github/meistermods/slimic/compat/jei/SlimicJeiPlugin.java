@@ -262,7 +262,13 @@ public final class SlimicJeiPlugin implements IModPlugin {
     }
     registration.addRecipes(RecipeTypes.CRAFTING, recipes);
     for (var relic :
-        new Item[] {ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(), ModItems.ANCIENT_COMMAND_SEAL.get()})
+        new Item[] {
+          ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
+          ModItems.ANCIENT_COMMAND_SEAL.get(),
+          ModItems.OLD_COMMAND_FRAGMENT.get(),
+          ModItems.ANCIENT_MINING_SLIME.get(),
+          ModItems.ANCIENT_TUNNEL_SLIME.get()
+        })
       registration.addIngredientInfo(
           new ItemStack(relic),
           VanillaTypes.ITEM_STACK,

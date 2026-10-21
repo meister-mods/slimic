@@ -1,7 +1,26 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "minecraft:item/slime_ball",
-    "layer1": "minecraft:item/flint"
-  }
+    "layer0": "slimic:item/damaged_ancient_slime_core"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "slimic:ancient_core_role": 1
+      },
+      "model": "slimic:item/damaged_mining_slime_core"
+    },
+    {
+      "predicate": {
+        "slimic:ancient_core_role": 2
+      },
+      "model": "slimic:item/crushed_tunnel_slime_core"
+    },
+    {
+      "predicate": {
+        "slimic:ancient_core_role": 3
+      },
+      "model": "slimic:item/damaged_mine_guardian_core"
+    }
+  ]
 }

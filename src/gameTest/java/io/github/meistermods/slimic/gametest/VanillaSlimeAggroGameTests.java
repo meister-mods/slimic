@@ -96,7 +96,7 @@ public final class VanillaSlimeAggroGameTests {
         .thenIdle(80)
         .thenExecute(
             () -> {
-              h.assertTrue(wildSlimes.size() == 23, "All professions are covered");
+              h.assertTrue(wildSlimes.size() == 25, "All professions are covered");
               for (int i = 0; i < wildSlimes.size(); i++)
                 h.assertTrue(
                     !unwantedTargets[i] && wildSlimes.get(i).getLastHurtByMob() == null,

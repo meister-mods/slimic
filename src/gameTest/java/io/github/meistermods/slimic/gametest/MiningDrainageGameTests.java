@@ -23,6 +23,8 @@ public final class MiningDrainageGameTests {
 
   private static Basin basin(GameTestHelper h, int width, double reach, float stamina) {
     var a = new LoadedWorkArea(h);
+    // This is a finite basin; exterior terrain must not feed water into the fixture.
+    a.sealSurroundingFluids();
     var water = new ArrayList<BlockPos>();
     int x = 4, z = 4;
     for (int dx = -1; dx <= width; dx++)
@@ -84,6 +86,10 @@ public final class MiningDrainageGameTests {
                         + " sources="
                         + b.water.stream()
                             .filter(p -> h.getLevel().getFluidState(p).isSource())
+                            .count()
+                        + " remaining="
+                        + b.water.stream()
+                            .filter(p -> !h.getLevel().getFluidState(p).isEmpty())
                             .count()))
         .thenExecute(() -> b.miner.setWorking(false))
         .thenIdle(60)

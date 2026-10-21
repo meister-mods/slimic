@@ -2,7 +2,7 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 54 entries and 173 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 58 entries and 188 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
@@ -52,6 +52,8 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Commander Slime | [Commander Slime](GAMEPLAY.md#commander-slimes) |
 | Ender Slime | [Ender Slime](GAMEPLAY.md#ender-slimes) |
 | Attention Slime | [Attention Slime](GAMEPLAY.md#attention-slimes) |
+| Ancient Mining Slime | [Ancient Mining Slime](MINE_RECOVERY.md#ancient-mining-slime) |
+| Ancient Tunnel Slime | [Ancient Tunnel Slime](MINE_RECOVERY.md#ancient-tunnel-slime) |
 
 ## Working together
 
@@ -96,3 +98,6 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Slime restoration | [Restore a remnant](FORGOTTEN_ORDERS.md#restore-a-remnant) |
 | Kingdom relics | [Occupied ruins](FORGOTTEN_ORDERS.md#occupied-ruins) |
 | Royal Guard Slime | [Royal Guard Slime](FORGOTTEN_ORDERS.md#royal-guard-slime) |
+| Collapsed mines | [Collapsed mines](THE_SLIMIC.md#collapsed-mines) |
+
+| Mine recovery | [Collapsed Mine Recovery](MINE_RECOVERY.md) |

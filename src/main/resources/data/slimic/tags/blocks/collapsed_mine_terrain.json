@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:dirt",
+    "#minecraft:base_stone_overworld",
+    {
+      "id": "#forge:ores",
+      "required": false
+    },
+    "minecraft:gravel",
+    "minecraft:clay",
+    "minecraft:mud",
+    "minecraft:calcite",
+    "minecraft:sand",
+    "slimic:slime_silt",
+    "slimic:slimic_clay",
+    "slimic:congealed_slime",
+    "slimic:hardened_slime",
+    "slimic:dried_slime",
+    "slimic:luminous_slime"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "고대 채굴 슬라임",
+  "icon": "slimic:ancient_mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 24,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "청크 광산의 시체나 잊혀진 채굴 슬라임에게서 얻은 코어를 $(l:world/mine_recovery)폐광 코어 복원$()으로 되살립니다. 제작 조합법은 없습니다. 보라색 테두리의 채굴 코어 문장과 하얀색 머리 문양으로 일반 채굴 슬라임과 구분합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "현재 굴착 층에서 Forge 광석 태그에 속한 블록을 우선하며 채굴·배수·보강 시 기력을 절반만 소비합니다. 먼 광맥을 드러내거나 다른 층을 건너뛰지는 않습니다. 감지 범위와 작업 거리 제한은 그대로 적용됩니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l:companions/mining)채굴 슬라임$()과 같은 곡괭이·삽·가방·채굴 명령·양동이·벽 보급품을 사용합니다. 운반·창고 슬라임이 화물을 비우고 도구·양동이·조약돌을 보급합니다. 공유 계단은 보호됩니다. 최초 소환·회수 후 배치·차원문 이동 후에는 대기로 시작합니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_mining_slime": 0
+  }
+}

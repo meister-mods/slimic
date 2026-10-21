@@ -37,7 +37,10 @@ final class SlimeBlockBreaking {
     }
     lastTick = slime.tickCount;
     // Like native Efficiency, the work bonus requires a tool effective on this block.
-    double multiplier = held.getDestroySpeed(next) > 1 ? SlimeStat.WORK_SPEED.value(slime) : 1;
+    double multiplier =
+        held.getDestroySpeed(next) > 1
+            ? SlimeStat.WORK_SPEED.value(slime) * slime.blockWorkMultiplier(next)
+            : 1;
     double amount = next.getDestroyProgress(worker, slime.level(), pos) * multiplier;
     if (Double.isNaN(amount) || amount <= 0) return false;
     progress = (float) Math.min(1, progress + amount);

@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "slimic:chiseled_slimic_stone_bricks"
-  },
-  "result": "slimic:command_pedestal",
-  "count": 1
-}

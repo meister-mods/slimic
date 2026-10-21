@@ -57,8 +57,11 @@ final class WorkNavigation extends GroundPathNavigation {
         || !level.hasChunkAt(mob.blockPosition())) return null;
     for (var target : targets) if (!level.hasChunkAt(target)) return null;
     float range = distance;
-    for (var target : targets)
+    for (var target : targets) {
       range = Math.max(range, (float) Math.sqrt(target.distToCenterSqr(mob.position())) * 2 + 8);
+      // Perimeter stairs require a long horizontal detour even when the lower target is close.
+      range = Math.max(range, (float) Math.abs(target.getY() - mob.getY()) * 4 + 16);
+    }
     range = Math.max(24, range);
     int radius = (int) Math.ceil(range) + padding;
     var origin = mob.blockPosition();

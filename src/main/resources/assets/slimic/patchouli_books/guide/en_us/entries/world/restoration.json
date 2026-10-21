@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Your first expedition can follow a complete loop: find a ruin, defeat a remnant, collect its core and seal, restore it, and return home. Ancient cores are separate from the Broken Slime Blocks used to revive owned companions."
+      "text": "Ruin guards, transports, and commanders leave cores restored with seals. $(l:world/mine_recovery)Mine cores$() come from broken corpses or mine remnants and use command fragments instead. Restoration makes a new companion; your own fallen companions use their usual revival."
     },
     {
       "type": "patchouli:text",
-      "text": "Hold a damaged core and right-click a $(item)Slime Restoration Station$(). Keep one seal and one slimeball in your inventory. They are consumed and the core becomes a summon item. Find an intact station in ruins or cut Chiseled Slimic Stone Bricks with a stonecutter. Cracked stations do not work."
+      "text": "Hold a core and right-click a $(item)Slime Restoration Station$(). Keep one slimeball and one catalyst in your inventory: a seal for ruin cores, or an Old Command Fragment for mine cores. Mine cores require the Overworld. Materials are consumed once and the core becomes a summon item. Find an intact station in ruins or craft one with the recipe shown here."
     },
     {
       "type": "patchouli:text",
@@ -18,7 +18,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Ancient names, purple insignia, and some Endurance training remain. Each core can be restored once across the saved world. Alternatively, combine a Combat Slime with a seal to retain your existing companion’s growth, equipment, and cargo."
+      "text": "Ancient names and white insignia remain. Useful stats receive 12–28 invested upgrades, including old Endurance training. Each core keeps its roll through saving and recovery and can be restored once. Crafting a Combat Slime with a seal instead retains that companion’s exact growth."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:world/command_pedestal",
+      "text": "A station is crafted at a workbench. Cracked stations cannot restore cores."
     }
   ],
   "extra_recipe_mappings": {

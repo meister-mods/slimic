@@ -59,6 +59,8 @@ The following scenarios have independent native game regressions. Transfers chec
 | I49 | Core / pedestal / player | Restore with new ownership and UUID at one health in Wait; consume each material once and reject duplicate or reentrant redemption. |
 | I50 | Combat / Royal Guard | Preserve identity, growth, equipment and cargo through seal specialization; keep safe initial orders. |
 | I51 | Royal Guard / allies / attacker | Redirect one eligible hit, honor ownership, PvP, sight and target filters, spend actual resources, reject canceled damage and prevent guard chains. |
+| I52 | Mine corpse / core / restoration station | Break once for one core; restore once in the Overworld with a fragment and slimeball, separate from owned companion revival. |
+| I53 | Ancient worker / logistics / growth | Shares ordinary tool, stair, bag, and supply contracts; restored ancient roles retain random invested training across recovery, portals, and saves. |
 
 Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 

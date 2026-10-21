@@ -35,6 +35,47 @@ public final class ModItems {
           () ->
               new io.github.meistermods.slimic.item.SpecializedSlimeItem(
                   new Item.Properties(), ModEntities.ROYAL_GUARD_SLIME));
+  public static final RegistryObject<Item> ANCIENT_MINING_SLIME =
+      ITEMS.register(
+          "ancient_mining_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON),
+                  ModEntities.ANCIENT_MINING_SLIME));
+  public static final RegistryObject<Item> ANCIENT_TUNNEL_SLIME =
+      ITEMS.register(
+          "ancient_tunnel_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON),
+                  ModEntities.ANCIENT_TUNNEL_SLIME));
+  public static final RegistryObject<Item> OLD_COMMAND_FRAGMENT =
+      ITEMS.register(
+          "old_command_fragment",
+          () ->
+              new Item(
+                  new Item.Properties()
+                      .rarity(net.minecraft.world.item.Rarity.UNCOMMON)
+                      .fireResistant()));
+  public static final RegistryObject<Item> FORGOTTEN_MINER_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "forgotten_miner_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.FORGOTTEN_MINER_SLIME, 0x476339, 0xC19B3E, new Item.Properties()));
+  public static final RegistryObject<Item> FORGOTTEN_TUNNEL_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "forgotten_tunnel_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.FORGOTTEN_TUNNEL_SLIME, 0x476339, 0x68726D, new Item.Properties()));
+  public static final RegistryObject<Item> MINE_GUARDIAN_SLIME_SPAWN_EGG =
+      ITEMS.register(
+          "mine_guardian_slime_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.MINE_GUARDIAN_SLIME, 0x384C35, 0xAC7A4B, new Item.Properties()));
+
   public static final RegistryObject<Item> ANCIENT_COMMAND_SEAL =
       ITEMS.register(
           "ancient_command_seal",
