@@ -66,6 +66,8 @@ Run `build` and `runGameTestServer` after gameplay changes. Coverage includes cr
 
 Tests use a structure loaded one block above its marker, so the fixture floor is at relative Y=1. Keep world fixtures separate from production assets. Work-area preparation processes native chunk tasks until all forced chunks support entity ticks. Preparation has a 30-second real-time bound; action tick deadlines remain unchanged.
 
+Development GameTest servers start at midday with natural mob spawning, daylight progression, and weather cycling disabled. Cases create their own targets and explicitly establish any time or weather conditions they need.
+
 ## Stats, mining, and integrations
 
 Shared stat levels are synchronized as entity data. Server-side menu checks enforce ownership, distance, available points, and upgrade limits. Rename packets apply only to the sender's active Slime menu. Health upgrades change the maximum without healing the companion.
@@ -392,3 +394,11 @@ Network protocol 17 requires matching clients and servers for the new entity typ
 Pedestal restoration respects both Forge block-use and item-use vetoes. Ancient carriers may route up to twelve blocks from their ruin origin; the guards' smaller idle patrol radius must not interrupt a valid delivery route.
 
 Ruin generation confines structures and native entity insertion to The Slimic's current chunk. Patrol navigation and sight checks use loaded terrain with bounded path effort. Carriers require two block entities with their own ruin UUID; opening a depot claims it. Royal interception runs on final living damage, admits one eligible guard, prevents recursion, respects canceled guard damage, and reuses combat ownership and target checks. `ModEntities.companionTypes()` excludes hostile remnants from companion item, menu, and recovery contracts. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for player-visible behavior.
+
+## Collapsed mines
+
+`CollapsedMineFeature` plans chunk-contained tunnel or quarry sites, validates the entire dry terrain volume, and only then writes blocks. Quarry geometry uses `QuarryPlan`; its profile is registered through the server executor because feature placement can run on a generation worker. Ruin Broken Slime Blocks use the existing block with an empty block entity, so no ownership, companion snapshot, or revival entitlement is created.
+
+Tunnel height follows the actual rotated surface entrance. A surface remnant keeps that entrance within the existing ruin feature's block-entity collision checks, preventing later surface ruins from paving over a covered tunnel. Quarry treads use stable cobblestone rather than unsupported falling terrain.
+
+Loaded work navigation includes the horizontal detours of perimeter stairs when estimating routes to a different height. Its search remains limited to 4,096 nodes and loaded chunks. This allows carriers to collect from deeper excavation layers and return to storage without changing terrain or bypassing normal reach checks.

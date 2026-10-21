@@ -16,6 +16,8 @@ public final class ModWorldgen {
       DeferredRegister.create(ForgeRegistries.FEATURES, Slimic.MOD_ID);
   public static final RegistryObject<Feature<?>> RUINS =
       FEATURES.register("slimic_ruins", SlimicRuinFeature::new);
+  public static final RegistryObject<Feature<?>> COLLAPSED_MINE =
+      FEATURES.register("collapsed_mine", CollapsedMineFeature::new);
   public static final RegistryObject<Feature<?>> GEL_PATCHES =
       FEATURES.register("gel_patches", GelPatchFeature::new);
   public static final RegistryObject<Feature<?>> VEGETATION =

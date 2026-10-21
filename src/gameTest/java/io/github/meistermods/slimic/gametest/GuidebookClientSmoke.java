@@ -142,7 +142,7 @@ public final class GuidebookClientSmoke {
     var landing = c.screen;
     var type = Class.forName("vazkii.patchouli.client.book.gui.GuiBookIndex");
     c.setScreen((Screen) type.getConstructor(book.getClass()).newInstance(book));
-    if (((List<?>) field(c.screen, "allEntries")).size() != 54)
+    if (((List<?>) field(c.screen, "allEntries")).size() != 55)
       throw new IllegalStateException("The searchable index must include all guide entries");
     String query = language == 1 ? "치유 슬라임" : "Healing Slime";
     for (char letter : query.toCharArray()) c.screen.charTyped(letter, 0);
@@ -267,7 +267,7 @@ public final class GuidebookClientSmoke {
           throw new IllegalStateException(
               "Guide contents failed to build: " + invoke(contents, "getException"));
         var all = (Map<?, ?>) field(contents, "entries");
-        if (all.size() != 54 || ((Map<?, ?>) field(contents, "categories")).size() != 7)
+        if (all.size() != 55 || ((Map<?, ?>) field(contents, "categories")).size() != 7)
           throw new IllegalStateException("Incomplete guide contents: " + all.size());
         for (var item : ForgeRegistries.ITEMS.getEntries()) {
           if (!item.getKey().location().getNamespace().equals("slimic")) continue;
@@ -365,12 +365,12 @@ public final class GuidebookClientSmoke {
           openEntry(c);
           return false;
         }
-        if (rendered != 173)
-          throw new IllegalStateException("Expected 173 content pages, rendered " + rendered);
+        if (rendered != 177)
+          throw new IllegalStateException("Expected 177 content pages, rendered " + rendered);
         System.out.println(
             "SLIMIC GUIDEBOOK LANGUAGE PASSED: "
                 + LANGUAGES.get(language)
-                + "; 54 entries; 173 rendered pages");
+                + "; 55 entries; 177 rendered pages");
         if (++language < LANGUAGES.size()) {
           phase = 3;
           return false;
@@ -384,9 +384,9 @@ public final class GuidebookClientSmoke {
                 "languages",
                 LANGUAGES,
                 "entries",
-                54,
+                55,
                 "pages_per_language",
-                173,
+                177,
                 "item_lookups",
                 checkedLookups,
                 "entry_links",

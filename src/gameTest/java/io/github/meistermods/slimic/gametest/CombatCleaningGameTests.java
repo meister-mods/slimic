@@ -68,11 +68,20 @@ public final class CombatCleaningGameTests {
       // Their incidental drops must not become targets in pickup assertions.
       for (int dx = 0; dx < 12; dx++)
         for (int dz = 0; dz < 12; dz++) {
+          int ceiling =
+              Math.max(
+                  109,
+                  helper
+                      .getLevel()
+                      .getHeight(
+                          net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE,
+                          x + dx,
+                          z + dz));
           helper
               .getLevel()
               .setBlockAndUpdate(
                   new BlockPos(x + dx, 100, z + dz), Blocks.BEDROCK.defaultBlockState());
-          for (int y = 101; y <= 108; y++)
+          for (int y = 101; y < ceiling; y++)
             helper
                 .getLevel()
                 .setBlockAndUpdate(new BlockPos(x + dx, y, z + dz), Blocks.AIR.defaultBlockState());
@@ -88,6 +97,14 @@ public final class CombatCleaningGameTests {
   private static void force(GameTestHelper h, int cx, int cz, boolean value) {
     for (int x = -1; x <= 1; x++)
       for (int z = -1; z <= 1; z++) h.getLevel().setChunkForced(cx + x, cz + z, value);
+    if (value) {
+      BlockPos[] positions = new BlockPos[9];
+      int index = 0;
+      for (int x = -1; x <= 1; x++)
+        for (int z = -1; z <= 1; z++)
+          positions[index++] = new BlockPos((cx + x) << 4, 101, (cz + z) << 4);
+      LoadedWorkArea.awaitEntityTicks(h, positions);
+    }
   }
 
   private static CombatSlime fighter(Arena a) {
@@ -413,7 +430,12 @@ public final class CombatCleaningGameTests {
           pet.hurt(h.getLevel().damageSources().mobAttack(attacker), 6);
           h.assertTrue(
               pet.getHealth() == pet.getMaxHealth() && pet.getOffhandItem().getDamageValue() > 0,
-              "Native shield facing and durability must work for combat slimes");
+              "Native shield facing and durability must work for combat slimes; entity ticks="
+                  + pet.tickCount
+                  + ", blocking="
+                  + pet.isBlocking()
+                  + ", health="
+                  + pet.getHealth());
           a.done();
         });
   }
@@ -491,16 +513,30 @@ public final class CombatCleaningGameTests {
     h.assertTrue(
         SlimeStat.DETECTION_RANGE.value(pet) == 45,
         "Range upgrades must also be multiplied by five");
+    // An idle-area check must not acquire valid targets from incidental leaf decay.
+    var randomTicks =
+        h.getLevel().getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_RANDOMTICKING);
+    int previousRandomTicks = randomTicks.get();
+    randomTicks.set(0, h.getLevel().getServer());
     ItemEntity outside = drop(a, new ItemStack(Items.DIAMOND), a.home.add(46, 0, 0));
     h.runAfterDelay(
         80,
         () -> {
-          h.assertTrue(
-              pet.position().distanceToSqr(a.home) < .01
-                  && pet.getPickupTarget() == null
-                  && outside.isAlive()
-                  && !pet.hasCargo(),
-              "Idle cleaners must stay home and ignore items outside the fixed radius");
+          try {
+            h.assertTrue(
+                pet.position().distanceToSqr(a.home) < .01
+                    && pet.getPickupTarget() == null
+                    && outside.isAlive()
+                    && !pet.hasCargo(),
+                "Idle cleaners must stay home and ignore items outside the fixed radius: pos="
+                    + pet.position()
+                    + ", target="
+                    + pet.getPickupTarget()
+                    + ", cargo="
+                    + pet.hasCargo());
+          } finally {
+            randomTicks.set(previousRandomTicks, h.getLevel().getServer());
+          }
           a.done();
         });
   }

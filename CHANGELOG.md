@@ -4,6 +4,28 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.6] - 2026-10-21
+
+### Added
+
+- Collapsed mines in newly generated dry, level chunks of The Slimic: descending 3×3 tunnels and unfinished 16×16 quarries with visible surface entrances, timber, rubble, cobwebs, and fallen slime remains.
+- Quarries retain the Mining Slime’s two-wide perimeter stairs, reinforce their treads against falling terrain, and persist their protection for later workers. Ancient remains use empty Broken Slime Blocks and cannot be revived.
+- Bilingual mine documentation and a four-page guidebook entry, bringing the guide to 55 entries and 177 pages per language.
+
+### Fixed
+
+- Allow working companions to follow the longer detours needed by deep perimeter stairs. Height differences now contribute to the loaded-terrain path distance, while the existing 4,096-node budget and chunk loading restrictions remain unchanged.
+
+### Validation
+
+- More than two hours of independent review cover terrain, companion cooperation, documentation, rendering, and save compatibility. Complete and focused native server runs verify all 644 regression scenarios with JEI and Patchouli present and absent.
+- Mine cases cover four tunnel orientations, all five surface ruin variants, stable stair treads, persistent protection, empty remains, collision rejection, and dimension boundaries. A real cargo round trip fails before the vertical-route correction and passes afterward; a saved-mine replay delivers exactly 192 items to the original chest.
+- Actual generation samples 4,096 chunks and finds both mine shapes. Separate server restarts preserve both sites, all five empty remains, and stair protection; revival attempts and block-item replacement cannot create companions.
+- Separate 30-minute native runs verify two miners and a carrier at a generated quarry, and tunnel workers resuming all four rotated 3×3 faces. The quarry run preserves every original tread through 1,795 checks while delivering cargo.
+- A separate 110-minute preservation run completes 30,268 transfers across all twenty-three professions and 109 core restorations, retaining identities, ownership, vitals, equipment, cargo, storage, and duplicate-redemption protection.
+- Native clients verify generated surface entrances and interiors. Both fonts render all 55 guidebook entries and 177 pages in English, Korean, and English fallback. A 0.3.5 save upgrade preserves companion identities, ownership, vitals, equipment, cargo, and core redemption data.
+- Native AI fixtures wait for entity ticks and isolate ambient spawning, weather, incidental item drops, and exterior fluid sources. Google Java Format, the Java 17 build, bilingual documentation, resources, release contents, and runtime linkage checks pass. Release code and resources match the tested server snapshots.
+
 ## [0.3.5] - 2026-10-20
 
 ### Added
