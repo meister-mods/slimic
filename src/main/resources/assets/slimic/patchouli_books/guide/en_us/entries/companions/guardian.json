@@ -20,7 +20,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Health is ten times the common value: initially 160, +40 per Health point. A reserve slot holds up to 64 matching totems. One guardian can spend one to save its owner from lethal damage within 16 blocks; held totems act first."
+      "text": "Health is four times the common value: initially 64, +16 per Health point. A reserve slot holds up to 64 matching totems. One guardian can spend one to save its owner from lethal damage within 16 blocks; held totems act first."
     }
   ],
   "extra_recipe_mappings": {

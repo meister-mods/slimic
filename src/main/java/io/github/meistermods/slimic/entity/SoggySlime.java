@@ -12,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -247,7 +246,7 @@ public final class SoggySlime extends FriendlySlime {
     }
   }
 
-  private static final class RoamNavigation extends GroundPathNavigation {
+  private static final class RoamNavigation extends WorkNavigation {
     private PathFinder loadedFinder;
 
     RoamNavigation(SoggySlime slime, Level level) {

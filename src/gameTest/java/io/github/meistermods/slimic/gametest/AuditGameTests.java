@@ -7,7 +7,6 @@ import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
-import io.github.meistermods.slimic.menu.IntContainerData;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.registry.ModEntities;
 import java.util.UUID;
@@ -248,8 +247,8 @@ public final class AuditGameTests {
       GameTestHelper h, net.minecraft.world.inventory.AbstractContainerMenu menu, boolean tuner) {
     var slime = tuner ? ((CreativeSlimeTunerMenu) menu).slime() : ((SlimeMenu) menu).slime();
     slime.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(100);
-    var values = new net.minecraft.world.inventory.SimpleContainerData(tuner ? 13 : 20);
-    var receiver = new IntContainerData(values, true);
+    var receiver =
+        new io.github.meistermods.slimic.menu.NumericContainerData(tuner ? 13 : 20, true, null);
     h.assertTrue(!receiver.isReady(), "The client must wait for the complete initial snapshot");
     menu.addSlotListener(
         new net.minecraft.world.inventory.ContainerListener() {
@@ -280,7 +279,7 @@ public final class AuditGameTests {
       double expected =
           tuner ? ((CreativeSlimeTunerMenu) menu).value(stat) : ((SlimeMenu) menu).value(stat);
       h.assertTrue(
-          values.get(stat.ordinal()) == Math.round(expected * stat.syncScale()),
+          receiver.value(stat.ordinal()) == expected,
           "Native packet round-trip must retain "
               + stat
               + " ("
@@ -288,16 +287,16 @@ public final class AuditGameTests {
               + ")");
     }
     h.assertTrue(
-        values.get(SlimeStat.MOVEMENT_SPEED.ordinal()) == 100000,
+        receiver.value(SlimeStat.MOVEMENT_SPEED.ordinal()) == 100,
         "High movement bits must survive a signed-short packet");
     if (!tuner)
       h.assertTrue(
-          values.get(SlimeStat.DETECTION_RANGE.ordinal()) == 50400,
+          receiver.value(SlimeStat.DETECTION_RANGE.ordinal()) == 5040,
           "Effective cleaning range must retain both its modifier and fivefold multiplier");
     slime.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(.3);
     menu.broadcastChanges();
     h.assertTrue(
-        values.get(SlimeStat.MOVEMENT_SPEED.ordinal()) == 300,
+        receiver.value(SlimeStat.MOVEMENT_SPEED.ordinal()) == .3,
         "Returning to a small value must clear previously synchronized high bits");
   }
 }

@@ -2,7 +2,6 @@ package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.config.SlimicConfig;
 import io.github.meistermods.slimic.registry.ModItems;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TransportSlime extends BagSlime {
   public enum Status {
@@ -195,13 +193,11 @@ public class TransportSlime extends BagSlime {
   }
 
   private List<ChunkPos> workChunks() {
-    BlockPos center = getWorkOrigin();
-    int radius = (int) Math.ceil(SlimeStat.DETECTION_RANGE.value(this));
-    List<ChunkPos> chunks = new ArrayList<>();
-    for (int x = (center.getX() - radius) >> 4; x <= (center.getX() + radius) >> 4; x++)
-      for (int z = (center.getZ() - radius) >> 4; z <= (center.getZ() + radius) >> 4; z++)
-        chunks.add(new ChunkPos(x, z));
-    return chunks;
+    return WorkSearch.loadedChunks(
+            (ServerLevel) level(), getWorkOrigin(), SlimeStat.DETECTION_RANGE.value(this))
+        .stream()
+        .map(chunk -> chunk.getPos())
+        .toList();
   }
 
   private IItemHandler targetInventory() {
@@ -209,7 +205,9 @@ public class TransportSlime extends BagSlime {
   }
 
   private boolean storageFull() {
-    for (int slot = 0; slot < getCapacity(); slot++) {
+    if (getBag().occupiedSlots().stream().filter(slot -> slot < getCapacity()).count()
+        < getCapacity()) return false;
+    for (int slot : getBag().occupiedSlots()) {
       ItemStack stack = getBag().getStackInSlot(slot);
       if (stack.isEmpty()
           || stack.getCount() < Math.min(stack.getMaxStackSize(), getBag().getSlotLimit(slot)))
@@ -219,27 +217,27 @@ public class TransportSlime extends BagSlime {
   }
 
   private static int toolSlot(IItemHandler inventory, BagSlime worker) {
-    for (int slot = 0; slot < inventory.getSlots(); slot++)
+    for (int slot : SlimeBag.contentsSlots(inventory))
       if (worker.acceptsWorkTool(inventory.getStackInSlot(slot))) return slot;
     return -1;
   }
 
   private int supplySlot(IItemHandler inventory, BagSlime worker) {
-    for (int slot = 0; slot < inventory.getSlots(); slot++) {
+    for (int slot : SlimeBag.contentsSlots(inventory)) {
       ItemStack stack = inventory.getStackInSlot(slot);
       if (!worker.acceptsWorkTool(stack)) continue;
       ItemStack offered = stack.copyWithCount(Math.min(worker.workSupplyLimit(), stack.getCount()));
-      if (ItemHandlerHelper.insertItemStacked(getBag(), offered.copy(), true).getCount()
+      if (SlimeBag.insertItemStacked(getBag(), offered.copy(), true).getCount()
           < offered.getCount()) return slot;
     }
     return -1;
   }
 
   private static boolean canAcceptAny(IItemHandler destination, IItemHandler source) {
-    for (int slot = 0; slot < source.getSlots(); slot++) {
+    for (int slot : SlimeBag.contentsSlots(source)) {
       ItemStack stack = source.getStackInSlot(slot);
       if (!stack.isEmpty()
-          && ItemHandlerHelper.insertItemStacked(destination, stack.copy(), true).getCount()
+          && SlimeBag.insertItemStacked(destination, stack.copy(), true).getCount()
               < stack.getCount()) return true;
     }
     return false;
@@ -249,11 +247,10 @@ public class TransportSlime extends BagSlime {
     ItemStack sample = source.extractItem(slot, limit, true);
     if (sample.isEmpty()) return 0;
     int moved =
-        sample.getCount()
-            - ItemHandlerHelper.insertItemStacked(destination, sample.copy(), true).getCount();
+        sample.getCount() - SlimeBag.insertItemStacked(destination, sample.copy(), true).getCount();
     if (moved == 0) return 0;
     ItemStack extracted = source.extractItem(slot, moved, false);
-    ItemHandlerHelper.insertItemStacked(destination, extracted, false);
+    SlimeBag.insertItemStacked(destination, extracted, false);
     return moved;
   }
 
@@ -353,8 +350,8 @@ public class TransportSlime extends BagSlime {
     int actions = 0;
     switch (job) {
       case COLLECT -> {
-        for (int slot = 0; slot < workerTarget.getBag().getSlots() && getStamina() >= 1; slot++)
-          if (transfer(workerTarget.getBag(), slot, getBag(), 64) > 0) {
+        for (int slot : workerTarget.getBag().occupiedSlots())
+          if (getStamina() >= 1 && transfer(workerTarget.getBag(), slot, getBag(), 64) > 0) {
             spendStamina(1);
             if (storesCargo()) recordCompletedWork(SlimicConfig.TRANSPORT_ACTIVITY.get());
             actions++;
@@ -362,8 +359,8 @@ public class TransportSlime extends BagSlime {
       }
       case DEPOSIT -> {
         IItemHandler destination = targetInventory();
-        for (int slot = 0; slot < getBag().getSlots() && getStamina() >= 1; slot++)
-          if (transfer(getBag(), slot, destination, 64) > 0) {
+        for (int slot : getBag().occupiedSlots())
+          if (getStamina() >= 1 && transfer(getBag(), slot, destination, 64) > 0) {
             spendStamina(1);
             recordCompletedWork(SlimicConfig.TRANSPORT_ACTIVITY.get());
             actions++;

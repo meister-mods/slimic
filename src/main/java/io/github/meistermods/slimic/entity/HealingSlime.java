@@ -26,7 +26,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class HealingSlime extends BagSlime {
   public enum Status {
@@ -89,8 +88,8 @@ public class HealingSlime extends BagSlime {
     if (!working) return Status.FOLLOWING;
     if (status == Status.NO_SLIMEBALLS) {
       if (ballSlot() >= 0) return Status.IDLE;
-      if (!ItemHandlerHelper.insertItemStacked(getBag(), new ItemStack(Items.SLIME_BALL), true)
-          .isEmpty()) return Status.FULL;
+      if (!SlimeBag.insertItemStacked(getBag(), new ItemStack(Items.SLIME_BALL), true).isEmpty())
+        return Status.FULL;
     }
     if (treatmentBlocked
         && (status == Status.IDLE || status == Status.HEALING || status == Status.REVIVING))
@@ -140,12 +139,11 @@ public class HealingSlime extends BagSlime {
   public int receiveWorkSupply(ItemStack stack) {
     if (!acceptsWorkTool(stack)) return 0;
     ItemStack offered = stack.copyWithCount(Math.min(workSupplyLimit(), stack.getCount()));
-    return offered.getCount()
-        - ItemHandlerHelper.insertItemStacked(getBag(), offered, false).getCount();
+    return offered.getCount() - SlimeBag.insertItemStacked(getBag(), offered, false).getCount();
   }
 
   protected int ballSlot() {
-    for (int slot = 0; slot < getCapacity(); slot++)
+    for (int slot : getBag().occupiedSlots())
       if (getBag().getStackInSlot(slot).is(Items.SLIME_BALL)) return slot;
     return -1;
   }
@@ -209,25 +207,22 @@ public class HealingSlime extends BagSlime {
     blocked
         .entrySet()
         .removeIf(entry -> entry.getValue() <= now || !stillNeedsTreatment(server, entry.getKey()));
-    int radius = (int) Math.ceil(SlimeStat.DETECTION_RANGE.value(this));
+    double radius = SlimeStat.DETECTION_RANGE.value(this);
     BlockPos origin = getWorkOrigin();
-    for (int x = (origin.getX() - radius) >> 4; x <= (origin.getX() + radius) >> 4; x++)
-      for (int z = (origin.getZ() - radius) >> 4; z <= (origin.getZ() + radius) >> 4; z++) {
-        var chunk = server.getChunkSource().getChunkNow(x, z);
-        if (chunk == null) continue;
-        for (var entity : chunk.getBlockEntities().values())
-          if (entity instanceof BrokenSlimeBlockEntity && !entity.isRemoved()) {
-            BlockPos pos = entity.getBlockPos();
-            if (!blocked.containsKey(pos)
-                && eligible(pos)
-                && (brokenTarget == null
-                    || pos.distToCenterSqr(position()) < brokenTarget.distToCenterSqr(position())))
-              brokenTarget = pos.immutable();
-          }
-      }
+    for (var chunk : WorkSearch.loadedChunks(server, origin, radius)) {
+      for (var entity : chunk.getBlockEntities().values())
+        if (entity instanceof BrokenSlimeBlockEntity && !entity.isRemoved()) {
+          BlockPos pos = entity.getBlockPos();
+          if (!blocked.containsKey(pos)
+              && eligible(pos)
+              && (brokenTarget == null
+                  || pos.distToCenterSqr(position()) < brokenTarget.distToCenterSqr(position())))
+            brokenTarget = pos.immutable();
+        }
+    }
     if (brokenTarget != null) return;
     patient =
-        server.getEntitiesOfClass(FriendlySlime.class, new AABB(origin).inflate(radius)).stream()
+        WorkSearch.entities(server, FriendlySlime.class, new AABB(origin).inflate(radius)).stream()
             .filter(this::eligible)
             .filter(slime -> !blocked.containsKey(slime.getUUID()))
             .min(Comparator.comparingDouble(this::distanceToSqr))

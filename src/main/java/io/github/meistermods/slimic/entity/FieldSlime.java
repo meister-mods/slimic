@@ -27,8 +27,6 @@ import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
 /** Shared equipment, protected world edits and logistics for surface workers. */
 public abstract class FieldSlime extends BagSlime {
@@ -219,7 +217,7 @@ public abstract class FieldSlime extends BagSlime {
               return;
             }
             if (!acceptsWorkTool(getTool())) {
-              for (int i = 0; i < getCapacity(); i++)
+              for (int i : getBag().occupiedSlots())
                 if (acceptsWorkTool(getBag().getStackInSlot(i))) {
                   setTool(getBag().extractItem(i, 1, false));
                   break;
@@ -385,12 +383,9 @@ public abstract class FieldSlime extends BagSlime {
   }
 
   protected final boolean canStore(List<ItemStack> drops) {
-    var simulation = new ItemStackHandler(getCapacity());
-    for (int i = 0; i < getCapacity(); i++)
-      simulation.setStackInSlot(i, getBag().getStackInSlot(i).copy());
+    var simulation = getBag().copyForSimulation();
     for (var stack : drops)
-      if (!ItemHandlerHelper.insertItemStacked(simulation, stack.copy(), false).isEmpty())
-        return false;
+      if (!SlimeBag.insertItemStacked(simulation, stack.copy(), false).isEmpty()) return false;
     return true;
   }
 
@@ -439,7 +434,7 @@ public abstract class FieldSlime extends BagSlime {
         return false;
       }
       state.getBlock().destroy(level, pos, state);
-      for (var stack : drops) ItemHandlerHelper.insertItemStacked(getBag(), stack, false);
+      for (var stack : drops) SlimeBag.insertItemStacked(getBag(), stack, false);
       getTool().mineBlock(level, state, pos, player);
       level.levelEvent(2001, pos, Block.getId(state));
       completed();

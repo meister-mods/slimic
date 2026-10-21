@@ -136,7 +136,7 @@ public final class HeraldSlime extends FriendlySlime {
     double range = SlimeStat.DETECTION_RANGE.value(this);
     watchingWorkers = false;
     for (FriendlySlime worker :
-        level().getEntitiesOfClass(FriendlySlime.class, getBoundingBox().inflate(range))) {
+        WorkSearch.entities(level(), FriendlySlime.class, getBoundingBox().inflate(range))) {
       if (!isWorking()) break;
       if (worker == this
           || !worker.isAlive()

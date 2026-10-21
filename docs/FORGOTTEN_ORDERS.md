@@ -61,7 +61,7 @@ Restoration provides a new veteran with ancient collection traits. Specializatio
 
 ## Royal Guard Slime
 
-Base maximum health is 160 (80 hearts), matching the Guardian Angel. A permanent +144 profession bonus retains the original base and Health training; each normal Health upgrade still adds four. Existing guards keep their current health when the bonus is applied. Recovery, crafting, and reload never stack the bonus or heal the companion.
+Maximum health is four times the corresponding common value: initially 64 (32 hearts), with 16 added per normal Health upgrade, matching the Guardian Angel. A permanent profession multiplier preserves the original base and training. Legacy profession bonuses are replaced without stacking; current health is retained up to the new maximum, without healing. Creative base Health has no gameplay upper limit.
 
 Royal Guards accept the Combat Slime's sword, shield, armor, bag, and six independent target filters. Select **Fight** to assign the current position as a guard post. Eligible targets must remain within Detection Range of the post. With no target the guard returns to its post. Follow or Wait ends active guarding; selecting Fight again assigns a new post. Recovery and portal travel relocate the post and return the guard to Wait; ordinary saving preserves an explicit work order and post.
 

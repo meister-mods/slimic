@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Restore a quarry corpse’s core, or one recovered from a Forgotten Miner, through $(l:world/mine_recovery)mine recovery$(). This profession has no crafting recipe. Its purple-framed mining-core crest and weathered head insignia distinguish it from an ordinary miner."
+      "text": "Restore a quarry corpse’s core, or one recovered from a Forgotten Miner, through $(l:world/mine_recovery)mine recovery$(). This profession has no crafting recipe. Its purple-framed mining-core crest and white ancient insignia distinguish it from an ordinary miner."
     },
     {
       "type": "patchouli:text",

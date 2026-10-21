@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.items.IItemHandler;
@@ -60,22 +59,21 @@ final class WorkStorage {
 
   static List<Target> find(FriendlySlime actor, BlockPos origin) {
     if (!(actor.level() instanceof ServerLevel level)) return List.of();
-    int radius = (int) Math.ceil(SlimeStat.DETECTION_RANGE.value(actor));
+    double radius = SlimeStat.DETECTION_RANGE.value(actor);
     List<Target> result = new ArrayList<>();
-    for (int x = (origin.getX() - radius) >> 4; x <= (origin.getX() + radius) >> 4; x++)
-      for (int z = (origin.getZ() - radius) >> 4; z <= (origin.getZ() + radius) >> 4; z++) {
-        var snapshot = WorkSearch.inChunk(level, new ChunkPos(x, z));
-        for (var worker : snapshot.workers())
-          if (worker instanceof WarehouseSlime) {
-            var candidate = new Target(null, worker.getUUID());
-            if (candidate.inventory(actor, origin) != null && !result.contains(candidate))
-              result.add(candidate);
-          }
-        for (var pos : snapshot.chests()) {
-          var candidate = new Target(pos, null);
-          if (candidate.inventory(actor, origin) != null) result.add(candidate);
+    for (var chunk : WorkSearch.loadedChunks(level, origin, radius)) {
+      var snapshot = WorkSearch.inChunk(level, chunk.getPos());
+      for (var worker : snapshot.workers())
+        if (worker instanceof WarehouseSlime) {
+          var candidate = new Target(null, worker.getUUID());
+          if (candidate.inventory(actor, origin) != null && !result.contains(candidate))
+            result.add(candidate);
         }
+      for (var pos : snapshot.chests()) {
+        var candidate = new Target(pos, null);
+        if (candidate.inventory(actor, origin) != null) result.add(candidate);
       }
+    }
     result.sort(
         Comparator.<Target>comparingInt(target -> target.warehouse() != null ? 0 : 1)
             .thenComparingDouble(target -> target.position(level).distanceToSqr(actor.position())));

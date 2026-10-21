@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Equip Slime Armor on a Combat, Dragon, or Saddle Slime. Normal chestplates are ingredients, not direct equipment. Conversion retains armor attributes, durability, enchantments, names, and leather color. Helmets, leggings, and boots do not qualify."
+      "text": "Equip Slime Armor on a Combat, Dragon, Saddle, or Royal Guard Slime. Normal chestplates are ingredients, not direct equipment. Conversion retains armor attributes, durability, enchantments, names, and leather color. Helmets, leggings, and boots do not qualify."
     }
   ],
   "extra_recipe_mappings": {

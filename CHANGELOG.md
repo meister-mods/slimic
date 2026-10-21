@@ -4,6 +4,32 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.13] - 2026-10-21
+
+- Reduce Guardian Angel and Royal Guard maximum health to four times common Health: initially 64, with 16 per ordinary Health upgrade. Normalize saved profession modifiers without stacking or healing.
+- Remove Creative Slime Tuner gameplay ceilings. Values outside recommended ranges show a mild warning and remain applicable; ordinary training limits are unchanged.
+- Preserve high Creative values through exact menu synchronization, recovery, saves, and companion records. Expanded bags use sparse storage and additional management pages while retaining cargo safety checks.
+- Keep extreme Creative searches proportional to loaded chunks and accessible entities; preserve finite navigation radii and compact large-number displays.
+- Review English and Korean guides, tooltips, and the in-game book; correct profession counts, health scaling, optional JEI restoration information, dimension travel, and technical documentation.
+
+## [0.3.12] - 2026-10-21
+
+### Changed
+
+- Craft a Tunnel Slime from a Mining Slime and one regular minecart in a shapeless recipe. Update JEI, English/Korean gameplay instructions, and guidebook diagrams to match.
+
+## [0.3.11] - 2026-10-21
+
+### Changed
+
+- Redraw the Ancient Command Seal at 16×16 with a stronger gold bevel, clipped dark outline, and larger purple spiral for clearer inventory visibility.
+
+## [0.3.10] - 2026-10-21
+
+### Fixed
+
+- Replace the deprecated JEI restoration background API with explicit recipe dimensions, preserving the 168×121 layout.
+
 ## [0.3.9] - 2026-10-21
 
 ### Added

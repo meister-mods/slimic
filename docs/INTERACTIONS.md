@@ -32,7 +32,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I22 | Healing / Saddle | Heal without changing armor, wings, saddle or Wait. |
 | I23 | Healing / Saddle | Revive at one health with all three exact gear items. |
 | I24 | Guardian / Saddle / owner | Protect a mounted owner without removing rider or gear. |
-| I25 | Combat / all twenty-three professions | Same-owner companions remain excluded with all filters enabled. |
+| I25 | Combat / all twenty-five professions | Same-owner companions remain excluded with all filters enabled. |
 | I26 | Transport / worker | Competing carriers cannot duplicate spare tools. |
 | I27 | Herald / worker | A signal callback cannot continue a cancelled monitoring order. |
 | I28 | Warehouse / worker | Use a real loaded detour to reach cargo. |
@@ -50,7 +50,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I40 | Ender / player | Retain identity-bound tokens and exact pinned chunks across cold restarts; reject unsafe or revoked travel without costs. |
 | I41 | Glow / Glow | Share temporary light leases without deleting another companion’s light or changing fluids and containers. |
 | I42 | Shared owners / Saddle / Combat | Eject revoked riders; enemy assignments retain PvP, team, Creative, and ally protection. |
-| I43 | Recovery / all twenty-three professions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
+| I43 | Recovery / all twenty-five professions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
 | I44 | Scanner / workers | Preview bounded current or planned areas without starting work, loading chunks, or recovering the companion; enforce current access and range. |
 | I45 | Herald / blocked worker / owners | Report type, custom name, and cause to authorized online owners, including other dimensions; respect cooldowns and revoked access. |
 | I46 | Wild Slime / player | Convert one size-one Slime with one Survival golden apple; start owned and waiting, retain its name, and use normal owner-only Shift recovery. Event or spawn vetoes preserve inputs. |
@@ -61,15 +61,9 @@ The following scenarios have independent native game regressions. Transfers chec
 | I51 | Royal Guard / allies / attacker | Redirect one eligible hit, honor ownership, PvP, sight and target filters, spend actual resources, reject canceled damage and prevent guard chains. |
 | I52 | Mine corpse / core / restoration station | Break once for one core; restore once in the Overworld with a fragment and slimeball, separate from owned companion revival. |
 | I53 | Ancient worker / logistics / growth | Shares ordinary tool, stair, bag, and supply contracts; restored ancient roles retain random invested training across recovery, portals, and saves. |
+| I54 | Guardian / Royal Guard / persistence | Apply fourfold common Health once, retain training, clamp legacy excess health without healing, and preserve Creative health. |
+| I55 | Creative editor / bags / logistics | Accept values beyond recommendations, synchronize exact values, preserve sparse cargo across pages and recovery, and reject occupied-slot removal. |
 
 Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 
-Version 0.1.25 passes all 424 regressions both with and without JEI. The 29-scenario matrix runs repeatedly for over two real hours; a separate continuous movement run completes 288 cycles in 7,212 seconds. All thirteen professions retain their saved traits when a 0.1.24 world loads, and both Korean with JEI and English without JEI pass the client checks.
-
-Version 0.1.26 adds fourteen cooperative-quarry regressions for I30. Three miners starting at different heights complete one chunk while preserving its stairs and exact cargo; a native world restart retains a repaired step after its builder is recovered. All 438 regressions pass with and without JEI. Work-area preparation waits for native entity ticks before spawning actors, with action deadlines unchanged.
-
-Version 0.1.28 adds I31–I36 and 33 profession and boundary regressions. All 479 native regressions pass with Patchouli and JEI independently enabled or disabled. Client checks confirm profession equipment, lining templates, and independent Meow controls with and without JEI; guidebook checks cover both languages, English fallback, and default and uniform fonts.
-
-Version 0.1.32 adds I37–I42 for coordination, sharing, anchors, and shared light leases. All 516 native regressions pass in each independent Patchouli/JEI configuration. Separate checks gather all twenty-two professions from actually unloaded chunks, restore pinned destinations and original tokens across a cold restart, retain the eighteen previous-release professions and stored payloads, and exercise real mutually shared healing, monitoring, and guardian protection with revocation. Native client checks cover minimum-size bilingual rosters and all guidebook pages.
-
-Version 0.3.3 adds I47–I51 for hostile remnants, linked ruin depots, core restoration, trained specialization, and royal protection. All 624 native server regressions pass with JEI and Patchouli present and absent. Actual 0.3.2 world and stored-item upgrades retain the twenty-two previous professions. A separate 20-minute natural-ruin run preserves exact stock across 1,463 pickup/delivery transitions without adding forced chunks.
+Historical release results are recorded in [CHANGELOG.md](../CHANGELOG.md). Current regression coverage also includes fourfold profession health, Creative values above recommendations, exact menu number transport, and expanded bag pages.

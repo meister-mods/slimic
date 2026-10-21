@@ -83,6 +83,6 @@ Block models under `models/block/world` combine these textures with referenced M
 
 `textures/block/slime_chest.png` follows the native single-chest **64×64 UV atlas**. Body, lid, and latch share it in both the world and item models. Keep the native transparent interior and unused regions; `slime_chest_particle.png` provides the breaking-particle surface.
 
-The Ancient Command Seal uses a dedicated transparent 16×16 item texture at `assets/slimic/textures/item/ancient_command_seal.png`: a gold tablet with a purple spiral insignia. Its model uses one layer; hostile spawn eggs use the native tinted egg model.
+The Ancient Command Seal uses a dedicated transparent 16×16 item texture at `assets/slimic/textures/item/ancient_command_seal.png`: a gold tablet with clipped corners, a dark outline, a bright upper-left bevel, and a large purple spiral insignia. Its model uses one layer; hostile spawn eggs use the native tinted egg model.
 
 Ancient Mining and Ancient Tunnel summon models extend `slime_summon_base` with amethyst frames and distinct mining-core/tunnel-core crests. Their helmets, carts, tools, and insignia use existing replaceable textures. Mineralized corpse models keep the Broken Slime surface and add exposed amethyst core faces through block-model elements. Cores and command fragments use dedicated transparent 16×16 sprites in `assets/slimic/textures/item/`. Core item models select role variants using `slimic:ancient_core_role`. Seals, cores, and fragments use at most twelve colors each and hard pixel edges to match the resolution of vanilla items.

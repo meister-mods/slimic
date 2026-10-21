@@ -190,8 +190,8 @@ public final class OrderEightGameTests {
     var pet = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
     pet.setWaiting(false);
     pet.tame(h.makeMockSurvivalPlayer());
-    h.assertTrue(pet.getMaxHealth() == 160, "Fresh health is tenfold");
-    pet.setTunedVitals(137, 41, 1);
+    h.assertTrue(pet.getMaxHealth() == 64, "Fresh health is fourfold");
+    pet.setTunedVitals(37, 41, 1);
     pet.upgradeStat(SlimeStat.HEALTH);
     pet.setTotems(new ItemStack(Items.TOTEM_OF_UNDYING, 12));
     var saved = pet.saveWithoutId(new CompoundTag());
@@ -199,8 +199,8 @@ public final class OrderEightGameTests {
     loaded.setWaiting(false);
     loaded.load(saved);
     h.assertTrue(
-        loaded.getMaxHealth() == 200
-            && loaded.getHealth() == 137
+        loaded.getMaxHealth() == 80
+            && loaded.getHealth() == 37
             && loaded.getTotems().getCount() == 12
             && loaded.getStamina() == 41
             && FriendlySlimeItem.fromSlime(loaded).is(ModItems.GUARDIAN_ANGEL_SLIME.get()),

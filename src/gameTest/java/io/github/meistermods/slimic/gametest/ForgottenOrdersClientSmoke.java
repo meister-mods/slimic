@@ -173,8 +173,8 @@ public final class ForgottenOrdersClientSmoke {
           throw new IllegalStateException("Missing relic model: " + item);
         relics.add(stack);
       }
-      if (royal.getMaxHealth() != 160)
-        throw new IllegalStateException("Royal Guard client maximum health must be 160");
+      if (royal.getMaxHealth() != 64)
+        throw new IllegalStateException("Royal Guard client maximum health must be 64");
       if (!c.getItemRenderer()
           .getModel(new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()), c.level, c.player, 0)
           .getParticleIcon()
@@ -267,7 +267,7 @@ public final class ForgottenOrdersClientSmoke {
     System.out.println(
         "SLIMIC FORGOTTEN ORDERS CLIENT SMOKE PASSED: six hostile roles, both guard paths,"
             + " restored professions, role-specific relic models, English and Korean"
-            + " synchronized management at 160 maximum and current health");
+            + " synchronized management at 64 maximum and current health");
     return true;
   }
 
@@ -286,8 +286,8 @@ public final class ForgottenOrdersClientSmoke {
     if (!(c.screen instanceof SlimeScreen screen) || !screen.getMenu().isSynchronized())
       return false;
     var menu = screen.getMenu();
-    if (menu.value(SlimeStat.HEALTH) != 160 || menu.data(SlimeMenu.HEALTH) != 1600)
-      throw new IllegalStateException("Synchronized Royal Guard menu must display 160/160 health");
+    if (menu.value(SlimeStat.HEALTH) != 64 || menu.data(SlimeMenu.HEALTH) != 640)
+      throw new IllegalStateException("Synchronized Royal Guard menu must display 64/64 health");
     return true;
   }
 

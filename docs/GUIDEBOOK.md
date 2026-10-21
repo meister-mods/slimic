@@ -99,5 +99,4 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Kingdom relics | [Occupied ruins](FORGOTTEN_ORDERS.md#occupied-ruins) |
 | Royal Guard Slime | [Royal Guard Slime](FORGOTTEN_ORDERS.md#royal-guard-slime) |
 | Collapsed mines | [Collapsed mines](THE_SLIMIC.md#collapsed-mines) |
-
 | Mine recovery | [Collapsed Mine Recovery](MINE_RECOVERY.md) |

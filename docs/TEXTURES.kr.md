@@ -69,7 +69,7 @@ JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -Pcl
 JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
-클라이언트 스모크 검증에 `-Dslimic.accessoryTexturesOnly=true`를 지정하면 불러온 PNG 크기와 Minecraft 모델의 실제 UV가 가리키는 면의 불투명도를 확인합니다. 이어서 스물세 직업과 갑옷 외형 8종의 앞뒤 모습을 촬영하며, 가죽 염색·몸체 염색·마법 부여 광택·장착 도구·날개를 포함합니다. 임시 512×512 리소스 팩 교체와 원래 256×256 GPU 텍스처 복원도 확인합니다. `-Dslimic.textureReloadCycles=100`을 추가하면 교체·복원 주기를 반복해 장시간 재로딩을 검사합니다. 기존 `-Dslimic.inventoryLayoutOnly=true` 검증은 동기화된 한·영 관리 화면 배치를 확인합니다. 이 옵션들은 개발 클라이언트의 설정된 실행 폴더에 `slimic-smoke`라는 월드가 미리 준비되어 있어야 합니다. 검증 중 인벤토리와 게임 모드를 바꾸므로 전용 검사 월드를 사용합니다.
+클라이언트 스모크 검증에 `-Dslimic.accessoryTexturesOnly=true`를 지정하면 불러온 PNG 크기와 Minecraft 모델의 실제 UV가 가리키는 면의 불투명도를 확인합니다. 이어서 스물다섯 직업과 갑옷 외형 8종의 앞뒤 모습을 촬영하며, 가죽 염색·몸체 염색·마법 부여 광택·장착 도구·날개를 포함합니다. 임시 512×512 리소스 팩 교체와 원래 256×256 GPU 텍스처 복원도 확인합니다. `-Dslimic.textureReloadCycles=100`을 추가하면 교체·복원 주기를 반복해 장시간 재로딩을 검사합니다. 기존 `-Dslimic.inventoryLayoutOnly=true` 검증은 동기화된 한·영 관리 화면 배치를 확인합니다. 이 옵션들은 개발 클라이언트의 설정된 실행 폴더에 `slimic-smoke`라는 월드가 미리 준비되어 있어야 합니다. 검증 중 인벤토리와 게임 모드를 바꾸므로 전용 검사 월드를 사용합니다.
 
 시각 검증은 번역된 자재 탭, 간결한 장식 툴팁, 모든 월드 모델, 상자 아틀라스와 개폐, 바닐라 잔디 경계, 실제 GPU 아틀라스의 차원문 애니메이션 갱신을 확인합니다.
 
@@ -83,6 +83,6 @@ The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/asset
 
 `textures/block/slime_chest.png`는 바닐라 단일 상자의 **64×64 UV 아틀라스** 배치를 따릅니다. 월드와 아이템 모델의 본체·뚜껑·걸쇠가 같은 파일을 공유합니다. 내부와 사용하지 않는 투명 영역을 유지하세요. `slime_chest_particle.png`는 파괴 입자의 표면입니다.
 
-고대 명령 인장은 `assets/slimic/textures/item/ancient_command_seal.png`의 투명한 16×16 전용 텍스처를 사용합니다. 금색 인장에 보라색 나선 문양을 새겼으며 모델은 한 레이어를 사용합니다. 적대 슬라임 생성 알은 바닐라 색상 적용 모델을 사용합니다.
+고대 명령 인장은 `assets/slimic/textures/item/ancient_command_seal.png`의 투명한 16×16 전용 텍스처를 사용합니다. 모서리를 깎은 금색 인장에 어두운 외곽선과 왼쪽 위의 밝은 테두리, 큼직한 보라색 나선 문양을 적용합니다. 모델은 한 레이어를 사용합니다. 적대 슬라임 생성 알은 바닐라 색상 적용 모델을 사용합니다.
 
 고대 채굴·고대 터널 소환 모델은 `slime_summon_base`에 자수정 테두리와 채굴·터널 코어 문장을 적용합니다. 안전모·수레·도구·문양은 기존 교체 가능한 텍스처를 사용합니다. 광물화 시체 모델은 망가진 슬라임 표면에 블록 모델 요소로 자수정 코어 면을 추가합니다. 코어와 명령 파편은 `assets/slimic/textures/item/`의 투명한 16×16 전용 스프라이트를 사용합니다. 코어 아이템 모델은 `slimic:ancient_core_role` 속성으로 역할별 외형을 선택합니다. 인장·코어·파편은 각각 최대 12색과 선명한 픽셀 경계를 사용해 바닐라 아이템과 해상도를 맞춥니다.

@@ -21,26 +21,26 @@ import net.minecraftforge.gametest.*;
 @PrefixGameTestTemplate(false)
 public final class AncientBalanceGameTests {
   @GameTest(template = "empty", batch = "ancient_balance")
-  public static void royalBaseHealthMatchesGuardianAndTrainingStillAddsFour(GameTestHelper h) {
+  public static void royalBaseHealthMatchesGuardianAndTrainingScalesFourfold(GameTestHelper h) {
     var royal = ModEntities.ROYAL_GUARD_SLIME.get().create(h.getLevel());
     var guardian = ModEntities.GUARDIAN_ANGEL_SLIME.get().create(h.getLevel());
     h.assertTrue(
-        royal.getMaxHealth() == 160
+        royal.getMaxHealth() == 64
             && royal.getMaxHealth() == guardian.getMaxHealth()
-            && royal.getHealth() == 160,
-        "Fresh Royal Guard has the Guardian Angel's 160 health");
+            && royal.getHealth() == 64,
+        "Fresh Royal Guard has the Guardian Angel's 64 health");
     SlimeStat.HEALTH.applyUpgrade(royal);
     royal.setHealth(7);
     for (int i = 0; i < 5; i++) royal.load(royal.saveWithoutId(new CompoundTag()));
     h.assertTrue(
-        royal.getMaxHealth() == 164 && royal.getHealth() == 7,
-        "Health training adds four; repeated save/load never stacks or heals");
+        royal.getMaxHealth() == 80 && royal.getHealth() == 7,
+        "Health training adds sixteen; repeated save/load never stacks or heals");
     var sparse = new CompoundTag();
     sparse.putFloat("Health", 7);
     royal = ModEntities.ROYAL_GUARD_SLIME.get().create(h.getLevel());
     royal.load(sparse);
     h.assertTrue(
-        royal.getMaxHealth() == 160 && royal.getHealth() == 7,
+        royal.getMaxHealth() == 64 && royal.getHealth() == 7,
         "Commandless data retains exactly one profession bonus");
     h.succeed();
   }
@@ -57,7 +57,7 @@ public final class AncientBalanceGameTests {
     var royal = ModEntities.ROYAL_GUARD_SLIME.get().create(h.getLevel());
     royal.load(old);
     h.assertTrue(
-        royal.getMaxHealth() == 168
+        royal.getMaxHealth() == 96
             && royal.getHealth() == 7
             && royal.getUUID().equals(combat.getUUID()),
         "Legacy data gains the bonus while retaining current health and training");
@@ -73,7 +73,7 @@ public final class AncientBalanceGameTests {
     h.assertTrue(before.equals(data), "Stored crafting bonus is idempotent");
     royal.load(data);
     h.assertTrue(
-        royal.getMaxHealth() == 168
+        royal.getMaxHealth() == 96
             && royal.getHealth() == 7
             && royal.getUUID().equals(combat.getUUID())
             && royal.isOrderedToSit(),
@@ -93,7 +93,7 @@ public final class AncientBalanceGameTests {
       CompanionRegistry.get(h.getLevel()).observeStored(item, h.getLevel(), BlockPos.ZERO);
       var entry = CompanionRegistry.get(h.getLevel()).find(pet.getUUID());
       h.assertTrue(
-          entry != null && entry.health() == 7 && entry.maximumHealth() == 160,
+          entry != null && entry.health() == 7 && entry.maximumHealth() == 64,
           "Stored roster uses permanent maximum-health modifiers for " + type);
     }
     h.succeed();

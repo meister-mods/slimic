@@ -8,10 +8,10 @@
       "type": "slimic:combination",
       "title": "Shapeless recipe",
       "input1": "slimic:mining_slime",
-      "input2": "minecraft:nether_star",
+      "input2": "minecraft:minecart",
       "result": "slimic:tunnel_slime",
       "label": "Combine → one result",
-      "text": "Mining Slime + a nether star. Its original tools, bag, health, and growth remain. It starts waiting and wears a minecart-shaped shell."
+      "text": "Mining Slime + one regular minecart. Its original tools, bag, health, and growth remain. It starts waiting and wears a minecart-shaped shell."
     },
     {
       "type": "patchouli:text",

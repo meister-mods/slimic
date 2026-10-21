@@ -73,10 +73,12 @@ public enum SlimeStat {
 
   public double value(FriendlySlime slime) {
     if (attribute != null)
-      return slime.getAttributeValue(attribute)
-          * (this == DETECTION_RANGE ? slime.detectionMultiplier() : 1);
+      return CreativeStats.finite(
+          slime.getAttributeValue(attribute)
+              * (this == DETECTION_RANGE ? slime.detectionMultiplier() : 1));
     if (slime.hasTunedStat(this))
-      return slime.tunedStat(this) * (this == CAPACITY ? slime.capacityMultiplier() : 1);
+      return CreativeStats.finite(
+          slime.tunedStat(this) * (this == CAPACITY ? slime.capacityMultiplier() : 1));
     int level = slime.getStatLevel(this);
     return switch (this) {
       case WORK_SPEED -> 1.0 + increment * level;
@@ -90,9 +92,10 @@ public enum SlimeStat {
   public void applyUpgrade(FriendlySlime slime) {
     if (attribute != null) {
       var instance = slime.getAttribute(attribute);
-      instance.setBaseValue(instance.getBaseValue() + increment);
+      instance.setBaseValue(CreativeStats.finite(instance.getBaseValue() + increment));
+      if (slime.hasTunedStat(this)) slime.setTunedStat(this, instance.getBaseValue());
     } else if (slime.hasTunedStat(this)) {
-      slime.setTunedStat(this, Math.min(maxTunedValue(), slime.tunedStat(this) + increment));
+      slime.setTunedStat(this, CreativeStats.finite(slime.tunedStat(this) + increment));
     }
   }
 
@@ -116,14 +119,21 @@ public enum SlimeStat {
   public boolean acceptsTunedValue(double value) {
     return Double.isFinite(value)
         && value >= minTunedValue()
-        && value <= maxTunedValue()
         && (this != CAPACITY || value == Math.rint(value));
+  }
+
+  public boolean isRecommendedValue(double value) {
+    return acceptsTunedValue(value) && value <= maxTunedValue();
+  }
+
+  public boolean usesAttribute(Attribute candidate) {
+    return attribute == candidate;
   }
 
   public void tune(FriendlySlime slime, double value) {
     if (!acceptsTunedValue(value)) throw new IllegalArgumentException("Invalid stat value");
     if (attribute != null) slime.getAttribute(attribute).setBaseValue(value);
-    else slime.setTunedStat(this, value);
+    slime.setTunedStat(this, value);
   }
 
   public double tunerValue(FriendlySlime slime) {

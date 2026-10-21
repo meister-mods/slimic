@@ -91,6 +91,10 @@ public final class SlimeClientSmoke {
     }
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (Boolean.getBoolean("slimic.creativeFreedomOnly")) {
+      if (CreativeFreedomClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.collapsedMineOnly")) {
       if (CollapsedMineClientSmoke.tick(client)) client.stop();
       return;

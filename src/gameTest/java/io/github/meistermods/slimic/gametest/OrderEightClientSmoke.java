@@ -106,7 +106,7 @@ final class OrderEightClientSmoke {
       var m = s.getMenu();
       if (m.slots.size() != 37
           || m.getSlot(0).getItem().getCount() != 3
-          || m.value(SlimeStat.HEALTH) != 160)
+          || m.value(SlimeStat.HEALTH) != 64)
         throw new IllegalStateException("Guardian synchronized reserve/health");
       shot(c, "guardian-menu");
       c.gameMode.handleInventoryMouseClick(m.containerId, 0, 0, ClickType.PICKUP, c.player);

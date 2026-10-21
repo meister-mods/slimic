@@ -265,7 +265,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
             case ATTENTION -> List.of(new ItemStack(Items.REDSTONE));
             case ROYAL_GUARD -> List.of(new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()));
 
-            case TUNNEL -> List.of(new ItemStack(Items.NETHER_STAR));
+            case TUNNEL -> List.of(new ItemStack(Items.MINECART));
             case DRAGON -> List.of(new ItemStack(Items.DRAGON_HEAD));
             case MEOW ->
                 List.of(
