@@ -16,9 +16,15 @@ Bound maps retain their destination through containers, travel, logout, and serv
 
 Sanctums generate in **new damp-plains chunks**, using five connected native structure pieces across an approximately 64×80 footprint. Placement defaults to **96-chunk spacing and 32-chunk separation** in the structure-set datapack. These are placement parameters, not guaranteed travel distances. Unsuitable wet or steep terrain is rejected. Existing full chunks without this structure and foreign construction or block entities prevent placement; old chunks are not regenerated. Nearby small-ruin and collapsed-mine generation reserves the sanctum footprint.
 
+New sanctums have a dry defensive ditch and timber bridge, a twin gatehouse, crenellated curtain walls, four octagonal watchtowers, and a tall slate-roofed keep. The ward contains a damaged barracks and dry well. Inside the keep are command furniture, upper galleries, hanging lamps, and the lower vault of the deep chamber. Broad stairs on either side of the ward reach the wall walks; tower ladders and separate keep stairs give access to upper floors. Collapse damage is concentrated in the eastern wall, rear watchtower, and laboratory roof.
+
+New sanctums generated from 0.4.4 also feature faded royal standards, projecting gate trim, entrance arches, and a diamond-shaped glazed keep window. Barracks tables and supplies, a timber well windlass, watchtower furniture, upper record shelves, chain-hung chandeliers, and laboratory benches reveal the rooms’ former uses. Keep posterns open onto the inner curtain lanes and the rear tower ground rooms. Standards, shelves, and furniture are scenery rather than relays or reward containers.
+
+The castle layout applies to **sanctums newly generated from 0.4.3**, and the additional decoration to **new sanctums from 0.4.4**. Existing sanctums and previously saved unfinished structure pieces retain their original appearance. Map destinations, relay sockets, encounters, chests, and claimed reward records remain unchanged. A five-block-wide central expedition route connects all five zones.
+
 | Zone | Landmarks and route | Watch and progress |
 | --- | --- | --- |
-| Outer approach | Broken road, royal markers, fallen banners, gate silhouettes | A small ancient watch |
+| Outer approach | Dry ditch, timber bridge, twin gatehouse, royal markers | A small ancient watch |
 | Courtyard | Ruined defenses and a mineralized miner | Shield remnants; courtyard relay remembers seal A |
 | Command gallery | Damaged command furniture and the central opening | Ancient Command Slime and escorts; gallery relay remembers seal B and grants a survey compass |
 | Synthesis laboratory | Gel crystals, basins, and a damaged synthesis apparatus | Shield watch; records explain synthesis |

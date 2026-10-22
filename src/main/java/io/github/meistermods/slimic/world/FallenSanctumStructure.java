@@ -26,7 +26,8 @@ public final class FallenSanctumStructure extends Structure {
         int y =
             generator.getBaseHeight(
                 x + dx, z + dz, Heightmap.Types.WORLD_SURFACE_WG, height, random);
-        if (y <= generator.getSeaLevel() + 2 || y + 14 >= height.getMaxBuildHeight())
+        if (y <= generator.getSeaLevel() + 2
+            || y + SanctumArchitecture.HEIGHT >= height.getMaxBuildHeight())
           return Integer.MIN_VALUE;
         var column = generator.getBaseColumn(x + dx, z + dz, height, random);
         if (!column.getBlock(y - 1).getFluidState().isEmpty()) return Integer.MIN_VALUE;
