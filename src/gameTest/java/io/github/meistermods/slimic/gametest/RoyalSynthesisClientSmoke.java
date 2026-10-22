@@ -269,7 +269,7 @@ final class RoyalSynthesisClientSmoke {
         if (runtime == null) return false;
         var type = io.github.meistermods.slimic.compat.jei.RoyalSynthesisCategory.TYPE;
         var recipes = runtime.getRecipeManager().createRecipeLookup(type).get().toList();
-        check(recipes.size() == 1, "One enabled synthesis family in JEI");
+        check(recipes.size() == 2, "Both enabled synthesis families appear in JEI");
         check(
             runtime
                 .getRecipeManager()

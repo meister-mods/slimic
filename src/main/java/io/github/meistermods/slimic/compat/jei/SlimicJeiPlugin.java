@@ -84,7 +84,9 @@ public final class SlimicJeiPlugin implements IModPlugin {
   public void registerRecipes(IRecipeRegistration registration) {
     registration.addRecipes(
         RoyalSynthesisCategory.TYPE,
-        List.of(io.github.meistermods.slimic.entity.SynthesisFamily.MINING));
+        java.util.Arrays.stream(io.github.meistermods.slimic.entity.SynthesisFamily.values())
+            .filter(io.github.meistermods.slimic.entity.SynthesisFamily::enabled)
+            .toList());
     for (var item :
         List.of(
             ModItems.ROYAL_SYNTHESIS_CORE.get(),
@@ -99,6 +101,10 @@ public final class SlimicJeiPlugin implements IModPlugin {
         ModItems.NEXT_GENERATION_MINING_SLIME.get().getDefaultInstance(),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.next_generation_mining_slime"));
+    registration.addIngredientInfo(
+        ModItems.NEXT_GENERATION_TUNNEL_SLIME.get().getDefaultInstance(),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.next_generation_tunnel_slime"));
     var restorations = SlimeRestorationRecipe.all();
     registration.addRecipes(SlimeRestorationCategory.TYPE, restorations);
     registration.addIngredientInfo(

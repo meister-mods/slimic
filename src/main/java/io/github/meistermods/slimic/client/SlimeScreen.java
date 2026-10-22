@@ -38,7 +38,9 @@ import org.lwjgl.glfw.GLFW;
 public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   private static final ResourceLocation BACKGROUND = SlimeTextures.gui("slime");
   private static final ResourceLocation SLOTS = SlimeTextures.gui("slots");
-  private EditBox name;
+  private EditBox name, tunnelSize;
+  private Button applyTunnelSize, tunnelPageButton;
+  private boolean tunnelSizeInitialized;
   private final Map<SlimeStat, Button> upgrades = new EnumMap<>(SlimeStat.class);
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
   private Button previousPage;
@@ -64,6 +66,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   protected void init() {
     super.init();
     directionButton = null;
+    tunnelSize = null;
+    applyTunnelSize = tunnelPageButton = null;
+    tunnelSizeInitialized = false;
     previousPage = nextPage = null;
     pageCounter = null;
     lightButton = null;
@@ -104,6 +109,33 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                     .bounds(leftPos + 196 + i % 3 * 54, topPos + 108 + i / 3 * 11, 52, 10)
                     .build()));
       }
+    }
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime) {
+      tunnelPageButton =
+          addRenderableWidget(
+              Button.builder(
+                      Component.translatable("screen.slimic.tunnel_size"),
+                      b -> sendButton(SlimeMenu.TARGET_PAGE_BUTTON))
+                  .bounds(leftPos + 196, topPos + 73, 82, 14)
+                  .build());
+      tunnelSize =
+          new EditBox(
+              font,
+              leftPos + 201,
+              topPos + 106,
+              76,
+              18,
+              Component.translatable("screen.slimic.tunnel_size"));
+      tunnelSize.setMaxLength(10);
+      tunnelSize.setFilter(value -> value.matches("[0-9]*"));
+      tunnelSize.setHint(Component.literal("n"));
+      addRenderableWidget(tunnelSize);
+      applyTunnelSize =
+          addRenderableWidget(
+              Button.builder(Component.translatable("screen.slimic.apply"), b -> applyTunnelSize())
+                  .bounds(leftPos + 284, topPos + 106, 70, 18)
+                  .tooltip(Tooltip.create(Component.translatable("screen.slimic.tunnel_size.help")))
+                  .build());
     }
     name =
         new EditBox(
@@ -254,6 +286,22 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
       minecraft.gameMode.handleInventoryButtonClick(menu.containerId, id);
   }
 
+  private int requestedTunnelSize() {
+    try {
+      return Integer.parseInt(tunnelSize.getValue());
+    } catch (NumberFormatException failure) {
+      return 0;
+    }
+  }
+
+  private void applyTunnelSize() {
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime tunnel
+        && requestedTunnelSize() >= 1
+        && requestedTunnelSize() <= tunnel.maximumTunnelSize())
+      ModNetwork.CHANNEL.sendToServer(
+          new ModNetwork.TunnelSize(menu.containerId, requestedTunnelSize()));
+  }
+
   private void saveName() {
     ModNetwork.CHANNEL.sendToServer(new ModNetwork.RenameSlime(menu.containerId, name.getValue()));
   }
@@ -261,6 +309,24 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   @Override
   protected void containerTick() {
     super.containerTick();
+    if (tunnelSize != null
+        && menu.slime()
+            instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime tunnel) {
+      if (!tunnelSizeInitialized && menu.isSynchronized()) {
+        tunnelSize.setValue(Integer.toString(menu.data(SlimeMenu.TUNNEL_SIZE)));
+        tunnelSizeInitialized = true;
+      }
+      tunnelSize.visible = applyTunnelSize.visible = menu.isPolicyEditor();
+      tunnelPageButton.setMessage(
+          Component.translatable(
+              menu.isPolicyEditor() ? "screen.slimic.bag.short" : "screen.slimic.tunnel_size"));
+      int size = requestedTunnelSize();
+      applyTunnelSize.active =
+          menu.isSynchronized()
+              && size >= 1
+              && size <= tunnel.maximumTunnelSize()
+              && size != menu.data(SlimeMenu.TUNNEL_SIZE);
+    }
     for (int i = 0; i < policies.size(); i++) {
       policies.get(i).visible = menu.isPolicyEditor();
       policies.get(i).active = menu.isSynchronized() && menu.data(SlimeMenu.POLICY) != i;
@@ -331,6 +397,13 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
 
   @Override
   public boolean keyPressed(int key, int scan, int modifiers) {
+    if (tunnelSize != null && tunnelSize.isFocused() && key != GLFW.GLFW_KEY_ESCAPE) {
+      if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER) {
+        applyTunnelSize();
+        return true;
+      }
+      return tunnelSize.keyPressed(key, scan, modifiers);
+    }
     if (name.isFocused() && key != GLFW.GLFW_KEY_ESCAPE) {
       if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER) {
         saveName();
@@ -441,14 +514,44 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                     : SlimeMenu.SLOTS_X,
         62);
     if (menu.isPolicyEditor()) {
-      graphics.drawString(
-          font,
-          Component.translatable("screen.slimic.policy"),
-          SlimeMenu.SLOTS_X,
-          SlimeMenu.BAG_LABEL_Y,
-          0xffe5e9e9,
-          false);
-    } else if (menu.slime() instanceof BagSlime) {
+      if (tunnelSize == null)
+        graphics.drawString(
+            font,
+            Component.translatable("screen.slimic.policy"),
+            SlimeMenu.SLOTS_X,
+            SlimeMenu.BAG_LABEL_Y,
+            0xffe5e9e9,
+            false);
+      if (tunnelSize != null) {
+        graphics.drawString(
+            font,
+            Component.translatable(
+                "screen.slimic.tunnel_size.current",
+                menu.data(SlimeMenu.TUNNEL_SIZE),
+                menu.data(SlimeMenu.TUNNEL_SIZE)),
+            SlimeMenu.SLOTS_X,
+            90,
+            0xffb4c9d1,
+            false);
+        graphics.drawString(
+            font,
+            Component.translatable("screen.slimic.tunnel_size.note"),
+            SlimeMenu.SLOTS_X,
+            130,
+            0xffb4c9d1,
+            false);
+        graphics.drawString(
+            font,
+            Component.translatable(
+                "screen.slimic.tunnel_size.range",
+                ((io.github.meistermods.slimic.entity.NextGenerationTunnelSlime) menu.slime())
+                    .maximumTunnelSize()),
+            SlimeMenu.SLOTS_X,
+            141,
+            0xffb4c9d1,
+            false);
+      }
+    } else if (menu.slime() instanceof BagSlime && tunnelSize == null) {
       graphics.drawString(
           font,
           menu.isBagVisible()

@@ -378,7 +378,7 @@ public final class OrderThirteenGameTests {
                 registry.setRelation(primary.getUUID(), shared.getUUID(), true, true);
                 count++;
               }
-              h.assertTrue(count == 26, "Permission coverage includes all twenty-six types");
+              h.assertTrue(count == 27, "Permission coverage includes all twenty-seven types");
               a.close();
             })
         .thenSucceed();
@@ -540,14 +540,14 @@ public final class OrderThirteenGameTests {
       registry.setTag(owner.getUUID(), slime.getUUID(), "waiting");
       companions.add(slime);
     }
-    h.assertTrue(companions.size() == 26, "All companion professions are covered");
+    h.assertTrue(companions.size() == 27, "All companion professions are covered");
     h.assertTrue(command.gather(owner, "waiting"), "Gather every active profession");
     h.startSequence()
         .thenWaitUntil(() -> h.assertTrue(!command.isGathering(), "All companions arrive"))
         .thenIdle(20)
         .thenExecute(
             () -> {
-              h.assertTrue(command.gathered() == 26, "Every profession was gathered");
+              h.assertTrue(command.gathered() == 27, "Every profession was gathered");
               for (var slime : companions) {
                 var label = EntityType.getKey(slime.getType()).toString();
                 h.assertTrue(

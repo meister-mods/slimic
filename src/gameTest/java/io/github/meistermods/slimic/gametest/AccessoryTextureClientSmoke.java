@@ -129,7 +129,7 @@ public final class AccessoryTextureClientSmoke {
       models.add(slime);
       labels.add(value.getId().getPath());
     }
-    if (models.size() != 26) throw new IllegalStateException("Missing profession portrait");
+    if (models.size() != 27) throw new IllegalStateException("Missing profession portrait");
     Item[] materials = {
       Items.LEATHER_CHESTPLATE,
       Items.CHAINMAIL_CHESTPLATE,
@@ -205,7 +205,7 @@ public final class AccessoryTextureClientSmoke {
     if (++page < portraitPages) return false;
     client.setScreen(null);
     System.out.println(
-        "SLIMIC ACCESSORY TEXTURE CLIENT SMOKE PASSED: all 26 professions and 8 armor "
+        "SLIMIC ACCESSORY TEXTURE CLIENT SMOKE PASSED: all 27 professions and 8 armor "
             + "variants from front and rear; leather dye, body dye, glint, tools and wings");
     return false;
   }

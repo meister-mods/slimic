@@ -8,14 +8,20 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-/** Family identifiers are stable; only the Mining mapping is enabled in this release. */
+/**
+ * Family identifiers are stable; Mining and Tunnel mappings share the same transaction safeguards.
+ */
 public enum SynthesisFamily {
   MINING(
       "mining",
       () -> ModItems.MINING_SLIME.get(),
       () -> ModItems.ANCIENT_MINING_SLIME.get(),
       () -> ModEntities.NEXT_GENERATION_MINING_SLIME.get()),
-  TUNNEL("tunnel", null, null, null),
+  TUNNEL(
+      "tunnel",
+      () -> ModItems.TUNNEL_SLIME.get(),
+      () -> ModItems.ANCIENT_TUNNEL_SLIME.get(),
+      () -> ModEntities.NEXT_GENERATION_TUNNEL_SLIME.get()),
   GUARD("guard", null, null, null);
   private final String id;
   private final Supplier<Item> normal, ancient;
@@ -40,8 +46,31 @@ public enum SynthesisFamily {
     return normal != null && ancient != null && result != null;
   }
 
+  public Item normalItem() {
+    return normal.get();
+  }
+
+  public Item ancientItem() {
+    return ancient.get();
+  }
+
+  public Item resultItem() {
+    return switch (this) {
+      case MINING -> ModItems.NEXT_GENERATION_MINING_SLIME.get();
+      case TUNNEL -> ModItems.NEXT_GENERATION_TUNNEL_SLIME.get();
+      default -> net.minecraft.world.item.Items.AIR;
+    };
+  }
+
   public FriendlySlime create(ServerLevel level) {
     return enabled() ? result.get().create(level) : null;
+  }
+
+  public static boolean acceptsParent(ItemStack stack, boolean ancientParent) {
+    for (var family : values())
+      if (family.enabled() && stack.is(ancientParent ? family.ancientItem() : family.normalItem()))
+        return true;
+    return false;
   }
 
   public static SynthesisFamily match(ItemStack normal, ItemStack ancient) {

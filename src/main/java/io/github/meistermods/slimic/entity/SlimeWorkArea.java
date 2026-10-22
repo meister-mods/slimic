@@ -3,7 +3,6 @@ package io.github.meistermods.slimic.entity;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -34,22 +33,20 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
     return new Shape(new AABB(center, center).inflate(Math.max(0, radius)), true, false);
   }
 
-  private static AABB tunnelPlane(BlockPos front, Direction direction) {
-    return direction.getAxis() == Direction.Axis.X
-        ? new AABB(
-            front.getX(),
-            front.getY(),
-            front.getZ() - 1,
-            front.getX() + 1,
-            front.getY() + 3,
-            front.getZ() + 2)
-        : new AABB(
-            front.getX() - 1,
-            front.getY(),
-            front.getZ(),
-            front.getX() + 2,
-            front.getY() + 3,
-            front.getZ() + 1);
+  private static AABB tunnelPlane(TunnelSlime tunnel, BlockPos front) {
+    var side = tunnel.getTunnelDirection().getClockWise();
+    var first = front.relative(side, tunnel.getTunnelMinWidth());
+    var last =
+        front
+            .relative(side, tunnel.getTunnelMinWidth() + tunnel.getTunnelSize() - 1)
+            .above(tunnel.getTunnelSize() - 1);
+    return new AABB(
+        Math.min(first.getX(), last.getX()),
+        first.getY(),
+        Math.min(first.getZ(), last.getZ()),
+        Math.max(first.getX(), last.getX()) + 1,
+        last.getY() + 1,
+        Math.max(first.getZ(), last.getZ()) + 1);
   }
 
   public static SlimeWorkArea of(FriendlySlime slime) {
@@ -58,10 +55,9 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
     if (slime instanceof TunnelSlime tunnel) {
       var front = tunnel.getTunnelFront();
       var direction = tunnel.getTunnelDirection();
-      var plane = tunnelPlane(front, direction);
+      var plane = tunnelPlane(tunnel, front);
       shapes.add(
-          new Shape(
-              plane.minmax(tunnelPlane(front.relative(direction, 7), direction)), false, false));
+          new Shape(plane.minmax(tunnelPlane(tunnel, front.relative(direction, 7))), false, false));
       shapes.add(new Shape(plane, false, true));
     } else if (slime instanceof MiningSlime miner) {
       var plan = miner.getQuarryPlan();

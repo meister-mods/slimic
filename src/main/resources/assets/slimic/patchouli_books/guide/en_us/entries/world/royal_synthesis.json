@@ -14,11 +14,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Recover an ordinary Mining Slime and an Ancient Mining Slime. You must be the primary owner of both. Empty every equipment slot and bag first. Place both stored items in their labeled slots, then add four slimeballs and two Old Command Fragments. Other families and next-generation parents are not eligible."
+      "text": "Recover matching ordinary and Ancient Mining or Tunnel Slimes. You must be the primary owner of both. Empty equipment and bags. Add four slimeballs and two Old Command Fragments. The result is a Next-Generation Mining or $(l:companions/next_generation_tunnel)Tunnel Slime$(). Next-generation parents cannot be reused."
     },
     {
       "type": "patchouli:text",
-      "text": "Read the preview before confirming. Both parents disappear; the $(l:companions/next_generation_mining)new child$() has a new identity and starts waiting. Choose its name with a Tuner. Verified growth is $(l:growth/inheritance)refunded$(). If delivery is interrupted, recover the pending result at any working Royal Synthesis Station."
+      "text": "Read the preview before confirming. Both parents are consumed; the child has a new identity and starts waiting. Name it with a Tuner. Verified growth is $(l:growth/inheritance)refunded$(). If delivery is interrupted, recover the pending result at any working Royal Synthesis Station."
     }
   ],
   "extra_recipe_mappings": {

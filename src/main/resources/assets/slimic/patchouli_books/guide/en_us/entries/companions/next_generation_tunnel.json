@@ -1,0 +1,28 @@
+{
+  "name": "Next-Generation Tunnel Slime",
+  "icon": "slimic:next_generation_tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 27,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "title": "Next-Generation Tunnel Slime",
+      "text": "A compact royal tunneler created by $(l:world/royal_synthesis)Royal Synthesis$() from an ordinary and Ancient Tunnel Slime. It starts in Wait. Its small cart, goggles, and caliper crest distinguish it. Verified parental growth returns as unused points."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Open Bore size in the Slime Tuner. Enter a positive side length n, then Apply: 1 makes 1×1, 2 makes 2×2, and 5 makes 5×5. The default is 3×3. Changing size or direction selects Wait. Issue Tunnel separately. The bore and lining must fit within world height."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "From the entrance it works across one n×n face with expanded work reach, one block at a time. It completes the face and repairs its floor, roof, and sides before moving forward. The lining template is not consumed; real blocks come from its bag. Unloaded terrain pauses work."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It retains half stamina costs and 50% faster ancient masonry work. Tools, required tiers, buckets, cargo space, and protection events still apply. $(l:companions/transport)Transport$() and Warehouse Slimes supply tools and lining; Signaling Slimes report stops. Recovery preserves size and progress and deploys in Wait."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:next_generation_tunnel_slime": 0
+  }
+}

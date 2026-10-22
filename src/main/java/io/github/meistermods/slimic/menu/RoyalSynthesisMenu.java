@@ -56,8 +56,10 @@ public final class RoyalSynthesisMenu extends AbstractContainerMenu {
             @Override
             public boolean mayPlace(ItemStack stack) {
               return switch (input) {
-                case 0 -> stack.is(ModItems.MINING_SLIME.get());
-                case 1 -> stack.is(ModItems.ANCIENT_MINING_SLIME.get());
+                case 0 ->
+                    io.github.meistermods.slimic.entity.SynthesisFamily.acceptsParent(stack, false);
+                case 1 ->
+                    io.github.meistermods.slimic.entity.SynthesisFamily.acceptsParent(stack, true);
                 case 2 -> stack.is(Items.SLIME_BALL);
                 default -> stack.is(ModItems.OLD_COMMAND_FRAGMENT.get());
               };

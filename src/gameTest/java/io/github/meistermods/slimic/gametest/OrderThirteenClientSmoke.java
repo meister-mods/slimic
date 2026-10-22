@@ -174,7 +174,7 @@ public final class OrderThirteenClientSmoke {
       ids.put(value.getId().getPath(), s.getUUID());
       i++;
     }
-    if (i != 26) throw new IllegalStateException("Expected all twenty-six models");
+    if (i != 27) throw new IllegalStateException("Expected all twenty-seven models");
     registry.setRelation(p.getUUID(), SHARED, true, true);
     registry.setRelation(p.getUUID(), ENEMY, false, true);
     p.server.getProfileCache().add(new GameProfile(SHARED, "SharedOwner"));
@@ -215,15 +215,15 @@ public final class OrderThirteenClientSmoke {
     if (phase == 2) {
       if (ticks < 40
           || c.level.getEntitiesOfClass(FriendlySlime.class, new AABB(0, 90, 0, 32, 120, 32)).size()
-              != 26) return false;
+              != 27) return false;
       if (!iconsShown) {
-        shot(c, "all-26-models");
+        shot(c, "all-27-models");
         c.setScreen(new SummonGallery());
         iconsShown = true;
         ticks = 0;
         return false;
       }
-      shot(c, "all-26-summon-items");
+      shot(c, "all-27-summon-items");
       c.setScreen(null);
       server(
           c,
@@ -526,7 +526,7 @@ public final class OrderThirteenClientSmoke {
     }
     if (phase == 27) {
       System.out.println(
-          "SLIMIC ORDER THIRTEEN CLIENT SMOKE PASSED: 26 models, shared crests, commander mustache"
+          "SLIMIC ORDER THIRTEEN CLIENT SMOKE PASSED: 27 models, shared crests, commander mustache"
               + " and baton, real roster/tag/relation packets, EN/KR screens, independent light,"
               + " fireflies, bound token travel and Attention controls");
       return true;

@@ -1,0 +1,28 @@
+{
+  "name": "차세대 터널 슬라임",
+  "icon": "slimic:next_generation_tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 27,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "title": "차세대 터널 슬라임",
+      "text": "일반·고대 터널 슬라임을 $(l:world/royal_synthesis)왕실 융합$()한 작은 터널 동료입니다. 대기로 태어나며 작은 수레·안전 안경·측정 문장이 특징입니다. 확인된 부모의 성장 포인트를 미사용으로 환원합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "슬라임 조작기의 터널 단면을 열어 양의 정수 n을 입력하고 적용하세요. 1은 1×1, 2는 2×2, 5는 5×5이며 기본은 3×3입니다. 크기나 방향을 바꾸면 대기합니다. 터널 명령은 따로 내리세요. 단면과 테두리는 월드 높이 안에 들어가야 합니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "입구에서 정면 n×n 단면의 작업 범위를 확장해 한 블록씩 굴착합니다. 단면 굴착과 바닥·천장·양옆 보강을 마친 뒤 전진합니다. 테두리 견본은 소모하지 않고 실제 자재는 가방에서 꺼냅니다. 로드되지 않은 지형에서는 멈춥니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "기력 소모량 절반과 고대 석재 작업 속도 50% 증가 특성을 계승합니다. 도구 등급·양동이·가방·보호 이벤트를 따릅니다. $(l:companions/transport)운반$()·창고 동료가 도구와 자재를 보급하고 파발 동료가 중단 사유를 알립니다. 회수 시 크기와 진행을 보존하며 대기로 배치됩니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:next_generation_tunnel_slime": 0
+  }
+}
