@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The courtyard relay records seal A. The gallery relay records seal B and grants a Royal Survey Compass. Use the compass nearby for a horizontal bearing inward. Lost or stored seals do not erase chamber memories. Peaceful allows noncombat relay progression."
+      "text": "The courtyard relay records seal A. The gallery relay records seal B and grants a Royal Survey Compass. Use the compass nearby for a horizontal bearing inward. Lost or stored seals do not erase chamber memories. Peaceful allows noncombat relay progression. Keep inventory slots free for rewards. If saving fails, resolve the storage problem and retry at the same relay."
     },
     {
       "type": "patchouli:text",

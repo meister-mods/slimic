@@ -6,7 +6,7 @@ The **Slimic Companion Guide** is available with optional Patchouli. Craft one b
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
-The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch and Command**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Generation Mining Slime**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
+The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Gen Mining**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
 
 The links below open the corresponding web instructions. Item diagrams show specialization ingredients. Equipment and stored companion traits follow the preservation rules described in the gameplay guide.
 
@@ -58,7 +58,7 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Ancient Mining Slime | [Ancient Mining Slime](MINE_RECOVERY.md#ancient-mining-slime) |
 | Ancient Tunnel Slime | [Ancient Tunnel Slime](MINE_RECOVERY.md#ancient-tunnel-slime) |
 | Royal Guard Slime | [Royal Guard Slime](FORGOTTEN_ORDERS.md#royal-guard-slime) |
-| Next-Generation Mining Slime | [Mining policies](SYNTHESIS.md#mining-policies) |
+| Next-Gen Mining | [Mining policies](SYNTHESIS.md#mining-policies) |
 
 ## Working together
 
@@ -108,5 +108,5 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Fallen Sanctum | [Generation and the five zones](FALLEN_SANCTUM.md#generation-and-the-five-zones) |
 | The Last Orders | [Rewards and records](FALLEN_SANCTUM.md#rewards-and-records) |
 | Royal Synthesis | [Station and materials](SYNTHESIS.md#station-and-materials) |
-| Royal Watch and Command | [Royal remnants](FALLEN_SANCTUM.md#royal-remnants) |
+| Royal Watch | [Royal remnants](FALLEN_SANCTUM.md#royal-remnants) |
 | Sealed Laboratory | [Preparing and confirming](SYNTHESIS.md#preparing-and-confirming) |

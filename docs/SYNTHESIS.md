@@ -2,7 +2,7 @@
 
 English | [한국어](SYNTHESIS.kr.md) · [Fallen Sanctum](FALLEN_SANCTUM.md) · [Gameplay](GAMEPLAY.md)
 
-Royal synthesis consumes two recovered companions to create one new companion. In 0.4.0 the supported family is **ordinary Mining Slime + Ancient Mining Slime → Next-Generation Mining Slime**. Tunnel and guard families have no synthesis recipes yet. A next-generation companion cannot be a parent for another synthesis.
+Royal synthesis consumes two recovered companions to create one new companion. In 0.4.x the supported family is **ordinary Mining Slime + Ancient Mining Slime → Next-Generation Mining Slime**. Tunnel and guard families have no synthesis recipes yet. A next-generation companion cannot be a parent for another synthesis.
 
 ## Station and materials
 
@@ -62,6 +62,6 @@ The miner uses ordinary Mining Slime health, stamina, and capacity. It does not 
 
 The shared saved-world transaction ledger records the parent UUIDs, before and after inputs, result identity, recipient, and delivery receipt before the inputs are consumed. A stale station image is reconciled with the committed record. Repeated confirmation, another station, or copied parent items cannot reuse consumed parents. External mods may cancel the pre-commit event.
 
-A committed result belongs to its recipient even if its original station is broken. Use **Recover pending result** at any working Royal Synthesis Station. Failed delivery keeps the result reserved; a receipt already present in inventory is checkpointed rather than duplicated. Keep space available and retry after resolving storage errors.
+A committed result belongs to its recipient even if its original station is broken. Use **Recover pending result** at any working Royal Synthesis Station. A new result stays reserved until the player save succeeds; a receipt already present in inventory is checkpointed rather than duplicated. Keep space available and retry after resolving storage errors.
 
 JEI displays a dedicated station synthesis category when installed. Patchouli includes the station recipe, preparation, point inheritance, policies, and sanctum path in English and Korean. Neither optional mod is required for synthesis.

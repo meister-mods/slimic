@@ -4,6 +4,19 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-22
+
+### Fixed
+
+- Report storage failures accurately when retrying a Fallen Sanctum reward. Inventory-space refusals remain distinct, and a first claim without room does not reserve the shared core.
+- Keep uncheckpointed sanctum rewards and synthesis results reserved rather than exposing movable items after a failed player save. Preserve existing inventory contents and recognize saved receipts on retry.
+- Clarify reward retry instructions in English, Korean, and the in-game guide. Shorten two English guide headings to keep them inside the page with the default font.
+
+### Validation
+
+- All 52 focused native server cases pass with JEI and Patchouli present and absent. Cross-station reservations, live ore-filter changes, a forced-termination recovery, and a second cold restart also pass.
+- Native English/Korean clients verify failed-save delivery, unchanged existing cargo, pending-result recovery, all 43 inherited points, and waiting deployment. The 66-entry guide is checked in English, Korean, and fallback text with both fonts; the shortened paragraph receives a focused final render check.
+
 ## [0.4.0] - 2026-10-22
 
 ### Added

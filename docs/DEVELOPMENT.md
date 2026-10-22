@@ -4,11 +4,13 @@ English | [한국어](DEVELOPMENT.kr.md) · [Project overview](../README.md)
 
 ## Build environment
 
-Version 0.4.0 uses protocol **20**, preserves companion schema **1**, and adds a separately versioned growth record. The implementation of [sanctum exploration](FALLEN_SANCTUM.md) and [synthesis](SYNTHESIS.md) is summarized below.
+Version 0.4.x uses protocol **20**, preserves companion schema **1**, and adds a separately versioned growth record. The implementation of [sanctum exploration](FALLEN_SANCTUM.md) and [synthesis](SYNTHESIS.md) is summarized below.
 
 `FallenSanctumStructure` and five `FallenSanctumPiece` instances use the native structure and structure-set registries. `SanctumPlacement` predicts a bounded set of candidates without chunk acquisition, rejects unsuitable terrain and old full chunks, and reserves space against small ruins and mines. Relays resolve a world-owned `SanctumSites` record; copied block NBT cannot create another site reward. Mandatory materials and four translated lore records use chest loot tables.
 
-`RoyalSynthesis.check` derives a preview from stored parents. `SlimeSynthesisEvent` is a cancellable pre-commit hook with detached item snapshots. Confirmation revalidates the actual block and inputs. `RoyalSynthesisData` checkpoints consumed UUIDs and before/after inventory images before applying the mutation; results have a persistent recipient mailbox. `DurableWorldData` writes native NBT envelopes with atomic replacement and file synchronization. Delivery retains receipt-tagged items on storage failure.
+`RoyalSynthesis.check` derives a preview from stored parents. `SlimeSynthesisEvent` is a cancellable pre-commit hook with detached item snapshots. Confirmation revalidates the actual block and inputs. `RoyalSynthesisData` checkpoints consumed UUIDs and before/after inventory images before applying the mutation; results have a persistent recipient mailbox. `DurableWorldData` writes native NBT envelopes with atomic replacement and file synchronization. Previously saved delivery receipts remain valid during retries.
+
+Reward delivery checkpoints new stacks before acknowledging the recipient. If the player write fails, only the exact provisional stacks in previously empty inventory slots are withdrawn; existing contents and saved receipts remain intact. The site or synthesis ledger retains the pending delivery for retry.
 
 `GrowthSchema=1`, `GrowthEarned`, and `GrowthTrusted` distinguish lawful growth from Creative edits and unverified old history. `StatPoints` is a nonnegative long; older numeric NBT remains readable. Inheritance returns invested plus unused points and accounts for the inherited earned total in future costs. `SynthesisFamily` reserves mapping identifiers while enabling only Mining. `NextGenerationMiningSlime` reuses ordinary mining and adds policy and Forge-ore-mask data; selective work never requests arbitrary terrain excavation.
 

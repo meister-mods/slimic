@@ -83,11 +83,7 @@ public final class SanctumRelayBlockEntity extends BlockEntity {
     var pending = site.deliveries.get(zone);
     if (pending != null) {
       if (!pending.delivered && pending.owner.equals(player.getUUID()))
-        message(
-            player,
-            data.grant(player, site, zone, pending.items)
-                ? "sanctum_reward"
-                : "synthesis_inventory_full");
+        grantMessage(player, data.grantResult(player, site, zone, pending.items));
       else message(player, zone == 4 ? "sanctum_claimed" : "sanctum_recorded");
       return;
     }
@@ -112,13 +108,18 @@ public final class SanctumRelayBlockEntity extends BlockEntity {
                     new ItemStack(ModItems.ROYAL_GALLERY_SEAL.get()),
                     new ItemStack(ModItems.ROYAL_SURVEY_COMPASS.get()))
                 : List.of(new ItemStack(ModItems.ROYAL_SYNTHESIS_CORE.get()));
-    if (player.getInventory().items.stream().filter(ItemStack::isEmpty).count() < rewards.size()) {
-      message(player, "synthesis_inventory_full");
-      return;
-    }
+    grantMessage(player, data.grantResult(player, site, zone, rewards));
+  }
+
+  private static void grantMessage(ServerPlayer player, SanctumSites.GrantResult result) {
     message(
         player,
-        data.grant(player, site, zone, rewards) ? "sanctum_reward" : "sanctum_storage_error");
+        switch (result) {
+          case DELIVERED -> "sanctum_reward";
+          case OUTPUT_FULL -> "synthesis_inventory_full";
+          case UNAVAILABLE -> "sanctum_recorded";
+          case STORAGE_ERROR -> "sanctum_storage_error";
+        });
   }
 
   private static void message(ServerPlayer player, String key) {

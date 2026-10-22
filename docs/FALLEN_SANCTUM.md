@@ -38,7 +38,7 @@ Combat follows existing ancient alliance, home-range, damage-event, and companio
 
 ## Rewards and records
 
-Each sanctum provides **one shared Royal Synthesis Core for the saved world**, awarded to the player who successfully claims its deep relay. Both chamber memories and a cleared deep watch are required. This is a site reward, not a reward per player or map. Find another sanctum for another core. The recipient can retry an interrupted delivery at that relay. Breaking blocks, copying maps, revisiting chunks, or restarting the server does not create a second core.
+Each sanctum provides **one shared Royal Synthesis Core for the saved world**, awarded to the player who successfully claims its deep relay. Both chamber memories and a cleared deep watch are required. This is a site reward, not a reward per player or map. Find another sanctum for another core. The recipient can retry an interrupted delivery at that relay. Keep empty inventory slots for missing rewards. If the relay reports a storage failure, resolve the storage problem and retry; rewards already in the inventory need no additional slots to confirm delivery. Breaking blocks, copying maps, revisiting chunks, or restarting the server does not create a second core.
 
 Guaranteed ordinary chest supplies cover the station and first synthesis reagents: three gold ingots, six stone bricks, four redstone, an Ancient Command Seal, six slimeballs, and three Old Command Fragments. These also cover crafting one ordinary restoration station and restoring the courtyard mining core. Bring or raise the ordinary Mining Slime parent separately. A spare pickaxe and cobblestone support the journey. Optional loot is controlled by the four `chests/sanctum_*` tables.
 
