@@ -51,7 +51,7 @@ public enum SlimeStat {
       case ATTACK -> slime instanceof CombatSlime || slime instanceof GuardianAngelSlime;
       case STAMINA ->
           slime instanceof GlowSlime
-              || slime instanceof CommanderSlime
+              || slime instanceof CommandSlime
               || slime instanceof EnderSlime
               || slime instanceof BagSlime
               || slime instanceof SaddleSlime
@@ -60,7 +60,7 @@ public enum SlimeStat {
       case DETECTION_RANGE ->
           slime instanceof SoggySlime
               || slime instanceof BagSlime
-              || slime instanceof HeraldSlime
+              || slime instanceof SignalingSlime
               || slime instanceof GuardianAngelSlime;
       case WORK_SPEED ->
           slime instanceof BagSlime

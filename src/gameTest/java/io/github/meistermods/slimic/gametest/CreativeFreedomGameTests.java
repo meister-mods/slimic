@@ -255,16 +255,16 @@ public final class CreativeFreedomGameTests {
 
   @GameTest(template = "empty", batch = "creative_freedom", timeoutTicks = 200)
   public static void extremeDetectionSurveysOnlyLoadedTerrainAndKeepsCandidates(GameTestHelper h) {
-    var farmer = h.spawn(ModEntities.FARMER_SLIME.get(), new BlockPos(3, 2, 3));
-    farmer.tame(h.makeMockSurvivalPlayer());
-    farmer.setTool(new ItemStack(Items.DIAMOND_HOE));
+    var farming = h.spawn(ModEntities.FARMING_SLIME.get(), new BlockPos(3, 2, 3));
+    farming.tame(h.makeMockSurvivalPlayer());
+    farming.setTool(new ItemStack(Items.DIAMOND_HOE));
     h.setBlock(new BlockPos(3, 1, 4), net.minecraft.world.level.block.Blocks.FARMLAND);
-    SlimeStat.DETECTION_RANGE.tune(farmer, Double.MAX_VALUE);
-    var origin = farmer.blockPosition();
+    SlimeStat.DETECTION_RANGE.tune(farming, Double.MAX_VALUE);
+    var origin = farming.blockPosition();
     int chunks = h.getLevel().getChunkSource().getLoadedChunksCount();
     var selected = WorkSearch.loadedChunks(h.getLevel(), origin, Double.MAX_VALUE);
     h.assertTrue(
-        selected.stream().anyMatch(chunk -> chunk.getPos().equals(farmer.chunkPosition())),
+        selected.stream().anyMatch(chunk -> chunk.getPos().equals(farming.chunkPosition())),
         "Extreme range retains loaded origin chunk");
     h.assertTrue(
         selected.size() <= chunks, "Search does not create coordinate-sized candidate arrays");
@@ -273,16 +273,16 @@ public final class CreativeFreedomGameTests {
                 h.getLevel(),
                 FriendlySlime.class,
                 new net.minecraft.world.phys.AABB(origin).inflate(Double.MAX_VALUE))
-            .contains(farmer),
+            .contains(farming),
         "Extreme entity query retains loaded candidates");
-    farmer.setWorking(true);
+    farming.setWorking(true);
     h.succeedWhen(
         () -> {
           h.assertTrue(
-              farmer.getFarmPlots().contains(h.absolutePos(new BlockPos(3, 1, 4))),
+              farming.getFarmPlots().contains(h.absolutePos(new BlockPos(3, 1, 4))),
               "Extreme survey preserves real farmland");
           h.assertTrue(
-              SlimeStat.DETECTION_RANGE.tunerValue(farmer) == Double.MAX_VALUE,
+              SlimeStat.DETECTION_RANGE.tunerValue(farming) == Double.MAX_VALUE,
               "Search optimization never caps the stored stat");
         });
   }

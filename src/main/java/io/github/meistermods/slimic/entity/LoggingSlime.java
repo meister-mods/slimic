@@ -36,11 +36,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.ForgeEventFactory;
 
-public final class LumberjackSlime extends FieldSlime {
+public final class LoggingSlime extends FieldSlime {
   private static final EntityDataAccessor<ItemStack> REQUIRED_SAPLING =
-      SynchedEntityData.defineId(LumberjackSlime.class, EntityDataSerializers.ITEM_STACK);
+      SynchedEntityData.defineId(LoggingSlime.class, EntityDataSerializers.ITEM_STACK);
   private static final EntityDataAccessor<Integer> REQUIRED_COUNT =
-      SynchedEntityData.defineId(LumberjackSlime.class, EntityDataSerializers.INT);
+      SynchedEntityData.defineId(LoggingSlime.class, EntityDataSerializers.INT);
   private int observedBagRevision = -1;
 
   @Override
@@ -100,7 +100,7 @@ public final class LumberjackSlime extends FieldSlime {
   private BlockPos missingLeaf;
   private long skippedUntil;
 
-  public LumberjackSlime(EntityType<? extends LumberjackSlime> type, Level level) {
+  public LoggingSlime(EntityType<? extends LoggingSlime> type, Level level) {
     super(type, level);
   }
 
@@ -130,7 +130,7 @@ public final class LumberjackSlime extends FieldSlime {
 
   @Override
   public ItemStack getPickResult() {
-    return new ItemStack(ModItems.LUMBERJACK_SLIME.get());
+    return new ItemStack(ModItems.LOGGING_SLIME.get());
   }
 
   public int getPendingPlantings() {

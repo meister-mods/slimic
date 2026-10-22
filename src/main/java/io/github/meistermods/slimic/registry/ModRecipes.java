@@ -3,8 +3,8 @@ package io.github.meistermods.slimic.registry;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
 import io.github.meistermods.slimic.recipe.GuardianAngelSlimeRecipe;
-import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
+import io.github.meistermods.slimic.recipe.SignalingSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
 import io.github.meistermods.slimic.recipe.WarehouseSlimeRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -87,21 +87,22 @@ public final class ModRecipes {
                   (id, category) ->
                       new CompanionRecipe(id, category, CompanionRecipe.Kind.SADDLE)));
 
-  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>> FARMER_SLIME =
-      SERIALIZERS.register(
-          "farmer_slime",
-          () ->
-              new SimpleCraftingRecipeSerializer<>(
-                  (id, category) ->
-                      new CompanionRecipe(id, category, CompanionRecipe.Kind.FARMER)));
   public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>>
-      LUMBERJACK_SLIME =
+      FARMING_SLIME =
+          SERIALIZERS.register(
+              "farmer_slime",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      (id, category) ->
+                          new CompanionRecipe(id, category, CompanionRecipe.Kind.FARMING)));
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<CompanionRecipe>>
+      LOGGING_SLIME =
           SERIALIZERS.register(
               "lumberjack_slime",
               () ->
                   new SimpleCraftingRecipeSerializer<>(
                       (id, category) ->
-                          new CompanionRecipe(id, category, CompanionRecipe.Kind.LUMBERJACK)));
+                          new CompanionRecipe(id, category, CompanionRecipe.Kind.LOGGING)));
 
   public static final RegistryObject<SimpleCraftingRecipeSerializer<GuardianAngelSlimeRecipe>>
       GUARDIAN_ANGEL_SLIME =
@@ -211,7 +212,7 @@ public final class ModRecipes {
   public static final RegistryObject<
           SimpleCraftingRecipeSerializer<
               io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
-      COMMANDER_SLIME =
+      COMMAND_SLIME =
           SERIALIZERS.register(
               "commander_slime",
               () ->
@@ -221,7 +222,7 @@ public final class ModRecipes {
                               id,
                               category,
                               io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind
-                                  .COMMANDER)));
+                                  .COMMAND)));
   public static final RegistryObject<
           SimpleCraftingRecipeSerializer<
               io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe>>
@@ -260,8 +261,9 @@ public final class ModRecipes {
               new SimpleCraftingRecipeSerializer<>(
                   (id, category) -> new CompanionRecipe(id, category, CompanionRecipe.Kind.SOGGY)));
 
-  public static final RegistryObject<SimpleCraftingRecipeSerializer<HeraldSlimeRecipe>>
-      HERALD_SLIME =
+  public static final RegistryObject<SimpleCraftingRecipeSerializer<SignalingSlimeRecipe>>
+      SIGNALING_SLIME =
           SERIALIZERS.register(
-              "herald_slime", () -> new SimpleCraftingRecipeSerializer<>(HeraldSlimeRecipe::new));
+              "herald_slime",
+              () -> new SimpleCraftingRecipeSerializer<>(SignalingSlimeRecipe::new));
 }

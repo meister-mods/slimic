@@ -2,7 +2,7 @@ package io.github.meistermods.slimic.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
-import io.github.meistermods.slimic.entity.FarmerSlime;
+import io.github.meistermods.slimic.entity.FarmingSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import net.minecraft.client.model.SlimeModel;
@@ -25,8 +25,8 @@ public final class FieldSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel
   public static final ModelLayerLocation HATS =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "field_hats"), "main");
-  private static final ResourceLocation FARMER_TEXTURE = SlimeTextures.accessory("farmer");
-  private static final ResourceLocation LUMBERJACK_TEXTURE = SlimeTextures.accessory("lumberjack");
+  private static final ResourceLocation FARMING_TEXTURE = SlimeTextures.accessory("farmer");
+  private static final ResourceLocation LOGGING_TEXTURE = SlimeTextures.accessory("lumberjack");
   private final ModelPart straw, cap, band;
   private final EntityRendererProvider.Context context;
 
@@ -82,21 +82,21 @@ public final class FieldSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel
       float headYaw,
       float headPitch) {
     if (!(slime instanceof FieldSlime field) || slime.isInvisible()) return;
-    if (field instanceof FarmerSlime) {
+    if (field instanceof FarmingSlime) {
       straw.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(FARMER_TEXTURE)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(FARMING_TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
       band.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(FARMER_TEXTURE)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(FARMING_TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
     } else
       cap.render(
           pose,
-          buffers.getBuffer(RenderType.entityCutoutNoCull(LUMBERJACK_TEXTURE)),
+          buffers.getBuffer(RenderType.entityCutoutNoCull(LOGGING_TEXTURE)),
           light,
           OverlayTexture.NO_OVERLAY);
     SlimeEquipmentRenderer.held(context, pose, buffers, light, field, field.getTool(), false);

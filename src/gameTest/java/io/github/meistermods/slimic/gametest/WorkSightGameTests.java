@@ -112,13 +112,13 @@ public final class WorkSightGameTests {
   }
 
   @GameTest(template = "empty", batch = "work_sight")
-  public static void farmerApproachDoesNotLoadAColdSightGap(GameTestHelper h) {
-    fieldApproach(h, ModEntities.FARMER_SLIME.get());
+  public static void farmingApproachDoesNotLoadAColdSightGap(GameTestHelper h) {
+    fieldApproach(h, ModEntities.FARMING_SLIME.get());
   }
 
   @GameTest(template = "empty", batch = "work_sight")
-  public static void lumberjackApproachDoesNotLoadAColdSightGap(GameTestHelper h) {
-    fieldApproach(h, ModEntities.LUMBERJACK_SLIME.get());
+  public static void loggingApproachDoesNotLoadAColdSightGap(GameTestHelper h) {
+    fieldApproach(h, ModEntities.LOGGING_SLIME.get());
   }
 
   private static void cleaningSight(

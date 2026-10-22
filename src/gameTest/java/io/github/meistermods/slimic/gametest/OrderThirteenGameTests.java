@@ -6,7 +6,7 @@ import io.github.meistermods.slimic.block.*;
 import io.github.meistermods.slimic.entity.*;
 import io.github.meistermods.slimic.item.*;
 import io.github.meistermods.slimic.menu.*;
-import io.github.meistermods.slimic.network.CommanderPackets;
+import io.github.meistermods.slimic.network.CommandPackets;
 import io.github.meistermods.slimic.registry.*;
 import java.util.*;
 import net.minecraft.core.*;
@@ -121,7 +121,7 @@ public final class OrderThirteenGameTests {
     var results =
         List.of(
             ModItems.GLOW_SLIME.get(),
-            ModItems.COMMANDER_SLIME.get(),
+            ModItems.COMMAND_SLIME.get(),
             ModItems.ENDER_SLIME.get(),
             ModItems.ATTENTION_SLIME.get());
     for (int role = 0; role < cores.size(); role++)
@@ -462,9 +462,9 @@ public final class OrderThirteenGameTests {
         .thenExecute(
             () -> {
               var owner = owner(h);
-              var commander = pet(h, a, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
-              commander.setNoAi(true);
-              pets.add(commander);
+              var command = pet(h, a, ModEntities.COMMAND_SLIME.get(), owner, 7, 7);
+              command.setNoAi(true);
+              pets.add(command);
               var miner = pet(h, source, ModEntities.MINING_SLIME.get(), owner, 3, 3);
               miner.setNoAi(true);
               miner.setTunedVitals(7, 37, 3);
@@ -479,17 +479,17 @@ public final class OrderThirteenGameTests {
               pets.add(untargeted);
               registry.setTag(owner.getUUID(), untargeted.getUUID(), "other");
               h.assertTrue(
-                  commander.gather(owner, "ORE") && commander.getStamina() == 75,
+                  command.gather(owner, "ORE") && command.getStamina() == 75,
                   "Gather spends exactly 25 stamina on the selected tag");
             })
         .thenWaitUntil(
-            () -> h.assertTrue(!((CommanderSlime) pets.get(0)).isGathering(), "Rally completes"))
+            () -> h.assertTrue(!((CommandSlime) pets.get(0)).isGathering(), "Rally completes"))
         .thenExecute(
             () -> {
-              var commander = (CommanderSlime) pets.get(0);
+              var command = (CommandSlime) pets.get(0);
               var miner = (MiningSlime) h.getLevel().getEntity(ids.get(0));
               h.assertTrue(
-                  commander.gathered() == 1
+                  command.gathered() == 1
                       && miner != null
                       && miner.isOrderedToSit()
                       && !miner.isWorking()
@@ -515,8 +515,8 @@ public final class OrderThirteenGameTests {
     var source = new LoadedWorkArea(h);
     var companions = new ArrayList<FriendlySlime>();
     var owner = owner(h);
-    var commander = pet(h, destination, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
-    commander.setNoAi(true);
+    var command = pet(h, destination, ModEntities.COMMAND_SLIME.get(), owner, 7, 7);
+    command.setNoAi(true);
     var registry = CompanionRegistry.get(h.getLevel());
     for (var registered : ModEntities.companionTypes()) {
       var slime = (FriendlySlime) registered.get().create(h.getLevel());
@@ -531,7 +531,7 @@ public final class OrderThirteenGameTests {
         worker.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 9));
         worker.setWorking(true);
       }
-      if (slime instanceof HeraldSlime herald) herald.setMonitoring(true);
+      if (slime instanceof SignalingSlime signaling) signaling.setMonitoring(true);
       if (slime instanceof SoggySlime soggy) soggy.setRoaming(true);
       if (slime instanceof MeowSlime meow) meow.setRoaming(true);
       if (slime instanceof AttentionSlime attention) attention.setRoaming(true);
@@ -541,13 +541,13 @@ public final class OrderThirteenGameTests {
       companions.add(slime);
     }
     h.assertTrue(companions.size() == 26, "All companion professions are covered");
-    h.assertTrue(commander.gather(owner, "waiting"), "Gather every active profession");
+    h.assertTrue(command.gather(owner, "waiting"), "Gather every active profession");
     h.startSequence()
-        .thenWaitUntil(() -> h.assertTrue(!commander.isGathering(), "All companions arrive"))
+        .thenWaitUntil(() -> h.assertTrue(!command.isGathering(), "All companions arrive"))
         .thenIdle(20)
         .thenExecute(
             () -> {
-              h.assertTrue(commander.gathered() == 26, "Every profession was gathered");
+              h.assertTrue(command.gathered() == 26, "Every profession was gathered");
               for (var slime : companions) {
                 var label = EntityType.getKey(slime.getType()).toString();
                 h.assertTrue(
@@ -555,7 +555,7 @@ public final class OrderThirteenGameTests {
                         && !slime.isWorking()
                         && slime.getWorkStatus().order() == WorkStatus.Order.WAIT
                         && slime.getWorkStatus().requests().isEmpty()
-                        && slime.distanceToSqr(commander) < 400,
+                        && slime.distanceToSqr(command) < 400,
                     label + " remains waiting without work or support requests after arrival");
                 var saved = slime.saveWithoutId(new CompoundTag());
                 var restored = (FriendlySlime) slime.getType().create(h.getLevel());
@@ -588,7 +588,7 @@ public final class OrderThirteenGameTests {
                     label + " also reports Wait in the commander roster");
               }
               companions.forEach(Entity::discard);
-              commander.discard();
+              command.discard();
               owner.discard();
               source.close();
               destination.close();
@@ -597,11 +597,11 @@ public final class OrderThirteenGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_thirteen", timeoutTicks = 100)
-  public static void gatheredCommanderCancelsItsOwnPendingGather(GameTestHelper h) {
+  public static void gatheredCommandCancelsItsOwnPendingGather(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var owner = owner(h);
-    var caller = pet(h, a, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
-    var arriving = pet(h, a, ModEntities.COMMANDER_SLIME.get(), owner, 3, 3);
+    var caller = pet(h, a, ModEntities.COMMAND_SLIME.get(), owner, 7, 7);
+    var arriving = pet(h, a, ModEntities.COMMAND_SLIME.get(), owner, 3, 3);
     caller.setNoAi(true);
     arriving.setNoAi(true);
     var registry = CompanionRegistry.get(h.getLevel());
@@ -659,7 +659,7 @@ public final class OrderThirteenGameTests {
         .thenExecute(
             () -> {
               var owner = owner(h);
-              var commander = pet(h, a, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
+              var command = pet(h, a, ModEntities.COMMAND_SLIME.get(), owner, 7, 7);
               var registry = CompanionRegistry.get(h.getLevel());
               for (var state :
                   List.of(
@@ -672,10 +672,10 @@ public final class OrderThirteenGameTests {
               }
               var foreign = pet(h, a, ModEntities.FRIENDLY_SLIME.get(), owner(h), 3, 3);
               h.assertTrue(
-                  !commander.gather(owner, "") && commander.getStamina() == 100,
+                  !command.gather(owner, "") && command.getStamina() == 100,
                   "No eligible companions means no stamina charge");
               foreign.discard();
-              commander.discard();
+              command.discard();
               a.close();
             })
         .thenSucceed();
@@ -697,24 +697,24 @@ public final class OrderThirteenGameTests {
         .thenExecute(
             () -> {
               var owner = owner(h);
-              var commander = pet(h, a, ModEntities.COMMANDER_SLIME.get(), owner, 7, 7);
-              pets.add(commander);
+              var command = pet(h, a, ModEntities.COMMAND_SLIME.get(), owner, 7, 7);
+              pets.add(command);
               var slime = pet(h, a, ModEntities.FRIENDLY_SLIME.get(), owner, 3, 3);
               slime.setNoAi(true);
               slime.setWaiting(false);
               pets.add(slime);
               MinecraftForge.EVENT_BUS.addListener(listener);
-              h.assertTrue(commander.gather(owner, ""), "Issue a valid gather");
+              h.assertTrue(command.gather(owner, ""), "Issue a valid gather");
             })
         .thenWaitUntil(
             () ->
                 h.assertTrue(
-                    !((CommanderSlime) pets.get(0)).isGathering(), "Cancelled entry finishes"))
+                    !((CommandSlime) pets.get(0)).isGathering(), "Cancelled entry finishes"))
         .thenExecute(
             () -> {
               try {
                 h.assertTrue(
-                    ((CommanderSlime) pets.get(0)).gathered() == 0
+                    ((CommandSlime) pets.get(0)).gathered() == 0
                         && pets.get(1).distanceToSqr(a.point(3, 101, 3)) < .1
                         && !pets.get(1).isOrderedToSit()
                         && pets.get(1).getWorkStatus().order() == WorkStatus.Order.FOLLOW,
@@ -834,7 +834,7 @@ public final class OrderThirteenGameTests {
   @GameTest(template = "empty", batch = "order_thirteen")
   public static void rosterPacketsPreserveComponentsAndRejectOversizedPages(GameTestHelper h) {
     var row =
-        new CommanderPackets.Row(
+        new CommandPackets.Row(
             UUID.randomUUID(),
             Component.literal("Named"),
             Component.translatable("screen.slimic.roster.loaded"),
@@ -843,11 +843,11 @@ public final class OrderThirteenGameTests {
             true,
             false,
             true);
-    var page = new CommanderPackets.Page(4, false, 0, 1, 75, 100, 1, 2, true, List.of(row));
+    var page = new CommandPackets.Page(4, false, 0, 1, 75, 100, 1, 2, true, List.of(row));
     var buffer = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
     try {
       page.encode(buffer);
-      var decoded = CommanderPackets.Page.decode(buffer);
+      var decoded = CommandPackets.Page.decode(buffer);
       h.assertTrue(decoded.equals(page), "Bounded snapshot round-trips all visible metadata");
     } finally {
       buffer.release();

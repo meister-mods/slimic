@@ -39,16 +39,16 @@ public final class AuditGameTests {
 
   @GameTest(template = "empty", batch = "audit")
   public static void warningHistoryBeyond128SurvivesRecovery(GameTestHelper h) {
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.setMonitoring(true);
-    herald.tame(h.makeMockSurvivalPlayer());
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.setMonitoring(true);
+    signaling.tame(h.makeMockSurvivalPlayer());
     CompoundTag history = warnings(200);
-    CompoundTag saved = herald.saveWithoutId(new CompoundTag());
+    CompoundTag saved = signaling.saveWithoutId(new CompoundTag());
     saved.put("HeraldWarnings", history);
-    herald.load(saved);
-    var restored = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    signaling.load(saved);
+    var restored = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
     restored.setMonitoring(true);
-    restored.load(FriendlySlimeItem.fromSlime(herald).getTag().getCompound("SlimeData"));
+    restored.load(FriendlySlimeItem.fromSlime(signaling).getTag().getCompound("SlimeData"));
     h.assertTrue(
         restored.saveWithoutId(new CompoundTag()).getCompound("HeraldWarnings").equals(history),
         "Recovery must retain all 200 warning records without truncation");
@@ -59,15 +59,15 @@ public final class AuditGameTests {
   public static void aNewWarningDoesNotEvictAnExistingWorkerEpisode(GameTestHelper h) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.setMonitoring(true);
-    herald.tame(owner);
-    herald.moveTo(arena.point(8, 101, 8));
-    herald.setDelayMinutes(1);
-    CompoundTag saved = herald.saveWithoutId(new CompoundTag());
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.setMonitoring(true);
+    signaling.tame(owner);
+    signaling.moveTo(arena.point(8, 101, 8));
+    signaling.setDelayMinutes(1);
+    CompoundTag saved = signaling.saveWithoutId(new CompoundTag());
     saved.put("HeraldWarnings", warnings(128));
-    herald.load(saved);
-    CompoundTag history = herald.saveWithoutId(new CompoundTag()).getCompound("HeraldWarnings");
+    signaling.load(saved);
+    CompoundTag history = signaling.saveWithoutId(new CompoundTag()).getCompound("HeraldWarnings");
     String first = history.getAllKeys().iterator().next();
     var oldWorker =
         blockedWorker(
@@ -83,18 +83,18 @@ public final class AuditGameTests {
         .thenWaitUntil(
             () ->
                 h.assertTrue(
-                    h.getLevel().isPositionEntityTicking(herald.blockPosition()),
+                    h.getLevel().isPositionEntityTicking(signaling.blockPosition()),
                     "Warning area ticks"))
         .thenExecute(
             () -> {
               h.getLevel().addFreshEntity(oldWorker);
               h.getLevel().addFreshEntity(newWorker);
-              h.getLevel().addFreshEntity(herald);
+              h.getLevel().addFreshEntity(signaling);
             })
         .thenWaitUntil(
             () ->
                 h.assertTrue(
-                    herald
+                    signaling
                         .saveWithoutId(new CompoundTag())
                         .getCompound("HeraldWarnings")
                         .contains(newWorker.getUUID().toString()),
@@ -102,14 +102,14 @@ public final class AuditGameTests {
         .thenExecute(
             () -> {
               h.assertTrue(
-                  herald
+                  signaling
                           .saveWithoutId(new CompoundTag())
                           .getCompound("HeraldWarnings")
                           .getLong(first)
                       == history.getLong(first),
                   "A new warning must not evict a previously signaled worker");
               initialCooldown[0] =
-                  herald
+                  signaling
                       .saveWithoutId(new CompoundTag())
                       .getCompound("HeraldWarningCooldowns")
                       .getInt(newWorker.getUUID().toString());
@@ -117,7 +117,7 @@ public final class AuditGameTests {
         .thenIdle(100)
         .thenExecute(
             () -> {
-              CompoundTag state = herald.saveWithoutId(new CompoundTag());
+              CompoundTag state = signaling.saveWithoutId(new CompoundTag());
               int remaining =
                   state
                       .getCompound("HeraldWarningCooldowns")
@@ -130,7 +130,7 @@ public final class AuditGameTests {
                       + initialCooldown[0]
                       + ", remaining="
                       + remaining);
-              herald.discard();
+              signaling.discard();
               oldWorker.discard();
               newWorker.discard();
               arena.close();

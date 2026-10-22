@@ -6,7 +6,7 @@ The **Slimic Companion Guide** is available with optional Patchouli. Craft one b
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
-The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch and Command**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Generation Mining Slime**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
+The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Generation Mining Slime**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
 
 The links below open the corresponding web instructions. Item diagrams show specialization ingredients. Equipment and stored companion traits follow the preservation rules described in the gameplay guide.
 
@@ -36,12 +36,12 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Friendly Slime | [Companion behavior](GAMEPLAY.md#companion-behavior) |
 | Mining Slime | [Mining slimes](GAMEPLAY.md#mining-slimes) |
 | Transport Slime | [Transport slimes](GAMEPLAY.md#transport-slimes) |
-| Herald Slime | [Herald slimes](GAMEPLAY.md#herald-slimes) |
+| Signaling Slime | [Signaling slimes](GAMEPLAY.md#signaling-slimes) |
 | Combat Slime | [Combat slimes](GAMEPLAY.md#combat-slimes) |
 | Cleaning Slime | [Cleaning slimes](GAMEPLAY.md#cleaning-slimes) |
 | Saddle Slime | [Saddle slimes](GAMEPLAY.md#saddle-slimes) |
 | Farming Slime | [Farming slimes](GAMEPLAY.md#farming-slimes) |
-| Lumberjack Slime | [Lumberjack slimes](GAMEPLAY.md#lumberjack-slimes) |
+| Logging Slime | [Logging slimes](GAMEPLAY.md#logging-slimes) |
 | Guardian Angel Slime | [Guardian Angel slimes](GAMEPLAY.md#guardian-angel-slimes) |
 | Soggy Slime | [Soggy slimes](GAMEPLAY.md#soggy-slimes) |
 | Healing Slime | [Healing slimes](GAMEPLAY.md#healing-slimes) |
@@ -52,7 +52,7 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Dragon Slime | [Dragon slimes](GAMEPLAY.md#dragon-slimes) |
 | Meow Slime | [Meow slimes](GAMEPLAY.md#meow-slimes) |
 | Glow Slime | [Glow Slime](GAMEPLAY.md#glow-slimes) |
-| Commander Slime | [Commander Slime](GAMEPLAY.md#commander-slimes) |
+| Command Slime | [Command Slime](GAMEPLAY.md#command-slimes) |
 | Ender Slime | [Ender Slime](GAMEPLAY.md#ender-slimes) |
 | Attention Slime | [Attention Slime](GAMEPLAY.md#attention-slimes) |
 | Ancient Mining Slime | [Ancient Mining Slime](MINE_RECOVERY.md#ancient-mining-slime) |
@@ -108,5 +108,5 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Fallen Sanctum | [Generation and the five zones](FALLEN_SANCTUM.md#generation-and-the-five-zones) |
 | The Last Orders | [Rewards and records](FALLEN_SANCTUM.md#rewards-and-records) |
 | Royal Synthesis | [Station and materials](SYNTHESIS.md#station-and-materials) |
-| Royal Watch and Command | [Royal remnants](FALLEN_SANCTUM.md#royal-remnants) |
+| Royal Watch | [Royal remnants](FALLEN_SANCTUM.md#royal-remnants) |
 | Sealed Laboratory | [Preparing and confirming](SYNTHESIS.md#preparing-and-confirming) |

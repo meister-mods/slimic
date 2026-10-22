@@ -20,7 +20,7 @@ Sanctums generate in **new damp-plains chunks**, using five connected native str
 | --- | --- | --- |
 | Outer approach | Broken road, royal markers, fallen banners, gate silhouettes | A small ancient watch |
 | Courtyard | Ruined defenses and a mineralized miner | Shield remnants; courtyard relay remembers seal A |
-| Command gallery | Damaged command furniture and the central opening | Commander and escorts; gallery relay remembers seal B and grants a survey compass |
+| Command gallery | Damaged command furniture and the central opening | Ancient Command Slime and escorts; gallery relay remembers seal B and grants a survey compass |
 | Synthesis laboratory | Gel crystals, basins, and a damaged synthesis apparatus | Shield watch; records explain synthesis |
 | Deep core | Descending central passage and the final command relay | Elite guardian; royal core after both chamber memories and this watch are cleared |
 
@@ -32,13 +32,13 @@ The ruins may be dismantled or remodeled. A destroyed relay can be crafted again
 
 ## Royal remnants
 
-Existing ancient entities take site-bound equipment and roles. Shield remnants raise shields against visible nearby targets; wardens guard their rooms; the gallery commander alerts nearby allies. The deep elite has 160 base health and can call one shield reinforcement after falling to half health. The watch stays near its post and does not load distant chunks.
+Existing ancient entities take site-bound equipment and roles. Shield remnants raise shields against visible nearby targets; wardens guard their rooms; the gallery command slime alerts nearby allies. The deep elite has 160 base health and can call one shield reinforcement after falling to half health. The watch stays near its post and does not load distant chunks.
 
 Combat follows existing ancient alliance, home-range, damage-event, and companion protection rules. In **Peaceful**, the relays allow noncombat progression, including both seals and the final core. Revisiting or reloading a chamber does not repeatedly populate its watch.
 
 ## Rewards and records
 
-Each sanctum provides **one shared Royal Synthesis Core for the saved world**, awarded to the player who successfully claims its deep relay. Both chamber memories and a cleared deep watch are required. This is a site reward, not a reward per player or map. Find another sanctum for another core. The recipient can retry an interrupted delivery at that relay. Breaking blocks, copying maps, revisiting chunks, or restarting the server does not create a second core.
+Each sanctum provides **one shared Royal Synthesis Core for the saved world**, awarded to the player who successfully claims its deep relay. Both chamber memories and a cleared deep watch are required. This is a site reward, not a reward per player or map. Find another sanctum for another core. The recipient can retry an interrupted delivery at that relay. Keep empty inventory slots for missing rewards. If the relay reports a storage failure, resolve the storage problem and retry; rewards already in the inventory need no additional slots to confirm delivery. Breaking blocks, copying maps, revisiting chunks, or restarting the server does not create a second core.
 
 Guaranteed ordinary chest supplies cover the station and first synthesis reagents: three gold ingots, six stone bricks, four redstone, an Ancient Command Seal, six slimeballs, and three Old Command Fragments. These also cover crafting one ordinary restoration station and restoring the courtyard mining core. Bring or raise the ordinary Mining Slime parent separately. A spare pickaxe and cobblestone support the journey. Optional loot is controlled by the four `chests/sanctum_*` tables.
 

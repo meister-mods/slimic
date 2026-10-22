@@ -463,9 +463,15 @@ public final class RoyalSynthesisGameTests {
   }
 
   @GameTest(template = "empty", batch = "royal_synthesis")
-  public static void failedPlayerCheckpointRetainsReceiptAndRetriesWithoutAnotherResult(
+  public static void failedPlayerCheckpointKeepsTheResultReservedWithoutChangingExistingInventory(
       GameTestHelper h) throws Exception {
     var f = fixture(h);
+    f.owner.getInventory().setItem(9, new ItemStack(Items.DIAMOND, 7));
+    f.owner.getInventory().setItem(40, new ItemStack(Items.IRON_AXE));
+    var original =
+        java.util.stream.IntStream.range(0, f.owner.getInventory().getContainerSize())
+            .mapToObj(i -> f.owner.getInventory().getItem(i).copy())
+            .toList();
     var folder =
         h.getLevel()
             .getServer()
@@ -477,17 +483,21 @@ public final class RoyalSynthesisGameTests {
     java.nio.file.Files.createDirectory(probe);
     try {
       h.assertTrue(
-          f.execute().problem() == RoyalSynthesis.Problem.COMPLETE && !f.result().isEmpty(),
-          "Committed physical reward remains in inventory");
+          f.execute().problem() == RoyalSynthesis.Problem.COMPLETE && f.result().isEmpty(),
+          "Uncheckpointed result stays in the recoverable mailbox");
       h.assertTrue(
           RoyalSynthesisData.get(h.getLevel()).pendingFor(f.owner.getUUID()) != null,
           "Delivery acknowledgement remains pending");
+      for (int i = 0; i < original.size(); i++)
+        h.assertTrue(
+            ItemStack.matches(original.get(i), f.owner.getInventory().getItem(i)),
+            "Every existing inventory slot remains intact: " + i);
     } finally {
       java.nio.file.Files.delete(probe);
     } // Remove only this test's empty marker directory.
     var ledger = RoyalSynthesisData.get(h.getLevel());
     var pending = ledger.pendingFor(f.owner.getUUID());
-    h.assertTrue(ledger.deliver(f.owner, pending), "Existing receipt checkpointed on retry");
+    h.assertTrue(ledger.deliver(f.owner, pending), "Reserved result checkpointed on retry");
     h.assertTrue(
         f.owner.getInventory().items.stream()
                     .filter(s -> s.is(ModItems.NEXT_GENERATION_MINING_SLIME.get()))
@@ -743,6 +753,33 @@ public final class RoyalSynthesisGameTests {
         f.execute().problem() == RoyalSynthesis.Problem.ATTACHMENTS,
         "Unverified attached cargo must stay recoverable");
     unchanged(f, before);
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "royal_synthesis")
+  public static void savedReceiptPreventsDuplicateDeliveryAfterAnInterruptedAcknowledgement(
+      GameTestHelper h) {
+    var f = fixture(h);
+    f.execute();
+    var child = f.result().copy();
+    var snapshot = RoyalSynthesisData.get(h.getLevel()).save(new CompoundTag());
+    var id = data(child).getCompound("ForgeData").getUUID("SynthesisTransaction");
+    for (var raw : snapshot.getList("Transactions", Tag.TAG_COMPOUND)) {
+      var tx = (CompoundTag) raw;
+      if (tx.getUUID("Id").equals(id)) tx.putBoolean("Delivered", false);
+    }
+    var restored = RoyalSynthesisData.load(snapshot);
+    var tx = restored.transaction(id);
+    h.assertTrue(tx != null && !tx.delivered, "Interrupted acknowledgement survives reload");
+    h.assertTrue(restored.deliver(f.owner, tx), "The saved receipt is acknowledged");
+    h.assertTrue(
+        f.owner.getInventory().items.stream()
+                    .filter(i -> i.is(ModItems.NEXT_GENERATION_MINING_SLIME.get()))
+                    .count()
+                == 1
+            && ItemStack.matches(child, f.result())
+            && restored.pendingFor(f.owner.getUUID()) == null,
+        "Existing result remains exact and singular");
     h.succeed();
   }
 }

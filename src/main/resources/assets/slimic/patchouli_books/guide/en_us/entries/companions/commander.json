@@ -1,5 +1,5 @@
 {
-  "name": "Commander Slime",
+  "name": "Command Slime",
   "icon": "slimic:commander_slime",
   "category": "slimic:companions",
   "sortnum": 51,
@@ -27,7 +27,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "One temporary source chunk is kept ticking at a time; unavailable or unsafe destinations are skipped. Each source has a five-second wait limit and commands have a five-second cooldown. Recovery or a restart cancels an unfinished gather. Other traits remain intact. Stored and broken commanders do not occupy the group’s slot."
+      "text": "One temporary source chunk is kept ticking at a time; unavailable or unsafe destinations are skipped. Each source has a five-second wait limit and commands have a five-second cooldown. Recovery or a restart cancels an unfinished gather. Other traits remain intact. Stored and broken command slimes do not occupy the group’s slot."
     },
     {
       "type": "patchouli:text",

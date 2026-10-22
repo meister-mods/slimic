@@ -1,6 +1,6 @@
 package io.github.meistermods.slimic.client;
 
-import io.github.meistermods.slimic.menu.CommanderMenu;
+import io.github.meistermods.slimic.menu.CommandMenu;
 import io.github.meistermods.slimic.network.*;
 import java.util.*;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
-public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu> {
+public final class CommandScreen extends AbstractContainerScreen<CommandMenu> {
   private static final ResourceLocation BACKGROUND = SlimeTextures.gui("commander");
   private EditBox tag;
   private final List<Button> rows = new ArrayList<>(),
@@ -19,10 +19,10 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
       enemies = new ArrayList<>();
   private Button previous, next, assign, gather;
   private UUID selected;
-  private CommanderPackets.Page lastPage;
+  private CommandPackets.Page lastPage;
   private static final UUID NONE = new UUID(0, 0);
 
-  public CommanderScreen(CommanderMenu menu, Inventory inventory, Component title) {
+  public CommandScreen(CommandMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
     imageWidth = 310;
     imageHeight = 235;
@@ -37,7 +37,7 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
 
   private void send(int action, int page, UUID target, String value) {
     ModNetwork.CHANNEL.sendToServer(
-        new CommanderPackets.Action(
+        new CommandPackets.Action(
             menu.containerId, action, page, target == null ? NONE : target, value));
   }
 
@@ -53,8 +53,8 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
     shares.clear();
     enemies.clear();
     lastPage = null;
-    button("companions", 10, 25, 80, () -> view(CommanderMenu.COMPANIONS, 0));
-    button("players", 95, 25, 80, () -> view(CommanderMenu.PLAYERS, 0));
+    button("companions", 10, 25, 80, () -> view(CommandMenu.COMPANIONS, 0));
+    button("players", 95, 25, 80, () -> view(CommandMenu.PLAYERS, 0));
     previous =
         button(
             "previous",
@@ -64,7 +64,7 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
             () -> {
               var p = menu.snapshot();
               if (p != null)
-                view(p.players() ? CommanderMenu.PLAYERS : CommanderMenu.COMPANIONS, p.page() - 1);
+                view(p.players() ? CommandMenu.PLAYERS : CommandMenu.COMPANIONS, p.page() - 1);
             });
     next =
         button(
@@ -75,9 +75,9 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
             () -> {
               var p = menu.snapshot();
               if (p != null)
-                view(p.players() ? CommanderMenu.PLAYERS : CommanderMenu.COMPANIONS, p.page() + 1);
+                view(p.players() ? CommandMenu.PLAYERS : CommandMenu.COMPANIONS, p.page() + 1);
             });
-    for (int i = 0; i < CommanderMenu.PAGE_SIZE; i++) {
+    for (int i = 0; i < CommandMenu.PAGE_SIZE; i++) {
       final int row = i;
       rows.add(
           button(
@@ -92,8 +92,8 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
                   tag.setValue(p.rows().get(row).tag());
                 }
               }));
-      shares.add(button("share", 138, 51 + i * 23, 77, () -> relation(row, CommanderMenu.SHARE)));
-      enemies.add(button("enemy", 219, 51 + i * 23, 80, () -> relation(row, CommanderMenu.ENEMY)));
+      shares.add(button("share", 138, 51 + i * 23, 77, () -> relation(row, CommandMenu.SHARE)));
+      enemies.add(button("enemy", 219, 51 + i * 23, 80, () -> relation(row, CommandMenu.ENEMY)));
     }
     tag =
         addRenderableWidget(
@@ -109,9 +109,9 @@ public final class CommanderScreen extends AbstractContainerScreen<CommanderMenu
     tag.setTooltip(Tooltip.create(Component.translatable("screen.slimic.roster.tag_help")));
     assign =
         button(
-            "assign", 134, 195, 79, () -> send(CommanderMenu.SET_TAG, 0, selected, tag.getValue()));
+            "assign", 134, 195, 79, () -> send(CommandMenu.SET_TAG, 0, selected, tag.getValue()));
     gather =
-        button("gather", 219, 195, 80, () -> send(CommanderMenu.GATHER, 0, NONE, tag.getValue()));
+        button("gather", 219, 195, 80, () -> send(CommandMenu.GATHER, 0, NONE, tag.getValue()));
     gather.setTooltip(Tooltip.create(Component.translatable("screen.slimic.roster.gather_help")));
   }
 

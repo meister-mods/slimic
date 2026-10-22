@@ -4,14 +4,14 @@ import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.item.CleaningSlimeItem;
 import io.github.meistermods.slimic.item.CombatSlimeItem;
 import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
-import io.github.meistermods.slimic.item.FarmerSlimeItem;
+import io.github.meistermods.slimic.item.FarmingSlimeItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
 import io.github.meistermods.slimic.item.GuardianAngelSlimeItem;
 import io.github.meistermods.slimic.item.HealingSlimeItem;
-import io.github.meistermods.slimic.item.HeraldSlimeItem;
-import io.github.meistermods.slimic.item.LumberjackSlimeItem;
+import io.github.meistermods.slimic.item.LoggingSlimeItem;
 import io.github.meistermods.slimic.item.MiningSlimeItem;
 import io.github.meistermods.slimic.item.SaddleSlimeItem;
+import io.github.meistermods.slimic.item.SignalingSlimeItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.item.SlimeScannerItem;
 import io.github.meistermods.slimic.item.SlimeTunerItem;
@@ -104,12 +104,12 @@ public final class ModItems {
                   new Item.Properties()
                       .rarity(net.minecraft.world.item.Rarity.UNCOMMON)
                       .fireResistant()));
-  public static final RegistryObject<Item> FORGOTTEN_MINER_SLIME_SPAWN_EGG =
+  public static final RegistryObject<Item> FORGOTTEN_MINING_SLIME_SPAWN_EGG =
       ITEMS.register(
           "forgotten_miner_slime_spawn_egg",
           () ->
               new net.minecraftforge.common.ForgeSpawnEggItem(
-                  ModEntities.FORGOTTEN_MINER_SLIME, 0x476339, 0xC19B3E, new Item.Properties()));
+                  ModEntities.FORGOTTEN_MINING_SLIME, 0x476339, 0xC19B3E, new Item.Properties()));
   public static final RegistryObject<Item> FORGOTTEN_TUNNEL_SLIME_SPAWN_EGG =
       ITEMS.register(
           "forgotten_tunnel_slime_spawn_egg",
@@ -153,12 +153,12 @@ public final class ModItems {
                   0x476339,
                   0x8A582C,
                   new Item.Properties()));
-  public static final RegistryObject<Item> ANCIENT_COMMANDER_SLIME_SPAWN_EGG =
+  public static final RegistryObject<Item> ANCIENT_COMMAND_SLIME_SPAWN_EGG =
       ITEMS.register(
           "ancient_commander_slime_spawn_egg",
           () ->
               new net.minecraftforge.common.ForgeSpawnEggItem(
-                  ModEntities.ANCIENT_COMMANDER_SLIME, 0x476339, 0x713C91, new Item.Properties()));
+                  ModEntities.ANCIENT_COMMAND_SLIME, 0x476339, 0x713C91, new Item.Properties()));
 
   public static final RegistryObject<Item> FRIENDLY_SLIME =
       ITEMS.register("friendly_slime", () -> new FriendlySlimeItem(new Item.Properties()));
@@ -226,10 +226,10 @@ public final class ModItems {
               new BlockItem(
                   ModBlocks.BROKEN_SLIME.get(), new Item.Properties().stacksTo(1).fireResistant()));
 
-  public static final RegistryObject<Item> FARMER_SLIME =
-      ITEMS.register("farmer_slime", () -> new FarmerSlimeItem(new Item.Properties()));
-  public static final RegistryObject<Item> LUMBERJACK_SLIME =
-      ITEMS.register("lumberjack_slime", () -> new LumberjackSlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> FARMING_SLIME =
+      ITEMS.register("farmer_slime", () -> new FarmingSlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> LOGGING_SLIME =
+      ITEMS.register("lumberjack_slime", () -> new LoggingSlimeItem(new Item.Properties()));
 
   public static final RegistryObject<Item> SLIME_TUNER =
       ITEMS.register("slime_tuner", () -> new SlimeTunerItem(new Item.Properties().stacksTo(1)));
@@ -282,12 +282,12 @@ public final class ModItems {
           () ->
               new io.github.meistermods.slimic.item.SpecializedSlimeItem(
                   new Item.Properties(), ModEntities.GLOW_SLIME));
-  public static final RegistryObject<Item> COMMANDER_SLIME =
+  public static final RegistryObject<Item> COMMAND_SLIME =
       ITEMS.register(
           "commander_slime",
           () ->
               new io.github.meistermods.slimic.item.SpecializedSlimeItem(
-                  new Item.Properties(), ModEntities.COMMANDER_SLIME));
+                  new Item.Properties(), ModEntities.COMMAND_SLIME));
   public static final RegistryObject<Item> ENDER_SLIME =
       ITEMS.register(
           "ender_slime",
@@ -319,8 +319,8 @@ public final class ModItems {
       ITEMS.register(
           "slime_trail", () -> new BlockItem(ModBlocks.SLIME_TRAIL.get(), new Item.Properties()));
 
-  public static final RegistryObject<Item> HERALD_SLIME =
-      ITEMS.register("herald_slime", () -> new HeraldSlimeItem(new Item.Properties()));
+  public static final RegistryObject<Item> SIGNALING_SLIME =
+      ITEMS.register("herald_slime", () -> new SignalingSlimeItem(new Item.Properties()));
   public static final RegistryObject<Item> CREATIVE_SLIME_TUNER =
       ITEMS.register(
           "creative_slime_tuner",

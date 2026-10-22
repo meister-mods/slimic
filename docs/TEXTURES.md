@@ -15,7 +15,7 @@ Every accessory atlas is **256×256 pixels**, mapped to a **64×64 logical UV ca
 | `mining.png` | Yellow helmet, brim, and luminous front lamp; shared by Mining, Tunnel, Ancient Mining, Ancient Tunnel, and Next-Generation Mining Slimes. |
 | `transport.png` | Wooden pack and brown straps; shared by Transport and Warehouse Slimes. |
 | `farmer.png` | Straw hat, brim, and leather band for Farming Slimes. |
-| `lumberjack.png` | Leather cap and brim for Lumberjack Slimes. |
+| `lumberjack.png` | Leather cap and brim for Logging Slimes. |
 | `healing.png` | Ivory headband and golden cross; shared by Healing and Abundance Slimes. |
 | `cleaning.png` | Blue work cap, brim, and metal badge. |
 | `combat.png` | Metal headband and red crest; also used by Dragon Slimes. |
@@ -36,7 +36,7 @@ Every accessory atlas is **256×256 pixels**, mapped to a **64×64 logical UV ca
 | `armor_diamond.png` | Diamond armor surface. |
 | `armor_netherite.png` | Netherite armor surface. |
 
-All six armor atlases share their UV coordinates and equipped silhouette. The existing `textures/entity/slime_wings.png` and `herald_hat.png` remain the feathered-wing and Herald hat textures. Meow Slimes use Minecraft's native cat head and texture. Held tools retain the original item models.
+All six armor atlases share their UV coordinates and equipped silhouette. The existing `textures/entity/slime_wings.png` and `herald_hat.png` remain the feathered-wing and Signaling hat textures. Meow Slimes use Minecraft's native cat head and texture. Held tools retain the original item models.
 
 ## UV layout
 
@@ -54,7 +54,7 @@ Screen backgrounds live under [`assets/slimic/textures/gui`](../src/main/resourc
 | --- | --- | --- |
 | `slime.png` | 368×240 | Companion management panels and header. |
 | `creative_tuner.png` | 360×230 | Creative tuner panels and header. |
-| `commander.png` | 310×235 | Commander roster panels and header. |
+| `commander.png` | 310×235 | Command roster panels and header. |
 | `slots.png` | 36×18 | Active 18×18 slot on the left; locked 18×18 bag cell on the right. |
 
 Slot images include a one-pixel frame around the 16×16 item area. The management screen places them using the menu's slot coordinates, including partial bag pages. Text, controls, selected-row highlights, tooltips, and item contents remain dynamic.

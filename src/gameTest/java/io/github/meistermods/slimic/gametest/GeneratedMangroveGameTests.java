@@ -57,7 +57,7 @@ public final class GeneratedMangroveGameTests {
             + level.getBlockState(base)
             + ", lowest="
             + logs.stream().min(Comparator.comparingInt(BlockPos::getY)));
-    var logger = ModEntities.LUMBERJACK_SLIME.get().create(level);
+    var logger = ModEntities.LOGGING_SLIME.get().create(level);
     logger.tame(h.makeMockSurvivalPlayer());
     logger.moveTo(a.point(3.5, 101, 8.5));
     logger.onReleased();

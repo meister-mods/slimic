@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Ancient Guards, Forgotten Transports, and Ancient Commanders remain bound to newly generated ruins in The Slimic. Guards patrol and attack players and companions. Creative and Spectator players and fellow remnants are excluded."
+      "text": "Ancient Guards, Forgotten Transports, and Ancient Command Slimes remain bound to newly generated ruins in The Slimic. Guards patrol and attack players and companions. Creative and Spectator players and fellow remnants are excluded."
     },
     {
       "type": "patchouli:text",
-      "text": "Carriers resist when attacked and move goods between their own ruin’s two Slime Chests. Opening a chest removes its ancient transport link. Commanders alert guards of the same ruin to nearby intruders."
+      "text": "Carriers resist when attacked and move goods between their own ruin’s two Slime Chests. Opening a chest removes its ancient transport link. Command Slimes alert guards of the same ruin to nearby intruders."
     },
     {
       "type": "patchouli:text",
@@ -18,7 +18,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Base health / attack / armor: Guard 64 / 8 / 8, Transport 48 / 6 / 6, Commander 96 / 12 / 12. Creative has a spawn egg for each role. Egg-spawned remnants have no player owner; carriers need their ruin’s linked depots to haul."
+      "text": "Base health / attack / armor: Guard 64 / 8 / 8, Transport 48 / 6 / 6, Command 96 / 12 / 12. Creative has a spawn egg for each role. Egg-spawned remnants have no player owner; carriers need their ruin’s linked depots to haul."
     }
   ],
   "extra_recipe_mappings": {

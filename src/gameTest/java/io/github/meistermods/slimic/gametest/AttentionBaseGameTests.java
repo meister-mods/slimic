@@ -49,19 +49,19 @@ public final class AttentionBaseGameTests {
     return List.of(
         new Specialization(ModItems.MINING_SLIME.get(), Items.IRON_PICKAXE, false),
         new Specialization(ModItems.TRANSPORT_SLIME.get(), Items.CHEST, false),
-        new Specialization(ModItems.HERALD_SLIME.get(), Items.FIREWORK_ROCKET, false),
+        new Specialization(ModItems.SIGNALING_SLIME.get(), Items.FIREWORK_ROCKET, false),
         new Specialization(ModItems.COMBAT_SLIME.get(), Items.IRON_SWORD, false),
         new Specialization(ModItems.CLEANING_SLIME.get(), Items.ROTTEN_FLESH, false),
         new Specialization(ModItems.SADDLE_SLIME.get(), Items.SADDLE, false),
-        new Specialization(ModItems.FARMER_SLIME.get(), Items.IRON_HOE, false),
-        new Specialization(ModItems.LUMBERJACK_SLIME.get(), Items.IRON_AXE, false),
+        new Specialization(ModItems.FARMING_SLIME.get(), Items.IRON_HOE, false),
+        new Specialization(ModItems.LOGGING_SLIME.get(), Items.IRON_AXE, false),
         new Specialization(ModItems.SOGGY_SLIME.get(), Items.SLIME_BALL, false),
         new Specialization(ModItems.HEALING_SLIME.get(), Items.GOLDEN_CARROT, false),
         new Specialization(ModItems.GUARDIAN_ANGEL_SLIME.get(), Items.TOTEM_OF_UNDYING, true),
         new Specialization(ModItems.FISHING_SLIME.get(), Items.FISHING_ROD, false),
         new Specialization(ModItems.MEOW_SLIME.get(), Items.SALMON, false),
         new Specialization(ModItems.GLOW_SLIME.get(), Items.GLOWSTONE_DUST, false),
-        new Specialization(ModItems.COMMANDER_SLIME.get(), Items.BOOK, false),
+        new Specialization(ModItems.COMMAND_SLIME.get(), Items.BOOK, false),
         new Specialization(ModItems.ENDER_SLIME.get(), Items.ENDER_PEARL, false));
   }
 

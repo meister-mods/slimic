@@ -91,7 +91,7 @@ public final class ToolBreakingGameTests {
                 .defaultBlockState()
                 .setValue(LeavesBlock.PERSISTENT, false)
                 .setValue(LeavesBlock.DISTANCE, 1));
-    var m = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    var m = ModEntities.LOGGING_SLIME.get().create(h.getLevel());
     m.tame(h.makeMockSurvivalPlayer());
     m.moveTo(a.point(6.5, 101, 8.5));
     m.setTool(axe);
@@ -102,7 +102,7 @@ public final class ToolBreakingGameTests {
     return new Rig(a, m, target);
   }
 
-  private static Rig farmer(GameTestHelper h, ItemStack hoe) {
+  private static Rig farming(GameTestHelper h, ItemStack hoe) {
     var a = new LoadedWorkArea(h);
     var target = BlockPos.containing(a.point(8, 101, 8));
     h.getLevel()
@@ -111,7 +111,7 @@ public final class ToolBreakingGameTests {
     h.getLevel().setBlockAndUpdate(target.below().east(), Blocks.WATER.defaultBlockState());
     h.getLevel()
         .setBlockAndUpdate(target, Blocks.WHEAT.defaultBlockState().setValue(CropBlock.AGE, 7));
-    var m = ModEntities.FARMER_SLIME.get().create(h.getLevel());
+    var m = ModEntities.FARMING_SLIME.get().create(h.getLevel());
     m.tame(h.makeMockSurvivalPlayer());
     m.moveTo(a.point(6.5, 101, 8.5));
     m.setTool(hoe);
@@ -297,7 +297,7 @@ public final class ToolBreakingGameTests {
   @GameTest(template = "empty", batch = "tool_breaking", timeoutTicks = 1200)
   public static void missingAxePausesAndResumesWithFreshBreakingProgress(GameTestHelper h) {
     var rig = logger(h, new ItemStack(Items.DIAMOND_AXE), 1);
-    var m = (LumberjackSlime) rig.pet;
+    var m = (LoggingSlime) rig.pet;
     var attempts = new Attempts(h, rig);
     int[] resumed = {-1};
     start(h, rig)
@@ -333,9 +333,9 @@ public final class ToolBreakingGameTests {
   }
 
   @GameTest(template = "empty", batch = "tool_breaking", timeoutTicks = 1200)
-  public static void lumberjackDoesNotCutWithAnUnrelatedPickaxe(GameTestHelper h) {
+  public static void loggingDoesNotCutWithAnUnrelatedPickaxe(GameTestHelper h) {
     var rig = logger(h, efficient(Items.DIAMOND_PICKAXE), 32);
-    var m = (LumberjackSlime) rig.pet;
+    var m = (LoggingSlime) rig.pet;
     start(h, rig)
         .thenWaitUntil(
             () ->
@@ -356,8 +356,8 @@ public final class ToolBreakingGameTests {
 
   @GameTest(template = "empty", batch = "tool_breaking", timeoutTicks = 1200)
   public static void farmingRequiresAHoeAndResumesItsInstantCropHarvest(GameTestHelper h) {
-    var rig = farmer(h, ItemStack.EMPTY);
-    var m = (FarmerSlime) rig.pet;
+    var rig = farming(h, ItemStack.EMPTY);
+    var m = (FarmingSlime) rig.pet;
     start(h, rig)
         .thenWaitUntil(
             () ->
@@ -384,9 +384,9 @@ public final class ToolBreakingGameTests {
   }
 
   @GameTest(template = "empty", batch = "tool_breaking", timeoutTicks = 1200)
-  public static void farmerDoesNotHarvestWithAnUnrelatedAxe(GameTestHelper h) {
-    var rig = farmer(h, efficient(Items.DIAMOND_AXE));
-    var m = (FarmerSlime) rig.pet;
+  public static void farmingDoesNotHarvestWithAnUnrelatedAxe(GameTestHelper h) {
+    var rig = farming(h, efficient(Items.DIAMOND_AXE));
+    var m = (FarmingSlime) rig.pet;
     start(h, rig)
         .thenWaitUntil(
             () ->

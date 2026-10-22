@@ -280,9 +280,7 @@ public final class RoyalSynthesisData extends SavedData {
     }
     int slot = owner.getInventory().getFreeSlot();
     if (slot < 0) return false;
-    owner.getInventory().setItem(slot, tx.output.copy());
-    owner.getInventory().setChanged();
-    if (!DurableWorldData.savePlayer(owner)) return false;
+    if (!DurableWorldData.givePlayerItems(owner, List.of(tx.output))) return false;
     tx.delivered = true;
     setDirty();
     DurableWorldData.flush(owner.serverLevel(), NAME, this);

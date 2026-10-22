@@ -19,6 +19,13 @@ public final class SanctumSites extends SavedData {
   public static final int COURTYARD = 1, GALLERY = 2;
   private final Map<UUID, Site> sites = new LinkedHashMap<>();
 
+  public enum GrantResult {
+    DELIVERED,
+    UNAVAILABLE,
+    OUTPUT_FULL,
+    STORAGE_ERROR
+  }
+
   public static final class Site {
     public final UUID id;
     public final BlockPos anchor;
@@ -68,9 +75,16 @@ public final class SanctumSites extends SavedData {
   }
 
   public boolean grant(ServerPlayer player, Site site, int zone, List<ItemStack> rewards) {
+    return grantResult(player, site, zone, rewards) == GrantResult.DELIVERED;
+  }
+
+  public GrantResult grantResult(
+      ServerPlayer player, Site site, int zone, List<ItemStack> rewards) {
     var delivery = site.deliveries.get(zone);
     if (delivery == null) {
-      if (zone == 4 && site.claimed) return false;
+      if (zone == 4 && site.claimed) return GrantResult.UNAVAILABLE;
+      if (player.getInventory().items.stream().filter(ItemStack::isEmpty).count() < rewards.size())
+        return GrantResult.OUTPUT_FULL;
       UUID receipt = UUID.randomUUID();
       var tagged = rewards.stream().map(ItemStack::copy).toList();
       for (int i = 0; i < tagged.size(); i++) {
@@ -97,10 +111,11 @@ public final class SanctumSites extends SavedData {
         site.claimed = previousClaimed;
         site.cleared = previousCleared;
         site.claimant = previousClaimant;
-        return false;
+        return GrantResult.STORAGE_ERROR;
       }
     }
-    if (!delivery.owner.equals(player.getUUID()) || delivery.delivered) return false;
+    if (!delivery.owner.equals(player.getUUID()) || delivery.delivered)
+      return GrantResult.UNAVAILABLE;
     var missing = new ArrayList<ItemStack>();
     for (int i = 0; i < delivery.items.size(); i++) {
       boolean present = false;
@@ -117,16 +132,13 @@ public final class SanctumSites extends SavedData {
       if (!present) missing.add(delivery.items.get(i).copy());
     }
     long free = player.getInventory().items.stream().filter(ItemStack::isEmpty).count();
-    if (free < missing.size()) return false;
-    for (var item : missing) player.getInventory().add(item);
-    // Keep the physical reward and its receipt if saving fails. A later retry checkpoints
-    // the existing item rather than creating another reward.
-    if (!DurableWorldData.savePlayer(player)) return false;
+    if (free < missing.size()) return GrantResult.OUTPUT_FULL;
+    if (!DurableWorldData.givePlayerItems(player, missing)) return GrantResult.STORAGE_ERROR;
     delivery.delivered = true;
     setDirty();
     DurableWorldData.flush(player.serverLevel(), "slimic_sanctum_sites", this);
     player.inventoryMenu.broadcastChanges();
-    return true;
+    return GrantResult.DELIVERED;
   }
 
   public static SanctumSites get(ServerLevel level) {

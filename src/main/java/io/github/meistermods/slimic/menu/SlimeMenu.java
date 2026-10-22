@@ -9,10 +9,10 @@ import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MeowSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
@@ -155,7 +155,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
                     case TARGET_PAGE -> targetPage;
                     case BAG_PAGE -> bagPage;
                     case ALERT_MINUTES ->
-                        slime instanceof HeraldSlime herald ? herald.getDelayMinutes() : 0;
+                        slime instanceof SignalingSlime signaling ? signaling.getDelayMinutes() : 0;
                     default -> 0;
                   };
                 },
@@ -353,8 +353,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
       }
     }
     if (button == ROSTER
-        && slime instanceof io.github.meistermods.slimic.entity.CommanderSlime commander)
-      return commander.open(player).consumesAction();
+        && slime instanceof io.github.meistermods.slimic.entity.CommandSlime command)
+      return command.open(player).consumesAction();
     if (button == ACTIVE && slime instanceof io.github.meistermods.slimic.entity.GlowSlime glow) {
       glow.setActive(!glow.isActive());
       return true;
@@ -382,8 +382,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
       soggy.setRoaming(true);
       return true;
     }
-    if (button == FIRE_SIGNAL && slime instanceof HeraldSlime herald)
-      return herald.launchManually();
+    if (button == FIRE_SIGNAL && slime instanceof SignalingSlime signaling)
+      return signaling.launchManually();
     if (button == RIDE && slime instanceof SaddleSlime mount) {
       if (!mount.mount(player)) return false;
       player.closeContainer();
@@ -400,10 +400,10 @@ public final class SlimeMenu extends AbstractContainerMenu {
         return true;
       }
     }
-    if ((button == DELAY_DOWN || button == DELAY_UP) && slime instanceof HeraldSlime herald) {
-      int next = herald.getDelayMinutes() + (button == DELAY_UP ? 1 : -1);
+    if ((button == DELAY_DOWN || button == DELAY_UP) && slime instanceof SignalingSlime signaling) {
+      int next = signaling.getDelayMinutes() + (button == DELAY_UP ? 1 : -1);
       if (next < 1 || next > 60) return false;
-      herald.setDelayMinutes(next);
+      signaling.setDelayMinutes(next);
       return true;
     }
     if (button == PREVIOUS_PAGE || button == NEXT_PAGE) {
@@ -416,12 +416,12 @@ public final class SlimeMenu extends AbstractContainerMenu {
       return slime.upgradeStat(SlimeStat.values()[button]);
     if (button != FOLLOW && button != WAIT && button != WORK) return false;
     if (button == FOLLOW) slime.setFollowingOwner(player);
-    if (button == WORK && !(slime instanceof BagSlime) && !(slime instanceof HeraldSlime))
+    if (button == WORK && !(slime instanceof BagSlime) && !(slime instanceof SignalingSlime))
       return false;
     if (slime instanceof SoggySlime soggy) soggy.setRoaming(false);
     if (slime instanceof MeowSlime cat) cat.setRoaming(false);
     if (slime instanceof BagSlime worker) worker.setWorking(button == WORK);
-    if (slime instanceof HeraldSlime herald) herald.setMonitoring(button == WORK);
+    if (slime instanceof SignalingSlime signaling) signaling.setMonitoring(button == WORK);
     slime.setWaiting(button == WAIT);
     return true;
   }

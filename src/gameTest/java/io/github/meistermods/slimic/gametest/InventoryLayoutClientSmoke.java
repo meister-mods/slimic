@@ -45,7 +45,7 @@ public final class InventoryLayoutClientSmoke {
         new Case("combat-targets", ModEntities.COMBAT_SLIME.get(), 0, 0, true),
         new Case("fishing", ModEntities.FISHING_SLIME.get(), 0, 0, false),
         new Case("tunnel", ModEntities.TUNNEL_SLIME.get(), 0, 0, false),
-        new Case("farming", ModEntities.FARMER_SLIME.get(), 0, 0, false),
+        new Case("farming", ModEntities.FARMING_SLIME.get(), 0, 0, false),
         new Case("abundance", ModEntities.ABUNDANCE_SLIME.get(), 0, 0, false));
   }
 
@@ -109,7 +109,8 @@ public final class InventoryLayoutClientSmoke {
                 tunnel.setLiningTemplate(new ItemStack(Items.STONE_BRICKS));
               if (pet instanceof FishingSlime fishing)
                 fishing.setRod(new ItemStack(Items.FISHING_ROD));
-              if (pet instanceof FarmerSlime farmer) farmer.setTool(new ItemStack(Items.IRON_HOE));
+              if (pet instanceof FarmingSlime farming)
+                farming.setTool(new ItemStack(Items.IRON_HOE));
               if (pet instanceof CombatSlime combat) {
                 combat.setEquipment(0, new ItemStack(Items.DIAMOND_SWORD));
                 combat.setEquipment(1, new ItemStack(Items.SHIELD));

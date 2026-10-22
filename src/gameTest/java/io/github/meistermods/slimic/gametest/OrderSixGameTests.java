@@ -37,12 +37,12 @@ public final class OrderSixGameTests {
         ModEntities.FRIENDLY_SLIME.get(),
         ModEntities.MINING_SLIME.get(),
         ModEntities.TRANSPORT_SLIME.get(),
-        ModEntities.HERALD_SLIME.get(),
+        ModEntities.SIGNALING_SLIME.get(),
         ModEntities.COMBAT_SLIME.get(),
         ModEntities.CLEANING_SLIME.get(),
         ModEntities.SADDLE_SLIME.get(),
-        ModEntities.FARMER_SLIME.get(),
-        ModEntities.LUMBERJACK_SLIME.get(),
+        ModEntities.FARMING_SLIME.get(),
+        ModEntities.LOGGING_SLIME.get(),
         ModEntities.GUARDIAN_ANGEL_SLIME.get(),
         ModEntities.SOGGY_SLIME.get(),
         ModEntities.HEALING_SLIME.get(),
@@ -69,7 +69,7 @@ public final class OrderSixGameTests {
         bag.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 13));
       if (pet instanceof FieldSlime field) {
         var tool =
-            new ItemStack(field instanceof FarmerSlime ? Items.DIAMOND_HOE : Items.DIAMOND_AXE);
+            new ItemStack(field instanceof FarmingSlime ? Items.DIAMOND_HOE : Items.DIAMOND_AXE);
         tool.setDamageValue(12);
         field.setTool(tool);
       }
@@ -453,7 +453,8 @@ public final class OrderSixGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_six", timeoutTicks = 480)
-  public static void heraldRepeatsEachIncidentEveryTwoHundredTicksUntilResolved(GameTestHelper h) {
+  public static void signalingRepeatsEachIncidentEveryTwoHundredTicksUntilResolved(
+      GameTestHelper h) {
     LoadedWorkArea a = new LoadedWorkArea(h);
     Player owner = h.makeMockSurvivalPlayer();
     var worker = ModEntities.MINING_SLIME.get().create(h.getLevel());
@@ -470,12 +471,12 @@ public final class OrderSixGameTests {
     data.putLong("BlockedEpisode", 5);
     worker.load(data);
     h.getLevel().addFreshEntity(worker);
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.setMonitoring(true);
-    herald.moveTo(a.point(10, 101, 8));
-    herald.tame(owner);
-    herald.setDelayMinutes(1);
-    h.getLevel().addFreshEntity(herald);
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.setMonitoring(true);
+    signaling.moveTo(a.point(10, 101, 8));
+    signaling.tame(owner);
+    signaling.setDelayMinutes(1);
+    h.getLevel().addFreshEntity(signaling);
     Set<UUID> seen = new HashSet<>();
     List<Integer> fired = new ArrayList<>();
     int[] elapsed = {0};
@@ -486,8 +487,8 @@ public final class OrderSixGameTests {
               h.getLevel()
                   .getEntitiesOfClass(
                       net.minecraft.world.entity.projectile.FireworkRocketEntity.class,
-                      herald.getBoundingBox().inflate(64)))
-            if (rocket.getOwner() == herald && seen.add(rocket.getUUID())) fired.add(elapsed[0]);
+                      signaling.getBoundingBox().inflate(64)))
+            if (rocket.getOwner() == signaling && seen.add(rocket.getUUID())) fired.add(elapsed[0]);
         });
     h.runAfterDelay(
         235,
@@ -502,7 +503,7 @@ public final class OrderSixGameTests {
         () -> {
           h.assertTrue(fired.size() == 2, "Resolving or pausing the work stops repeated signals");
           worker.discard();
-          herald.discard();
+          signaling.discard();
           a.close();
           h.succeed();
         });

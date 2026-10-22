@@ -116,8 +116,8 @@ public final class BroadAuditGameTests {
           CompanionRecipe.Kind.COMBAT,
           CompanionRecipe.Kind.CLEANING,
           CompanionRecipe.Kind.SADDLE,
-          CompanionRecipe.Kind.FARMER,
-          CompanionRecipe.Kind.LUMBERJACK
+          CompanionRecipe.Kind.FARMING,
+          CompanionRecipe.Kind.LOGGING
         };
     var items =
         new Item[] {
@@ -369,30 +369,30 @@ public final class BroadAuditGameTests {
   }
 
   @GameTest(template = "empty", batch = "broad_audit")
-  public static void movingFarmersRequiresANewFarmlandSnapshot(GameTestHelper h) {
+  public static void movingFarmingsRequiresANewFarmlandSnapshot(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
-    var farmer = ModEntities.FARMER_SLIME.get().create(h.getLevel());
-    farmer.tame(h.makeMockSurvivalPlayer());
-    farmer.moveTo(a.point(4, 101, 4));
-    farmer.onReleased();
+    var farming = ModEntities.FARMING_SLIME.get().create(h.getLevel());
+    farming.tame(h.makeMockSurvivalPlayer());
+    farming.moveTo(a.point(4, 101, 4));
+    farming.onReleased();
     h.getLevel()
         .setBlockAndUpdate(
             BlockPos.containing(a.point(6, 100, 4)), Blocks.FARMLAND.defaultBlockState());
-    farmer.setWorking(true);
-    var data = farmer.saveWithoutId(new CompoundTag());
+    farming.setWorking(true);
+    var data = farming.saveWithoutId(new CompoundTag());
     h.assertTrue(data.getLongArray("FarmPlots").length == 1, "Original plot snapshot saved");
-    farmer.moveTo(a.point(12, 101, 12));
-    farmer.onReleased();
+    farming.moveTo(a.point(12, 101, 12));
+    farming.onReleased();
     h.assertTrue(
-        !farmer.isWorking() && farmer.isOrderedToSit() && farmer.getFarmPlots().isEmpty(),
+        !farming.isWorking() && farming.isOrderedToSit() && farming.getFarmPlots().isEmpty(),
         "Relocation clears old plot edits and waits");
     a.close();
     h.succeed();
   }
 
-  private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea a) {
+  private static LoggingSlime logger(GameTestHelper h, LoadedWorkArea a) {
     a.clearSurroundingTrees();
-    var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    var pet = ModEntities.LOGGING_SLIME.get().create(h.getLevel());
     pet.setWorking(true);
     pet.tame(h.makeMockSurvivalPlayer());
     pet.moveTo(a.point(4, 101, 5));
@@ -576,22 +576,22 @@ public final class BroadAuditGameTests {
 
   @GameTest(template = "empty", batch = "broad_audit")
   public static void canceledSignalSpawnDoesNotConsumeManualCooldown(GameTestHelper h) {
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.setMonitoring(true);
-    herald.tame(h.makeMockSurvivalPlayer());
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.setMonitoring(true);
+    signaling.tame(h.makeMockSurvivalPlayer());
     Consumer<EntityJoinLevelEvent> cancel =
         event -> {
           if (event.getEntity() instanceof FireworkRocketEntity rocket
-              && rocket.getOwner() == herald) event.setCanceled(true);
+              && rocket.getOwner() == signaling) event.setCanceled(true);
         };
     MinecraftForge.EVENT_BUS.addListener(cancel);
     try {
-      h.assertTrue(!herald.launchManually(), "Canceled signal reports failure");
+      h.assertTrue(!signaling.launchManually(), "Canceled signal reports failure");
     } finally {
       MinecraftForge.EVENT_BUS.unregister(cancel);
     }
     h.assertTrue(
-        herald.launchManually() && !herald.launchManually(),
+        signaling.launchManually() && !signaling.launchManually(),
         "Retry works immediately then cooldown applies");
     h.succeed();
   }

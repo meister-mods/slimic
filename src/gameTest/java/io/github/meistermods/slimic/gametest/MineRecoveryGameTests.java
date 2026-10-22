@@ -28,7 +28,7 @@ import net.minecraftforge.gametest.*;
 @PrefixGameTestTemplate(false)
 public final class MineRecoveryGameTests {
   private static final List<AncientSlime.Role> ROLES =
-      List.of(AncientSlime.Role.MINER, AncientSlime.Role.TUNNEL, AncientSlime.Role.MINE_GUARD);
+      List.of(AncientSlime.Role.MINING, AncientSlime.Role.TUNNEL, AncientSlime.Role.MINE_GUARD);
 
   private record Site(GameTestHelper h, LoadedWorkArea area, Player owner, BlockPos station)
       implements AutoCloseable {
@@ -50,7 +50,7 @@ public final class MineRecoveryGameTests {
 
   private static AncientSlime enemy(ServerLevel level, AncientSlime.Role role) {
     return switch (role) {
-      case MINER -> ModEntities.FORGOTTEN_MINER_SLIME.get().create(level);
+      case MINING -> ModEntities.FORGOTTEN_MINING_SLIME.get().create(level);
       case TUNNEL -> ModEntities.FORGOTTEN_TUNNEL_SLIME.get().create(level);
       case MINE_GUARD -> ModEntities.MINE_GUARDIAN_SLIME.get().create(level);
       default -> throw new IllegalArgumentException();
@@ -180,7 +180,7 @@ public final class MineRecoveryGameTests {
             "Restore " + role);
         var item = s.owner.getMainHandItem();
         var expected =
-            role == AncientSlime.Role.MINER
+            role == AncientSlime.Role.MINING
                 ? ModItems.ANCIENT_MINING_SLIME.get()
                 : role == AncientSlime.Role.TUNNEL
                     ? ModItems.ANCIENT_TUNNEL_SLIME.get()
@@ -316,7 +316,7 @@ public final class MineRecoveryGameTests {
     try (var s = site(h)) {
       h.getLevel().setBlockAndUpdate(s.station, ModBlocks.BROKEN_SLIME.get().defaultBlockState());
       var corpse = (BrokenSlimeBlockEntity) h.getLevel().getBlockEntity(s.station);
-      var source = core(AncientSlime.Role.MINER);
+      var source = core(AncientSlime.Role.MINING);
       corpse.setAncientCore(source);
       s.owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SLIME_BALL, 3));
       h.assertTrue(
@@ -327,7 +327,7 @@ public final class MineRecoveryGameTests {
       var read = corpse.getAncientCore();
       read.getOrCreateTag().putString("AncientRole", "BAD");
       h.assertTrue(
-          AncientSlimeCoreItem.role(corpse.getAncientCore()) == AncientSlime.Role.MINER,
+          AncientSlimeCoreItem.role(corpse.getAncientCore()) == AncientSlime.Role.MINING,
           "Stored identity never aliases caller stacks");
     }
     h.succeed();
@@ -342,7 +342,7 @@ public final class MineRecoveryGameTests {
       var pet = ModEntities.ANCIENT_MINING_SLIME.get().create(h.getLevel());
       pet.tame(s.owner);
       pet.setHealth(0);
-      corpse.setAncientCore(core(AncientSlime.Role.MINER));
+      corpse.setAncientCore(core(AncientSlime.Role.MINING));
       corpse.setSlime(FriendlySlimeItem.fromSlime(pet));
       h.assertTrue(
           corpse.getAncientCore().isEmpty() && !corpse.getSlime().isEmpty(),
@@ -740,7 +740,7 @@ public final class MineRecoveryGameTests {
   @GameTest(template = "empty", batch = "mine_recovery", timeoutTicks = 250)
   public static void forgottenWorkerHonorsCanceledBreakWithoutChangingTheFace(GameTestHelper h) {
     var s = site(h);
-    var mob = enemy(h.getLevel(), AncientSlime.Role.MINER);
+    var mob = enemy(h.getLevel(), AncientSlime.Role.MINING);
     mob.moveTo(s.area.point(5, 101, 5));
     mob.bindToRuin(mob.blockPosition(), UUID.randomUUID(), null, null, 2);
     var face = BlockPos.containing(s.area.point(5, 101, 7));

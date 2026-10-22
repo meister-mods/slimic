@@ -5,20 +5,20 @@ import io.github.meistermods.slimic.entity.AbundanceSlime;
 import io.github.meistermods.slimic.entity.AttentionSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
-import io.github.meistermods.slimic.entity.CommanderSlime;
+import io.github.meistermods.slimic.entity.CommandSlime;
 import io.github.meistermods.slimic.entity.DragonSlime;
 import io.github.meistermods.slimic.entity.EnderSlime;
-import io.github.meistermods.slimic.entity.FarmerSlime;
+import io.github.meistermods.slimic.entity.FarmingSlime;
 import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.GlowSlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
-import io.github.meistermods.slimic.entity.LumberjackSlime;
+import io.github.meistermods.slimic.entity.LoggingSlime;
 import io.github.meistermods.slimic.entity.MeowSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.entity.TunnelSlime;
@@ -35,6 +35,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = Slimic.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModEntities {
+  // Registry IDs are persistent save identifiers; Java type names may evolve independently.
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
       DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Slimic.MOD_ID);
 
@@ -68,10 +69,10 @@ public final class ModEntities {
   public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
       FORGOTTEN_TRANSPORT_SLIME = ancient("forgotten_transport_slime");
   public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
-      ANCIENT_COMMANDER_SLIME = ancient("ancient_commander_slime");
+      ANCIENT_COMMAND_SLIME = ancient("ancient_commander_slime");
 
   public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
-      FORGOTTEN_MINER_SLIME = ancient("forgotten_miner_slime");
+      FORGOTTEN_MINING_SLIME = ancient("forgotten_miner_slime");
   public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
       FORGOTTEN_TUNNEL_SLIME = ancient("forgotten_tunnel_slime");
   public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AncientSlime>>
@@ -166,19 +167,19 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":saddle_slime"));
 
-  public static final RegistryObject<EntityType<FarmerSlime>> FARMER_SLIME =
+  public static final RegistryObject<EntityType<FarmingSlime>> FARMING_SLIME =
       ENTITY_TYPES.register(
           "farmer_slime",
           () ->
-              EntityType.Builder.of(FarmerSlime::new, MobCategory.CREATURE)
+              EntityType.Builder.of(FarmingSlime::new, MobCategory.CREATURE)
                   .sized(1.04F, 1.04F)
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":farmer_slime"));
-  public static final RegistryObject<EntityType<LumberjackSlime>> LUMBERJACK_SLIME =
+  public static final RegistryObject<EntityType<LoggingSlime>> LOGGING_SLIME =
       ENTITY_TYPES.register(
           "lumberjack_slime",
           () ->
-              EntityType.Builder.of(LumberjackSlime::new, MobCategory.CREATURE)
+              EntityType.Builder.of(LoggingSlime::new, MobCategory.CREATURE)
                   .sized(1.04F, 1.04F)
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":lumberjack_slime"));
@@ -259,11 +260,11 @@ public final class ModEntities {
                   .sized(1.04F, 1.04F)
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":glow_slime"));
-  public static final RegistryObject<EntityType<CommanderSlime>> COMMANDER_SLIME =
+  public static final RegistryObject<EntityType<CommandSlime>> COMMAND_SLIME =
       ENTITY_TYPES.register(
           "commander_slime",
           () ->
-              EntityType.Builder.of(CommanderSlime::new, MobCategory.CREATURE)
+              EntityType.Builder.of(CommandSlime::new, MobCategory.CREATURE)
                   .sized(1.04F, 1.04F)
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":commander_slime"));
@@ -302,11 +303,11 @@ public final class ModEntities {
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":soggy_slime"));
 
-  public static final RegistryObject<EntityType<HeraldSlime>> HERALD_SLIME =
+  public static final RegistryObject<EntityType<SignalingSlime>> SIGNALING_SLIME =
       ENTITY_TYPES.register(
           "herald_slime",
           () ->
-              EntityType.Builder.of(HeraldSlime::new, MobCategory.CREATURE)
+              EntityType.Builder.of(SignalingSlime::new, MobCategory.CREATURE)
                   .sized(1.04F, 1.04F)
                   .clientTrackingRange(10)
                   .build(Slimic.MOD_ID + ":herald_slime"));
@@ -328,14 +329,14 @@ public final class ModEntities {
                 io.github.meistermods.slimic.entity.AncientSlime.Role.TRANSPORT)
             .build());
     event.put(
-        ANCIENT_COMMANDER_SLIME.get(),
+        ANCIENT_COMMAND_SLIME.get(),
         io.github.meistermods.slimic.entity.AncientSlime.createAttributes(
-                io.github.meistermods.slimic.entity.AncientSlime.Role.COMMANDER)
+                io.github.meistermods.slimic.entity.AncientSlime.Role.COMMAND)
             .build());
     event.put(
-        FORGOTTEN_MINER_SLIME.get(),
+        FORGOTTEN_MINING_SLIME.get(),
         io.github.meistermods.slimic.entity.AncientSlime.createAttributes(
-                io.github.meistermods.slimic.entity.AncientSlime.Role.MINER)
+                io.github.meistermods.slimic.entity.AncientSlime.Role.MINING)
             .build());
     event.put(
         FORGOTTEN_TUNNEL_SLIME.get(),
@@ -348,7 +349,7 @@ public final class ModEntities {
                 io.github.meistermods.slimic.entity.AncientSlime.Role.MINE_GUARD)
             .build());
     event.put(GLOW_SLIME.get(), FriendlySlime.createAttributes().build());
-    event.put(COMMANDER_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(COMMAND_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ENDER_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ATTENTION_SLIME.get(), FriendlySlime.createAttributes().build());
 
@@ -366,14 +367,14 @@ public final class ModEntities {
     event.put(
         GUARDIAN_ANGEL_SLIME.get(),
         FriendlySlime.createAttributes().add(Attributes.FLYING_SPEED, .3).build());
-    event.put(LUMBERJACK_SLIME.get(), FriendlySlime.createAttributes().build());
-    event.put(FARMER_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(LOGGING_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(FARMING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(SADDLE_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(FRIENDLY_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(MINING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(TRANSPORT_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(COMBAT_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(CLEANING_SLIME.get(), FriendlySlime.createAttributes().build());
-    event.put(HERALD_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(SIGNALING_SLIME.get(), FriendlySlime.createAttributes().build());
   }
 }

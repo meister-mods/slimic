@@ -5,7 +5,7 @@ import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.*;
 import io.github.meistermods.slimic.item.*;
 import io.github.meistermods.slimic.menu.*;
-import io.github.meistermods.slimic.network.CommanderPackets;
+import io.github.meistermods.slimic.network.CommandPackets;
 import io.github.meistermods.slimic.registry.*;
 import java.util.*;
 import java.util.function.Consumer;
@@ -121,7 +121,7 @@ public final class CoordinationBoundaryGameTests {
   }
 
   @GameTest(template = "empty", batch = "coordination_boundaries", timeoutTicks = 100)
-  public static void delegatedCommanderCannotGrantRelationsOrEditForeignRecords(GameTestHelper h) {
+  public static void delegatedCommandCannotGrantRelationsOrEditForeignRecords(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     h.startSequence()
         .thenWaitUntil(() -> ready(h, a))
@@ -131,23 +131,23 @@ public final class CoordinationBoundaryGameTests {
               var shared = owner(h);
               var foreign = owner(h);
               var registry = CompanionRegistry.get(h.getLevel());
-              var commander = pet(h, a, ModEntities.COMMANDER_SLIME.get(), primary, 7, 7);
-              shared.moveTo(commander.position());
+              var command = pet(h, a, ModEntities.COMMAND_SLIME.get(), primary, 7, 7);
+              shared.moveTo(command.position());
               var own = pet(h, a, ModEntities.FRIENDLY_SLIME.get(), primary, 3, 3);
               var other = pet(h, a, ModEntities.FRIENDLY_SLIME.get(), foreign, 11, 11);
               registry.setRelation(primary.getUUID(), shared.getUUID(), true, true);
               registry.setRelation(primary.getUUID(), foreign.getUUID(), false, true);
-              var menu = new CommanderMenu(18, shared.getInventory(), commander);
+              var menu = new CommandMenu(18, shared.getInventory(), command);
               shared.containerMenu = menu;
               h.assertTrue(
-                  !menu.perform(shared, CommanderMenu.SHARE, 0, foreign.getUUID(), "")
+                  !menu.perform(shared, CommandMenu.SHARE, 0, foreign.getUUID(), "")
                       && !registry.owns(primary.getUUID(), foreign.getUUID()),
                   "A shared owner cannot delegate primary authority");
               h.assertTrue(
-                  !menu.perform(shared, CommanderMenu.SET_TAG, 0, other.getUUID(), "stolen"),
+                  !menu.perform(shared, CommandMenu.SET_TAG, 0, other.getUUID(), "stolen"),
                   "A menu cannot choose a foreign primary owner");
               h.assertTrue(
-                  menu.perform(shared, CommanderMenu.SET_TAG, 0, own.getUUID(), "pals")
+                  menu.perform(shared, CommandMenu.SET_TAG, 0, own.getUUID(), "pals")
                       && own.getCompanionTag().equals("pals"),
                   "Delegated tagging remains available");
               h.assertTrue(
@@ -159,7 +159,7 @@ public final class CoordinationBoundaryGameTests {
                   !menu.stillValid(shared), "Open commander menus lose revoked access immediately");
               own.discard();
               other.discard();
-              commander.discard();
+              command.discard();
               a.close();
             })
         .thenSucceed();
@@ -179,9 +179,9 @@ public final class CoordinationBoundaryGameTests {
       b.writeVarInt(0);
       b.writeVarInt(0);
       b.writeBoolean(true);
-      b.writeByte(CommanderMenu.PAGE_SIZE + 1);
+      b.writeByte(CommandMenu.PAGE_SIZE + 1);
       try {
-        CommanderPackets.Page.decode(b);
+        CommandPackets.Page.decode(b);
       } catch (IllegalArgumentException expected) {
         rejected = true;
       }
@@ -520,18 +520,17 @@ public final class CoordinationBoundaryGameTests {
               registry.observe(miner);
               registry.setTag(actor.getUUID(), miner.getUUID(), "realm");
               actor.teleportTo(h.getLevel(), a.point(7, 101, 7).x, 101, a.point(7, 101, 7).z, 0, 0);
-              var commander = pet(h, a, ModEntities.COMMANDER_SLIME.get(), actor, 7, 7);
-              refs.add(commander);
+              var command = pet(h, a, ModEntities.COMMAND_SLIME.get(), actor, 7, 7);
+              refs.add(command);
               h.assertTrue(
-                  commander.gather(actor, "realm"),
+                  command.gather(actor, "realm"),
                   "A tagged companion in another dimension can gather");
             })
         .thenWaitUntil(
             () -> {
               h.assertTrue(refs.size() == 2, "Cross-dimension setup completed");
               h.assertTrue(
-                  !((CommanderSlime) refs.get(1)).isGathering(),
-                  "Cross-dimension gather completes");
+                  !((CommandSlime) refs.get(1)).isGathering(), "Cross-dimension gather completes");
             })
         .thenExecute(
             () -> {
@@ -628,16 +627,16 @@ public final class CoordinationBoundaryGameTests {
   }
 
   @GameTest(template = "empty", batch = "coordination_boundaries", timeoutTicks = 100)
-  public static void commanderOpeningAfterEntityRemovalRetainsAnInvalidSafeMenu(GameTestHelper h) {
+  public static void commandOpeningAfterEntityRemovalRetainsAnInvalidSafeMenu(GameTestHelper h) {
     var actor = owner(h);
     var buffer = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
     try {
       buffer.writeVarInt(Integer.MAX_VALUE);
-      var menu = new CommanderMenu(2, actor.getInventory(), buffer);
+      var menu = new CommandMenu(2, actor.getInventory(), buffer);
       actor.containerMenu = menu;
       h.assertTrue(
           !menu.stillValid(actor)
-              && !menu.perform(actor, CommanderMenu.PLAYERS, 0, UUID.randomUUID(), ""),
+              && !menu.perform(actor, CommandMenu.PLAYERS, 0, UUID.randomUUID(), ""),
           "A missing companion opens without a cast or null crash and cannot accept commands");
     } finally {
       buffer.release();

@@ -34,7 +34,7 @@ public final class AdvancedSlimeLayer
   private static final ResourceLocation ABUNDANCE = SlimeTextures.accessory("abundance");
   private static final ResourceLocation TUNNEL = SlimeTextures.accessory("tunnel");
   private static final ResourceLocation DRAGON = SlimeTextures.accessory("dragon");
-  private static final ResourceLocation COMMANDER = SlimeTextures.accessory("commander");
+  private static final ResourceLocation COMMAND = SlimeTextures.accessory("commander");
   private final ModelPart root, catHead;
   private final EntityRendererProvider.Context context;
 
@@ -192,10 +192,10 @@ public final class AdvancedSlimeLayer
       float yaw,
       float pitch) {
     if (slime.isInvisible()) return;
-    if (slime instanceof io.github.meistermods.slimic.entity.CommanderSlime) {
-      part("mustache", COMMANDER, pose, buffers, light);
-      part("baton", COMMANDER, pose, buffers, light);
-      part("baton_tip", COMMANDER, pose, buffers, light);
+    if (slime instanceof io.github.meistermods.slimic.entity.CommandSlime) {
+      part("mustache", COMMAND, pose, buffers, light);
+      part("baton", COMMAND, pose, buffers, light);
+      part("baton_tip", COMMAND, pose, buffers, light);
     }
     if (slime instanceof FishingSlime fisher) {
       part("overalls", FISHING, pose, buffers, light);

@@ -237,7 +237,7 @@ public final class FallenSanctumPiece extends StructurePiece {
                 instanceof io.github.meistermods.slimic.block.BrokenSlimeBlockEntity corpse)
           corpse.setAncientCore(
               io.github.meistermods.slimic.item.AncientSlimeCoreItem.fromRemains(
-                  io.github.meistermods.slimic.entity.AncientSlime.Role.MINER,
+                  io.github.meistermods.slimic.entity.AncientSlime.Role.MINING,
                   java.util.UUID.nameUUIDFromBytes(
                       (anchor.asLong() + ":courtyard_miner")
                           .getBytes(java.nio.charset.StandardCharsets.UTF_8)),

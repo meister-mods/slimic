@@ -52,7 +52,7 @@ public final class AncientSlimeCoreItem extends Item {
     var data = stack.getOrCreateTag();
     data.putInt("AncientCoreVersion", 1);
     data.putUUID("AncientIdentity", identity);
-    data.putString("AncientRole", role.name());
+    data.putString("AncientRole", role.savedName());
     data.putInt("AncientVeterancy", Math.max(0, Math.min(3, rank)));
     return stack;
   }
@@ -62,7 +62,7 @@ public final class AncientSlimeCoreItem extends Item {
     var stack = new ItemStack(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get());
     var data = stack.getOrCreateTag();
     data.putInt("AncientCoreVersion", 1);
-    data.putString("AncientRole", role.name());
+    data.putString("AncientRole", role.savedName());
     data.putBoolean("AncientCreativeTemplate", true);
     return stack;
   }
@@ -75,7 +75,7 @@ public final class AncientSlimeCoreItem extends Item {
         || (!stack.getTag().hasUUID("AncientIdentity")
             && !stack.getTag().getBoolean("AncientCreativeTemplate"))) return null;
     try {
-      return AncientSlime.Role.valueOf(stack.getTag().getString("AncientRole"));
+      return AncientSlime.Role.fromSavedName(stack.getTag().getString("AncientRole"));
     } catch (IllegalArgumentException invalid) {
       return null;
     }
@@ -135,8 +135,8 @@ public final class AncientSlimeCoreItem extends Item {
           switch (role) {
             case GUARD, MINE_GUARD -> ModEntities.ROYAL_GUARD_SLIME.get().create(server);
             case TRANSPORT -> ModEntities.TRANSPORT_SLIME.get().create(server);
-            case COMMANDER -> ModEntities.COMMANDER_SLIME.get().create(server);
-            case MINER -> ModEntities.ANCIENT_MINING_SLIME.get().create(server);
+            case COMMAND -> ModEntities.COMMAND_SLIME.get().create(server);
+            case MINING -> ModEntities.ANCIENT_MINING_SLIME.get().create(server);
             case TUNNEL -> ModEntities.ANCIENT_TUNNEL_SLIME.get().create(server);
           };
       if (companion == null) return InteractionResult.FAIL;
@@ -191,7 +191,7 @@ public final class AncientSlimeCoreItem extends Item {
     return role != null && role.isMine()
         ? Component.translatable(
             "item.slimic.damaged_ancient_slime_core."
-                + role.name().toLowerCase(java.util.Locale.ROOT))
+                + role.savedName().toLowerCase(java.util.Locale.ROOT))
         : super.getName(stack);
   }
 
@@ -214,7 +214,7 @@ public final class AncientSlimeCoreItem extends Item {
           Component.translatable(
                   "item.slimic.damaged_ancient_slime_core.role",
                   Component.translatable(
-                      "name.slimic.ancient_" + role.name().toLowerCase(java.util.Locale.ROOT)))
+                      "name.slimic.ancient_" + role.savedName().toLowerCase(java.util.Locale.ROOT)))
               .withStyle(ChatFormatting.GOLD));
   }
 }

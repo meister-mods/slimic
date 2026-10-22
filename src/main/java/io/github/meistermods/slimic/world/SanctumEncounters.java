@@ -97,7 +97,7 @@ public final class SanctumEncounters {
             zone == 4 ? i == 0 ? 3 : 0 : zone == 2 && i == 0 ? 2 : zone == 1 || zone == 3 ? 0 : 1;
         var type =
             role >= 2
-                ? ModEntities.ANCIENT_COMMANDER_SLIME.get()
+                ? ModEntities.ANCIENT_COMMAND_SLIME.get()
                 : ModEntities.ANCIENT_GUARD_SLIME.get();
         var mob = type.create(level);
         if (mob == null) continue;

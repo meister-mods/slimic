@@ -18,7 +18,7 @@ Older, empty remains generated before 0.3.7 have no core. A player's fallen comp
 
 | Remnant | Base health / attack / armor | Behavior | Core result |
 | --- | --- | --- | --- |
-| Forgotten Miner Slime | 48 / 6 / 6 | Slowly works one old natural face in a quarry; attacks intruders. | Ancient Mining Slime |
+| Forgotten Mining Slime | 48 / 6 / 6 | Slowly works one old natural face in a quarry; attacks intruders. | Ancient Mining Slime |
 | Forgotten Tunnel Slime | 56 / 6 / 6 | Slowly clears the old 3×3 tunnel face; attacks intruders. | Ancient Tunnel Slime |
 | Mine Guardian Slime | 96 / 10 / 12 | Defends the workers and reward area. | Royal Guard Slime |
 
@@ -26,7 +26,7 @@ Mine remnants share the ancient faction's alliance and 24-block home boundary. T
 
 Old mining orders affect only a fixed 3×3 face, at most nine blocks per worker. They use effective tools, ordinary breaking progress, loaded terrain, `mobGriefing`, Forge break protection, and persistent quarry-stair protection. They do not mine player containers, fluids, arbitrary buildings, or new distant tunnels. Their work count and face survive saving; spawn eggs have no bound work face.
 
-Defeating a mine remnant yourself or with a tamed Slimic companion yields one role-specific core and one command fragment, subject to mob-loot rules and events. Existing guards, carriers, and commanders in surface ruins continue to drop a seal with their core.
+Defeating a mine remnant yourself or with a tamed Slimic companion yields one role-specific core and one command fragment, subject to mob-loot rules and events. Existing guards, carriers, and command slimes in surface ruins continue to drop a seal with their core.
 
 ## Restore in the Overworld
 
@@ -55,7 +55,7 @@ Lining and reinforcement consume actual materials. This slime cannot pass throug
 
 ## Cooperation and preservation
 
-Transport and Warehouse Slimes recognize both new workers through the existing Mining and Tunnel contracts. They unload full bags and supply missing tools, buckets, wall cobblestone, or lining materials. Herald Slimes report their named work stoppages; healing, shared ownership, Commander gathering, scanners, growth, recovery, and portals follow ordinary companion rules.
+Transport and Warehouse Slimes recognize both new workers through the existing Mining and Tunnel contracts. They unload full bags and supply missing tools, buckets, wall cobblestone, or lining materials. Signaling Slimes report their named work stoppages; healing, shared ownership, Command gathering, scanners, growth, recovery, and portals follow ordinary companion rules.
 
 Every new or released companion starts in Wait. Recovery preserves health, stamina, stats, tools, cargo, identity, and work data; ordinary world reload retains a saved work order. Ancient and ordinary miners cooperate on shared stairs, and tunnel lining cannot overwrite protected quarry steps.
 
@@ -66,4 +66,4 @@ Station recipe (workbench):
 | Redstone | Gold ingot | Redstone |
 | Stone Bricks | Stone Bricks | Stone Bricks |
 
-Restoration distributes 12–28 invested upgrade points among stats used by the profession, using the core’s identity to fix its random roll. This total includes inherited Endurance training and follows ordinary upgrade effects and level caps. Points are already invested and count toward future growth costs. Recovery, release, portal travel, and saving preserve the allocation without rerolling or stacking it. All newly restored ancient roles, including ruin guards, carriers, and commanders, use this rule; already restored companions and crafting specialization keep their existing training.
+Restoration distributes 12–28 invested upgrade points among stats used by the profession, using the core’s identity to fix its random roll. This total includes inherited Endurance training and follows ordinary upgrade effects and level caps. Points are already invested and count toward future growth costs. Recovery, release, portal travel, and saving preserve the allocation without rerolling or stacking it. All newly restored ancient roles, including ruin guards, carriers, and command slimes, use this rule; already restored companions and crafting specialization keep their existing training.

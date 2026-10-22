@@ -103,7 +103,7 @@ public final class AncientBalanceGameTests {
     return List.of(
         ModEntities.ANCIENT_GUARD_SLIME.get(),
         ModEntities.FORGOTTEN_TRANSPORT_SLIME.get(),
-        ModEntities.ANCIENT_COMMANDER_SLIME.get());
+        ModEntities.ANCIENT_COMMAND_SLIME.get());
   }
 
   private static void checkStats(GameTestHelper h, AncientSlime mob, int index) {
@@ -197,7 +197,7 @@ public final class AncientBalanceGameTests {
         List.of(
             ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get(),
             ModItems.FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG.get(),
-            ModItems.ANCIENT_COMMANDER_SLIME_SPAWN_EGG.get());
+            ModItems.ANCIENT_COMMAND_SLIME_SPAWN_EGG.get());
     for (int i = 0; i < eggs.size(); i++) {
       var egg = (SpawnEggItem) eggs.get(i);
       h.assertTrue(

@@ -82,7 +82,7 @@ public final class MangroveForestryGameTests {
                       && site.worker.getPendingPlantings() == 1,
                   "Remaining root kinds and reserved planting are stored separately");
               var tool = site.worker.getTool().copy();
-              var next = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+              var next = ModEntities.LOGGING_SLIME.get().create(h.getLevel());
               next.load(saved);
               next.onReleased();
               h.assertTrue(
@@ -160,7 +160,7 @@ public final class MangroveForestryGameTests {
     final LoadedWorkArea area;
     final BlockPos base;
     final boolean wet;
-    LumberjackSlime worker;
+    LoggingSlime worker;
     GoalSelector goals;
     boolean active = true;
 
@@ -191,7 +191,7 @@ public final class MangroveForestryGameTests {
       h.assertTrue(
           level.getBlockState(base.below()).is(BlockTags.DIRT),
           "Native mud supports planted propagules");
-      worker = ModEntities.LUMBERJACK_SLIME.get().create(level);
+      worker = ModEntities.LOGGING_SLIME.get().create(level);
       worker.tame(h.makeMockSurvivalPlayer());
       worker.moveTo(area.point(6.5, 101, 8.5));
       worker.onReleased();

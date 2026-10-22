@@ -167,7 +167,7 @@ public final class JeiClientSmoke implements IModPlugin {
     return recipes("farmer_slime/");
   }
 
-  public static long lumberjackRecipes() {
+  public static long loggingRecipes() {
     return recipes("lumberjack_slime/");
   }
 
@@ -187,7 +187,7 @@ public final class JeiClientSmoke implements IModPlugin {
     return recipes("guide_book");
   }
 
-  public static long heraldRecipes() {
+  public static long signalingRecipes() {
     return recipes("herald_slime/");
   }
 

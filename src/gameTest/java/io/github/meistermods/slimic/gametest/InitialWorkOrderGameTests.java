@@ -31,7 +31,7 @@ public final class InitialWorkOrderGameTests {
   private static List<EntityType<? extends FriendlySlime>> workers() {
     return List.of(
         ModEntities.GLOW_SLIME.get(),
-        ModEntities.COMMANDER_SLIME.get(),
+        ModEntities.COMMAND_SLIME.get(),
         ModEntities.ENDER_SLIME.get(),
         ModEntities.ATTENTION_SLIME.get(),
         ModEntities.FISHING_SLIME.get(),
@@ -46,12 +46,12 @@ public final class InitialWorkOrderGameTests {
         ModEntities.NEXT_GENERATION_MINING_SLIME.get(),
         ModEntities.ANCIENT_TUNNEL_SLIME.get(),
         ModEntities.TRANSPORT_SLIME.get(),
-        ModEntities.HERALD_SLIME.get(),
+        ModEntities.SIGNALING_SLIME.get(),
         ModEntities.COMBAT_SLIME.get(),
         ModEntities.ROYAL_GUARD_SLIME.get(),
         ModEntities.CLEANING_SLIME.get(),
-        ModEntities.FARMER_SLIME.get(),
-        ModEntities.LUMBERJACK_SLIME.get(),
+        ModEntities.FARMING_SLIME.get(),
+        ModEntities.LOGGING_SLIME.get(),
         ModEntities.GUARDIAN_ANGEL_SLIME.get(),
         ModEntities.SOGGY_SLIME.get());
   }
@@ -226,7 +226,7 @@ public final class InitialWorkOrderGameTests {
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 owner.moveTo(pet.position());
                 var menu = TestMenus.create(10 + i, owner.getInventory(), pet);
-                var work = pet instanceof BagSlime || pet instanceof HeraldSlime;
+                var work = pet instanceof BagSlime || pet instanceof SignalingSlime;
                 h.assertTrue(
                     menu.clickMenuButton(owner, work ? SlimeMenu.WORK : SlimeMenu.FOLLOW)
                         && !pet.isOrderedToSit(),

@@ -141,19 +141,33 @@ public final class GuidebookClientSmoke {
   private static void checkSearch(Minecraft c) throws ReflectiveOperationException {
     var landing = c.screen;
     var type = Class.forName("vazkii.patchouli.client.book.gui.GuiBookIndex");
-    c.setScreen((Screen) type.getConstructor(book.getClass()).newInstance(book));
-    if (((List<?>) field(c.screen, "allEntries")).size() != 66)
-      throw new IllegalStateException("The searchable index must include all guide entries");
-    String query = language == 1 ? "치유 슬라임" : "Healing Slime";
-    for (char letter : query.toCharArray()) c.screen.charTyped(letter, 0);
-    var matches = (List<?>) field(c.screen, "visibleEntries");
-    var expected = ResourceLocation.fromNamespaceAndPath("slimic", "companions/healing");
-    if (matches.size() != 1 || !expected.equals(invoke(matches.get(0), "getId")))
-      throw new IllegalStateException("Localized guide search failed: " + query);
-    c.screen.keyPressed(org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER, 0, 0);
-    if (!expected.equals(invoke(field(c.screen, "entry"), "getId")))
-      throw new IllegalStateException("The search result did not open its entry");
-    checkedSearches++;
+    for (String entry :
+        List.of("healing", "next_generation_mining", "lumberjack", "commander", "herald")) {
+      c.setScreen((Screen) type.getConstructor(book.getClass()).newInstance(book));
+      if (((List<?>) field(c.screen, "allEntries")).size() != 66)
+        throw new IllegalStateException("The searchable index must include all guide entries");
+      String query = Component.translatable("entity.slimic." + entry + "_slime").getString();
+      for (char letter : query.toCharArray()) c.screen.charTyped(letter, 0);
+      var matches = (List<?>) field(c.screen, "visibleEntries");
+      var expected = ResourceLocation.fromNamespaceAndPath("slimic", "companions/" + entry);
+      boolean found = false;
+      for (var match : matches) if (expected.equals(invoke(match, "getId"))) found = true;
+      if (!found) throw new IllegalStateException("Localized guide search failed: " + query);
+      if (matches.size() == 1) {
+        c.screen.keyPressed(org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER, 0, 0);
+      } else {
+        Object selected = null;
+        for (var button : (List<?>) field(c.screen, "entryButtons"))
+          if (expected.equals(invoke(invoke(button, "getEntry"), "getId"))) selected = button;
+        if (selected == null)
+          throw new IllegalStateException(
+              "Canonical entry is missing from search buttons: " + query);
+        ((net.minecraft.client.gui.components.Button) selected).onPress();
+      }
+      if (!expected.equals(invoke(field(c.screen, "entry"), "getId")))
+        throw new IllegalStateException("The search result did not open its entry");
+      checkedSearches++;
+    }
     c.setScreen(landing);
   }
 
@@ -333,7 +347,9 @@ public final class GuidebookClientSmoke {
         links.clear();
         String id = invoke(entry, "getId").toString();
         Component title = (Component) invoke(entry, "getName");
-        if (c.font.width(title) > 116)
+        if (spread == 0
+            && !field(c.screen, "leftPage").getClass().getSimpleName().equals("PageTemplate")
+            && c.font.width(title) > 116)
           problems.add(LANGUAGES.get(language) + " title too wide: " + title.getString());
         inspect(field(c.screen, "leftPage"), id + "/" + (spread * 2));
         inspect(field(c.screen, "rightPage"), id + "/" + (spread * 2 + 1));

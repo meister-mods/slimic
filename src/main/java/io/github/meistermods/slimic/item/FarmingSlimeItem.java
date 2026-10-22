@@ -6,14 +6,14 @@ import io.github.meistermods.slimic.registry.ModEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 
-public final class LumberjackSlimeItem extends FriendlySlimeItem {
-  public LumberjackSlimeItem(Properties properties) {
+public final class FarmingSlimeItem extends FriendlySlimeItem {
+  public FarmingSlimeItem(Properties properties) {
     super(properties);
   }
 
   @Override
   protected EntityType<? extends FriendlySlime> entityType() {
-    return ModEntities.LUMBERJACK_SLIME.get();
+    return ModEntities.FARMING_SLIME.get();
   }
 
   @Override
@@ -22,6 +22,10 @@ public final class LumberjackSlimeItem extends FriendlySlimeItem {
       ItemStack tool = ItemStack.of(stack.getTag().getCompound("InitialWorkTool"));
       if (((FieldSlime) slime).matchesTool(tool))
         ((FieldSlime) slime).setTool(tool.copyWithCount(1));
+    }
+    if (!stack.hasTag() || !stack.getTag().getCompound("SlimeData").contains("FarmingWork")) {
+      ((FieldSlime) slime).setWorking(false);
+      slime.setWaiting(true);
     }
   }
 }

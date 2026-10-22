@@ -120,7 +120,7 @@ public final class AccessoryTextureClientSmoke {
       }
       if (slime instanceof FieldSlime field)
         field.setTool(
-            new ItemStack(slime instanceof FarmerSlime ? Items.IRON_HOE : Items.IRON_AXE));
+            new ItemStack(slime instanceof FarmingSlime ? Items.IRON_HOE : Items.IRON_AXE));
       if (slime instanceof FishingSlime fisher) fisher.setRod(new ItemStack(Items.FISHING_ROD));
       if (slime instanceof SaddleSlime) {
         slime.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.SADDLE));

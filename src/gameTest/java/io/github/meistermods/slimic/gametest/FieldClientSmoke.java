@@ -38,14 +38,14 @@ final class FieldClientSmoke {
                       level.setBlockAndUpdate(
                           new net.minecraft.core.BlockPos(x, y, z),
                           net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
-                var farmer = ModEntities.FARMER_SLIME.get().create(level);
-                farmer.moveTo(10.5, 101, 8.5, 90, 0);
-                farmer.setNoAi(true);
-                farmer.tame(owner);
-                farmer.setTool(new ItemStack(Items.DIAMOND_HOE));
-                farmer.getBag().setStackInSlot(0, new ItemStack(Items.WHEAT_SEEDS, 12));
-                level.addFreshEntity(farmer);
-                var logger = ModEntities.LUMBERJACK_SLIME.get().create(level);
+                var farming = ModEntities.FARMING_SLIME.get().create(level);
+                farming.moveTo(10.5, 101, 8.5, 90, 0);
+                farming.setNoAi(true);
+                farming.tame(owner);
+                farming.setTool(new ItemStack(Items.DIAMOND_HOE));
+                farming.getBag().setStackInSlot(0, new ItemStack(Items.WHEAT_SEEDS, 12));
+                level.addFreshEntity(farming);
+                var logger = ModEntities.LOGGING_SLIME.get().create(level);
                 logger.setWorking(true);
                 logger.moveTo(10.5, 101, 12.5, 90, 0);
                 logger.setNoAi(true);
@@ -53,7 +53,7 @@ final class FieldClientSmoke {
                 logger.setTool(new ItemStack(Items.DIAMOND_AXE));
                 logger.getBag().setStackInSlot(0, new ItemStack(Items.OAK_SAPLING, 8));
                 level.addFreshEntity(logger);
-                for (var pet : java.util.List.of(farmer, logger)) {
+                for (var pet : java.util.List.of(farming, logger)) {
                   pet.setYBodyRot(90);
                   pet.setYHeadRot(90);
                 }
@@ -70,7 +70,7 @@ final class FieldClientSmoke {
             FieldSlime.class, client.player.getBoundingBox().inflate(16));
     FieldSlime pet =
         found.stream()
-            .filter(s -> phase <= 2 ? s instanceof FarmerSlime : s instanceof LumberjackSlime)
+            .filter(s -> phase <= 2 ? s instanceof FarmingSlime : s instanceof LoggingSlime)
             .findFirst()
             .orElse(null);
     if (pet == null) return false;
@@ -97,7 +97,7 @@ final class FieldClientSmoke {
           || !menu.getSlot(0).getItem().is(phase == 2 ? Items.DIAMOND_HOE : Items.DIAMOND_AXE)
           || menu.getSlot(1).getItem().getCount() != (phase == 2 ? 12 : 8))
         throw new IllegalStateException("Field worker synchronized gear/bag/range layout");
-      if (jei && (JeiClientSmoke.farmingRecipes() < 6 || JeiClientSmoke.lumberjackRecipes() < 6))
+      if (jei && (JeiClientSmoke.farmingRecipes() < 6 || JeiClientSmoke.loggingRecipes() < 6))
         throw new IllegalStateException("Missing field worker recipe families");
       shot(client, (phase == 2 ? "farming" : "lumberjack") + "-menu");
       client.player.closeContainer();

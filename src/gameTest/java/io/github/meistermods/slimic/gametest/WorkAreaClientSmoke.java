@@ -36,7 +36,7 @@ public final class WorkAreaClientSmoke {
       List.of(
           ModEntities.MINING_SLIME.get(),
           ModEntities.TUNNEL_SLIME.get(),
-          ModEntities.FARMER_SLIME.get(),
+          ModEntities.FARMING_SLIME.get(),
           ModEntities.TRANSPORT_SLIME.get(),
           ModEntities.CLEANING_SLIME.get(),
           ModEntities.COMBAT_SLIME.get(),
@@ -188,19 +188,19 @@ public final class WorkAreaClientSmoke {
           level.addFreshEntity(pet);
           pet.onReleased();
           if (pet instanceof TunnelSlime tunnel) tunnel.setTunnelDirection(Direction.EAST);
-          if (pet instanceof FarmerSlime farmer) {
+          if (pet instanceof FarmingSlime farming) {
             for (int x = 6; x <= 10; x++)
               for (int z = 6; z <= 10; z++)
                 level.setBlock(new BlockPos(x, 100, z), Blocks.FARMLAND.defaultBlockState(), 2);
-            farmer.moveTo(5.5, 101, 8.5);
-            farmer.onReleased();
-            farmer.setWorking(true);
-            farmer.setWaiting(true);
-            farmer.moveTo(8.5, 101, 8.5);
-            farmer.onReleased();
-            farmer.setWorking(true);
-            farmer.load(farmer.saveWithoutId(new CompoundTag()));
-            farmer.moveTo(11.5, 101, 8.5);
+            farming.moveTo(5.5, 101, 8.5);
+            farming.onReleased();
+            farming.setWorking(true);
+            farming.setWaiting(true);
+            farming.moveTo(8.5, 101, 8.5);
+            farming.onReleased();
+            farming.setWorking(true);
+            farming.load(farming.saveWithoutId(new CompoundTag()));
+            farming.moveTo(11.5, 101, 8.5);
           }
           if (pet instanceof TransportSlime transport) transport.setWorking(true);
           if (pet instanceof CombatSlime fighter) {
@@ -403,12 +403,12 @@ public final class WorkAreaClientSmoke {
             saved.putLong("BlockedEpisode", 5);
             miner.load(saved);
             level.addFreshEntity(miner);
-            var herald = ModEntities.HERALD_SLIME.get().create(level);
-            herald.moveTo(10.5, 101, 8.5);
-            herald.tame(p);
-            herald.setMonitoring(true);
-            herald.setDelayMinutes(1);
-            level.addFreshEntity(herald);
+            var signaling = ModEntities.SIGNALING_SLIME.get().create(level);
+            signaling.moveTo(10.5, 101, 8.5);
+            signaling.tame(p);
+            signaling.setMonitoring(true);
+            signaling.setDelayMinutes(1);
+            level.addFreshEntity(signaling);
           });
       phase = 7;
       ticks = 0;

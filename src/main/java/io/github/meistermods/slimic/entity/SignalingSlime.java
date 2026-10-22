@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
-public final class HeraldSlime extends FriendlySlime {
+public final class SignalingSlime extends FriendlySlime {
   public static final String SIGNAL_MARKER = "SlimicSignal";
   private ItemStack firework = defaultFirework();
   private int delayMinutes;
@@ -32,7 +32,7 @@ public final class HeraldSlime extends FriendlySlime {
   private int monitoringActivityTicks;
   private boolean watchingWorkers;
 
-  public HeraldSlime(EntityType<? extends HeraldSlime> type, Level level) {
+  public SignalingSlime(EntityType<? extends SignalingSlime> type, Level level) {
     super(type, level);
     setWaiting(true);
   }
@@ -102,7 +102,7 @@ public final class HeraldSlime extends FriendlySlime {
   }
 
   public int getDelayMinutes() {
-    return delayMinutes == 0 ? SlimicConfig.HERALD_DELAY_MINUTES.get() : delayMinutes;
+    return delayMinutes == 0 ? SlimicConfig.SIGNALING_DELAY_MINUTES.get() : delayMinutes;
   }
 
   public void setDelayMinutes(int value) {
@@ -173,6 +173,7 @@ public final class HeraldSlime extends FriendlySlime {
   @Override
   public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
+    // Retain the established NBT keys for world entities and stored summon items.
     tag.putInt("HeraldManualCooldown", manualCooldown);
     tag.put("HeraldFirework", firework.save(new CompoundTag()));
     tag.putInt("HeraldDelayMinutes", getDelayMinutes());
@@ -227,7 +228,7 @@ public final class HeraldSlime extends FriendlySlime {
 
   @Override
   public ItemStack getPickResult() {
-    return new ItemStack(ModItems.HERALD_SLIME.get());
+    return new ItemStack(ModItems.SIGNALING_SLIME.get());
   }
 
   private final class WatchGoal extends Goal {

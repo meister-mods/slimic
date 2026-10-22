@@ -6,8 +6,8 @@ import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -36,7 +36,7 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
     addLayer(new HealingSlimeLayer(this, context));
     addLayer(new ProfessionSlimeLayer(this, context));
     addLayer(new RoyalSlimeLayer(this, context));
-    addLayer(new HeraldSlimeLayer(this));
+    addLayer(new SignalingSlimeLayer(this));
   }
 
   @Override
@@ -79,7 +79,7 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
         || slime instanceof io.github.meistermods.slimic.entity.MeowSlime)
       pose.translate(0.0, 0.4, 0.0);
     if (slime instanceof SoggySlime) pose.translate(0.0, 0.5, 0.0);
-    if (slime instanceof HeraldSlime) pose.translate(0.0, 0.8, 0.0);
+    if (slime instanceof SignalingSlime) pose.translate(0.0, 0.8, 0.0);
     super.renderNameTag(slime, name, pose, buffers, light);
     pose.popPose();
   }

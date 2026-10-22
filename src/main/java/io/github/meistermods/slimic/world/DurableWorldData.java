@@ -4,9 +4,12 @@ import com.mojang.logging.LogUtils;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.*;
+import java.util.*;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.*;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.LevelResource;
 
@@ -39,7 +42,7 @@ public final class DurableWorldData {
     return success;
   }
 
-  public static boolean savePlayer(net.minecraft.server.level.ServerPlayer player) {
+  public static boolean savePlayer(ServerPlayer player) {
     var data = player.saveWithoutId(new CompoundTag());
     data.putInt("DataVersion", SharedConstants.getCurrentVersion().getDataVersion().getVersion());
     if (!write(
@@ -50,6 +53,35 @@ public final class DurableWorldData {
     // native owner snapshot before acknowledging a cross-file delivery.
     if (player.server.isSingleplayer()) player.server.saveEverything(false, true, true);
     return true;
+  }
+
+  /** Only publish new rewards after their player checkpoint succeeds on the server thread. */
+  public static boolean givePlayerItems(ServerPlayer player, List<ItemStack> rewards) {
+    var inventory = player.getInventory();
+    var available = new ArrayList<Integer>();
+    for (int i = 0; i < inventory.items.size(); i++)
+      if (inventory.getItem(i).isEmpty()) available.add(i);
+    if (available.size() < rewards.size()) return false;
+    var provisional = new LinkedHashMap<Integer, ItemStack>();
+    boolean saved = false;
+    try {
+      for (int i = 0; i < rewards.size(); i++) {
+        var item = rewards.get(i).copy();
+        provisional.put(available.get(i), item);
+        inventory.setItem(available.get(i), item);
+      }
+      saved = savePlayer(player);
+      return saved;
+    } finally {
+      if (!saved)
+        provisional.forEach(
+            (slot, item) -> {
+              // Touch only the exact stack provisionally placed into a previously empty slot.
+              // Existing inventory contents and already acknowledged receipts remain intact.
+              if (inventory.getItem(slot) == item) inventory.setItem(slot, ItemStack.EMPTY);
+            });
+      inventory.setChanged();
+    }
   }
 
   private static boolean write(Path folder, String name, CompoundTag envelope) {

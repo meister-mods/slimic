@@ -53,17 +53,17 @@ public final class PlacementAccountingGameTests {
     var soil = BlockPos.containing(a.point(8, 100, 8));
     var pos = soil.above();
     level.setBlock(soil, Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7), 18);
-    var farmer = ModEntities.FARMER_SLIME.get().create(level);
-    farmer.tame(h.makeMockSurvivalPlayer());
-    farmer.moveTo(a.point(7.5, 101, 8.5));
+    var farming = ModEntities.FARMING_SLIME.get().create(level);
+    farming.tame(h.makeMockSurvivalPlayer());
+    farming.moveTo(a.point(7.5, 101, 8.5));
     // Keep this transaction fixture inside its cleared chunk, away from natural village plots.
-    SlimeStat.DETECTION_RANGE.tune(farmer, 2);
-    farmer.onReleased();
-    farmer.setTool(new ItemStack(Items.IRON_HOE));
-    farmer.setWorking(true);
-    farmer.saveWithoutId(new CompoundTag());
-    farmer.setNoAi(true);
-    farmer.getBag().setStackInSlot(0, new ItemStack(Items.WHEAT_SEEDS, 1));
+    SlimeStat.DETECTION_RANGE.tune(farming, 2);
+    farming.onReleased();
+    farming.setTool(new ItemStack(Items.IRON_HOE));
+    farming.setWorking(true);
+    farming.saveWithoutId(new CompoundTag());
+    farming.setNoAi(true);
+    farming.getBag().setStackInSlot(0, new ItemStack(Items.WHEAT_SEEDS, 1));
     if (kind == 2) level.setBlock(soil, Blocks.DIRT.defaultBlockState(), 18);
     int[] calls = {0};
     Consumer<BlockEvent.EntityPlaceEvent> adjust =
@@ -80,7 +80,7 @@ public final class PlacementAccountingGameTests {
           if (cancel) event.setCanceled(true);
         };
     h.assertTrue(
-        farmer.getFarmPlots().equals(java.util.Set.of(soil)),
+        farming.getFarmPlots().equals(java.util.Set.of(soil)),
         "The transaction fixture registers exactly its prepared plot");
     h.startSequence()
         .thenWaitUntil(
@@ -92,23 +92,23 @@ public final class PlacementAccountingGameTests {
             () -> {
               MinecraftForge.EVENT_BUS.addListener(adjust);
               try {
-                invoke(farmer, level);
+                invoke(farming, level);
                 h.assertTrue(
                     calls[0] == 1, "One native placement event is observed: calls=" + calls[0]);
                 h.assertTrue(
-                    farmer.getBag().getStackInSlot(0).getCount() == (kind == 2 || cancel ? 1 : 0)
-                        && farmer.getTool().getDamageValue() == (kind == 2 && !cancel ? 1 : 0)
-                        && farmer.getActivityProgress() == (cancel ? 0 : 1)
-                        && farmer.getStamina() == (cancel ? 100 : 99),
+                    farming.getBag().getStackInSlot(0).getCount() == (kind == 2 || cancel ? 1 : 0)
+                        && farming.getTool().getDamageValue() == (kind == 2 && !cancel ? 1 : 0)
+                        && farming.getActivityProgress() == (cancel ? 0 : 1)
+                        && farming.getStamina() == (cancel ? 100 : 99),
                     "Accepted event adjustments charge the committed native action exactly once;"
                         + " kind="
                         + kind
                         + ", seed="
-                        + farmer.getBag().getStackInSlot(0)
+                        + farming.getBag().getStackInSlot(0)
                         + ", tool="
-                        + farmer.getTool().getDamageValue()
+                        + farming.getTool().getDamageValue()
                         + ", activity="
-                        + farmer.getActivityProgress());
+                        + farming.getActivityProgress());
                 h.assertTrue(
                     cancel
                         ? level.getBlockState(pos).isAir()
@@ -120,7 +120,7 @@ public final class PlacementAccountingGameTests {
                     "Successful adjustments survive; cancelled changes roll back");
               } finally {
                 MinecraftForge.EVENT_BUS.unregister(adjust);
-                farmer.discard();
+                farming.discard();
                 a.close();
               }
             })
@@ -133,7 +133,7 @@ public final class PlacementAccountingGameTests {
     var level = h.getLevel();
     var pos = BlockPos.containing(a.point(8, 101, 8));
     level.setBlock(pos.below(), Blocks.DIRT.defaultBlockState(), 18);
-    var logger = ModEntities.LUMBERJACK_SLIME.get().create(level);
+    var logger = ModEntities.LOGGING_SLIME.get().create(level);
     logger.tame(h.makeMockSurvivalPlayer());
     logger.moveTo(a.point(7.5, 101, 8.5));
     logger.onReleased();

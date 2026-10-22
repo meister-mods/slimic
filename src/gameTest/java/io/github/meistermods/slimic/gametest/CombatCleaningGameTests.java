@@ -340,8 +340,8 @@ public final class CombatCleaningGameTests {
                 case CLEANING -> Items.ROTTEN_FLESH;
                 case SADDLE -> Items.SADDLE;
                 case ARMOR, SOGGY -> Items.SLIME_BALL;
-                case FARMER -> Items.IRON_HOE;
-                case LUMBERJACK -> Items.IRON_AXE;
+                case FARMING -> Items.IRON_HOE;
+                case LOGGING -> Items.IRON_AXE;
                 case HEALING -> Items.GOLDEN_CARROT;
               });
       grid.setItem(3, first);

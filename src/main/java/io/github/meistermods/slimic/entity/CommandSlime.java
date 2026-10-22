@@ -1,7 +1,7 @@
 package io.github.meistermods.slimic.entity;
 
 import io.github.meistermods.slimic.Slimic;
-import io.github.meistermods.slimic.menu.CommanderMenu;
+import io.github.meistermods.slimic.menu.CommandMenu;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.*;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +19,7 @@ import net.minecraftforge.network.NetworkHooks;
 /**
  * Owner-issued rallies process one recorded companion at a time, with one temporary source ticket.
  */
-public final class CommanderSlime extends FriendlySlime {
+public final class CommandSlime extends FriendlySlime {
   private final ArrayDeque<UUID> rally = new ArrayDeque<>();
   private UUID rallyActor;
   private String rallyTag = "";
@@ -27,7 +27,7 @@ public final class CommanderSlime extends FriendlySlime {
   private ServerLevel sourceLevel;
   private ChunkPos sourceChunk;
 
-  public CommanderSlime(EntityType<? extends CommanderSlime> type, Level level) {
+  public CommandSlime(EntityType<? extends CommandSlime> type, Level level) {
     super(type, level);
   }
 
@@ -184,7 +184,7 @@ public final class CommanderSlime extends FriendlySlime {
       NetworkHooks.openScreen(
           server,
           new SimpleMenuProvider(
-              (id, inventory, viewer) -> new CommanderMenu(id, inventory, this), getDisplayName()),
+              (id, inventory, viewer) -> new CommandMenu(id, inventory, this), getDisplayName()),
           buffer -> buffer.writeVarInt(getId()));
     return InteractionResult.sidedSuccess(level().isClientSide);
   }
@@ -205,7 +205,7 @@ public final class CommanderSlime extends FriendlySlime {
 
   @Override
   public ItemStack getPickResult() {
-    return new ItemStack(ModItems.COMMANDER_SLIME.get());
+    return new ItemStack(ModItems.COMMAND_SLIME.get());
   }
 
   @Override
