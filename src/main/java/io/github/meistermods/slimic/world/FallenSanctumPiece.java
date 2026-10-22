@@ -19,7 +19,7 @@ public final class FallenSanctumPiece extends StructurePiece {
       net.minecraft.tags.TagKey.create(
           net.minecraft.core.registries.Registries.BLOCK, SlimicWorld.id("fallen_sanctum_terrain"));
   private final BlockPos anchor;
-  private final int rotation, zone, approachOffset;
+  private final int rotation, zone, approachOffset, architectureVersion;
 
   public FallenSanctumPiece(BlockPos anchor, int rotation, int zone) {
     this(anchor, rotation, zone, 0);
@@ -31,6 +31,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     this.rotation = Math.floorMod(rotation, 4);
     this.zone = zone;
     this.approachOffset = zone == 0 ? Math.max(-7, Math.min(7, approachOffset)) : 0;
+    architectureVersion = 2;
   }
 
   public FallenSanctumPiece(StructurePieceSerializationContext context, CompoundTag tag) {
@@ -39,6 +40,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     rotation = Math.floorMod(tag.getInt("RoyalRotation"), 4);
     zone = Math.max(0, Math.min(4, tag.getInt("Zone")));
     approachOffset = zone == 0 ? Math.max(-7, Math.min(7, tag.getInt("ApproachOffset"))) : 0;
+    architectureVersion = Math.max(0, Math.min(2, tag.getInt("ArchitectureVersion")));
   }
 
   public static BlockPos position(BlockPos anchor, int rotation, int x, int y, int z) {
@@ -53,13 +55,13 @@ public final class FallenSanctumPiece extends StructurePiece {
   private static BoundingBox box(BlockPos anchor, int rotation, int zone) {
     int start = -40 + zone * 16;
     BlockPos a = position(anchor, rotation, -32, -16, start),
-        b = position(anchor, rotation, 31, 15, start + 15);
+        b = position(anchor, rotation, 31, SanctumArchitecture.HEIGHT, start + 15);
     return new BoundingBox(
         Math.min(a.getX(), b.getX()),
         anchor.getY() - 16,
         Math.min(a.getZ(), b.getZ()),
         Math.max(a.getX(), b.getX()),
-        anchor.getY() + 15,
+        anchor.getY() + SanctumArchitecture.HEIGHT,
         Math.max(a.getZ(), b.getZ()));
   }
 
@@ -70,6 +72,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     tag.putInt("RoyalRotation", rotation);
     tag.putInt("Zone", zone);
     tag.putInt("ApproachOffset", approachOffset);
+    tag.putInt("ArchitectureVersion", architectureVersion);
   }
 
   private BlockPos at(int x, int y, int z) {
@@ -115,80 +118,88 @@ public final class FallenSanctumPiece extends StructurePiece {
       ChunkPos chunk,
       BlockPos pivot) {
     int start = -40 + zone * 16;
-    // A partial upgrade may bring old chunks next to new ones. Preserve any foreign block entity
-    // or construction encountered in this generating section instead of replacing it.
-    for (int x = -32; x <= 31; x++)
-      for (int z = start; z < start + 16; z++) {
-        if (!modifies(x, z, start) || !clip.isInside(at(x, 0, z))) continue;
-        int floor = floor(z);
-        for (int y = floor - 7; y <= 11; y++) {
-          var pos = at(x, y, z);
-          var old = world.getBlockState(pos);
-          if (world.getBlockEntity(pos) != null
-              || old.getDestroySpeed(world, pos) < 0
-              || !old.getFluidState().isEmpty() && y >= floor
-              || !old.isAir()
-                  && !old.canBeReplaced()
-                  && !old.is(TERRAIN)
-                  && !(y < floor && !old.getFluidState().isEmpty())
-                  && !old.is(net.minecraft.tags.BlockTags.LOGS)
-                  && !old.is(net.minecraft.tags.BlockTags.LEAVES)) return;
+    if (architectureVersion > 0) {
+      if (!new SanctumArchitecture(
+              anchor, rotation, zone, clip, this::floorLevel, architectureVersion >= 2)
+          .generate(world, TERRAIN)) return;
+    } else {
+      // A partial upgrade may bring old chunks next to new ones. Preserve any foreign block entity
+      // or construction encountered in this generating section instead of replacing it.
+      for (int x = -32; x <= 31; x++)
+        for (int z = start; z < start + 16; z++) {
+          if (!modifies(x, z, start) || !clip.isInside(at(x, 0, z))) continue;
+          int floor = floor(z);
+          for (int y = floor - 7; y <= 11; y++) {
+            var pos = at(x, y, z);
+            var old = world.getBlockState(pos);
+            if (world.getBlockEntity(pos) != null
+                || old.getDestroySpeed(world, pos) < 0
+                || !old.getFluidState().isEmpty() && y >= floor
+                || !old.isAir()
+                    && !old.canBeReplaced()
+                    && !old.is(TERRAIN)
+                    && !(y < floor && !old.getFluidState().isEmpty())
+                    && !old.is(net.minecraft.tags.BlockTags.LOGS)
+                    && !old.is(net.minecraft.tags.BlockTags.LEAVES)) return;
+          }
         }
-      }
-    for (int x = -32; x <= 31; x++)
-      for (int z = start; z < start + 16; z++) {
-        int floor = floor(z);
-        boolean road = Math.abs(x) <= 4;
-        boolean room = zone > 0 && Math.abs(x) <= 25;
-        if (!room && !road && (Math.abs(x) > 28 || (x * 31 + z * 7) % 9 != 0)) continue;
-        for (int y = floor - 7; y < floor; y++)
-          put(
-              world,
-              clip,
-              x,
-              y,
-              z,
-              material(
-                  y < floor - 1
-                      ? "ancient_foundation"
-                      : (x * 3 + z) % 7 == 0 ? "cracked_slimic_tiles" : "slimic_tiles"));
-        for (int y = floor; y <= 11; y++) put(world, clip, x, y, z, Blocks.AIR.defaultBlockState());
-        boolean side = room && Math.abs(x) == 25;
-        boolean divider = room && (z == start || z == start + 15) && Math.abs(x) > 3;
-        int h = side || divider ? 5 + Math.floorMod(x * 17 + z * 13, 4) : 0;
-        for (int y = 0; y < h; y++)
-          if (Math.floorMod(x * 11 + y * 19 + z, 17) != 0)
+      for (int x = -32; x <= 31; x++)
+        for (int z = start; z < start + 16; z++) {
+          int floor = floor(z);
+          boolean road = Math.abs(x) <= 4;
+          boolean room = zone > 0 && Math.abs(x) <= 25;
+          if (!room && !road && (Math.abs(x) > 28 || (x * 31 + z * 7) % 9 != 0)) continue;
+          for (int y = floor - 7; y < floor; y++)
             put(
                 world,
                 clip,
                 x,
-                floor + y,
+                y,
                 z,
                 material(
-                    Math.floorMod(x + z + y, 5) == 0 ? "ruined_bricks" : "slimic_stone_bricks"));
-        if (room && Math.abs(x) > 4 && Math.floorMod(x * 37 + z * 13, 131) == 0)
-          put(world, clip, x, floor, z, Blocks.COBWEB.defaultBlockState());
-        if (room && Math.abs(x) > 4 && Math.floorMod(x * 7 + z * 11, 89) == 0)
-          put(world, clip, x, floor, z, material("fallen_masonry_pile"));
-      }
-    // The central five-wide route stays open across all piece seams and descends into the core.
-    for (int z = start; z < start + 16; z++)
-      for (int x = -2; x <= 2; x++)
-        for (int y = floor(z); y < floor(z) + 4; y++)
-          put(world, clip, x, y, z, Blocks.AIR.defaultBlockState());
-    for (int x : new int[] {-12, 12})
-      for (int z = start + 3; z < start + 15; z += 8) {
-        for (int y = 0; y < (zone == 0 ? 3 : 7); y++)
-          put(
-              world,
-              clip,
-              x,
-              floor(z) + y,
-              z,
-              material(y == 0 ? "chiseled_slimic_stone_bricks" : "ancient_foundation_bricks"));
-        put(world, clip, x, floor(z) + (zone == 0 ? 3 : 7), z, material("gel_lantern"));
-      }
+                    y < floor - 1
+                        ? "ancient_foundation"
+                        : (x * 3 + z) % 7 == 0 ? "cracked_slimic_tiles" : "slimic_tiles"));
+          for (int y = floor; y <= 11; y++)
+            put(world, clip, x, y, z, Blocks.AIR.defaultBlockState());
+          boolean side = room && Math.abs(x) == 25;
+          boolean divider = room && (z == start || z == start + 15) && Math.abs(x) > 3;
+          int h = side || divider ? 5 + Math.floorMod(x * 17 + z * 13, 4) : 0;
+          for (int y = 0; y < h; y++)
+            if (Math.floorMod(x * 11 + y * 19 + z, 17) != 0)
+              put(
+                  world,
+                  clip,
+                  x,
+                  floor + y,
+                  z,
+                  material(
+                      Math.floorMod(x + z + y, 5) == 0 ? "ruined_bricks" : "slimic_stone_bricks"));
+          if (room && Math.abs(x) > 4 && Math.floorMod(x * 37 + z * 13, 131) == 0)
+            put(world, clip, x, floor, z, Blocks.COBWEB.defaultBlockState());
+          if (room && Math.abs(x) > 4 && Math.floorMod(x * 7 + z * 11, 89) == 0)
+            put(world, clip, x, floor, z, material("fallen_masonry_pile"));
+        }
+      // The central five-wide route stays open across all piece seams and descends into the core.
+      for (int z = start; z < start + 16; z++)
+        for (int x = -2; x <= 2; x++)
+          for (int y = floor(z); y < floor(z) + 4; y++)
+            put(world, clip, x, y, z, Blocks.AIR.defaultBlockState());
+      for (int x : new int[] {-12, 12})
+        for (int z = start + 3; z < start + 15; z += 8) {
+          for (int y = 0; y < (zone == 0 ? 3 : 7); y++)
+            put(
+                world,
+                clip,
+                x,
+                floor(z) + y,
+                z,
+                material(y == 0 ? "chiseled_slimic_stone_bricks" : "ancient_foundation_bricks"));
+          put(world, clip, x, floor(z) + (zone == 0 ? 3 : 7), z, material("gel_lantern"));
+        }
+    }
     if (zone == 0) {
+      if (architectureVersion > 0) return;
       for (int z = -36; z <= -33; z++) {
         for (int x : new int[] {-4, -3, 3, 4})
           for (int y = floor(z) - 5; y < floor(z); y++)
@@ -205,13 +216,13 @@ public final class FallenSanctumPiece extends StructurePiece {
           put(world, clip, x, y, -25, material(y % 4 == 0 ? "royal_crest" : "slimic_stone_bricks"));
     } else {
       int centerZ = start + 8, ground = floor(centerZ);
-      if (zone == 1)
+      if (zone == 1 && architectureVersion == 0)
         for (int x = -20; x <= 20; x += 4)
           if (Math.abs(x) > 4) {
             put(world, clip, x, ground, centerZ - 4, material("fallen_masonry_pile"));
             put(world, clip, x, ground, centerZ + 4, material("fallen_pillar"));
           }
-      if (zone == 2) {
+      if (zone == 2 && architectureVersion == 0) {
         for (int x : new int[] {-16, -8, 8, 16})
           put(world, clip, x, ground, centerZ + 3, material("cracked_command_pedestal"));
         for (int x = -22; x <= 22; x++)
@@ -259,7 +270,8 @@ public final class FallenSanctumPiece extends StructurePiece {
                   .defaultBlockState()
                   .setValue(io.github.meistermods.slimic.block.BrokenSlimeBlock.MINERALIZED, true));
         for (int x : new int[] {-8, 8}) {
-          put(world, clip, x, ground, centerZ, material("gel_crystal_cluster"));
+          int crystalX = architectureVersion > 0 ? x + Integer.signum(x) * 2 : x;
+          put(world, clip, crystalX, ground, centerZ, material("gel_crystal_cluster"));
           put(world, clip, x, ground, centerZ + 3, material("gel_basin"));
         }
         put(

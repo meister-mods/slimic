@@ -4,6 +4,38 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.4] - 2026-10-22
+
+### Changed
+
+- Add faded royal standards, projecting stone trim, entrance arches, a diamond-shaped glazed keep window, and watchtower corbels to newly generated Fallen Sanctums.
+- Furnish barracks, gate chambers, watchtowers, supply awnings, record galleries, and laboratory benches. Add a timber well windlass, chain-hung chandeliers, floor inlays, and deep-chamber relic alcoves while retaining access to the expedition route and devices.
+- Preserve saved castle pieces with their earlier layout through architecture version 2. Update the English and Korean exploration documents and in-game guide.
+
+### Fixed
+
+- Clear overlapping curtain-wall masonry from new watchtower ground rooms and add keep posterns to the inner curtain lanes, making the rear rooms accessible without dropping from the wall walks.
+
+### Validation
+
+- Seventy-three focused native server checks pass with JEI and Patchouli; six final architecture checks pass without optional mods. Four rotations preserve reachable devices, remains, upper walks, and all four tower ground rooms. Reversed clipping order, legacy layouts, protected construction, and companion navigation remain valid.
+- Native clients inspect fourteen exterior and interior views plus four focused postern and rear-room views. The revised guide entry renders in English, Korean, and fallback with both fonts. Bilingual resources, packaged assets, Google Java Format, and the Java 17 build pass verification.
+
+## [0.4.3] - 2026-10-22
+
+### Changed
+
+- Rebuild newly generated Fallen Sanctums as royal castles with a dry defensive ditch, timber bridge, twin gatehouse, curtain walls, four octagonal watchtowers, and a tall slate-roofed keep.
+- Add usable wall stairs, tower ladders and landings, upper galleries, a barracks, a dry well, command furniture, hanging lamps, and a vaulted deep chamber. Concentrate collapse damage in the eastern defenses and laboratory roof while preserving the main expedition route and chamber devices.
+- Preserve generated sanctums and saved unfinished structure pieces through a versioned architectural layout. New castles retain the existing footprint, five zones, maps, encounters, loot, and shared reward records.
+
+
+### Validation
+
+- All 72 focused native server cases pass with JEI and Patchouli, covering generation, maps, encounters, rewards, restoration supplies, synthesis, and the guide. Seven checks on another world seed and five final architecture checks pass without optional mods.
+- Four rotations preserve a five-wide route, reachable devices and upper walks, unobstructed watch positions, and native companion navigation. Reversed chunk/piece order produces identical blocks; saved layouts and protected construction or containers remain intact.
+- Native clients inspect exterior and interior views, and the updated castle entry renders in English, Korean, and fallback with both fonts. Bilingual documents, packaged assets, Google Java Format, and the Java 17 build pass verification.
+
 ## [0.4.2] - 2026-10-22
 
 ### Changed
