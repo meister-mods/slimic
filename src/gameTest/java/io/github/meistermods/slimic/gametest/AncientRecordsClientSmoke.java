@@ -29,7 +29,15 @@ public final class AncientRecordsClientSmoke {
                 var server = c.getSingleplayerServer();
                 var owner = server.getPlayerList().getPlayer(c.player.getUUID());
                 var result = new ArrayList<CompoundTag>();
-                for (var path : List.of("slimic_ruins", "slimic_archive", "slimic_royal_ward")) {
+                for (var path :
+                    List.of(
+                        "slimic_ruins",
+                        "slimic_archive",
+                        "slimic_royal_ward",
+                        "sanctum_courtyard",
+                        "sanctum_gallery",
+                        "sanctum_laboratory",
+                        "sanctum_core")) {
                   var params =
                       new LootParams.Builder(owner.serverLevel())
                           .withParameter(LootContextParams.ORIGIN, owner.position())
@@ -129,7 +137,7 @@ public final class AncientRecordsClientSmoke {
       phase = 4;
     }
     if (phase == 4) {
-      if (measurements.size() != 42)
+      if (books.size() != 7 || measurements.size() != 90)
         throw new IllegalStateException(
             "Every written page must render in six font/language scenarios");
       try {
@@ -155,7 +163,7 @@ public final class AncientRecordsClientSmoke {
       }
       c.setScreen(null);
       System.out.println(
-          "SLIMIC ANCIENT RECORD CLIENT SMOKE PASSED: three real loot books, server resolution, 42"
+          "SLIMIC ANCIENT RECORD CLIENT SMOKE PASSED: seven real loot books, server resolution, 90"
               + " native pages, English/Korean/fallback and both fonts");
       return true;
     }

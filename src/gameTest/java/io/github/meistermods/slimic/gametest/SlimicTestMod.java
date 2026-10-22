@@ -12,6 +12,23 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = "slimic_tests")
 public final class SlimicTestMod {
   @SubscribeEvent
+  public static void seed(net.minecraftforge.event.server.ServerAboutToStartEvent event) {
+    String requested = System.getProperty("slimic.testSeed");
+    if (requested == null || !(event.getServer() instanceof GameTestServer)) return;
+    try {
+      var data = event.getServer().getWorldData();
+      var field =
+          net.minecraft.world.level.storage.PrimaryLevelData.class.getDeclaredField("worldOptions");
+      field.setAccessible(true);
+      field.set(
+          data,
+          data.worldGenOptions().withSeed(java.util.OptionalLong.of(Long.parseLong(requested))));
+    } catch (ReflectiveOperationException failure) {
+      throw new IllegalStateException("Cannot seed the disposable GameTest world", failure);
+    }
+  }
+
+  @SubscribeEvent
   public static void start(ServerStartedEvent event) {
     if (event.getServer() instanceof GameTestServer server) {
       server.setDifficulty(Difficulty.NORMAL, true);

@@ -96,3 +96,8 @@ created for Slimic. Hostile spawn eggs reference Minecraft's native tinted egg m
 The damaged ancient, mining, tunnel, and mine guardian core sprites and the Old
 Command Fragment sprite were generated for Slimic and exported as transparent
 16x16 item artwork. Ancient summon items reuse their profession core sprites.
+
+The torn and reconstructed kingdom maps, Royal Survey Compass, courtyard and
+gallery seals, Royal Synthesis Core, and next-generation mining crest use
+artwork created for Slimic and exported as transparent 16x16 sprites. Royal
+station models combine these sprites with referenced Minecraft materials.

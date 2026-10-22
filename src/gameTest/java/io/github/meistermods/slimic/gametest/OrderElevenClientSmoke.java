@@ -221,6 +221,7 @@ public final class OrderElevenClientSmoke {
                     + ".png")
             .normalize();
     try (var capture = Screenshot.takeScreenshot(c.getMainRenderTarget())) {
+      java.nio.file.Files.createDirectories(path.getParent());
       capture.writeToFile(path);
     } catch (java.io.IOException failure) {
       throw new IllegalStateException(failure);

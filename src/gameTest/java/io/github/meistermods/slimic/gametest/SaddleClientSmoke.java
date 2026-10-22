@@ -25,6 +25,7 @@ public final class SaddleClientSmoke {
   private static Vec3 start;
   private static boolean jumped;
   private static double normalFlightDistance;
+  private static volatile java.util.UUID identity;
   private static final AtomicBoolean serverConfirmed = new AtomicBoolean();
 
   private SaddleClientSmoke() {}
@@ -42,12 +43,13 @@ public final class SaddleClientSmoke {
                         .getPlayerList()
                         .getPlayer(client.player.getUUID());
                 var level = owner.serverLevel();
+                owner.stopRiding();
                 level
                     .getEntitiesOfClass(FriendlySlime.class, new AABB(0, 90, 0, 20, 320, 20))
                     .forEach(FriendlySlime::discard);
                 // Riding crosses the small UI showcase floor; provide a full travel runway.
                 for (int x = 3; x <= 18; x++)
-                  for (int z = 3; z <= 32; z++) {
+                  for (int z = 3; z <= 96; z++) {
                     level.setBlock(
                         new net.minecraft.core.BlockPos(x, 100, z),
                         net.minecraft.world.level.block.Blocks.SEA_LANTERN.defaultBlockState(),
@@ -69,6 +71,7 @@ public final class SaddleClientSmoke {
                 mount.setWaiting(true);
                 mount.setEquipment(0, new ItemStack(Items.SADDLE));
                 level.addFreshEntity(mount);
+                identity = mount.getUUID();
               });
       return;
     }
@@ -79,6 +82,7 @@ public final class SaddleClientSmoke {
                 .level
                 .getEntitiesOfClass(SaddleSlime.class, client.player.getBoundingBox().inflate(32))
                 .stream()
+                .filter(pet -> pet.getUUID().equals(identity))
                 .findFirst()
                 .orElse(null);
     if (mount == null) return;
@@ -113,16 +117,28 @@ public final class SaddleClientSmoke {
           .getSingleplayerServer()
           .execute(
               () -> {
-                var pet = (SaddleSlime) client.getSingleplayerServer().overworld().getEntity(id);
+                var owner =
+                    client
+                        .getSingleplayerServer()
+                        .getPlayerList()
+                        .getPlayer(client.player.getUUID());
+                var pet = (SaddleSlime) owner.serverLevel().getEntity(id);
                 groundBoostConfirmed.set(pet != null && pet.getStamina() < 95);
               });
       client.options.keyUp.setDown(false);
-      start = mount.position();
-      client.options.keyJump.setDown(true);
       next();
     } else if (phase == 4) {
+      // Let steering hops finish before testing a jump from rest.
+      if (++ticks <= 40) {
+        if (ticks == 40) {
+          check(mount.onGround(), "The runway must support the stopped mount");
+          start = mount.position();
+          client.options.keyJump.setDown(true);
+        }
+        return;
+      }
       jumped |= mount.getY() > start.y + .2;
-      if (++ticks < 12) return;
+      if (ticks < 52) return;
       check(jumped, "Space must jump while riding without wings");
       check(
           groundBoostConfirmed.get(), "Ground sprint must spend substantial server-owned stamina");
@@ -352,6 +368,7 @@ public final class SaddleClientSmoke {
                     + ".png")
             .normalize();
     try (var bitmap = Screenshot.takeScreenshot(client.getMainRenderTarget())) {
+      java.nio.file.Files.createDirectories(target.getParent());
       bitmap.writeToFile(target);
     } catch (java.io.IOException error) {
       throw new IllegalStateException(error);

@@ -43,6 +43,7 @@ public final class InitialWorkOrderGameTests {
         ModEntities.WAREHOUSE_SLIME.get(),
         ModEntities.MINING_SLIME.get(),
         ModEntities.ANCIENT_MINING_SLIME.get(),
+        ModEntities.NEXT_GENERATION_MINING_SLIME.get(),
         ModEntities.ANCIENT_TUNNEL_SLIME.get(),
         ModEntities.TRANSPORT_SLIME.get(),
         ModEntities.HERALD_SLIME.get(),

@@ -51,6 +51,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = "slimic_tests", value = Dist.CLIENT)
 public final class SlimeClientSmoke {
+  private static boolean reportedMods;
   private static int ticks;
   private static int phase;
   private static int phaseTicks;
@@ -91,6 +92,18 @@ public final class SlimeClientSmoke {
     }
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (!reportedMods) {
+      System.out.println(
+          "SLIMIC CLIENT MODS: patchouli="
+              + ModList.get().isLoaded("patchouli")
+              + " jei="
+              + ModList.get().isLoaded("jei"));
+      reportedMods = true;
+    }
+    if (Boolean.getBoolean("slimic.royalSynthesisOnly")) {
+      if (RoyalSynthesisClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.creativeFreedomOnly")) {
       if (CreativeFreedomClientSmoke.tick(client)) client.stop();
       return;
@@ -616,11 +629,21 @@ public final class SlimeClientSmoke {
               .map(ItemStack::getItem)
               .filter(expectedItems::contains)
               .collect(java.util.stream.Collectors.toSet());
+      var coreRoles =
+          items.stream()
+              .filter(stack -> stack.is(ModItems.DAMAGED_ANCIENT_SLIME_CORE.get()))
+              .map(io.github.meistermods.slimic.item.AncientSlimeCoreItem::role)
+              .toList();
       if (!displayedItems.equals(expectedItems)
+          || coreRoles.size() != 6
+          || !new java.util.HashSet<>(coreRoles)
+              .equals(
+                  java.util.EnumSet.allOf(
+                      io.github.meistermods.slimic.entity.AncientSlime.Role.class))
           || items.size()
-              != expectedItems.size() + 2 + (ModList.get().isLoaded("patchouli") ? 1 : 0))
+              != expectedItems.size() + 5 + (ModList.get().isLoaded("patchouli") ? 1 : 0))
         throw new IllegalStateException(
-            "Creative tab must contain three core variants, each other listed item once, and omit"
+            "Creative tab must contain all six core variants, each other listed item once, and omit"
                 + " unbound teleporters");
       ItemStack miner =
           items.stream()

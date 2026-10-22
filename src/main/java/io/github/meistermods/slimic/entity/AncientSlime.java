@@ -253,6 +253,7 @@ public final class AncientSlime extends Monster {
   public void tick() {
     super.tick();
     if (level().isClientSide || !isAlive() || isNoAi()) return;
+    io.github.meistermods.slimic.world.SanctumEncounters.tick(this);
     if (attackCooldown > 0) attackCooldown--;
     if (home == null) home = blockPosition().immutable();
     if (getTarget() == null && (role() == Role.MINER || role() == Role.TUNNEL)) mineWork.tick(this);

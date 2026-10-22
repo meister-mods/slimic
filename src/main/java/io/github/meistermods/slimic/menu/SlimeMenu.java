@@ -33,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.items.SlotItemHandler;
 
 public final class SlimeMenu extends AbstractContainerMenu {
+  public static final int POLICY = 20, ORE_MASK = 21, POLICY_BUTTON = 70, ORE_BUTTON = 80;
   public static final int SLOT_SPACING = 18, SLOT_COLUMNS = 9, BAG_ROWS = 3;
   public static final int BAG_PAGE_SIZE = SLOT_COLUMNS * BAG_ROWS;
   public static final int SLOTS_X = 196, EQUIPMENT_Y = 49, BAG_Y = 90;
@@ -87,7 +88,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     this.slime = slime;
     wireData =
         new NumericContainerData(
-            20,
+            22,
             inventory.player.level().isClientSide,
             inventory.player.level().isClientSide
                 ? null
@@ -97,6 +98,18 @@ public final class SlimeMenu extends AbstractContainerMenu {
                     return stat.value(slime);
                   }
                   return switch (index) {
+                    case POLICY ->
+                        slime
+                                instanceof
+                                io.github.meistermods.slimic.entity.NextGenerationMiningSlime next
+                            ? next.policy().ordinal()
+                            : 0;
+                    case ORE_MASK ->
+                        slime
+                                instanceof
+                                io.github.meistermods.slimic.entity.NextGenerationMiningSlime next
+                            ? next.oreMask()
+                            : 0;
                     case POINTS -> slime.getStatPoints();
                     case ACTIVITY -> slime.getActivityProgress();
                     case NEXT_POINT -> slime.getNextPointCost();
@@ -145,7 +158,9 @@ public final class SlimeMenu extends AbstractContainerMenu {
                         slime instanceof HeraldSlime herald ? herald.getDelayMinutes() : 0;
                     default -> 0;
                   };
-                });
+                },
+            POINTS,
+            slime::getStatPoints);
     addDataSlots(wireData);
     int toolSlots = equipmentSlots(slime);
     for (int tool = 0; tool < toolSlots; tool++) {
@@ -255,6 +270,10 @@ public final class SlimeMenu extends AbstractContainerMenu {
     return wireData.isReady();
   }
 
+  public long points() {
+    return wireData.longValue(POINTS);
+  }
+
   public int data(int index) {
     double value = wireData.value(index);
     if (index < SlimeStat.values().length) value *= SlimeStat.values()[index].syncScale();
@@ -275,7 +294,14 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   public boolean isBagVisible() {
-    return slime instanceof BagSlime && !(slime instanceof CombatSlime && data(TARGET_PAGE) == 1);
+    return slime instanceof BagSlime
+        && !isPolicyEditor()
+        && !(slime instanceof CombatSlime && data(TARGET_PAGE) == 1);
+  }
+
+  public boolean isPolicyEditor() {
+    return slime instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime
+        && data(TARGET_PAGE) == 1;
   }
 
   private int getSynchronizedCapacity() {
@@ -307,6 +333,25 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (slime instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime next) {
+      if (button == TARGET_PAGE_BUTTON) {
+        targetPage = 1 - targetPage;
+        return true;
+      }
+      if (button >= POLICY_BUTTON && button < POLICY_BUTTON + 3) {
+        next.setPolicy(
+            io.github.meistermods.slimic.entity.NextGenerationMiningSlime.Policy.values()[
+                button - POLICY_BUTTON]);
+        return true;
+      }
+      if (button >= ORE_BUTTON
+          && button
+              < ORE_BUTTON
+                  + io.github.meistermods.slimic.entity.NextGenerationMiningSlime.ORES.size()) {
+        next.toggleOre(button - ORE_BUTTON);
+        return true;
+      }
+    }
     if (button == ROSTER
         && slime instanceof io.github.meistermods.slimic.entity.CommanderSlime commander)
       return commander.open(player).consumesAction();
@@ -441,7 +486,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
       }
       if (!equipped) {
         if (!(slime instanceof BagSlime)) return ItemStack.EMPTY;
-        if (slime instanceof CombatSlime && data(TARGET_PAGE) == 1) return ItemStack.EMPTY;
+        if (!isBagVisible()) return ItemStack.EMPTY;
         int normalPages = (petSlots - equipmentSlots - 1) / BAG_PAGE_SIZE + 1;
         int start =
             equipmentSlots + (data(BAG_PAGE) >= normalPages ? 0 : data(BAG_PAGE) * BAG_PAGE_SIZE);

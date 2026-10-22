@@ -81,6 +81,14 @@ public final class CompanionRegistry extends SavedData {
 
   private long relationshipRevision;
 
+  public void retire(UUID id) {
+    var entry = companions.get(id);
+    if (entry != null) {
+      companions.put(id, entry.withLocation(Location.REMOVED));
+      setDirty();
+    }
+  }
+
   public long relationshipRevision() {
     return relationshipRevision;
   }

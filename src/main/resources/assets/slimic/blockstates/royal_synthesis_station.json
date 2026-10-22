@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "ruined=false": {
+      "model": "slimic:block/royal_synthesis_station"
+    },
+    "ruined=true": {
+      "model": "slimic:block/royal_synthesis_station_ruined"
+    }
+  }
+}

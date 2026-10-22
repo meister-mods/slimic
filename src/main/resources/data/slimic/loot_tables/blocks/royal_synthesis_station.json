@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "slimic:royal_synthesis_station",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "slimic:royal_synthesis_station",
+                  "properties": {
+                    "ruined": "false"
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "function": "minecraft:copy_nbt",
+                  "source": "block_entity",
+                  "ops": [
+                    {
+                      "source": "OriginSanctum",
+                      "target": "BlockEntityTag.OriginSanctum",
+                      "op": "replace"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "slimic:slimic_stone_bricks"
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,40 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-22
+
+### Added
+
+- Torn kingdom maps lead to the Fallen Sanctum, a five-zone royal ruin in newly generated The Slimic terrain. Persistent chamber memories, royal remnants, a survey compass, and four bilingual records reveal its last orders.
+- Each sanctum grants one shared Royal Synthesis Core. A reusable Royal Synthesis Station combines an owned ordinary Mining Slime and Ancient Mining Slime with four slimeballs and two Old Command Fragments.
+- Next-Generation Mining Slimes inherit verified growth points as an unspent balance and start waiting with ordinary mining statistics. Their policies support normal quarrying, ore priority, and selected Forge ore tags.
+- Synthesis previews, equipment and cargo checks, ancestry, consumed-parent records, and a recoverable result mailbox protect companion identity and stored items. Growth balances and menu synchronization preserve whole points beyond double precision.
+- Unique 16×16 relic sprites, station models, optional JEI synthesis guidance, and English/Korean exploration and synthesis instructions.
+
+### Changed
+
+- Network protocol 20 requires matching clients and servers. Companion payload schema remains 1; existing numeric growth data and generated terrain remain compatible.
+
+### Fixed
+
+- Selective Ore scanner previews show the local search window inside the working chunk and detection height, without displaying a full quarry or a next excavation layer.
+
+### Validation
+
+- All 720 native GameTests pass without optional mods. A 719-case integration run also passes with JEI and Patchouli. Focused checks cover four structure rotations across two seeds, the exact first-synthesis resource budget, Forge spawn callbacks, and real companion combat against royal encounters.
+- Native clients pass with both optional mods, either one, and neither. All 26 companion appearances and all 66 guidebook entries and 213 pages are checked in English, Korean, and fallback text. Seven loot records also pass in both fonts.
+- Actual 0.3.14 save upgrades retain all 25 earlier companion professions, portals, equipment, cargo, large storage, and core records. Forced termination after a fusion commit and two cold restarts preserve one valid result and prevent consumed-parent reuse.
+- A real-time hour with twenty companions preserves physical cargo and lawful growth through work pauses, saves, and actual replacement-tool delivery without acquiring extra chunk tickets.
+
+## [0.3.14] - 2026-10-21
+
+### Fixed
+
+- Keep large recorded companion health visible in Commander rosters without integer truncation.
+- Keep large bag page counters inside their controls and expose exact counts in paging tooltips.
+- Clear invalid nonfinite absorption in older companion saves without healing or changing valid absorption.
+- Keep outgoing companion damage finite when Creative Attack exceeds Minecraft’s float representation. Preserve the exact tuned base through saves and recovery while preventing nonfinite victim absorption during native melee, beams, and breath.
+
 ## [0.3.13] - 2026-10-21
 
 - Reduce Guardian Angel and Royal Guard maximum health to four times common Health: initially 64, with 16 per ordinary Health upgrade. Normalize saved profession modifiers without stacking or healing.

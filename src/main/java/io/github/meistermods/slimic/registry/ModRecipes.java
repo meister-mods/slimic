@@ -16,6 +16,21 @@ import net.minecraftforge.registries.RegistryObject;
 public final class ModRecipes {
   public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
       DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Slimic.MOD_ID);
+  public static final RegistryObject<
+          RecipeSerializer<io.github.meistermods.slimic.recipe.RoyalSynthesisStationRecipe>>
+      ROYAL_SYNTHESIS_STATION =
+          SERIALIZERS.register(
+              "royal_synthesis_station",
+              io.github.meistermods.slimic.recipe.RoyalSynthesisStationRecipe.Serializer::new);
+  public static final RegistryObject<
+          SimpleCraftingRecipeSerializer<
+              io.github.meistermods.slimic.recipe.KingdomMapCopyingRecipe>>
+      KINGDOM_MAP_COPYING =
+          SERIALIZERS.register(
+              "kingdom_map_copying",
+              () ->
+                  new SimpleCraftingRecipeSerializer<>(
+                      io.github.meistermods.slimic.recipe.KingdomMapCopyingRecipe::new));
 
   public static final RegistryObject<
           SimpleCraftingRecipeSerializer<

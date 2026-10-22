@@ -14,6 +14,12 @@ public final class ModMenus {
       DeferredRegister.create(ForgeRegistries.MENU_TYPES, Slimic.MOD_ID);
   public static final RegistryObject<MenuType<SlimeMenu>> SLIME =
       MENUS.register("slime", () -> IForgeMenuType.create(SlimeMenu::new));
+  public static final RegistryObject<MenuType<io.github.meistermods.slimic.menu.RoyalSynthesisMenu>>
+      ROYAL_SYNTHESIS =
+          MENUS.register(
+              "royal_synthesis",
+              () ->
+                  IForgeMenuType.create(io.github.meistermods.slimic.menu.RoyalSynthesisMenu::new));
 
   public static final RegistryObject<MenuType<io.github.meistermods.slimic.menu.CommanderMenu>>
       COMMANDER =

@@ -2,6 +2,8 @@
 
 English | [한국어](THE_SLIMIC.kr.md) · [Gameplay](GAMEPLAY.md) · [Guidebook](GUIDEBOOK.md)
 
+[Fallen Sanctum](FALLEN_SANCTUM.md) describes kingdom-map fragments, the five-zone royal sanctuary, its surviving watch, and the shared core used for [Royal synthesis](SYNTHESIS.md).
+
 The Slimic is a separate dimension shaped like a weathered Overworld, with gel-covered ground and traces of a lost slime kingdom. Its single biome, **Damp Plains**, spans hills, caves, and waterways. It follows the ordinary day and night cycle and supports beds and respawn anchors according to Overworld rules: beds work; charged anchors explode.
 
 ## Slime portals

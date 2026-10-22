@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " F ",
+    "BBB"
+  ],
+  "key": {
+    "F": {
+      "item": "slimic:old_command_fragment"
+    },
+    "B": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "item": "slimic:sanctum_relay"
+  }
+}

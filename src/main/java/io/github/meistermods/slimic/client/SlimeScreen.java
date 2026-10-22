@@ -43,8 +43,11 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
   private Button previousPage;
   private Button nextPage;
+  private String pageCounter;
   private Button directionButton;
   private Button lightButton;
+  private final java.util.List<Button> policies = new java.util.ArrayList<>();
+  private final java.util.List<Button> ores = new java.util.ArrayList<>();
 
   public SlimeScreen(SlimeMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
@@ -62,11 +65,46 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     super.init();
     directionButton = null;
     previousPage = nextPage = null;
+    pageCounter = null;
     lightButton = null;
+    policies.clear();
+    ores.clear();
     upgrades.clear();
     filters.clear();
     targetPageButton = null;
     orders.clear();
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime) {
+      addRenderableWidget(
+          Button.builder(
+                  Component.translatable("screen.slimic.policy"),
+                  b -> sendButton(SlimeMenu.TARGET_PAGE_BUTTON))
+              .bounds(leftPos + 282, topPos + 73, 76, 14)
+              .build());
+      var values = io.github.meistermods.slimic.entity.NextGenerationMiningSlime.Policy.values();
+      for (int i = 0; i < values.length; i++) {
+        final int policy = i;
+        String key = values[i].name().toLowerCase(Locale.ROOT);
+        policies.add(
+            addRenderableWidget(
+                Button.builder(
+                        Component.translatable("policy.slimic." + key + ".short"),
+                        b -> sendButton(SlimeMenu.POLICY_BUTTON + policy))
+                    .bounds(leftPos + 196 + i * 54, topPos + 90, 52, 15)
+                    .tooltip(Tooltip.create(Component.translatable("policy.slimic." + key)))
+                    .build()));
+      }
+      var types = io.github.meistermods.slimic.entity.NextGenerationMiningSlime.ORES;
+      for (int i = 0; i < types.size(); i++) {
+        final int ore = i;
+        ores.add(
+            addRenderableWidget(
+                Button.builder(
+                        Component.translatable("ore.slimic." + types.get(i)),
+                        b -> sendButton(SlimeMenu.ORE_BUTTON + ore))
+                    .bounds(leftPos + 196 + i % 3 * 54, topPos + 108 + i / 3 * 11, 52, 10)
+                    .build()));
+      }
+    }
     name =
         new EditBox(
             font, leftPos + 10, topPos + 25, 140, 18, Component.translatable("screen.slimic.name"));
@@ -223,6 +261,22 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   @Override
   protected void containerTick() {
     super.containerTick();
+    for (int i = 0; i < policies.size(); i++) {
+      policies.get(i).visible = menu.isPolicyEditor();
+      policies.get(i).active = menu.isSynchronized() && menu.data(SlimeMenu.POLICY) != i;
+    }
+    for (int i = 0; i < ores.size(); i++) {
+      var button = ores.get(i);
+      button.visible = menu.isPolicyEditor();
+      button.active = menu.isSynchronized() && menu.data(SlimeMenu.POLICY) == 2;
+      button.setMessage(
+          Component.literal((menu.data(SlimeMenu.ORE_MASK) & 1 << i) != 0 ? "✓ " : "")
+              .append(
+                  Component.translatable(
+                      "ore.slimic."
+                          + io.github.meistermods.slimic.entity.NextGenerationMiningSlime.ORES.get(
+                              i))));
+    }
     if (!menu.slime().isAlive() || menu.slime().isRemoved()) {
       onClose();
       return;
@@ -260,6 +314,18 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
       previousPage.visible = nextPage.visible = menu.isBagVisible() && menu.bagPages() > 1;
       previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;
       nextPage.active = menu.data(SlimeMenu.BAG_PAGE) + 1 < menu.bagPages();
+      String counter = (menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages();
+      if (!counter.equals(pageCounter)) {
+        pageCounter = counter;
+        previousPage.setTooltip(
+            Tooltip.create(
+                Component.translatable("screen.slimic.previous_page")
+                    .append("\n")
+                    .append(counter)));
+        nextPage.setTooltip(
+            Tooltip.create(
+                Component.translatable("screen.slimic.next_page").append("\n").append(counter)));
+      }
     }
   }
 
@@ -308,13 +374,13 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   @Override
   protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     graphics.drawString(font, menu.slime().getDisplayName(), 10, 7, 0xffe9f6df, false);
-    graphics.drawString(
-        font,
-        Component.translatable("screen.slimic.points", menu.data(SlimeMenu.POINTS)),
-        10,
-        51,
-        0xffffd77e,
-        false);
+    var points = Component.translatable("screen.slimic.points", menu.points());
+    graphics.pose().pushPose();
+    graphics.pose().translate(10, 51, 0);
+    float pointScale = Math.min(1, 174f / Math.max(1, font.width(points)));
+    graphics.pose().scale(pointScale, pointScale, 1);
+    graphics.drawString(font, points, 0, 0, 0xffffd77e, false);
+    graphics.pose().popPose();
     graphics.drawString(
         font,
         Component.translatable(
@@ -374,7 +440,15 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                     ? 218
                     : SlimeMenu.SLOTS_X,
         62);
-    if (menu.slime() instanceof BagSlime) {
+    if (menu.isPolicyEditor()) {
+      graphics.drawString(
+          font,
+          Component.translatable("screen.slimic.policy"),
+          SlimeMenu.SLOTS_X,
+          SlimeMenu.BAG_LABEL_Y,
+          0xffe5e9e9,
+          false);
+    } else if (menu.slime() instanceof BagSlime) {
       graphics.drawString(
           font,
           menu.isBagVisible()
@@ -439,13 +513,15 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           216,
           174,
           0xffb4c9d1);
-      if (menu.isBagVisible() && menu.bagPages() > 1)
-        graphics.drawCenteredString(
-            font,
-            Component.literal((menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages()),
-            323,
-            SlimeMenu.INVENTORY_LABEL_Y,
-            0xffe5e9e9);
+      if (menu.isBagVisible() && menu.bagPages() > 1) {
+        String counter = (menu.data(SlimeMenu.BAG_PAGE) + 1) + "/" + menu.bagPages();
+        float scale = Math.min(1, 42f / Math.max(1, font.width(counter)));
+        graphics.pose().pushPose();
+        graphics.pose().translate(323, SlimeMenu.INVENTORY_LABEL_Y, 0);
+        graphics.pose().scale(scale, scale, 1);
+        graphics.drawCenteredString(font, counter, 0, 0, 0xffe5e9e9);
+        graphics.pose().popPose();
+      }
     } else if (menu.slime() instanceof MeowSlime cat) {
       graphics.drawWordWrap(
           font,
@@ -516,15 +592,27 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           162,
           0xffb4c9d1);
     }
-    graphics.drawString(
-        font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xffe2e9e9, false);
+    if (!menu.isPolicyEditor())
+      graphics.drawString(
+          font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xffe2e9e9, false);
   }
 
   @Override
   public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
     renderBackground(graphics);
     super.render(graphics, mouseX, mouseY, partialTick);
-    if (hoveredSlot != null && hoveredSlot.index == 2 && menu.slime() instanceof TunnelSlime)
+    if (mouseX >= leftPos + 10
+        && mouseX < leftPos + 184
+        && mouseY >= topPos + 50
+        && mouseY < topPos + 62)
+      graphics.renderTooltip(
+          font,
+          Component.translatable("screen.slimic.points", menu.points())
+              .append("\n")
+              .append(Component.translatable("item.slimic.synthesis.unspent")),
+          mouseX,
+          mouseY);
+    else if (hoveredSlot != null && hoveredSlot.index == 2 && menu.slime() instanceof TunnelSlime)
       graphics.renderTooltip(
           font,
           font.split(Component.translatable("screen.slimic.lining_help"), 220),

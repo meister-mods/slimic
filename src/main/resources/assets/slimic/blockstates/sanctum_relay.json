@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "zone=1": {
+      "model": "slimic:block/sanctum_relay"
+    },
+    "zone=2": {
+      "model": "slimic:block/sanctum_relay"
+    },
+    "zone=3": {
+      "model": "slimic:block/sanctum_relay"
+    },
+    "zone=4": {
+      "model": "slimic:block/sanctum_relay"
+    }
+  }
+}

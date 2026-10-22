@@ -14,7 +14,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ModNetwork {
-  private static final String PROTOCOL_VERSION = "19";
+  private static final String PROTOCOL_VERSION = "20";
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "main"),
@@ -95,13 +95,13 @@ public final class ModNetwork {
   }
 
   public record CreativeTuneSlime(
-      int menuId, double[] values, float health, float stamina, int points) {
+      int menuId, double[] values, float health, float stamina, long points) {
     private void encode(FriendlyByteBuf buffer) {
       buffer.writeVarInt(menuId);
       for (int i = 0; i < 9; i++) buffer.writeDouble(values[i]);
       buffer.writeFloat(health);
       buffer.writeFloat(stamina);
-      buffer.writeVarInt(points);
+      buffer.writeVarLong(points);
     }
 
     private static CreativeTuneSlime decode(FriendlyByteBuf buffer) {
@@ -109,7 +109,7 @@ public final class ModNetwork {
       double[] values = new double[9];
       for (int i = 0; i < 9; i++) values[i] = buffer.readDouble();
       return new CreativeTuneSlime(
-          id, values, buffer.readFloat(), buffer.readFloat(), buffer.readVarInt());
+          id, values, buffer.readFloat(), buffer.readFloat(), buffer.readVarLong());
     }
 
     private static void handle(CreativeTuneSlime packet, Supplier<NetworkEvent.Context> supplier) {

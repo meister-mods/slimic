@@ -72,7 +72,9 @@ public class FriendlySlime extends TamableAnimal {
   private java.util.UUID lastAccessOwner;
   private int blockedWorkTicks;
   private long blockedEpisode;
-  private int statPoints;
+  private long statPoints;
+  private long growthEarned;
+  private boolean growthTrusted = true;
   private int activityProgress;
   private int earnedPoints;
   private float stamina = 100.0F;
@@ -267,7 +269,11 @@ public class FriendlySlime extends TamableAnimal {
       if (stat.usesAttribute(attribute) && hasTunedStat(stat)) {
         double value =
             Math.max(stat.minTunedValue(), CreativeStats.attributeValue(getAttribute(attribute)));
-        return stat == SlimeStat.HEALTH ? CreativeStats.asFloat(value) : value;
+        // Native health and outgoing damage are floats. Infinity would contaminate absorption
+        // arithmetic (infinity - infinity), even though the saved Creative base is finite.
+        return stat == SlimeStat.HEALTH || stat == SlimeStat.ATTACK
+            ? CreativeStats.asFloat(value)
+            : value;
       }
     }
     return super.getAttributeValue(attribute);
@@ -291,7 +297,7 @@ public class FriendlySlime extends TamableAnimal {
 
   protected void onStatsTuned() {}
 
-  public void setTunedVitals(float health, float energy, int points) {
+  public void setTunedVitals(float health, float energy, long points) {
     setHealth(Mth.clamp(health, 0, getMaxHealth()));
     stamina = Mth.clamp(energy, 0, getMaxStamina());
     statPoints = Math.max(0, points);
@@ -324,8 +330,28 @@ public class FriendlySlime extends TamableAnimal {
     return entityData.get(STAT_LEVELS).getInt(stat.key());
   }
 
-  public int getStatPoints() {
+  public long getStatPoints() {
     return statPoints;
+  }
+
+  public long getGrowthEarned() {
+    return growthEarned;
+  }
+
+  public boolean hasTrustedGrowth() {
+    long invested = java.util.Arrays.stream(SlimeStat.values()).mapToLong(this::getStatLevel).sum();
+    return growthTrusted
+        && entityData.get(TUNED_STATS).isEmpty()
+        && statPoints <= Long.MAX_VALUE - invested
+        && invested + statPoints == growthEarned;
+  }
+
+  /** A new synthesis has no invested levels; the full inherited balance remains spendable. */
+  public void inheritGrowth(long points) {
+    if (points < 0) throw new IllegalArgumentException("Negative growth balance");
+    statPoints = growthEarned = points;
+    earnedPoints = (int) Math.min(1_000_000L, points);
+    growthTrusted = true;
   }
 
   public int getActivityProgress() {
@@ -422,15 +448,18 @@ public class FriendlySlime extends TamableAnimal {
 
   protected void recordCompletedWork(int units) {
     if (level().isClientSide) return;
-    activityProgress += Mth.clamp(units, 0, 64);
+    activityProgress =
+        (int) Math.min(Integer.MAX_VALUE, (long) activityProgress + Mth.clamp(units, 0, 64));
     settleActivity();
   }
 
   private void settleActivity() {
     while (activityProgress >= getNextPointCost()) {
+      if (statPoints == Long.MAX_VALUE || growthEarned == Long.MAX_VALUE) break;
       activityProgress -= getNextPointCost();
       earnedPoints = Math.min(1_000_000, earnedPoints + 1);
-      statPoints = (int) Math.min(Integer.MAX_VALUE, (long) statPoints + 1);
+      statPoints++;
+      growthEarned++;
     }
   }
 
@@ -465,7 +494,10 @@ public class FriendlySlime extends TamableAnimal {
     tag.putInt("EscapeActivityTicks", escapeActivityTicks);
     tag.putInt("DefenseActivityCooldown", defenseActivityCooldown);
     tag.put("SlimeStats", entityData.get(STAT_LEVELS).copy());
-    tag.putInt("StatPoints", statPoints);
+    tag.putLong("StatPoints", statPoints);
+    tag.putInt("GrowthSchema", 1);
+    tag.putLong("GrowthEarned", growthEarned);
+    tag.putBoolean("GrowthTrusted", hasTrustedGrowth());
     tag.putInt("ActivityProgress", activityProgress);
     tag.putInt("EarnedPoints", earnedPoints);
     tag.putFloat("Stamina", stamina);
@@ -534,8 +566,16 @@ public class FriendlySlime extends TamableAnimal {
         tag.contains("SlimeDyeColor") ? Mth.clamp(tag.getInt("SlimeDyeColor"), -1, 15) : -1);
     blockedWorkTicks = Mth.clamp(tag.getInt("BlockedWorkTicks"), 0, Integer.MAX_VALUE);
     blockedEpisode = Math.max(0, tag.getLong("BlockedEpisode"));
-    statPoints = Math.max(0, tag.getInt("StatPoints"));
+    statPoints = Math.max(0, tag.getLong("StatPoints"));
     earnedPoints = Mth.clamp(tag.getInt("EarnedPoints"), 0, 1_000_000);
+    growthEarned =
+        tag.contains("GrowthSchema") ? Math.max(0, tag.getLong("GrowthEarned")) : earnedPoints;
+    long invested = java.util.Arrays.stream(SlimeStat.values()).mapToLong(this::getStatLevel).sum();
+    growthTrusted =
+        (!tag.contains("GrowthSchema") || tag.getBoolean("GrowthTrusted"))
+            && statPoints <= Long.MAX_VALUE - invested
+            && invested + statPoints == growthEarned
+            && tuned.isEmpty();
     // Older saves can contain more activity than the reduced threshold. Pay the
     // earned points before retaining the remainder rather than truncating it.
     activityProgress = Mth.clamp(tag.getInt("ActivityProgress"), 0, MAX_POINT_COST - 1);

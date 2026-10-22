@@ -29,6 +29,53 @@ public final class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Slimic.MOD_ID);
 
+  public static final RegistryObject<Item> KINGDOM_MAP_FRAGMENT =
+      royalRelic("kingdom_map_fragment");
+  public static final RegistryObject<Item> ANCIENT_KINGDOM_MAP =
+      ITEMS.register(
+          "ancient_kingdom_map",
+          () ->
+              new io.github.meistermods.slimic.item.KingdomMapItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
+  public static final RegistryObject<Item> ROYAL_SURVEY_COMPASS =
+      ITEMS.register(
+          "royal_survey_compass",
+          () ->
+              new io.github.meistermods.slimic.item.RoyalSurveyCompassItem(
+                  new Item.Properties()
+                      .stacksTo(1)
+                      .rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
+  public static final RegistryObject<Item> ROYAL_COURTYARD_SEAL =
+      royalRelic("royal_courtyard_seal");
+  public static final RegistryObject<Item> ROYAL_GALLERY_SEAL = royalRelic("royal_gallery_seal");
+  public static final RegistryObject<Item> ROYAL_SYNTHESIS_CORE =
+      royalRelic("royal_synthesis_core");
+  public static final RegistryObject<Item> ROYAL_SYNTHESIS_STATION =
+      ITEMS.register(
+          "royal_synthesis_station",
+          () -> new BlockItem(ModBlocks.ROYAL_SYNTHESIS_STATION.get(), new Item.Properties()));
+  public static final RegistryObject<Item> SANCTUM_RELAY =
+      ITEMS.register(
+          "sanctum_relay",
+          () -> new BlockItem(ModBlocks.SANCTUM_RELAY.get(), new Item.Properties()));
+  public static final RegistryObject<Item> NEXT_GENERATION_MINING_SLIME =
+      ITEMS.register(
+          "next_generation_mining_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE),
+                  ModEntities.NEXT_GENERATION_MINING_SLIME));
+
+  private static RegistryObject<Item> royalRelic(String name) {
+    return ITEMS.register(
+        name,
+        () ->
+            new io.github.meistermods.slimic.item.RoyalRelicItem(
+                new Item.Properties()
+                    .rarity(net.minecraft.world.item.Rarity.UNCOMMON)
+                    .fireResistant()));
+  }
+
   public static final RegistryObject<Item> ROYAL_GUARD_SLIME =
       ITEMS.register(
           "royal_guard_slime",

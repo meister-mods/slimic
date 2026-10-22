@@ -1,0 +1,29 @@
+{
+  "name": "무너진 성체",
+  "icon": "slimic:royal_courtyard_seal",
+  "category": "slimic:world",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "왕실 명령 성역은 The Slimic의 새로 생성되는 눅눅한 평원에서 발견됩니다. 끊어진 길은 외곽 접근로, 전정, 명령 회랑, 융합실, 심층 핵심부로 이어집니다. 열린 가운데 통로를 따라가세요. 융합실 너머에서는 아래로 내려갑니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "방패를 든 왕실 잔존병이 구역을 지킵니다. 회랑 지휘관은 가까운 동료에게 경보를 보내고, 심층 정예는 체력이 절반 이하로 떨어지면 한 번 지원병을 부릅니다. 각자 배정된 자리 주변을 지킵니다. 파수를 물리친 뒤 금빛 중계대를 사용하세요."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "전정 중계대는 첫 인장, 회랑 중계대는 두 번째 인장을 기억하고 왕실 측량침을 내어줍니다. 근처에서 측량침을 쓰면 안쪽 구역의 수평 방향을 가리킵니다. 인장을 잃거나 보관해도 구역의 기억은 남습니다. 평화로움에서는 전투 없이 중계대를 진행할 수 있습니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "두 기억과 심층 파수를 마치면 이 성체의 공용 왕실 합성 핵심 하나를 얻습니다. 다른 핵심은 다른 성체에서 찾으세요. 중계대를 부수거나 다시 놓아도 보상은 초기화되지 않습니다. 유적은 해체하거나 개조할 수 있습니다. 귀환 후 $(l:world/royal_synthesis)새 융합 장치를 만드세요$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_courtyard_seal": 0,
+    "slimic:royal_survey_compass": 2,
+    "slimic:sanctum_relay": 1
+  }
+}

@@ -20,6 +20,46 @@ public final class ModBlocks {
       DeferredRegister.create(ForgeRegistries.BLOCKS, Slimic.MOD_ID);
   public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
       DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Slimic.MOD_ID);
+  public static final RegistryObject<Block> ROYAL_SYNTHESIS_STATION =
+      BLOCKS.register(
+          "royal_synthesis_station",
+          () ->
+              new io.github.meistermods.slimic.block.RoyalSynthesisStationBlock(
+                  BlockBehaviour.Properties.of()
+                      .mapColor(MapColor.COLOR_GREEN)
+                      .strength(4)
+                      .sound(SoundType.STONE)
+                      .noOcclusion()));
+  public static final RegistryObject<
+          BlockEntityType<io.github.meistermods.slimic.block.RoyalSynthesisStationBlockEntity>>
+      ROYAL_SYNTHESIS_ENTITY =
+          BLOCK_ENTITIES.register(
+              "royal_synthesis_station",
+              () ->
+                  BlockEntityType.Builder.of(
+                          io.github.meistermods.slimic.block.RoyalSynthesisStationBlockEntity::new,
+                          ROYAL_SYNTHESIS_STATION.get())
+                      .build(null));
+  public static final RegistryObject<Block> SANCTUM_RELAY =
+      BLOCKS.register(
+          "sanctum_relay",
+          () ->
+              new io.github.meistermods.slimic.block.SanctumRelayBlock(
+                  BlockBehaviour.Properties.of()
+                      .mapColor(MapColor.GOLD)
+                      .strength(3)
+                      .sound(SoundType.STONE)
+                      .noOcclusion()));
+  public static final RegistryObject<
+          BlockEntityType<io.github.meistermods.slimic.block.SanctumRelayBlockEntity>>
+      SANCTUM_RELAY_ENTITY =
+          BLOCK_ENTITIES.register(
+              "sanctum_relay",
+              () ->
+                  BlockEntityType.Builder.of(
+                          io.github.meistermods.slimic.block.SanctumRelayBlockEntity::new,
+                          SANCTUM_RELAY.get())
+                      .build(null));
   public static final RegistryObject<Block> SLIME_CHEST =
       BLOCKS.register(
           "slime_chest",

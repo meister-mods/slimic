@@ -1,0 +1,16 @@
+{
+  "name": "봉인된 융합실",
+  "icon": "slimic:gel_crystal_cluster",
+  "category": "slimic:world",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "명령 회랑 너머의 점액 결정과 실패한 실험 흔적이 옛 융합실을 알립니다. 손상된 왕실 융합 장치는 더 이상 작동하지 않습니다. 곁의 기록을 읽고 낮아지는 가운데 길을 따라 마지막 수호자에게 향하세요."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "왕실 핵심을 회수해 돌아온 뒤 $(l:world/royal_synthesis)새 장치를 제작하세요$(). 확정 상자 보급품으로 금·레드스톤·인장·벽돌과 첫 융합 보조 재료를 충당할 수 있습니다. 전정 채굴 동료는 $(l:world/mine_recovery)기존 코어 복원$() 절차를 따르며, 짝이 될 일반 채굴 동료는 별도로 육성하세요."
+    }
+  ]
+}

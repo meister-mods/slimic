@@ -1,0 +1,28 @@
+{
+  "name": "Royal Synthesis",
+  "icon": "slimic:royal_synthesis_station",
+  "category": "slimic:world",
+  "sortnum": 15,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:royal_synthesis_station"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A Royal Synthesis Core, two gold ingots, two redstone, one Ancient Command Seal, and three stone bricks make a reusable station. The sanctum supplies these materials. Its ruined laboratory apparatus cannot synthesize. The separate $(l:world/restoration)Slime Restoration Station$() still restores cores."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recover an ordinary Mining Slime and an Ancient Mining Slime. You must be the primary owner of both. Empty every equipment slot and bag first. Place both stored items in their labeled slots, then add four slimeballs and two Old Command Fragments. Other families and next-generation parents are not eligible."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Read the preview before confirming. Both parents disappear; the $(l:companions/next_generation_mining)new child$() has a new identity and starts waiting. Choose its name with a Tuner. Verified growth is $(l:growth/inheritance)refunded$(). If delivery is interrupted, recover the pending result at any working Royal Synthesis Station."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_synthesis_station": 0,
+    "slimic:royal_synthesis_core": 1
+  }
+}

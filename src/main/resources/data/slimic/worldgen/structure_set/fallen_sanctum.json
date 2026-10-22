@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "slimic:fallen_sanctum",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 11501747,
+    "spacing": 96,
+    "separation": 32
+  }
+}

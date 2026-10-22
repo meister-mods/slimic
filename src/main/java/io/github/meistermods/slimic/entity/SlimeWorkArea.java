@@ -69,6 +69,18 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
           plan != null
               && (miner.getMiningChunk().equals(slime.chunkPosition()) || slime.isWorking());
       ChunkPos chunk = existingPlan ? miner.getMiningChunk() : slime.chunkPosition();
+      if (miner instanceof NextGenerationMiningSlime next
+          && next.policy() == NextGenerationMiningSlime.Policy.SELECTIVE_ORE) {
+        double minX = Math.max(chunk.getMinBlockX(), Math.floor(slime.getX() - radius));
+        double maxX = Math.min(chunk.getMinBlockX() + 16, Math.floor(slime.getX() + radius) + 1);
+        double minZ = Math.max(chunk.getMinBlockZ(), Math.floor(slime.getZ() - radius));
+        double maxZ = Math.min(chunk.getMinBlockZ() + 16, Math.floor(slime.getZ() + radius) + 1);
+        int minY = (int) Math.max(slime.level().getMinBuildHeight(), slime.getY() - radius);
+        int maxY = (int) Math.min(slime.level().getMaxBuildHeight() - 1, slime.getY() + radius) + 1;
+        if (minX <= maxX && minZ <= maxZ && minY < maxY)
+          shapes.add(new Shape(new AABB(minX, minY, minZ, maxX, maxY, maxZ), false, false));
+        return new SlimeWorkArea(!slime.isWorking(), shapes);
+      }
       int topFloor = existingPlan ? plan.topFloor() : miner.getQuarryStartFloor();
       int nextLayer = existingPlan ? plan.layer() : topFloor + 2;
       int layer = nextLayer;

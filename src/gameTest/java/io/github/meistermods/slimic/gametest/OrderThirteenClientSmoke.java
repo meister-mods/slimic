@@ -163,7 +163,7 @@ public final class OrderThirteenClientSmoke {
     for (var value : ModEntities.companionTypes()) {
       var s = (FriendlySlime) value.get().create(level);
       s.tame(p);
-      s.moveTo(4.5 + i % 6 * 4, 101, 12.5 + i / 6 * 4, 180, 0);
+      s.moveTo(4.5 + i % 6 * 4, 101, 10.5 + i / 6 * 3.5, 180, 0);
       s.yBodyRot = 180;
       s.setYHeadRot(180);
       s.setNoAi(true);
@@ -174,7 +174,7 @@ public final class OrderThirteenClientSmoke {
       ids.put(value.getId().getPath(), s.getUUID());
       i++;
     }
-    if (i != 23) throw new IllegalStateException("Expected all twenty-three models");
+    if (i != 26) throw new IllegalStateException("Expected all twenty-six models");
     registry.setRelation(p.getUUID(), SHARED, true, true);
     registry.setRelation(p.getUUID(), ENEMY, false, true);
     p.server.getProfileCache().add(new GameProfile(SHARED, "SharedOwner"));
@@ -215,15 +215,15 @@ public final class OrderThirteenClientSmoke {
     if (phase == 2) {
       if (ticks < 40
           || c.level.getEntitiesOfClass(FriendlySlime.class, new AABB(0, 90, 0, 32, 120, 32)).size()
-              != 23) return false;
+              != 26) return false;
       if (!iconsShown) {
-        shot(c, "all-22-models");
+        shot(c, "all-26-models");
         c.setScreen(new SummonGallery());
         iconsShown = true;
         ticks = 0;
         return false;
       }
-      shot(c, "all-22-summon-items");
+      shot(c, "all-26-summon-items");
       c.setScreen(null);
       server(
           c,
@@ -278,7 +278,7 @@ public final class OrderThirteenClientSmoke {
           || ticks < 10) return false;
       var menu = screen.getMenu();
       var snap = menu.snapshot();
-      if (snap.players() || snap.pages() != 4 || snap.rows().size() != 6 || !snap.primaryOwner())
+      if (snap.players() || snap.pages() != 5 || snap.rows().size() != 6 || !snap.primaryOwner())
         throw new IllegalStateException("Roster bounds or owner view incorrect");
       if (c.getWindow().getGuiScaledWidth() != 320 || c.getWindow().getGuiScaledHeight() != 240) {
         // Resize callbacks update the allowed GUI-scale range on the next native frame.
@@ -526,7 +526,7 @@ public final class OrderThirteenClientSmoke {
     }
     if (phase == 27) {
       System.out.println(
-          "SLIMIC ORDER THIRTEEN CLIENT SMOKE PASSED: 23 models, shared crests, commander mustache"
+          "SLIMIC ORDER THIRTEEN CLIENT SMOKE PASSED: 26 models, shared crests, commander mustache"
               + " and baton, real roster/tag/relation packets, EN/KR screens, independent light,"
               + " fireflies, bound token travel and Attention controls");
       return true;

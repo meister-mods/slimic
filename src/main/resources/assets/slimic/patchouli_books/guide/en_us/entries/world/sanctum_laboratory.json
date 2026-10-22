@@ -1,0 +1,16 @@
+{
+  "name": "Sealed Laboratory",
+  "icon": "slimic:gel_crystal_cluster",
+  "category": "slimic:world",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Beyond the command gallery, gel crystals and broken experiments mark the old laboratory. The ruined Royal Synthesis Station no longer operates. Read the record beside it and follow the descending central passage to the final guardian."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Bring the recovered royal core home and $(l:world/royal_synthesis)craft a new apparatus$(). The guaranteed chest supplies cover its gold, redstone, seal, and bricks, plus the first reagents. The courtyard miner follows $(l:world/mine_recovery)ordinary core restoration$(); prepare a separately raised ordinary miner as its partner."
+    }
+  ]
+}

@@ -22,6 +22,8 @@ public final class SlimeData {
     if (canLoad(migrated)) {
       migrated.putInt(VERSION_KEY, VERSION);
       ProfessionHealth.migrate(migrated);
+      if (!Float.isFinite(migrated.getFloat("AbsorptionAmount")))
+        migrated.putFloat("AbsorptionAmount", 0);
     }
     return migrated;
   }
