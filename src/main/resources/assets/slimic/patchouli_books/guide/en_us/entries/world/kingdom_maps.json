@@ -1,0 +1,28 @@
+{
+  "name": "Ancient Kingdom Maps",
+  "icon": "slimic:kingdom_map_fragment",
+  "category": "slimic:world",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "New $(l:world/collapsed_mines)mine supply chests$() contain one Torn Kingdom Map Fragment. New workshops, depots, and archives may also hold one. Filled chests keep their contents. Three fragments can come from any combination of sites."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:ancient_kingdom_map"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Use the unbound map in The Slimic. It remembers a nearby valid $(l:world/fallen_sanctum)Fallen Sanctum$(). Search does not load chunks. If no traces are found, keep the map and try elsewhere. Already-bound maps retain the same destination through travel and server restarts."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The native map marker gives an approximate center, and the player arrow shows your relative bearing. Outside The Slimic, use its dimension reminder. A bound map plus blank maps copies its destination. Entry never requires a map, and copies cannot reset site rewards."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:kingdom_map_fragment": 0,
+    "slimic:ancient_kingdom_map": 2
+  }
+}

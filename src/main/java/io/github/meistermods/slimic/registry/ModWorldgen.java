@@ -12,6 +12,23 @@ import net.minecraftforge.registries.*;
 
 @Mod.EventBusSubscriber(modid = Slimic.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModWorldgen {
+  public static final DeferredRegister<
+          net.minecraft.world.level.levelgen.structure.StructureType<?>>
+      STRUCTURE_TYPES =
+          DeferredRegister.create(
+              net.minecraft.core.registries.Registries.STRUCTURE_TYPE, Slimic.MOD_ID);
+  public static final DeferredRegister<
+          net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType>
+      PIECE_TYPES =
+          DeferredRegister.create(
+              net.minecraft.core.registries.Registries.STRUCTURE_PIECE, Slimic.MOD_ID);
+  public static final RegistryObject<
+          net.minecraft.world.level.levelgen.structure.StructureType<FallenSanctumStructure>>
+      FALLEN_SANCTUM =
+          STRUCTURE_TYPES.register("fallen_sanctum", () -> () -> FallenSanctumStructure.CODEC);
+  public static final RegistryObject<
+          net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType>
+      SANCTUM_PIECE = PIECE_TYPES.register("fallen_sanctum", () -> FallenSanctumPiece::new);
   public static final DeferredRegister<Feature<?>> FEATURES =
       DeferredRegister.create(ForgeRegistries.FEATURES, Slimic.MOD_ID);
   public static final RegistryObject<Feature<?>> RUINS =

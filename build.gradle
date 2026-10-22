@@ -339,7 +339,8 @@ tasks.register('verifyGuidebook') {
                         def source = file('src/main/resources/data/' + page.recipe.replace(':', '/recipes/') + '.json')
                         require(source.exists(), 'Unknown crafting page recipe: ' + page.recipe)
                         def type = parse(source).type
-                        require(type.startsWith('minecraft:crafting_') || type == 'patchouli:shapeless_book_recipe',
+                        require(type.startsWith('minecraft:crafting_') || type == 'patchouli:shapeless_book_recipe'
+                                || type == 'slimic:royal_synthesis_station',
                                 'Dynamic companion recipes need their ingredient diagram: ' + page.recipe)
                     }
                     if (page.text instanceof String) {

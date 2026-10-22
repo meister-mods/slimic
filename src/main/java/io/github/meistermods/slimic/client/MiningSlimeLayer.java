@@ -80,6 +80,26 @@ public final class MiningSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
         buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
         15728880,
         OverlayTexture.NO_OVERLAY);
+    if (miner instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime) {
+      pose.pushPose();
+      pose.translate(0, .82, -.275);
+      pose.mulPose(com.mojang.math.Axis.XP.rotationDegrees(180));
+      pose.scale(.16F, .16F, .16F);
+      context
+          .getItemRenderer()
+          .renderStatic(
+              io.github.meistermods.slimic.registry.ModItems.ROYAL_SYNTHESIS_CORE
+                  .get()
+                  .getDefaultInstance(),
+              net.minecraft.world.item.ItemDisplayContext.FIXED,
+              light,
+              OverlayTexture.NO_OVERLAY,
+              pose,
+              buffers,
+              slime.level(),
+              slime.getId());
+      pose.popPose();
+    }
     SlimeEquipmentRenderer.held(context, pose, buffers, light, miner, miner.getPickaxe(), false);
     SlimeEquipmentRenderer.held(context, pose, buffers, light, miner, miner.getShovel(), true);
   }

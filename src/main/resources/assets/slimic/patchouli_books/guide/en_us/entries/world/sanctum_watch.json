@@ -1,0 +1,20 @@
+{
+  "name": "Royal Watch and Command",
+  "icon": "slimic:royal_gallery_seal",
+  "category": "slimic:world",
+  "sortnum": 16,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:world/fallen_sanctum)sanctum$() reuses ancient royal remnants with different assignments. Shield remnants raise their shields against visible nearby threats. Wardens defend rooms rather than roaming the kingdom. Their watch belongs to the site, so returning does not create another army."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A gallery commander calls nearby allies from the same ruin. The deep elite has 160 base health and calls one shield reinforcement after falling to half health. Break the watch with your own weapons or combat companions; ordinary ally and protection rules still apply."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "In Peaceful, use the relays without combat. The courtyard and gallery memories remain stored after their physical seals are lost. The final relay needs both memories; its single royal core belongs to the whole site. Changing the difficulty or replacing a relay does not replenish a claimed core."
+    }
+  ]
+}

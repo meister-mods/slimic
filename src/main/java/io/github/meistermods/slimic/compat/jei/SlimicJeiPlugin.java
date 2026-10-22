@@ -68,17 +68,37 @@ public final class SlimicJeiPlugin implements IModPlugin {
   @Override
   public void registerCategories(IRecipeCategoryRegistration registration) {
     registration.addRecipeCategories(
-        new SlimeRestorationCategory(registration.getJeiHelpers().getGuiHelper()));
+        new SlimeRestorationCategory(registration.getJeiHelpers().getGuiHelper()),
+        new RoyalSynthesisCategory(registration.getJeiHelpers().getGuiHelper()));
   }
 
   @Override
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
     registration.addRecipeCatalyst(
         ModWorldBlocks.block("command_pedestal"), SlimeRestorationCategory.TYPE);
+    registration.addRecipeCatalyst(
+        ModItems.ROYAL_SYNTHESIS_STATION.get(), RoyalSynthesisCategory.TYPE);
   }
 
   @Override
   public void registerRecipes(IRecipeRegistration registration) {
+    registration.addRecipes(
+        RoyalSynthesisCategory.TYPE,
+        List.of(io.github.meistermods.slimic.entity.SynthesisFamily.MINING));
+    for (var item :
+        List.of(
+            ModItems.ROYAL_SYNTHESIS_CORE.get(),
+            ModItems.ANCIENT_KINGDOM_MAP.get(),
+            ModItems.KINGDOM_MAP_FRAGMENT.get(),
+            ModItems.ROYAL_SURVEY_COMPASS.get()))
+      registration.addIngredientInfo(
+          item.getDefaultInstance(),
+          VanillaTypes.ITEM_STACK,
+          Component.translatable("jei.slimic.sanctum.path"));
+    registration.addIngredientInfo(
+        ModItems.NEXT_GENERATION_MINING_SLIME.get().getDefaultInstance(),
+        VanillaTypes.ITEM_STACK,
+        Component.translatable("jei.slimic.next_generation_mining_slime"));
     var restorations = SlimeRestorationRecipe.all();
     registration.addRecipes(SlimeRestorationCategory.TYPE, restorations);
     registration.addIngredientInfo(

@@ -39,6 +39,19 @@ public final class ModEntities {
       DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Slimic.MOD_ID);
 
   public static final RegistryObject<
+          EntityType<io.github.meistermods.slimic.entity.NextGenerationMiningSlime>>
+      NEXT_GENERATION_MINING_SLIME =
+          ENTITY_TYPES.register(
+              "next_generation_mining_slime",
+              () ->
+                  EntityType.Builder.of(
+                          io.github.meistermods.slimic.entity.NextGenerationMiningSlime::new,
+                          MobCategory.CREATURE)
+                      .sized(1.04F, 1.04F)
+                      .clientTrackingRange(10)
+                      .build(Slimic.MOD_ID + ":next_generation_mining_slime"));
+
+  public static final RegistryObject<
           EntityType<io.github.meistermods.slimic.entity.RoyalGuardSlime>>
       ROYAL_GUARD_SLIME =
           ENTITY_TYPES.register(
@@ -300,6 +313,7 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(NEXT_GENERATION_MINING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ANCIENT_MINING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ANCIENT_TUNNEL_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ROYAL_GUARD_SLIME.get(), FriendlySlime.createAttributes().build());

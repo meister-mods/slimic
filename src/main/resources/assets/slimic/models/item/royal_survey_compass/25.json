@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "slimic:item/royal_survey_compass"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        -281.25
+      ]
+    }
+  }
+}

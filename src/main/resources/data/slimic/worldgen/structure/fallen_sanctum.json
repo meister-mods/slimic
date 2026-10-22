@@ -1,0 +1,7 @@
+{
+  "type": "slimic:fallen_sanctum",
+  "biomes": "#slimic:has_structure/fallen_sanctum",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

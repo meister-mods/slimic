@@ -91,7 +91,7 @@ public class MiningSlime extends BagSlime {
   private BlockPos wallTarget;
   private int requiredTool;
   private boolean travelBlocked;
-  private Status status = Status.IDLE;
+  protected Status status = Status.IDLE;
   private BlockPos target;
   private Vec3 workStand;
   private final SlimeBlockBreaking breaking = new SlimeBlockBreaking();
@@ -400,7 +400,7 @@ public class MiningSlime extends BagSlime {
     }
   }
 
-  private void clearTarget() {
+  protected void clearTarget() {
     breaking.reset(this);
     target = null;
     wallTarget = null;
@@ -428,6 +428,7 @@ public class MiningSlime extends BagSlime {
 
   public void shareStaircase() {
     if (usesQuarry()
+        && !selectiveMining()
         && level() instanceof ServerLevel server
         && !hasChangedWorkDimension()
         && quarry != null
@@ -435,12 +436,12 @@ public class MiningSlime extends BagSlime {
       QuarryStaircaseData.get(server).register(getMiningChunk(), quarry);
   }
 
-  private boolean rampFloor(BlockPos pos) {
+  protected boolean rampFloor(BlockPos pos) {
     return quarry.isRampFloor(pos)
         || (level() instanceof ServerLevel server && QuarryStaircaseData.get(server).protects(pos));
   }
 
-  private boolean terrain(BlockPos pos, BlockState state) {
+  protected boolean terrain(BlockPos pos, BlockState state) {
     return quarry != null
         && quarry.contains(pos)
         && !rampFloor(pos)
@@ -471,7 +472,14 @@ public class MiningSlime extends BagSlime {
     return -1;
   }
 
-  private boolean canSee(BlockPos pos) {
+  protected boolean missingRequiredTool(BlockState state) {
+    int desired = state.is(BlockTags.MINEABLE_WITH_SHOVEL) ? 1 : 0;
+    if (!getTool(desired).isEmpty()) return false;
+    requiredTool = desired;
+    return true;
+  }
+
+  protected boolean canSee(BlockPos pos) {
     return canSeeFrom(getEyePosition(), pos);
   }
 
@@ -546,6 +554,10 @@ public class MiningSlime extends BagSlime {
 
   public void refreshFluidSourceGuard() {
     if (!usesQuarry()) return;
+    if (selectiveMining()) {
+      forgetFluidSourceGuard();
+      return;
+    }
     if (!(level() instanceof ServerLevel server)) return;
     long chunk =
         isAlive() && isWorking() && quarry != null && drainedWaterLayer == quarry.layer()
@@ -1058,9 +1070,9 @@ public class MiningSlime extends BagSlime {
     return true;
   }
 
-  private BlockPos findTarget(ServerLevel server) {
+  protected BlockPos findTarget(ServerLevel server) {
     long now = server.getGameTime();
-    skipped.values().removeIf(until -> until <= now);
+    pruneSkipped(now);
     for (int pass = 0; pass < 4; pass++) {
       if (quarry.layer() < server.getMinBuildHeight()) {
         status = Status.COMPLETE;
@@ -1137,6 +1149,14 @@ public class MiningSlime extends BagSlime {
   /** Selection stays within the safe active layer, including stair and tool checks. */
   protected double targetPriority(BlockPos pos, BlockState state, boolean visible) {
     return pos.distToCenterSqr(position());
+  }
+
+  protected void pruneSkipped(long now) {
+    skipped.values().removeIf(until -> until <= now);
+  }
+
+  protected boolean targetSkipped(BlockPos pos) {
+    return skipped.containsKey(pos.asLong());
   }
 
   private boolean canStore(List<ItemStack> drops) {
@@ -1356,7 +1376,8 @@ public class MiningSlime extends BagSlime {
         fluidCooldown--;
         return;
       }
-      if ((tickCount % 5 == 0 || wallTarget != null) && !ensureWalls(server)) return;
+      if (!selectiveMining() && (tickCount % 5 == 0 || wallTarget != null) && !ensureWalls(server))
+        return;
       if (target == null) {
         if (tickCount % 5 != 0) {
           if (supportTarget != null) finishApproach();
@@ -1367,5 +1388,9 @@ public class MiningSlime extends BagSlime {
       }
       mine(server);
     }
+  }
+
+  protected boolean selectiveMining() {
+    return false;
   }
 }

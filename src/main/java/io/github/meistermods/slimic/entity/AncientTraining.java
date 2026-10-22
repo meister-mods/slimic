@@ -35,6 +35,9 @@ public final class AncientTraining {
     // points.
     CompoundTag saved = slime.saveWithoutId(new CompoundTag());
     saved.putInt("EarnedPoints", spent);
+    saved.putInt("GrowthSchema", 1);
+    saved.putLong("GrowthEarned", spent + slime.getStatPoints());
+    saved.putBoolean("GrowthTrusted", true);
     slime.load(saved);
   }
 }

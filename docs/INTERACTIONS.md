@@ -32,7 +32,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I22 | Healing / Saddle | Heal without changing armor, wings, saddle or Wait. |
 | I23 | Healing / Saddle | Revive at one health with all three exact gear items. |
 | I24 | Guardian / Saddle / owner | Protect a mounted owner without removing rider or gear. |
-| I25 | Combat / all twenty-five professions | Same-owner companions remain excluded with all filters enabled. |
+| I25 | Combat / all twenty-six professions | Same-owner companions remain excluded with all filters enabled. |
 | I26 | Transport / worker | Competing carriers cannot duplicate spare tools. |
 | I27 | Herald / worker | A signal callback cannot continue a cancelled monitoring order. |
 | I28 | Warehouse / worker | Use a real loaded detour to reach cargo. |
@@ -50,7 +50,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I40 | Ender / player | Retain identity-bound tokens and exact pinned chunks across cold restarts; reject unsafe or revoked travel without costs. |
 | I41 | Glow / Glow | Share temporary light leases without deleting another companion’s light or changing fluids and containers. |
 | I42 | Shared owners / Saddle / Combat | Eject revoked riders; enemy assignments retain PvP, team, Creative, and ally protection. |
-| I43 | Recovery / all twenty-five professions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
+| I43 | Recovery / all twenty-six professions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
 | I44 | Scanner / workers | Preview bounded current or planned areas without starting work, loading chunks, or recovering the companion; enforce current access and range. |
 | I45 | Herald / blocked worker / owners | Report type, custom name, and cause to authorized online owners, including other dimensions; respect cooldowns and revoked access. |
 | I46 | Wild Slime / player | Convert one size-one Slime with one Survival golden apple; start owned and waiting, retain its name, and use normal owner-only Shift recovery. Event or spawn vetoes preserve inputs. |
@@ -64,6 +64,9 @@ The following scenarios have independent native game regressions. Transfers chec
 | I54 | Guardian / Royal Guard / persistence | Apply fourfold common Health once, retain training, clamp legacy excess health without healing, and preserve Creative health. |
 | I55 | Creative editor / bags / logistics | Accept values beyond recommendations, synchronize exact values, preserve sparse cargo across pages and recovery, and reject occupied-slot removal. |
 | I56 | Creative attacks / recovery | Keep native damage and victim absorption finite at extreme Attack; retain the exact saved base and clear nonfinite absorption from older payloads without healing. |
+| I57 | Next-generation miner / Transport / Warehouse | A selected ore requests the appropriate real tool; delivery preserves its identity and wear and resumes work without mining unselected blocks. |
+| I58 | Parent companions / synthesis station | Refuse occupied bags, equipment, unverified attachments and foreign ownership without consuming anything; legal growth refunds exactly into a new waiting identity. |
+| I59 | Sanctum elite / royal remnants | One persistent reinforcement appears below half health; existing native identities recover missing spawn flags and defeated waves never respawn. |
 
 Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 

@@ -1,0 +1,200 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "slimic:item/royal_survey_compass"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "angle": 0.0
+      },
+      "model": "slimic:item/royal_survey_compass/0"
+    },
+    {
+      "predicate": {
+        "angle": 0.03125
+      },
+      "model": "slimic:item/royal_survey_compass/1"
+    },
+    {
+      "predicate": {
+        "angle": 0.0625
+      },
+      "model": "slimic:item/royal_survey_compass/2"
+    },
+    {
+      "predicate": {
+        "angle": 0.09375
+      },
+      "model": "slimic:item/royal_survey_compass/3"
+    },
+    {
+      "predicate": {
+        "angle": 0.125
+      },
+      "model": "slimic:item/royal_survey_compass/4"
+    },
+    {
+      "predicate": {
+        "angle": 0.15625
+      },
+      "model": "slimic:item/royal_survey_compass/5"
+    },
+    {
+      "predicate": {
+        "angle": 0.1875
+      },
+      "model": "slimic:item/royal_survey_compass/6"
+    },
+    {
+      "predicate": {
+        "angle": 0.21875
+      },
+      "model": "slimic:item/royal_survey_compass/7"
+    },
+    {
+      "predicate": {
+        "angle": 0.25
+      },
+      "model": "slimic:item/royal_survey_compass/8"
+    },
+    {
+      "predicate": {
+        "angle": 0.28125
+      },
+      "model": "slimic:item/royal_survey_compass/9"
+    },
+    {
+      "predicate": {
+        "angle": 0.3125
+      },
+      "model": "slimic:item/royal_survey_compass/10"
+    },
+    {
+      "predicate": {
+        "angle": 0.34375
+      },
+      "model": "slimic:item/royal_survey_compass/11"
+    },
+    {
+      "predicate": {
+        "angle": 0.375
+      },
+      "model": "slimic:item/royal_survey_compass/12"
+    },
+    {
+      "predicate": {
+        "angle": 0.40625
+      },
+      "model": "slimic:item/royal_survey_compass/13"
+    },
+    {
+      "predicate": {
+        "angle": 0.4375
+      },
+      "model": "slimic:item/royal_survey_compass/14"
+    },
+    {
+      "predicate": {
+        "angle": 0.46875
+      },
+      "model": "slimic:item/royal_survey_compass/15"
+    },
+    {
+      "predicate": {
+        "angle": 0.5
+      },
+      "model": "slimic:item/royal_survey_compass/16"
+    },
+    {
+      "predicate": {
+        "angle": 0.53125
+      },
+      "model": "slimic:item/royal_survey_compass/17"
+    },
+    {
+      "predicate": {
+        "angle": 0.5625
+      },
+      "model": "slimic:item/royal_survey_compass/18"
+    },
+    {
+      "predicate": {
+        "angle": 0.59375
+      },
+      "model": "slimic:item/royal_survey_compass/19"
+    },
+    {
+      "predicate": {
+        "angle": 0.625
+      },
+      "model": "slimic:item/royal_survey_compass/20"
+    },
+    {
+      "predicate": {
+        "angle": 0.65625
+      },
+      "model": "slimic:item/royal_survey_compass/21"
+    },
+    {
+      "predicate": {
+        "angle": 0.6875
+      },
+      "model": "slimic:item/royal_survey_compass/22"
+    },
+    {
+      "predicate": {
+        "angle": 0.71875
+      },
+      "model": "slimic:item/royal_survey_compass/23"
+    },
+    {
+      "predicate": {
+        "angle": 0.75
+      },
+      "model": "slimic:item/royal_survey_compass/24"
+    },
+    {
+      "predicate": {
+        "angle": 0.78125
+      },
+      "model": "slimic:item/royal_survey_compass/25"
+    },
+    {
+      "predicate": {
+        "angle": 0.8125
+      },
+      "model": "slimic:item/royal_survey_compass/26"
+    },
+    {
+      "predicate": {
+        "angle": 0.84375
+      },
+      "model": "slimic:item/royal_survey_compass/27"
+    },
+    {
+      "predicate": {
+        "angle": 0.875
+      },
+      "model": "slimic:item/royal_survey_compass/28"
+    },
+    {
+      "predicate": {
+        "angle": 0.90625
+      },
+      "model": "slimic:item/royal_survey_compass/29"
+    },
+    {
+      "predicate": {
+        "angle": 0.9375
+      },
+      "model": "slimic:item/royal_survey_compass/30"
+    },
+    {
+      "predicate": {
+        "angle": 0.96875
+      },
+      "model": "slimic:item/royal_survey_compass/31"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#slimic:collapsed_mine_terrain",
+    "#slimic:portal_replaceable_terrain",
+    "slimic:slime_roots",
+    "slimic:slime_tuft",
+    "slimic:gel_cap",
+    "slimic:glowing_bloom"
+  ]
+}

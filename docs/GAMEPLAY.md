@@ -2,7 +2,7 @@
 
 English | [한국어](GAMEPLAY.kr.md) · [Project overview](../README.md)
 
-Slimic provides twenty-five types of slime companions with shared growth, specialized jobs, support abilities, and travel controls.
+Slimic provides twenty-six types of slime companions with shared growth, specialized jobs, support abilities, and travel controls. [Fallen Sanctum](FALLEN_SANCTUM.md) covers kingdom-map exploration and royal rewards; [Royal synthesis](SYNTHESIS.md) explains the new miner generation, point refunds, and mining policies.
 
 [Forgotten Orders](FORGOTTEN_ORDERS.md) covers ancient hostile slimes, core restoration, two acquisition paths, and the Royal Guard Slime's defensive abilities.
 
@@ -18,7 +18,7 @@ With [Patchouli](https://vazkiimods.github.io/Patchouli/) installed, craft one *
 
 For multiplayer guidebook use, install the Minecraft 1.20.1 Forge version of Patchouli on both client and server.
 
-The guide contains English and Korean instructions for all twenty-five companions, orders, stats, equipment, cooperation, work sites, and recovery. Other languages fall back to English. All entries are available immediately. Patchouli is optional; Slimic and these web guides remain usable without it. JEI is independent of the guidebook.
+The guide contains English and Korean instructions for all twenty-six companions, orders, stats, equipment, cooperation, work sites, and recovery. Other languages fall back to English. All entries are available immediately. Patchouli is optional; Slimic and these web guides remain usable without it. JEI is independent of the guidebook.
 
 ## Crafting a Friendly Slime
 
@@ -79,11 +79,11 @@ The slime appears at the selected destination. Old motion and fall distance are 
 
 ## Companion behavior
 
-All twenty-five companion types start in Wait, including Friendly and Saddle Slimes. Choose Follow or a profession command in the management screen to begin movement or work; mounting a Saddle Slime enables riding. First specialization also starts in Wait. Recovered companions also start in Wait. Ownership and orders persist across saves. They persist in Peaceful difficulty and do not split on death. Combat slimes attack enabled target types while assigned to Fight; Guardian Angel Slimes retaliate against attackers of their owner or themselves.
+All twenty-six companion types start in Wait, including Friendly and Saddle Slimes. Choose Follow or a profession command in the management screen to begin movement or work; mounting a Saddle Slime enables riding. First specialization also starts in Wait. Recovered companions also start in Wait. Ownership and orders persist across saves. They persist in Peaceful difficulty and do not split on death. Combat slimes attack enabled target types while assigned to Fight; Guardian Angel Slimes retaliate against attackers of their owner or themselves.
 
 Companions retain the original slime texture with a dye color filter. Summon icons use 16×16 pixel textures with slimeball silhouettes, a shared Friendly Slime base, and framed profession symbols. See [CREDITS.txt](../CREDITS.txt).
 
-All twenty-five summoning items share the Friendly Slime base. Friendly Slimes have a flat badge showing the full gold-block texture without a profession symbol; specialized companions use a framed profession crest, such as a pickaxe, bundle, firework, sword, brush, saddle, hoe, axe, nether star, Slime Slag, golden carrot, or chest minecart. Fishing rods, bone meal, minecarts, dragon breath, and raw fish distinguish Fishing, Abundance, Tunnel, Dragon, and Meow Slimes. Glowstone dust, a book, an ender pearl, and redstone distinguish Glow, Commander, Ender, and Attention Slimes. Royal Guards use a golden helmet crest. The base stays consistent while the crests distinguish each specialization.
+All twenty-six summoning items share the Friendly Slime base. Friendly Slimes have a flat badge showing the full gold-block texture without a profession symbol; specialized companions use a framed profession crest, such as a pickaxe, bundle, firework, sword, brush, saddle, hoe, axe, nether star, Slime Slag, golden carrot, or chest minecart. Fishing rods, bone meal, minecarts, dragon breath, and raw fish distinguish Fishing, Abundance, Tunnel, Dragon, and Meow Slimes. Glowstone dust, a book, an ender pearl, and redstone distinguish Glow, Commander, Ender, and Attention Slimes. Royal Guards use a golden helmet crest. The base stays consistent while the crests distinguish each specialization.
 
 Permanent profession details remain visible without optional equipment: Cleaning Slimes wear blue work caps, Combat Slimes wear metal headbands with red crests, Saddle Slimes have brown bridles with gold buckles, and Soggy Slimes carry three slime droplets. Armor, saddles, and wings remain visible with these details.
 
@@ -131,7 +131,7 @@ A full working bag issues a cargo-pickup request. A worker missing its required 
 
 Existing activity is recalculated against the current thresholds when a companion is loaded. Newly earned points are granted and remaining activity is retained; existing points and stat investments remain intact. For example, 200 activity at the first tier becomes two points and 72 remaining activity. Subsequent recovery does not grant those points again.
 
-The Slimic Creative tab groups all twenty-five companion items first, followed by Slime Trail and Slime Slag; six core variants, the Ancient Command Seal, Old Command Fragment, and Slime Restoration Station; six hostile spawn eggs; Slime Chest and Broken Slime Block; six armor materials; the Slime Tuners and Slime Scanner. Patchouli adds the guidebook. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime.
+The Slimic Creative tab groups all twenty-six companion items first, followed by Slime Trail and Slime Slag; six core variants, the Ancient Command Seal, Old Command Fragment, and Slime Restoration Station; six hostile spawn eggs; Slime Chest and Broken Slime Block; six armor materials; the Slime Tuners and Slime Scanner. Patchouli adds the guidebook. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime. Royal exploration adds kingdom-map fragments, the bound map, survey compass, two seals, synthesis core, Royal Synthesis Station, and Sanctum Relay alongside these materials.
 
 ## Mining slimes
 
@@ -195,7 +195,7 @@ Transport travel failures are based on stalled movement. A delivery that keeps a
 
 ## JEI
 
-JEI 15.62 or newer is optional. It shows companion crafting recipes and information, Slime Chests, Slime Slag recycling, and Slime Armor. All twenty-five professions have information pages; the two ancient workers use the separate Slime Restoration category instead of crafting recipes. Tool-based specialization previews include registered pickaxes, swords, hoes, axes, and fishing rods and retain the matching tool. Armor previews show each supported registered chestplate conversion. With Patchouli also installed, JEI shows the guidebook recipe. Slimic also runs without JEI.
+JEI 15.62 or newer is optional. It shows companion crafting recipes and information, Slime Chests, Slime Slag recycling, and Slime Armor. All twenty-six professions have information pages; the two ancient workers use Slime Restoration, and the next-generation miner uses Royal Synthesis instead of crafting recipes. Tool-based specialization previews include registered pickaxes, swords, hoes, axes, and fishing rods and retain the matching tool. Armor previews show each supported registered chestplate conversion. With Patchouli also installed, JEI shows the guidebook recipe. Slimic also runs without JEI.
 
 ## Dye colors
 
@@ -239,7 +239,7 @@ Creative fields have no gameplay upper limit. The following values are recommend
 | Current health / stamina | 0 to the resulting maximum |
 | Unused points | 0–32,767 whole points |
 
-Inputs must be finite and meet their minimum; Capacity and points must be whole numbers. Java's numeric representation still applies: stats use doubles, current health/stamina use floats, and points/slot addresses use nonnegative signed integers. Values are synchronized without scaled-integer truncation. Current health and stamina fit the resulting maximum rather than refilling automatically. Minecraft combat also uses finite float damage. Attack bases remain stored unchanged; damage above the float range uses the largest finite float.
+Inputs must be finite and meet their minimum; Capacity and points must be whole numbers. Java's numeric representation still applies: stats use doubles, current health/stamina use floats, points use nonnegative signed 64-bit integers, and slot addresses use nonnegative signed 32-bit integers. Values are synchronized without scaled-integer truncation. Current health and stamina fit the resulting maximum rather than refilling automatically. Minecraft combat also uses finite float damage. Attack bases remain stored unchanged; damage above the float range uses the largest finite float.
 
 Larger Capacity creates additional usable pages, preserving the profession's multiplier. Empty space is stored sparsely, so selecting a large Capacity does not allocate a stack for every empty slot. Very long page counters fit between the arrows; hover either arrow to read the full count. Cargo must be removed before shrinking past its occupied slots. Extreme movement or work ranges can affect playability and performance; the editor warns without preventing their use.
 

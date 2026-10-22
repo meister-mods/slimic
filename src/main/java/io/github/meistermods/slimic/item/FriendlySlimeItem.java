@@ -221,6 +221,11 @@ public class FriendlySlimeItem extends Item {
           || (!reviving && saved.getFloat("Health") <= 0.0F)) {
         return false;
       }
+      if (!io.github.meistermods.slimic.world.RoyalSynthesisData.get(level).mayRestore(saved)) {
+        player.displayClientMessage(
+            Component.translatable("message.slimic.synthesis_consumed"), true);
+        return false;
+      }
       for (ServerLevel world : level.getServer().getAllLevels()) {
         var existing = world.getEntity(saved.getUUID("UUID"));
         if (existing != null && !existing.isRemoved()) {
@@ -312,6 +317,12 @@ public class FriendlySlimeItem extends Item {
       }
     }
     if (!admitted) return false;
+    if (restoring
+        && !io.github.meistermods.slimic.world.RoyalSynthesisData.get(level)
+            .released(level, slime)) {
+      slime.discard();
+      return false;
+    }
     slime.onReleased();
     slime.setWaiting(true);
     if (!restoring) {
@@ -328,6 +339,42 @@ public class FriendlySlimeItem extends Item {
   @Override
   public void appendHoverText(
       ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    if (hasStoredSlime(stack)) {
+      var ancestry =
+          stack
+              .getTag()
+              .getCompound(SLIME_DATA)
+              .getCompound("ForgeData")
+              .getCompound("NextGenAncestry");
+      if (!ancestry.isEmpty()) {
+        tooltip.add(
+            Component.translatable(
+                    "item.slimic.synthesis.ancestry",
+                    ancestry.getString("NormalName"),
+                    ancestry.getString("AncientName"))
+                .withStyle(ChatFormatting.GOLD));
+        tooltip.add(
+            Component.translatable(
+                    "item.slimic.synthesis.family", ancestry.getLong("SynthesisTime"))
+                .withStyle(ChatFormatting.GRAY));
+        tooltip.add(
+            Component.translatable("item.slimic.synthesis.unspent").withStyle(ChatFormatting.GRAY));
+        if (flag.isAdvanced()
+            && ancestry.hasUUID("NormalParent")
+            && ancestry.hasUUID("AncientParent"))
+          tooltip.add(
+              Component.translatable(
+                      "item.slimic.synthesis.parents",
+                      ancestry.getUUID("NormalParent"),
+                      ancestry.getUUID("AncientParent"))
+                  .withStyle(ChatFormatting.DARK_GRAY));
+        if (flag.isAdvanced() && ancestry.hasUUID("OriginSanctum"))
+          tooltip.add(
+              Component.translatable(
+                      "item.slimic.synthesis.site", ancestry.getUUID("OriginSanctum"))
+                  .withStyle(ChatFormatting.DARK_GRAY));
+      }
+    }
     tooltip.add(
         Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
     tooltip.add(

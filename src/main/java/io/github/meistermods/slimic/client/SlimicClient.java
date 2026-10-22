@@ -38,6 +38,8 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(
+        ModEntities.NEXT_GENERATION_MINING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ROYAL_GUARD_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ANCIENT_GUARD_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(
@@ -99,6 +101,16 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void clientSetup(FMLClientSetupEvent event) {
+    event.enqueueWork(
+        () -> MenuScreens.register(ModMenus.ROYAL_SYNTHESIS.get(), RoyalSynthesisScreen::new));
+    event.enqueueWork(
+        () ->
+            ItemProperties.register(
+                ModItems.ROYAL_SURVEY_COMPASS.get(),
+                ResourceLocation.withDefaultNamespace("angle"),
+                ItemProperties.getProperty(
+                    net.minecraft.world.item.Items.COMPASS,
+                    ResourceLocation.withDefaultNamespace("angle"))));
     event.enqueueWork(() -> MenuScreens.register(ModMenus.COMMANDER.get(), CommanderScreen::new));
     event.enqueueWork(() -> MenuScreens.register(ModMenus.SLIME.get(), SlimeScreen::new));
     event.enqueueWork(

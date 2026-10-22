@@ -248,7 +248,8 @@ public final class AuditGameTests {
     var slime = tuner ? ((CreativeSlimeTunerMenu) menu).slime() : ((SlimeMenu) menu).slime();
     slime.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(100);
     var receiver =
-        new io.github.meistermods.slimic.menu.NumericContainerData(tuner ? 13 : 20, true, null);
+        new io.github.meistermods.slimic.menu.NumericContainerData(
+            tuner ? 13 : 22, true, null, 9, () -> 0);
     h.assertTrue(!receiver.isReady(), "The client must wait for the complete initial snapshot");
     menu.addSlotListener(
         new net.minecraft.world.inventory.ContainerListener() {

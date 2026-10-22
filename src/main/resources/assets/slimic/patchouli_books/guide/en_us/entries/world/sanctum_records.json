@@ -1,0 +1,19 @@
+{
+  "name": "The Last Orders",
+  "icon": "slimic:royal_gallery_seal",
+  "category": "slimic:world",
+  "sortnum": 14,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Four records remain in the courtyard, gallery, laboratory, and core. Their writers remember a silent supply road, contradictory orders, two companions approaching a ring, and a guardian still awaiting XXX. Read them beside the places they describe; XXX’s fate remains uncertain."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Fallen banners mark the gallery opening. The central route leads toward the laboratory, and the sloping floor continues toward the final watch. A mineralized miner in the courtyard holds a damaged core: breaking the remains follows the existing $(l:world/mine_recovery)restoration path$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_gallery_seal": 0
+  }
+}

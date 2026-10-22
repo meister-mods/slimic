@@ -39,6 +39,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.HEALING_SLIME.get());
                         output.accept(ModItems.MINING_SLIME.get());
                         output.accept(ModItems.ANCIENT_MINING_SLIME.get());
+                        output.accept(ModItems.NEXT_GENERATION_MINING_SLIME.get());
                         output.accept(ModItems.ANCIENT_TUNNEL_SLIME.get());
                         output.accept(ModItems.TRANSPORT_SLIME.get());
                         output.accept(ModItems.HERALD_SLIME.get());
@@ -56,6 +57,14 @@ public final class ModCreativeTabs {
                           output.accept(AncientSlimeCoreItem.creativeVariant(role));
                         output.accept(ModItems.ANCIENT_COMMAND_SEAL.get());
                         output.accept(ModItems.OLD_COMMAND_FRAGMENT.get());
+                        output.accept(ModItems.KINGDOM_MAP_FRAGMENT.get());
+                        output.accept(ModItems.ANCIENT_KINGDOM_MAP.get());
+                        output.accept(ModItems.ROYAL_SURVEY_COMPASS.get());
+                        output.accept(ModItems.ROYAL_COURTYARD_SEAL.get());
+                        output.accept(ModItems.ROYAL_GALLERY_SEAL.get());
+                        output.accept(ModItems.ROYAL_SYNTHESIS_CORE.get());
+                        output.accept(ModItems.ROYAL_SYNTHESIS_STATION.get());
+                        output.accept(ModItems.SANCTUM_RELAY.get());
                         output.accept(ModWorldBlocks.block("command_pedestal"));
                         output.accept(ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG.get());

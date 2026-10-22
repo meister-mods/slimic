@@ -51,6 +51,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = "slimic_tests", value = Dist.CLIENT)
 public final class SlimeClientSmoke {
+  private static boolean reportedMods;
   private static int ticks;
   private static int phase;
   private static int phaseTicks;
@@ -91,6 +92,18 @@ public final class SlimeClientSmoke {
     }
     if (client.level == null || client.player == null || client.getSingleplayerServer() == null)
       return;
+    if (!reportedMods) {
+      System.out.println(
+          "SLIMIC CLIENT MODS: patchouli="
+              + ModList.get().isLoaded("patchouli")
+              + " jei="
+              + ModList.get().isLoaded("jei"));
+      reportedMods = true;
+    }
+    if (Boolean.getBoolean("slimic.royalSynthesisOnly")) {
+      if (RoyalSynthesisClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.creativeFreedomOnly")) {
       if (CreativeFreedomClientSmoke.tick(client)) client.stop();
       return;

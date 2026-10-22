@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "slimic:kingdom_map_fragment"
+    },
+    {
+      "item": "slimic:kingdom_map_fragment"
+    },
+    {
+      "item": "slimic:kingdom_map_fragment"
+    }
+  ],
+  "result": {
+    "item": "slimic:ancient_kingdom_map"
+  }
+}

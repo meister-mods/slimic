@@ -65,6 +65,8 @@
     "slimic:relic_shard_pile",
     "slimic:fallen_masonry_pile",
     "slimic:gel_crystal_cluster",
-    "slimic:small_gel_crystal_cluster"
+    "slimic:small_gel_crystal_cluster",
+    "slimic:royal_synthesis_station",
+    "slimic:sanctum_relay"
   ]
 }

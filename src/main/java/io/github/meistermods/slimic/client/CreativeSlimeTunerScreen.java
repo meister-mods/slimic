@@ -69,7 +69,7 @@ public final class CreativeSlimeTunerScreen
       fields.get(stat.ordinal()).setValue(Double.toString(menu.value(stat)));
     fields.get(9).setValue(Float.toString(menu.health()));
     fields.get(10).setValue(Float.toString(menu.stamina()));
-    fields.get(11).setValue(Integer.toString(menu.points()));
+    fields.get(11).setValue(Long.toString(menu.points()));
   }
 
   private void apply() {
@@ -78,7 +78,7 @@ public final class CreativeSlimeTunerScreen
       for (int i = 0; i < 9; i++) values[i] = Double.parseDouble(fields.get(i).getValue());
       float health = Float.parseFloat(fields.get(9).getValue());
       float stamina = Float.parseFloat(fields.get(10).getValue());
-      int points = Integer.parseInt(fields.get(11).getValue());
+      long points = Long.parseLong(fields.get(11).getValue());
       if (!Float.isFinite(health)
           || !Float.isFinite(stamina)
           || health < 0
@@ -120,7 +120,7 @@ public final class CreativeSlimeTunerScreen
       }
       float health = Float.parseFloat(fields.get(9).getValue());
       float stamina = Float.parseFloat(fields.get(10).getValue());
-      int points = Integer.parseInt(fields.get(11).getValue());
+      long points = Long.parseLong(fields.get(11).getValue());
       return Float.isFinite(health)
           && Float.isFinite(stamina)
           && health >= 0
@@ -138,7 +138,7 @@ public final class CreativeSlimeTunerScreen
           return true;
       return Float.parseFloat(fields.get(9).getValue()) > SlimeStat.HEALTH.maxTunedValue()
           || Float.parseFloat(fields.get(10).getValue()) > SlimeStat.STAMINA.maxTunedValue()
-          || Integer.parseInt(fields.get(11).getValue()) > 32767;
+          || Long.parseLong(fields.get(11).getValue()) > 32767;
     } catch (NumberFormatException invalid) {
       return false;
     }

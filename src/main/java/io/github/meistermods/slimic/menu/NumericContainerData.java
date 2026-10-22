@@ -8,15 +8,45 @@ public final class NumericContainerData implements ContainerData {
   private final long[] bits;
   private final IntToDoubleFunction source;
   private boolean ready;
+  private final java.util.Map<Integer, java.util.function.LongSupplier> integers;
+  private final boolean clientSide;
 
   public NumericContainerData(int count, boolean clientSide, IntToDoubleFunction source) {
+    this(count, clientSide, source, -1, null);
+  }
+
+  public NumericContainerData(
+      int count,
+      boolean clientSide,
+      IntToDoubleFunction source,
+      int longIndex,
+      java.util.function.LongSupplier longSource) {
+    this(
+        count,
+        clientSide,
+        source,
+        longIndex < 0 ? java.util.Map.of() : java.util.Map.of(longIndex, longSource));
+  }
+
+  public NumericContainerData(
+      int count,
+      boolean clientSide,
+      IntToDoubleFunction source,
+      java.util.Map<Integer, java.util.function.LongSupplier> integers) {
     bits = new long[count];
-    this.source = source;
+    this.source = clientSide ? null : source;
+    this.integers = java.util.Map.copyOf(integers);
+    this.clientSide = clientSide;
     ready = !clientSide;
   }
 
   public double value(int index) {
+    if (integers.containsKey(index)) return longValue(index);
     return source == null ? Double.longBitsToDouble(bits[index]) : source.applyAsDouble(index);
+  }
+
+  public long longValue(int index) {
+    return clientSide ? bits[index] : integers.get(index).getAsLong();
   }
 
   public boolean isReady() {
@@ -26,7 +56,11 @@ public final class NumericContainerData implements ContainerData {
   @Override
   public int get(int index) {
     if (index == getCount() - 1) return ready ? 1 : 0;
-    return (int) (Double.doubleToLongBits(value(index / 4)) >>> (index % 4 * 16)) & 0xffff;
+    long raw =
+        integers.containsKey(index / 4)
+            ? longValue(index / 4)
+            : Double.doubleToLongBits(value(index / 4));
+    return (int) (raw >>> (index % 4 * 16)) & 0xffff;
   }
 
   @Override

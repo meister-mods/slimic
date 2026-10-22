@@ -1,0 +1,29 @@
+{
+  "name": "Fallen Sanctum",
+  "icon": "slimic:royal_courtyard_seal",
+  "category": "slimic:world",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "This royal command sanctuary appears only in newly generated damp plains of The Slimic. A broken road leads through the approach, courtyard, command gallery, synthesis laboratory, and deep core. Follow the open central passage; it descends beyond the laboratory."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Shield-bearing royal remnants defend rooms. A gallery commander alerts nearby allies; the deep elite calls one reinforcement after losing half its health. They stay near their assigned post. Defeat each chamber’s watch, then use its golden-topped relay."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The courtyard relay records seal A. The gallery relay records seal B and grants a Royal Survey Compass. Use the compass nearby for a horizontal bearing inward. Lost or stored seals do not erase chamber memories. Peaceful allows noncombat relay progression."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Both memories and the deep watch unlock one shared Royal Synthesis Core for this sanctum. Other players can seek another sanctum for another core. Breaking or replacing a relay cannot reset it. The ruins remain available to dismantle or remodel. $(l:world/royal_synthesis)Make a new synthesis station$() after returning."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_courtyard_seal": 0,
+    "slimic:royal_survey_compass": 2,
+    "slimic:sanctum_relay": 1
+  }
+}

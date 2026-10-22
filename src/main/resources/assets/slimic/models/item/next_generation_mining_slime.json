@@ -1,0 +1,7 @@
+{
+  "parent": "slimic:item/slime_summon_base",
+  "textures": {
+    "crest": "slimic:item/next_generation_mining_crest",
+    "rim": "minecraft:block/gold_block"
+  }
+}

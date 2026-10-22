@@ -1,0 +1,20 @@
+{
+  "name": "Inherited Growth",
+  "icon": "slimic:next_generation_mining_slime",
+  "category": "slimic:growth",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Synthesis returns all verified earned points from both parents: invested levels plus unused points. It does not add their final attributes, equipment effects, or ancient passives. The result begins with zero invested levels and the entire balance unused."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Example: 21 invested + 4 unused from the ordinary miner, plus 16 invested + 2 unused from the ancient miner, becomes 43 unused points. The next growth cost counts all 43 inherited points. Training limits remain unchanged; excess points remain unused without being discarded."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Formal ancient restoration training counts when its growth record is verifiable. Creative-edited values do not become growth. Older companions are accepted only when their invested and unused totals match their earned history. A rejected input remains intact; the station explains what needs attention."
+    }
+  ]
+}

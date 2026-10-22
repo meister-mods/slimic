@@ -218,10 +218,17 @@ public final class TransportSlimeGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 300)
   public static void fullChestKeepsCargoUntilSpaceAppears(GameTestHelper helper) {
-    TransportSlime carrier = carrier(helper);
+    var area = new LoadedWorkArea(helper);
+    var owner = helper.makeMockSurvivalPlayer();
+    var carrier = ModEntities.TRANSPORT_SLIME.get().create(helper.getLevel());
+    carrier.tame(owner);
+    carrier.moveTo(area.point(5, 101, 5));
+    carrier.onReleased();
+    carrier.setWorking(true);
     carrier.getBag().setStackInSlot(0, new ItemStack(Items.DIAMOND, 10));
-    SlimeChestBlockEntity chest = chest(helper, CHEST);
+    SlimeChestBlockEntity chest = area.chest(8, 101, 5);
     fill(chest, Items.COBBLESTONE);
+    helper.getLevel().addFreshEntity(carrier);
     helper.runAfterDelay(
         60,
         () -> {
@@ -232,11 +239,26 @@ public final class TransportSlimeGameTests {
               "A full destination must preserve cargo and grant no activity");
           chest.setItem(0, ItemStack.EMPTY);
         });
-    helper.succeedWhen(
-        () ->
-            helper.assertTrue(
-                count(chest.inventory(), Items.DIAMOND) == 10 && !carrier.hasCargo(),
-                "Hauling must resume after the chest has room"));
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                helper.assertTrue(
+                    count(chest.inventory(), Items.DIAMOND) == 10 && !carrier.hasCargo(),
+                    "Hauling resumes after space appears: status="
+                        + carrier.getTransportStatus()
+                        + ", position="
+                        + carrier.position()
+                        + ", health="
+                        + carrier.getHealth()
+                        + ", fleeing="
+                        + carrier.isFleeing()))
+        .thenExecute(
+            () -> {
+              carrier.discard();
+              area.close();
+            })
+        .thenSucceed();
   }
 
   @GameTest(template = "empty", timeoutTicks = 200)

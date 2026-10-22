@@ -9,9 +9,14 @@ public final class SlimicConfig {
   public static final ForgeConfigSpec.IntValue TRANSPORT_ACTIVITY;
   public static final ForgeConfigSpec.IntValue FOLLOW_ACTIVITY_INTERVAL;
   public static final ForgeConfigSpec.IntValue MONITOR_ACTIVITY_INTERVAL;
+  public static final ForgeConfigSpec.IntValue SANCTUM_SEARCH_RADIUS;
 
   static {
     ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+    SANCTUM_SEARCH_RADIUS =
+        builder
+            .comment("Maximum kingdom map search radius in chunks; search never acquires chunks.")
+            .defineInRange("sanctumMapSearchRadiusChunks", 160, 16, 512);
     HERALD_DELAY_MINUTES =
         builder
             .comment("Minutes a worker must remain blocked before a Herald Slime sends a signal.")

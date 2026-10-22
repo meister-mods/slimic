@@ -1,0 +1,29 @@
+{
+  "type": "slimic:royal_synthesis_station",
+  "category": "misc",
+  "pattern": [
+    "GCG",
+    "RAR",
+    "BBB"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "C": {
+      "item": "slimic:royal_synthesis_core"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "A": {
+      "item": "slimic:ancient_command_seal"
+    },
+    "B": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "item": "slimic:royal_synthesis_station"
+  }
+}

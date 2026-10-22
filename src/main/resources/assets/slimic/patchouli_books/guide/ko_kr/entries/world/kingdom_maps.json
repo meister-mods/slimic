@@ -1,0 +1,28 @@
+{
+  "name": "고대 왕국 지도",
+  "icon": "slimic:kingdom_map_fragment",
+  "category": "slimic:world",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "새로 생성된 $(l:world/collapsed_mines)폐광 보급 상자$()에는 찢어진 왕국 지도 조각 하나가 있습니다. 새 작업장·보급 거점·기록 보관소에서도 얻을 수 있습니다. 이미 채워진 상자 내용물은 유지합니다. 어느 유적에서든 조각 세 개를 모으세요."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:ancient_kingdom_map"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "미결속 지도를 The Slimic에서 사용하면 가까운 유효한 $(l:world/fallen_sanctum)무너진 성체$()를 기억합니다. 탐색은 청크를 불러오지 않습니다. 흔적을 못 찾으면 지도를 그대로 들고 다른 곳에서 다시 시도하세요. 결속 위치는 이동하거나 서버를 재시작해도 유지됩니다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "지도 표식은 대략적인 중심을, 플레이어 화살표는 상대 위치와 방향을 보여줍니다. 다른 차원에서는 The Slimic 사용 안내를 확인하세요. 결속 지도에 빈 지도를 조합하면 목적지를 복사합니다. 지도 없이도 입장할 수 있으며 복제로 보상이 초기화되지는 않습니다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:kingdom_map_fragment": 0,
+    "slimic:ancient_kingdom_map": 2
+  }
+}

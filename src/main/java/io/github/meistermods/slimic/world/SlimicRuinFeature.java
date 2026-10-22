@@ -28,6 +28,8 @@ public final class SlimicRuinFeature extends Feature<NoneFeatureConfiguration> {
     var level = context.level();
     var random = context.random();
     if (!level.getLevel().dimension().equals(SlimicWorld.DIMENSION)) return false;
+    if (SanctumPlacement.reserved(
+        level.getLevel(), new net.minecraft.world.level.ChunkPos(context.origin()))) return false;
     int x = (context.origin().getX() & ~15) + 8, z = (context.origin().getZ() & ~15) + 8;
     int y = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
     if (y < level.getSeaLevel() + 1 || y + 5 >= level.getMaxBuildHeight()) return false;

@@ -46,7 +46,9 @@ public final class CreativeSlimeTunerMenu extends AbstractContainerMenu {
                     case 12 -> result;
                     default -> 0;
                   };
-                });
+                },
+            9,
+            () -> slime == null ? 0 : slime.getStatPoints());
     addDataSlots(wireData);
   }
 
@@ -62,8 +64,8 @@ public final class CreativeSlimeTunerMenu extends AbstractContainerMenu {
     return wireData.value(stat.ordinal());
   }
 
-  public int points() {
-    return (int) wireData.value(9);
+  public long points() {
+    return wireData.longValue(9);
   }
 
   public float health() {
@@ -91,7 +93,7 @@ public final class CreativeSlimeTunerMenu extends AbstractContainerMenu {
                 && player.distanceToSqr(slime) <= 256));
   }
 
-  public boolean apply(Player player, double[] values, float health, float stamina, int points) {
+  public boolean apply(Player player, double[] values, float health, float stamina, long points) {
     if (player.level().isClientSide
         || !stillValid(player)
         || slime == null

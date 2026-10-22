@@ -378,7 +378,7 @@ public final class OrderThirteenGameTests {
                 registry.setRelation(primary.getUUID(), shared.getUUID(), true, true);
                 count++;
               }
-              h.assertTrue(count == 25, "Permission coverage includes all twenty-five types");
+              h.assertTrue(count == 26, "Permission coverage includes all twenty-six types");
               a.close();
             })
         .thenSucceed();
@@ -522,7 +522,8 @@ public final class OrderThirteenGameTests {
       var slime = (FriendlySlime) registered.get().create(h.getLevel());
       slime.tame(owner);
       slime.setNoAi(true);
-      slime.moveTo(source.point(3, 101, 3));
+      int index = companions.size();
+      slime.moveTo(source.point(3 + index % 5 * 2, 101, 3 + index / 5 * 2));
       h.getLevel().addFreshEntity(slime);
       slime.onReleased();
       slime.setWaiting(false);
@@ -539,14 +540,14 @@ public final class OrderThirteenGameTests {
       registry.setTag(owner.getUUID(), slime.getUUID(), "waiting");
       companions.add(slime);
     }
-    h.assertTrue(companions.size() == 25, "All companion professions are covered");
+    h.assertTrue(companions.size() == 26, "All companion professions are covered");
     h.assertTrue(commander.gather(owner, "waiting"), "Gather every active profession");
     h.startSequence()
         .thenWaitUntil(() -> h.assertTrue(!commander.isGathering(), "All companions arrive"))
         .thenIdle(20)
         .thenExecute(
             () -> {
-              h.assertTrue(commander.gathered() == 25, "Every profession was gathered");
+              h.assertTrue(commander.gathered() == 26, "Every profession was gathered");
               for (var slime : companions) {
                 var label = EntityType.getKey(slime.getType()).toString();
                 h.assertTrue(
@@ -566,7 +567,17 @@ public final class OrderThirteenGameTests {
                         && restored.getUUID().equals(slime.getUUID())
                         && restored.getHealth() == 7
                         && restored.getStatPoints() == 3,
-                    label + " retains identity, health, growth and Wait when restored");
+                    label
+                        + " retains identity, health, growth and Wait when restored; health="
+                        + restored.getHealth()
+                        + ", sourceHealth="
+                        + slime.getHealth()
+                        + ", points="
+                        + restored.getStatPoints()
+                        + ", sitting="
+                        + restored.isOrderedToSit()
+                        + ", working="
+                        + restored.isWorking());
                 if (restored instanceof BagSlime worker)
                   h.assertTrue(
                       worker.getBag().getStackInSlot(0).is(Items.DIAMOND)

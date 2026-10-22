@@ -92,6 +92,8 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
 
   @Override
   public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    if (SanctumPlacement.reserved(context.level().getLevel(), new ChunkPos(context.origin())))
+      return false;
     var level = context.level();
     if (!level.getLevel().dimension().equals(SlimicWorld.DIMENSION)) return false;
     var chunk = new ChunkPos(context.origin());
@@ -163,6 +165,10 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
           new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 32));
       chest.setItem(
           3, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+      chest.setItem(
+          4,
+          new net.minecraft.world.item.ItemStack(
+              io.github.meistermods.slimic.registry.ModItems.KINGDOM_MAP_FRAGMENT.get()));
     }
     spawn(
         level,

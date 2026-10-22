@@ -1,0 +1,23 @@
+{
+  "name": "Next-Generation Mining Slime",
+  "icon": "slimic:next_generation_mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 26,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Born through $(l:world/royal_synthesis)royal synthesis$(), this miner wears a gold-framed crest and a green royal-core badge. Health, stamina, tools, and bag capacity use ordinary Mining Slime defaults. It starts in Wait. Normal policy excavates a chunk; Ore Priority prefers visible ores in the active layer."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Open its Tuner management screen and choose Policy. Selective Ore uses the enabled Forge ore tags: coal, copper, iron, gold, redstone, lapis, diamond, emerald, quartz, and ancient debris. Only visible, accessible selected ores qualify. It never digs surrounding stone to reach a hidden deposit."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Protected stairs stay protected. Blocked deposits get the usual work warnings, tool supply, and cargo pickup. Selective Ore does not quarry, drain terrain, or build walls. A Scanner shows its local, chunk-clipped search window without revealing hidden ores. Recovery, revival, travel, and orders follow normal companion rules."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:next_generation_mining_slime": 0
+  }
+}
