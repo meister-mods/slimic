@@ -395,7 +395,7 @@ public final class WorkPreviewGameTests {
       slime.discard();
       checked++;
     }
-    h.assertTrue(checked == 26, "Every companion profession is tested");
+    h.assertTrue(checked == 27, "Every companion profession is tested");
     h.succeed();
   }
 

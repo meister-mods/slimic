@@ -113,8 +113,8 @@ public final class RoyalSynthesisStationBlockEntity extends BlockEntity
   public boolean canPlaceItem(int slot, ItemStack stack) {
     if (busy || isRemoved() || slot < 0 || slot >= 4) return false;
     return switch (slot) {
-      case 0 -> stack.is(io.github.meistermods.slimic.registry.ModItems.MINING_SLIME.get());
-      case 1 -> stack.is(io.github.meistermods.slimic.registry.ModItems.ANCIENT_MINING_SLIME.get());
+      case 0 -> io.github.meistermods.slimic.entity.SynthesisFamily.acceptsParent(stack, false);
+      case 1 -> io.github.meistermods.slimic.entity.SynthesisFamily.acceptsParent(stack, true);
       case 2 -> stack.is(net.minecraft.world.item.Items.SLIME_BALL);
       default ->
           stack.is(io.github.meistermods.slimic.registry.ModItems.OLD_COMMAND_FRAGMENT.get());

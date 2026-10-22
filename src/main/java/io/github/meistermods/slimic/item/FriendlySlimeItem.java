@@ -355,7 +355,10 @@ public class FriendlySlimeItem extends Item {
                 .withStyle(ChatFormatting.GOLD));
         tooltip.add(
             Component.translatable(
-                    "item.slimic.synthesis.family", ancestry.getLong("SynthesisTime"))
+                    "item.slimic.synthesis.family",
+                    Component.translatable(
+                        "synthesis.slimic.family." + ancestry.getString("Family")),
+                    ancestry.getLong("SynthesisTime"))
                 .withStyle(ChatFormatting.GRAY));
         tooltip.add(
             Component.translatable("item.slimic.synthesis.unspent").withStyle(ChatFormatting.GRAY));

@@ -67,7 +67,7 @@ public class TunnelSlime extends MiningSlime {
   private int travelTicks, lastTravelTick = -1;
   private BlockPos travelStand;
   private double closestTravelDistance = Double.POSITIVE_INFINITY;
-  private Status tunnelStatus = Status.IDLE;
+  protected Status tunnelStatus = Status.IDLE;
 
   public TunnelSlime(EntityType<? extends TunnelSlime> type, Level level) {
     super(type, level);
@@ -127,6 +127,18 @@ public class TunnelSlime extends MiningSlime {
     entityData.define(LINING, new ItemStack(Items.COBBLESTONE));
   }
 
+  public int getTunnelSize() {
+    return 3;
+  }
+
+  public int getTunnelMinWidth() {
+    return -(getTunnelSize() - 1) / 2;
+  }
+
+  protected boolean tickTunnelWork(ServerLevel server) {
+    return false;
+  }
+
   public Direction getTunnelDirection() {
     return Direction.from3DDataValue(entityData.get(DIRECTION));
   }
@@ -162,7 +174,7 @@ public class TunnelSlime extends MiningSlime {
     }
   }
 
-  private void restart() {
+  protected void restart() {
     anchor = blockPosition();
     anchorDimension = level().dimension().location().toString();
     step = 1;
@@ -308,7 +320,7 @@ public class TunnelSlime extends MiningSlime {
         && server.mayInteract(worker(server), pos);
   }
 
-  private boolean reach(BlockPos pos) {
+  protected boolean reach(BlockPos pos) {
     var destination = Vec3.atCenterOf(pos);
     if (getEyePosition().distanceToSqr(destination) > Math.pow(SlimeStat.REACH.value(this), 2))
       return false;
@@ -324,21 +336,21 @@ public class TunnelSlime extends MiningSlime {
     return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos);
   }
 
-  private List<BlockPos> perimeter(BlockPos center) {
+  protected List<BlockPos> perimeter(BlockPos center) {
     var side = getTunnelDirection().getClockWise();
     var result = new ArrayList<BlockPos>();
-    for (int width = -1; width <= 1; width++) {
+    for (int width = getTunnelMinWidth(); width < getTunnelMinWidth() + getTunnelSize(); width++) {
       result.add(center.relative(side, width).below());
-      result.add(center.relative(side, width).above(3));
+      result.add(center.relative(side, width).above(getTunnelSize()));
     }
-    for (int height = 0; height < 3; height++) {
-      result.add(center.relative(side, -2).above(height));
-      result.add(center.relative(side, 2).above(height));
+    for (int height = 0; height < getTunnelSize(); height++) {
+      result.add(center.relative(side, getTunnelMinWidth() - 1).above(height));
+      result.add(center.relative(side, getTunnelMinWidth() + getTunnelSize()).above(height));
     }
     return result;
   }
 
-  private boolean line(ServerLevel server, BlockPos pos) {
+  protected boolean line(ServerLevel server, BlockPos pos) {
     var before = server.getBlockState(pos);
     if (!before.canBeReplaced()) return true;
     if (before.hasBlockEntity() || !permitted(server, pos)) {
@@ -407,7 +419,7 @@ public class TunnelSlime extends MiningSlime {
     closestTravelDistance = Double.POSITIVE_INFINITY;
   }
 
-  private void moveToCenter(BlockPos stand) {
+  protected void moveToCenter(BlockPos stand) {
     if (!stand.equals(travelStand)) {
       travelStand = stand;
       closestTravelDistance = Double.POSITIVE_INFINITY;
@@ -432,6 +444,37 @@ public class TunnelSlime extends MiningSlime {
     } else if (tickCount % 10 == 0) getNavigation().moveTo(point.x, point.y, point.z, 1);
   }
 
+  private int fluidBit(BlockPos pos) {
+    var center = getTunnelFront();
+    var side = getTunnelDirection().getClockWise();
+    int width =
+        (pos.getX() - center.getX()) * side.getStepX()
+            + (pos.getZ() - center.getZ()) * side.getStepZ();
+    return 1 << ((pos.getY() - center.getY()) * 3 + width + 1);
+  }
+
+  protected boolean wasFluidDrained(BlockPos pos) {
+    return (drainedFluidMask & fluidBit(pos)) != 0;
+  }
+
+  protected void rememberDrainedFluid(BlockPos pos) {
+    drainedFluidMask |= fluidBit(pos);
+  }
+
+  protected boolean advanceTunnel() {
+    var center = getTunnelFront();
+    if (position().distanceToSqr(Vec3.atBottomCenterOf(center)) > .5) {
+      tunnelStatus = Status.MOVING;
+      moveToCenter(center);
+      return false;
+    }
+    step++;
+    drainedFluidMask = 0;
+    tunnelStatus = Status.IDLE;
+    breaking.reset(this);
+    return true;
+  }
+
   private boolean canStore(List<ItemStack> drops) {
     var test = getBag().copyForSimulation();
     for (var drop : drops)
@@ -439,7 +482,7 @@ public class TunnelSlime extends MiningSlime {
     return true;
   }
 
-  private boolean mine(ServerLevel server, BlockPos pos) {
+  protected boolean mine(ServerLevel server, BlockPos pos) {
     var state = server.getBlockState(pos);
     if (state.isAir()) return true;
     if (getStamina() < 1) {
@@ -467,15 +510,9 @@ public class TunnelSlime extends MiningSlime {
         tunnelStatus = Status.NO_BUCKET;
         return false;
       }
-      var center = getTunnelFront();
-      var side = getTunnelDirection().getClockWise();
-      int width =
-          (pos.getX() - center.getX()) * side.getStepX()
-              + (pos.getZ() - center.getZ()) * side.getStepZ();
-      int bit = 1 << ((pos.getY() - center.getY()) * 3 + width + 1);
       // Cleared cells may receive flowing water from the next face while the slime moves.
       // Do not spend another action on that same flow; newly formed sources are still removed.
-      if ((drainedFluidMask & bit) != 0 && !state.getFluidState().isSource()) return true;
+      if (wasFluidDrained(pos) && !state.getFluidState().isSource()) return true;
       var player = worker(server);
       if (ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, player, pos) < 0
           || !canContinueWork(player)
@@ -503,7 +540,7 @@ public class TunnelSlime extends MiningSlime {
         return false;
       }
       if (!server.getBlockState(pos).equals(replacement)) return false;
-      drainedFluidMask |= bit;
+      rememberDrainedFluid(pos);
       spendStamina(1);
       recordCompletedWork();
       madeProgress();
@@ -516,6 +553,7 @@ public class TunnelSlime extends MiningSlime {
       return false;
     }
     var tool = getTool(toolSlot);
+    var originalTool = tool.copy();
     var player = worker(server);
     var previous = player.getMainHandItem();
     player.setItemInHand(InteractionHand.MAIN_HAND, tool);
@@ -523,7 +561,10 @@ public class TunnelSlime extends MiningSlime {
       tunnelStatus = Status.MINING;
       if (!breaking.advance(this, player, pos, state, tool)) return false;
       int xp = ForgeHooks.onBlockBreakEvent(server, GameType.SURVIVAL, player, pos);
-      if (xp < 0 || !canContinueWork(player) || !server.getBlockState(pos).equals(state)) {
+      if (xp < 0
+          || !canContinueWork(player)
+          || !server.getBlockState(pos).equals(state)
+          || !ItemStack.matches(originalTool, getTool(toolSlot))) {
         breaking.reset(this);
         retryAt = tickCount + 100;
         tunnelStatus = Status.UNREACHABLE;
@@ -539,7 +580,11 @@ public class TunnelSlime extends MiningSlime {
         return false;
       }
       state.getBlock().playerWillDestroy(server, pos, state, player);
-      if (!state.onDestroyedByPlayer(server, pos, player, true, server.getFluidState(pos))) {
+      if (!canContinueWork(player)
+          || !server.getBlockState(pos).equals(state)
+          || !ItemStack.matches(originalTool, getTool(toolSlot))
+          || !canStore(drops)
+          || !state.onDestroyedByPlayer(server, pos, player, true, server.getFluidState(pos))) {
         breaking.reset(this);
         return false;
       }
@@ -666,6 +711,7 @@ public class TunnelSlime extends MiningSlime {
         stop();
         return;
       }
+      if (tickTunnelWork(server)) return;
       var center = getTunnelFront();
       boolean lined = true;
       for (var pos : perimeter(center)) {
@@ -685,15 +731,7 @@ public class TunnelSlime extends MiningSlime {
               server, center.relative(getTunnelDirection().getClockWise(), width).above(height)))
             return;
       if (!lined) return;
-      if (position().distanceToSqr(Vec3.atBottomCenterOf(center)) > .5) {
-        tunnelStatus = Status.MOVING;
-        moveToCenter(center);
-        return;
-      }
-      step++;
-      drainedFluidMask = 0;
-      tunnelStatus = Status.IDLE;
-      breaking.reset(TunnelSlime.this);
+      advanceTunnel();
     }
   }
 }

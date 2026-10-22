@@ -6,13 +6,14 @@ Companion accessories use dedicated PNG atlases under [`assets/slimic/textures/e
 
 ## Accessory files
 
-Every accessory atlas is **256×256 pixels**, mapped to a **64×64 logical UV canvas**. One UV unit corresponds to four image pixels. Keep the image square when changing its resolution, preserve the occupied regions, and use nearest-neighbor scaling for pixel art. Transparent space separates the islands; opaque edge padding prevents gaps on thin surfaces.
+Most accessory atlases are **256×256 pixels**, mapped to a **64×64 logical UV canvas**; one UV unit corresponds to four image pixels. `prospecting_goggles.png` uses **64×64 pixels** with one image pixel per UV unit. Keep the image square when changing its resolution, preserve the occupied regions, and use nearest-neighbor scaling for pixel art. Transparent space separates the islands; opaque edge padding prevents gaps on thin surfaces.
 
 `royal_guard.png` uses two fully opaque fields, gold on the left five-eighths and purple on the right three-eighths, to cover thin crown details reliably. Its model samples gold for the crown and purple for hostile ancient insignia. Tamed ancient companions use the vanilla White Concrete texture for the same head crest, without a color tint.
 
 | File | Visible elements |
 | --- | --- |
 | `mining.png` | Yellow helmet, brim, and luminous front lamp; shared by Mining, Tunnel, Ancient Mining, Ancient Tunnel, and Next-Generation Mining Slimes. |
+| `prospecting_goggles.png` | Next-Generation Mining Slime safety-goggle frames, lenses, and straps; 64×64 pixels. |
 | `transport.png` | Wooden pack and brown straps; shared by Transport and Warehouse Slimes. |
 | `farmer.png` | Straw hat, brim, and leather band for Farming Slimes. |
 | `lumberjack.png` | Leather cap and brim for Logging Slimes. |
@@ -69,7 +70,7 @@ JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -Pcl
 JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
-The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all twenty-six professions and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
+The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all twenty-seven professions and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
 
 The visual-polish check covers localized material tabs, minimal decoration tooltips, all world models, the chest atlas and lid motion, native grass fringes, and actual portal animation updates in the GPU atlas.
 
@@ -85,10 +86,12 @@ Block models under `models/block/world` combine these textures with referenced M
 
 The Ancient Command Seal uses a dedicated transparent 16×16 item texture at `assets/slimic/textures/item/ancient_command_seal.png`: a gold tablet with clipped corners, a dark outline, a bright upper-left bevel, and a large purple spiral insignia. Its model uses one layer; hostile spawn eggs use the native tinted egg model.
 
-Ancient Mining and Ancient Tunnel summon models extend `slime_summon_base` with amethyst frames and distinct mining-core/tunnel-core crests. Their helmets, carts, tools, and insignia use existing replaceable textures. Mineralized corpse models keep the Broken Slime surface and add exposed amethyst core faces through block-model elements. Cores and command fragments use dedicated transparent 16×16 sprites in `assets/slimic/textures/item/`. Core item models select role variants using `slimic:ancient_core_role`. Seals, cores, and fragments use at most twelve colors each and hard pixel edges to match the resolution of vanilla items.
+Ancient Mining and Ancient Tunnel summon models inherit the shared flat Gold Block plate from `slime_summon_base` and retain distinct mining-core/tunnel-core crests. Their helmets, carts, tools, and insignia use existing replaceable textures. Mineralized corpse models keep the Broken Slime surface and add exposed amethyst core faces through block-model elements. Cores and command fragments use dedicated transparent 16×16 sprites in `assets/slimic/textures/item/`. Core item models select role variants using `slimic:ancient_core_role`. Seals, cores, and fragments use at most twelve colors each and hard pixel edges to match the resolution of vanilla items.
 
 ## Royal exploration and synthesis
 
 The royal relics use transparent **16×16** item PNGs with a limited palette under `textures/item`: `kingdom_map_fragment`, `ancient_kingdom_map`, `royal_survey_compass`, `royal_courtyard_seal`, `royal_gallery_seal`, and `royal_synthesis_core`. Each has its own silhouette or emblem. The thirty-two survey-compass item variants rotate its sprite using Minecraft’s compass property.
 
 The Next-Generation Mining Slime summon item keeps the shared slime base and a distinct `next_generation_mining_crest` badge. Its mining helmet carries the Royal Synthesis Core emblem on the side, clear of the headlamp. Safety goggles use the dedicated 64×64 `prospecting_goggles` UV atlas with charcoal, iron, cyan glass, and leather regions. Frames remain opaque while lenses blend over the face. The body and all attached equipment render at 75% of ordinary companion size. Existing tamed ancient head insignia remain white. Station and relay block models combine royal item artwork with gold and stone surfaces. A bound kingdom map uses native map data, player decorations, and the map renderer when held.
+
+Next-Generation Tunnel Slimes share the compact mining helmet and goggles, use a narrow cart, and inherit the common Gold Block summon plate. Their dedicated transparent 16×16 `next_generation_tunnel_crest` sprite depicts a silver caliper around a teal square tunnel, with an emerald royal detail. The sprite uses at most twelve opaque colors.

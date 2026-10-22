@@ -2,7 +2,7 @@
 
 English | [한국어](SYNTHESIS.kr.md) · [Fallen Sanctum](FALLEN_SANCTUM.md) · [Gameplay](GAMEPLAY.md)
 
-Royal synthesis consumes two recovered companions to create one new companion. In 0.4.x the supported family is **ordinary Mining Slime + Ancient Mining Slime → Next-Generation Mining Slime**. Tunnel and guard families have no synthesis recipes yet. A next-generation companion cannot be a parent for another synthesis.
+Royal synthesis consumes two recovered companions to create one new companion. In 0.4.x the supported families are **ordinary Mining Slime + Ancient Mining Slime → Next-Generation Mining Slime** and **ordinary Tunnel Slime + Ancient Tunnel Slime → Next-Generation Tunnel Slime**. Guard synthesis is not implemented. A next-generation companion cannot be a parent for another synthesis.
 
 ## Station and materials
 
@@ -63,6 +63,16 @@ Prospecting never acquires new chunks. Ordinary trained detection ranges apply; 
 The Scanner previews the **two-by-two shaft**, detection window, and immediate planned face. Previewing alone neither surveys terrain nor reveals hidden ore positions.
 
 Health, maximum stamina, and capacity use ordinary Mining Slime values; **the ancient miner’s half-stamina-cost passive is inherited in every policy**. Transport and Warehouse Slimes supply tools and unload cargo where they can reach; Signaling Slimes report blocked work. Recovery, revival, portals, and redeployment preserve ordinary companion data and return it to Wait. Old Selective Ore saves retain their policy and traits but migrate to Wait; explicitly resume work before the newly destructive excavation begins.
+
+## Configurable tunnel bores
+
+A **Next-Generation Tunnel Slime** is synthesized from an ordinary Tunnel Slime and an Ancient Tunnel Slime. It uses the same four slimeballs, two Old Command Fragments, parent validation, growth refund, and transaction recovery as mining synthesis. The parents’ equipment and bags must be empty. Both parents are consumed, and the new companion starts in **Wait** with its own identity and a default **3×3** bore.
+
+Open **Slime Tuner → Bore size**, enter a positive integer **n**, and Apply. It excavates a square **n blocks wide and n high**: 1×1, 2×2, 5×5, and larger sizes use the same rules. Size changes and direction changes select Wait; issue Tunnel separately. The maximum configurable size is the dimension’s build height minus the floor and roof margins. The complete face and its lining must fit at the working elevation and inside the world border; otherwise it pauses before changing that face. There is no upgrade cost for selecting a size.
+
+The compact 0.78-block body and narrow cart fit a 1×1 bore. From its entrance it extends work reach across the active face, excavates individual blocks with native tool time and wear, repairs the floor, roof, and sides, and then physically advances. Odd and even widths preserve the same centerline. A larger bore increases total excavation and material needs. It surveys at most 128 cells per tick and performs one completed block action per tick, without loading missing chunks. Lining cells are calculated as needed. If a new block obstructs forward movement after the final scan, it checks the face again and resumes excavation.
+
+The lining template remains a nonconsumable reference; actual building blocks, tools, and an empty bucket come from the bag. Transport and Warehouse Slimes provide the same supply and cargo services, while Signaling Slimes report blocked work. Tier requirements, container protection, shared quarry stairs, Forge permissions, and `mobGriefing` still apply. It inherits half stamina costs and a 1.5× work multiplier on ancient masonry. Size, direction, template, face progress, and drained-fluid cells persist in saves; recovered deployment starts in Wait.
 
 ## Interrupted transactions
 

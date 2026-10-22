@@ -1,7 +1,6 @@
 package io.github.meistermods.slimic.client;
 
 import io.github.meistermods.slimic.menu.RoyalSynthesisMenu;
-import io.github.meistermods.slimic.registry.ModItems;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -70,10 +69,11 @@ public final class RoyalSynthesisScreen extends AbstractContainerScreen<RoyalSyn
           topPos + slot.y + 16,
           0xff879b8d);
     }
-    g.renderItem(
-        ModItems.NEXT_GENERATION_MINING_SLIME.get().getDefaultInstance(),
-        leftPos + 268,
-        topPos + 48);
+    var family =
+        io.github.meistermods.slimic.entity.SynthesisFamily.match(
+            menu.getSlot(0).getItem(), menu.getSlot(1).getItem());
+    if (family != null)
+      g.renderItem(family.resultItem().getDefaultInstance(), leftPos + 268, topPos + 48);
   }
 
   @Override

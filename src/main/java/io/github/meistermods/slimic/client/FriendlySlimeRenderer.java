@@ -46,7 +46,8 @@ public class FriendlySlimeRenderer extends MobRenderer<FriendlySlime, SlimeModel
     float squish = Mth.lerp(partialTick, slime.oldSquish, slime.squish) / 2.0F;
     float stretch = 1.0F / (squish + 1.0F);
     float size =
-        slime instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime
+        (slime instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime
+                || slime instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime)
             ? 1.5F
             : 2.0F;
     pose.scale(stretch * size, size / stretch, stretch * size);

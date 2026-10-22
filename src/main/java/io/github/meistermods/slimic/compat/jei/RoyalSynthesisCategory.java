@@ -56,11 +56,11 @@ public final class RoyalSynthesisCategory implements IRecipeCategory<SynthesisFa
     builder
         .addInputSlot(1, 5)
         .setStandardSlotBackground()
-        .addItemStack(ModItems.MINING_SLIME.get().getDefaultInstance());
+        .addItemStack(recipe.normalItem().getDefaultInstance());
     builder
         .addInputSlot(37, 5)
         .setStandardSlotBackground()
-        .addItemStack(ModItems.ANCIENT_MINING_SLIME.get().getDefaultInstance());
+        .addItemStack(recipe.ancientItem().getDefaultInstance());
     builder
         .addInputSlot(73, 5)
         .setStandardSlotBackground()
@@ -72,7 +72,7 @@ public final class RoyalSynthesisCategory implements IRecipeCategory<SynthesisFa
     builder
         .addOutputSlot(180, 5)
         .setOutputSlotBackground()
-        .addItemStack(ModItems.NEXT_GENERATION_MINING_SLIME.get().getDefaultInstance());
+        .addItemStack(recipe.resultItem().getDefaultInstance());
     builder
         .addSlot(RecipeIngredientRole.CATALYST, 1, 35)
         .setStandardSlotBackground()

@@ -4,6 +4,54 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.8] - 2026-10-22
+
+### Fixed
+
+- Check the entire Next-Generation Tunnel face and lining against build height and the world border before modifying that face, preventing partial material use at invalid boundaries.
+- Resume face inspection and excavation when a new block obstructs forward movement after the final scan or a saved movement phase.
+- Calculate lining coordinates on demand instead of allocating the complete perimeter every work tick. Preserve the incremental scan and single-action limits.
+- Synchronize current protocol references in the bilingual development guides and update tunnel boundary behavior in both documents and the in-game guide.
+
+### Validation
+
+- All 26 final native core checks pass without optional mods, including six independent review scenarios for boundaries, changed terrain, shared-face conservation, and odd/even bores in all horizontal directions.
+- All 266 expanded native integration checks pass with JEI and Patchouli, covering synthesis, supply, recovery, tools, protection callbacks, and existing companion interactions.
+- All 67 guide entries and 217 pages pass in English, Korean, and fallback with both fonts. Bilingual resources, packaged assets, Google Java Format, and the Java 17 build pass verification.
+
+## [0.4.7] - 2026-10-22
+
+### Added
+
+- Next-Generation Tunnel Slimes, synthesized from matching ordinary and Ancient Tunnel parents. Configure a positive side length n for an n×n bore, with compact body/cart dimensions, goggles, and a dedicated caliper crest.
+- Server-authoritative size controls, incremental excavation and lining, fluid-cell tracking beyond 32 cells, scanner previews, saved work progress, inherited ancient efficiency, and bilingual guidebook/JEI information. New and recovered companions start in Wait.
+
+### Changed
+
+- Enable Tunnel Royal Synthesis with the existing ownership, growth refund, inventory, transaction, and pending-result safeguards. Network protocol 21 requires matching clients and servers; persistent companion schema and existing registry IDs remain unchanged.
+
+### Fixed
+
+- Revalidate actual Tunnel tools and commands around block-break callbacks. Stop expanded faces at missing neighbor chunks before native block notifications, and bound fluid actions even when extreme Creative stamina rounds away a work cost.
+
+### Validation
+
+- All 260 focused native server checks pass with JEI and Patchouli; 20 final core checks pass without either optional mod. Coverage includes 1×1, 2×2, 5×5, and 7×7 bores, physical movement, exact tools/cargo, lining supply, interrupted saves, reentrant size changes, loaded boundaries, synthesis, and existing companion interactions.
+- Native English/Korean clients perform Tunnel synthesis and real size packets, inspect both JEI families and all 27 companion appearances, and replace/restore accessory resources. All 67 guide entries and 217 pages pass in English, Korean, and fallback with both fonts. Bilingual resources, packed assets, Google Java Format, and the Java 17 build pass verification.
+
+## [0.4.6] - 2026-10-22
+
+### Fixed
+
+- Use the shared flat Gold Block plate for Ancient Mining and Ancient Tunnel summon items while retaining their distinct core crests.
+- Document the 64×64 prospecting-goggle atlas separately from the 256×256 accessory atlases and include it in both texture reference tables.
+
+### Validation
+
+- All 751 native server cases pass with JEI and Patchouli, including complete chunk excavation, safe exit stairs, precision prospecting, transport, restoration, synthesis, combat, riding, world generation, and saved companion interactions.
+- Native clients verify all 26 summon models after English and Korean resource reloads: full-UV flat Gold Block plates, the shared slime base, and distinct ancient core crests. All 26 companion appearances, eight armor variants, and resource-pack replacement and restoration pass.
+- All 66 guide entries and 213 pages render in English, Korean, and fallback with default and uniform fonts. Item lookups, internal links, localized searches, bilingual resources, packaged assets, Google Java Format, and the Java 17 build pass verification.
+
 ## [0.4.5] - 2026-10-22
 
 ### Changed

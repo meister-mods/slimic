@@ -121,7 +121,8 @@ public final class MiningSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
         buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
         15728880,
         OverlayTexture.NO_OVERLAY);
-    if (miner instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime) {
+    if (miner instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime
+        || miner instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime) {
       goggles.render(
           pose,
           buffers.getBuffer(RenderType.entityCutoutNoCull(GOGGLES)),

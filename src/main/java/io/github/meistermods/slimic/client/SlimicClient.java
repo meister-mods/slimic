@@ -40,6 +40,8 @@ public final class SlimicClient {
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
     event.registerEntityRenderer(
         ModEntities.NEXT_GENERATION_MINING_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.NEXT_GENERATION_TUNNEL_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ROYAL_GUARD_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ANCIENT_GUARD_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(

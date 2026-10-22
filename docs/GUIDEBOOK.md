@@ -2,11 +2,11 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 66 entries and 213 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 67 entries and 217 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
-The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Generation Mining Slime**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
+The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Generation Mining Slime** and **Next-Generation Tunnel Slime**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
 
 The links below open the corresponding web instructions. Item diagrams show specialization ingredients. Equipment and stored companion traits follow the preservation rules described in the gameplay guide.
 
@@ -59,6 +59,7 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Ancient Tunnel Slime | [Ancient Tunnel Slime](MINE_RECOVERY.md#ancient-tunnel-slime) |
 | Royal Guard Slime | [Royal Guard Slime](FORGOTTEN_ORDERS.md#royal-guard-slime) |
 | Next-Generation Mining Slime | [Mining policies](SYNTHESIS.md#mining-policies) |
+| Next-Generation Tunnel Slime | [Configurable bores](SYNTHESIS.md#configurable-tunnel-bores) |
 
 ## Working together
 

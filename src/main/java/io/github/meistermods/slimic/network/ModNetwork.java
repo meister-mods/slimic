@@ -14,7 +14,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ModNetwork {
-  private static final String PROTOCOL_VERSION = "20";
+  private static final String PROTOCOL_VERSION = "21";
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "main"),
@@ -25,6 +25,13 @@ public final class ModNetwork {
   private ModNetwork() {}
 
   public static void register() {
+    CHANNEL.registerMessage(
+        6,
+        TunnelSize.class,
+        TunnelSize::encode,
+        TunnelSize::decode,
+        TunnelSize::handle,
+        Optional.of(NetworkDirection.PLAY_TO_SERVER));
     CHANNEL.registerMessage(
         5,
         WorkAreaPacket.class,
@@ -67,6 +74,29 @@ public final class ModNetwork {
         CreativeTuneSlime::decode,
         CreativeTuneSlime::handle,
         Optional.of(NetworkDirection.PLAY_TO_SERVER));
+  }
+
+  public record TunnelSize(int menuId, int size) {
+    private void encode(FriendlyByteBuf buffer) {
+      buffer.writeVarInt(menuId);
+      buffer.writeVarInt(size);
+    }
+
+    private static TunnelSize decode(FriendlyByteBuf buffer) {
+      return new TunnelSize(buffer.readVarInt(), buffer.readVarInt());
+    }
+
+    private static void handle(TunnelSize packet, Supplier<NetworkEvent.Context> supplier) {
+      var context = supplier.get();
+      context.enqueueWork(
+          () -> {
+            var player = context.getSender();
+            if (player != null
+                && player.containerMenu instanceof SlimeMenu menu
+                && menu.containerId == packet.menuId) menu.setTunnelSize(player, packet.size);
+          });
+      context.setPacketHandled(true);
+    }
   }
 
   public record RideSlime(int entityId, boolean up, boolean boost) {

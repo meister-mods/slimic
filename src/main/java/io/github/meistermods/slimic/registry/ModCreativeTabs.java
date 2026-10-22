@@ -41,6 +41,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.ANCIENT_MINING_SLIME.get());
                         output.accept(ModItems.NEXT_GENERATION_MINING_SLIME.get());
                         output.accept(ModItems.ANCIENT_TUNNEL_SLIME.get());
+                        output.accept(ModItems.NEXT_GENERATION_TUNNEL_SLIME.get());
                         output.accept(ModItems.TRANSPORT_SLIME.get());
                         output.accept(ModItems.SIGNALING_SLIME.get());
                         output.accept(ModItems.COMBAT_SLIME.get());

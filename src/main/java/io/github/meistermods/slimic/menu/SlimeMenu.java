@@ -33,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.items.SlotItemHandler;
 
 public final class SlimeMenu extends AbstractContainerMenu {
+  public static final int TUNNEL_SIZE = 20;
   public static final int POLICY = 20, ORE_MASK = 21, POLICY_BUTTON = 70, ORE_BUTTON = 80;
   public static final int SLOT_SPACING = 18, SLOT_COLUMNS = 9, BAG_ROWS = 3;
   public static final int BAG_PAGE_SIZE = SLOT_COLUMNS * BAG_ROWS;
@@ -103,7 +104,12 @@ public final class SlimeMenu extends AbstractContainerMenu {
                                 instanceof
                                 io.github.meistermods.slimic.entity.NextGenerationMiningSlime next
                             ? next.policy().ordinal()
-                            : 0;
+                            : slime
+                                    instanceof
+                                    io.github.meistermods.slimic.entity.NextGenerationTunnelSlime
+                                        tunnel
+                                ? tunnel.getTunnelSize()
+                                : 0;
                     case ORE_MASK ->
                         slime
                                 instanceof
@@ -300,7 +306,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   public boolean isPolicyEditor() {
-    return slime instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime
+    return (slime instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime
+            || slime instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime)
         && data(TARGET_PAGE) == 1;
   }
 
@@ -330,9 +337,21 @@ public final class SlimeMenu extends AbstractContainerMenu {
         && player.distanceToSqr(slime) <= 64.0;
   }
 
+  public boolean setTunnelSize(Player player, int size) {
+    return stillValid(player)
+        && !player.level().isClientSide
+        && slime instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime tunnel
+        && tunnel.setTunnelSize(size);
+  }
+
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (slime instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime
+        && button == TARGET_PAGE_BUTTON) {
+      targetPage = 1 - targetPage;
+      return true;
+    }
     if (slime instanceof io.github.meistermods.slimic.entity.NextGenerationMiningSlime next) {
       if (button == TARGET_PAGE_BUTTON) {
         targetPage = 1 - targetPage;

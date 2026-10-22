@@ -66,6 +66,14 @@ public final class ModItems {
                   new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE),
                   ModEntities.NEXT_GENERATION_MINING_SLIME));
 
+  public static final RegistryObject<Item> NEXT_GENERATION_TUNNEL_SLIME =
+      ITEMS.register(
+          "next_generation_tunnel_slime",
+          () ->
+              new io.github.meistermods.slimic.item.SpecializedSlimeItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE),
+                  ModEntities.NEXT_GENERATION_TUNNEL_SLIME));
+
   private static RegistryObject<Item> royalRelic(String name) {
     return ITEMS.register(
         name,

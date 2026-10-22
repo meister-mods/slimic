@@ -392,7 +392,7 @@ public final class SlimicWorldGameTests {
             "Worker cargo survives while work stays paused");
       pet.discard();
     }
-    h.assertTrue(count[0] == 26, "All 26 companion professions are covered");
+    h.assertTrue(count[0] == 27, "All 27 companion professions are covered");
     target.setChunkForced(chunk.x, chunk.z, false);
     area.close();
     h.succeed();

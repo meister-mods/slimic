@@ -208,8 +208,12 @@ public final class AdvancedSlimeLayer
       part("laurel", ABUNDANCE, pose, buffers, light);
     }
     if (slime instanceof TunnelSlime) {
+      pose.pushPose();
+      if (slime instanceof io.github.meistermods.slimic.entity.NextGenerationTunnelSlime)
+        pose.scale(.85F, 1, .85F);
       part("cart", TUNNEL, pose, buffers, light);
       part("wheels", TUNNEL, pose, buffers, light);
+      pose.popPose();
     }
     if (slime instanceof DragonSlime) {
       root.getChild("bat_left").zRot = -.2F + Mth.sin(age * .5F) * .4F;
