@@ -138,23 +138,50 @@ public final class NextGenerationTunnelSlime extends TunnelSlime {
     return world.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) != null;
   }
 
+  private boolean planeFits(ServerLevel world, BlockPos front) {
+    var side = getTunnelDirection().getClockWise();
+    var first = front.relative(side, getTunnelMinWidth() - 1).below();
+    var last = front.relative(side, getTunnelMinWidth() + getTunnelSize()).above(getTunnelSize());
+    return !world.isOutsideBuildHeight(first)
+        && !world.isOutsideBuildHeight(last)
+        && world.getWorldBorder().isWithinBounds(first)
+        && world.getWorldBorder().isWithinBounds(last);
+  }
+
+  private BlockPos liningCell(BlockPos front, int index) {
+    int size = getTunnelSize();
+    var side = getTunnelDirection().getClockWise();
+    if (index < size * 2) {
+      var column = front.relative(side, getTunnelMinWidth() + index / 2);
+      return (index & 1) == 0 ? column.below() : column.above(size);
+    }
+    int wall = index - size * 2;
+    return front
+        .relative(side, getTunnelMinWidth() + ((wall & 1) == 0 ? -1 : size))
+        .above(wall / 2);
+  }
+
   @Override
   protected boolean tickTunnelWork(ServerLevel world) {
     var front = getTunnelFront();
+    if (!planeFits(world, front)) {
+      tunnelStatus = Status.UNREACHABLE;
+      getNavigation().stop();
+      return true;
+    }
     if (!front.equals(plannedFront)) {
       resetPlane();
       plannedFront = front;
     }
-    var ring = perimeter(front);
     int size = getTunnelSize();
     for (int budget = 0; budget < SCAN_BUDGET; budget++) {
       if (phase == 0 || phase == 2) {
-        if (cursor == ring.size()) {
+        if (cursor == size * 4) {
           cursor = 0;
           phase++;
           continue;
         }
-        var pos = ring.get(cursor);
+        var pos = liningCell(front, cursor);
         if (!loaded(world, pos)) {
           tunnelStatus = Status.UNREACHABLE;
           getNavigation().stop();
@@ -205,7 +232,19 @@ public final class NextGenerationTunnelSlime extends TunnelSlime {
         }
         cursor++;
       } else {
-        if (position().distanceToSqr(Vec3.atBottomCenterOf(front)) > .09) {
+        var destination = Vec3.atBottomCenterOf(front);
+        if (position().distanceToSqr(destination) < 4
+            && world
+                .getBlockCollisions(this, getBoundingBox().move(destination.subtract(position())))
+                .iterator()
+                .hasNext()) {
+          // Falling or newly placed blocks may obstruct a face after its final scan or a save.
+          phase = 3;
+          cursor = 0;
+          getNavigation().stop();
+          return true;
+        }
+        if (position().distanceToSqr(destination) > .09) {
           tunnelStatus = Status.MOVING;
           moveToCenter(front);
           return true;

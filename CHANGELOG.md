@@ -4,6 +4,21 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.8] - 2026-10-22
+
+### Fixed
+
+- Check the entire Next-Generation Tunnel face and lining against build height and the world border before modifying that face, preventing partial material use at invalid boundaries.
+- Resume face inspection and excavation when a new block obstructs forward movement after the final scan or a saved movement phase.
+- Calculate lining coordinates on demand instead of allocating the complete perimeter every work tick. Preserve the incremental scan and single-action limits.
+- Synchronize current protocol references in the bilingual development guides and update tunnel boundary behavior in both documents and the in-game guide.
+
+### Validation
+
+- All 26 final native core checks pass without optional mods, including six independent review scenarios for boundaries, changed terrain, shared-face conservation, and odd/even bores in all horizontal directions.
+- All 266 expanded native integration checks pass with JEI and Patchouli, covering synthesis, supply, recovery, tools, protection callbacks, and existing companion interactions.
+- All 67 guide entries and 217 pages pass in English, Korean, and fallback with both fonts. Bilingual resources, packaged assets, Google Java Format, and the Java 17 build pass verification.
+
 ## [0.4.7] - 2026-10-22
 
 ### Added

@@ -11,11 +11,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Open Bore size in the Slime Tuner. Enter a positive side length n, then Apply: 1 makes 1×1, 2 makes 2×2, and 5 makes 5×5. The default is 3×3. Changing size or direction selects Wait. Issue Tunnel separately. The bore and lining must fit within world height."
+      "text": "Open Bore size in the Slime Tuner. Enter a positive side length n, then Apply: 1 makes 1×1, 2 makes 2×2, and 5 makes 5×5. The default is 3×3. Changing size or direction selects Wait. Issue Tunnel separately. The entire bore and lining must fit world height and border before work."
     },
     {
       "type": "patchouli:text",
-      "text": "From the entrance it works across one n×n face with expanded work reach, one block at a time. It completes the face and repairs its floor, roof, and sides before moving forward. The lining template is not consumed; real blocks come from its bag. Unloaded terrain pauses work."
+      "text": "From the entrance it works across one n×n face with expanded work reach, one block at a time. It completes the face and repairs its floor, roof, and sides before moving forward. The lining template is not consumed; real blocks come from its bag. Unloaded terrain pauses work. New obstructions trigger another face scan."
     },
     {
       "type": "patchouli:text",

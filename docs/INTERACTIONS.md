@@ -69,6 +69,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I59 | Sanctum elite / royal remnants | One persistent reinforcement appears below half health; existing native identities recover missing spawn flags and defeated waves never respawn. |
 | I60 | Precision miner / terrain / saves | Supported 2×2 shafts and stepped branches avoid fluid openings and cavities, preserve protected blocks, and retain the front and return trail across saves; legacy selective orders pause safely. |
 | I61 | Next-generation tunnel / transport / synthesis | A matched ordinary/ancient Tunnel pair produces one waiting child. Configurable n×n faces keep real tools, material delivery, cargo, permission checks, saved progress, and inherited growth; size changes wait. |
+| I62 | Tunnel workers / changing terrain / world bounds | Reject out-of-height or border-crossing faces before partial work. Reinspect newly obstructed destinations, report blocked approaches outside the face, and conserve exact combined drops and tool wear when workers share a face. |
 
 Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 
