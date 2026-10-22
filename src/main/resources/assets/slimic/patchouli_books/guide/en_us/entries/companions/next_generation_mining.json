@@ -6,16 +6,16 @@
   "pages": [
     {
       "type": "slimic:companion_intro",
-      "text": "$(l:world/royal_synthesis)Royal synthesis$() creates this companion. It starts in Wait with ordinary Mining Slime health, stamina, tools, and bags. Normal excavates its chunk; Ore Priority favors visible ores in the active layer.",
+      "text": "$(l:world/royal_synthesis)Royal synthesis$() creates this compact mining companion. It starts in Wait, inherits parental growth, and spends half the ordinary stamina in every policy. Normal excavates its chunk; Ore Priority favors visible ores in the active layer. Its side crest leaves room for a headlamp and safety goggles.",
       "title": "Next-Generation Mining Slime"
     },
     {
       "type": "patchouli:text",
-      "text": "Open its Tuner management screen and choose Policy. Selective Ore uses the enabled Forge ore tags: coal, copper, iron, gold, redstone, lapis, diamond, emerald, quartz, and ancient debris. Only visible, accessible selected ores qualify. It never digs surrounding stone to reach a hidden deposit."
+      "text": "Choose Precision Prospecting and enable the desired Forge ore tags in its Tuner. It digs a 2×2 shaft, detects selected ores through walls, and excavates supported 2×2 branches toward them. Rising or descending branches use safe steps. Exposed selected ores come first; access rock also enters its bag."
     },
     {
       "type": "patchouli:text",
-      "text": "Protected stairs stay protected. Blocked deposits get the usual work warnings, tool supply, and cargo pickup. Selective Ore does not quarry, drain terrain, or build walls. A Scanner shows its local, chunk-clipped search window without revealing hidden ores. Recovery, revival, travel, and orders follow normal companion rules."
+      "text": "Liquids, unsupported cavities, protected stairs, and unsafe roofs constrain its route. It tries a bypass or pauses if none is safe. Ordinary tools, durability, cargo pickup, and work warnings apply. The Scanner previews the shaft and next face. No access ladder is built; provide a return route for transport companions. Recovered slimes redeploy in Wait."
     }
   ],
   "extra_recipe_mappings": {

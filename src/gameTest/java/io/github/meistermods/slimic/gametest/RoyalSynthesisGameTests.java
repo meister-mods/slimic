@@ -419,13 +419,13 @@ public final class RoyalSynthesisGameTests {
     h.assertTrue(
         next.policy() == NextGenerationMiningSlime.Policy.NORMAL && next.isOrderedToSit(),
         "Fresh NORMAL and Wait");
-    next.setPolicy(NextGenerationMiningSlime.Policy.SELECTIVE_ORE);
+    next.setPolicy(NextGenerationMiningSlime.Policy.PRECISION_PROSPECTING);
     next.toggleOre(0);
     var data = FriendlySlimeItem.fromSlime(next);
     var restored = ModEntities.NEXT_GENERATION_MINING_SLIME.get().create(h.getLevel());
     restored.load(data(data));
     h.assertTrue(
-        restored.policy() == NextGenerationMiningSlime.Policy.SELECTIVE_ORE
+        restored.policy() == NextGenerationMiningSlime.Policy.PRECISION_PROSPECTING
             && restored.oreMask() == next.oreMask(),
         "Policy and mask persist");
     h.assertTrue(

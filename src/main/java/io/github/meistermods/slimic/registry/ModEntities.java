@@ -48,7 +48,7 @@ public final class ModEntities {
                   EntityType.Builder.of(
                           io.github.meistermods.slimic.entity.NextGenerationMiningSlime::new,
                           MobCategory.CREATURE)
-                      .sized(1.04F, 1.04F)
+                      .sized(.78F, .78F)
                       .clientTrackingRange(10)
                       .build(Slimic.MOD_ID + ":next_generation_mining_slime"));
 

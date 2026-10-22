@@ -16,40 +16,37 @@ import net.minecraftforge.gametest.*;
 @PrefixGameTestTemplate(false)
 public final class NextGenerationMiningGameTests {
   @GameTest(template = "empty", batch = "next_generation_mining")
-  public static void selectiveScannerShowsItsLocalSearchWindowWithoutAQuarryLayer(
+  public static void precisionScannerShowsShaftAndBoundedDetectionWithoutStartingWork(
       GameTestHelper h) {
     var miner = ModEntities.NEXT_GENERATION_MINING_SLIME.get().create(h.getLevel());
     miner.moveTo(123.5, 101.25, 234.5);
     miner.onReleased();
-    miner.setPolicy(NextGenerationMiningSlime.Policy.SELECTIVE_ORE);
+    miner.setPolicy(NextGenerationMiningSlime.Policy.PRECISION_PROSPECTING);
     var plan = miner.getQuarryPlan().save();
     int loaded = h.getLevel().getChunkSource().getLoadedChunksCount();
     var forced = Set.copyOf(h.getLevel().getForcedChunks());
     var area = SlimeWorkArea.of(miner);
     h.assertTrue(
-        area.planned() && area.shapes().size() == 1,
-        "Selective preview has one search window and no invented excavation layer");
-    var box = area.shapes().get(0).bounds();
+        area.planned() && area.shapes().size() == 2,
+        "Precision preview has a two-by-two shaft and bounded detection window");
+    var box = area.shapes().get(1).bounds();
     h.assertTrue(
-        box.minY == 93
-            && box.maxY == 110
-            && box.minX >= 112
-            && box.maxX <= 128
-            && box.minZ >= 224
-            && box.maxZ <= 240
-            && !area.shapes().get(0).next(),
-        "Detection-height window stays inside the current chunk");
+        box.minY == 93.25
+            && box.maxY == 110.25
+            && area.shapes().get(0).bounds().getXsize() == 2
+            && area.shapes().get(0).bounds().getZsize() == 2,
+        "Preview distinguishes the shaft from the detection volume");
     for (double radius : new double[] {0, 1e300}) {
       SlimeStat.DETECTION_RANGE.tune(miner, radius);
       var shapes = SlimeWorkArea.of(miner).shapes();
-      h.assertTrue(shapes.size() == 1, "Extreme search range remains bounded");
-      var bounds = shapes.get(0).bounds();
+      h.assertTrue(shapes.size() == 2, "Extreme search range remains bounded");
+      var bounds = shapes.get(1).bounds();
       h.assertTrue(
-          bounds.getXsize() <= 16
-              && bounds.getZsize() <= 16
+          bounds.getXsize() <= 64
+              && bounds.getZsize() <= 64
               && bounds.minY >= h.getLevel().getMinBuildHeight()
               && bounds.maxY <= h.getLevel().getMaxBuildHeight(),
-          "Creative range never expands the preview beyond the chunk or build height");
+          "Creative range uses the bounded work window and build height");
     }
     h.assertTrue(
         miner.isOrderedToSit()
@@ -71,14 +68,21 @@ public final class NextGenerationMiningGameTests {
   private static Fixture fixture(GameTestHelper h, Item tool, int selected) {
     var area = new LoadedWorkArea(h);
     area.sealSurroundingFluids();
+    for (int x = 0; x < 16; x++)
+      for (int z = 0; z < 16; z++)
+        for (int y = 96; y <= 100; y++)
+          h.getLevel()
+              .setBlockAndUpdate(
+                  BlockPos.containing(area.point(x, y, z)), Blocks.STONE.defaultBlockState());
     var owner = h.makeMockSurvivalPlayer();
     owner.moveTo(area.point(4, 101, 4));
     var miner = ModEntities.NEXT_GENERATION_MINING_SLIME.get().create(h.getLevel());
     miner.tame(owner);
     miner.moveTo(area.point(4, 101, 6));
     miner.onReleased();
+    miner.setTunedStat(SlimeStat.WORK_SPEED, 64);
     if (tool != Items.AIR) miner.setTool(0, new ItemStack(tool));
-    miner.setPolicy(NextGenerationMiningSlime.Policy.SELECTIVE_ORE);
+    miner.setPolicy(NextGenerationMiningSlime.Policy.PRECISION_PROSPECTING);
     for (int i = 0; i < NextGenerationMiningSlime.ORES.size(); i++)
       if (i != selected) miner.toggleOre(i);
     miner.setWorking(true);
@@ -132,7 +136,7 @@ public final class NextGenerationMiningGameTests {
         "Hidden cargo cannot receive a shift transfer");
     h.assertTrue(
         menu.clickMenuButton(owner, io.github.meistermods.slimic.menu.SlimeMenu.POLICY_BUTTON + 2)
-            && miner.policy() == NextGenerationMiningSlime.Policy.SELECTIVE_ORE
+            && miner.policy() == NextGenerationMiningSlime.Policy.PRECISION_PROSPECTING
             && miner.isOrderedToSit(),
         "Policy selection keeps Wait");
     h.assertTrue(
@@ -143,20 +147,15 @@ public final class NextGenerationMiningGameTests {
     h.succeed();
   }
 
-  @GameTest(template = "empty", batch = "next_generation_mining", timeoutTicks = 500)
-  public static void hiddenSelectedOreStaysBlockedUntilExposedWithoutExcavatingItsShell(
-      GameTestHelper h) {
+  @GameTest(template = "empty", batch = "next_generation_mining", timeoutTicks = 800)
+  public static void hiddenSelectedOreIsReachedThroughARealExcavatedPassage(GameTestHelper h) {
     var f = fixture(h, Items.DIAMOND_PICKAXE, 6);
-    var ore = pos(f, 7, 101, 6);
-    var shell = new HashMap<BlockPos, net.minecraft.world.level.block.state.BlockState>();
-    for (var direction : Direction.values()) {
-      var block = ore.relative(direction);
-      var state = Blocks.STONE.defaultBlockState();
-      h.getLevel().setBlockAndUpdate(block, state);
-      shell.put(block, state);
-    }
+    var ore = pos(f, 8, 100, 6);
+    for (int x = 5; x <= 9; x++)
+      for (int z = 5; z <= 8; z++)
+        for (int y = 100; y <= 102; y++)
+          h.getLevel().setBlockAndUpdate(pos(f, x, y, z), Blocks.STONE.defaultBlockState());
     h.getLevel().setBlockAndUpdate(ore, Blocks.DIAMOND_ORE.defaultBlockState());
-    var opening = ore.west();
     h.startSequence()
         .thenWaitUntil(
             () ->
@@ -167,30 +166,15 @@ public final class NextGenerationMiningGameTests {
         .thenWaitUntil(
             () ->
                 h.assertTrue(
-                    f.miner.getMiningStatus() == MiningSlime.Status.UNREACHABLE
-                        && f.miner.getBlockedWorkTicks() >= 60,
-                    "Blocked episode persists across incremental rescans"))
+                    h.getLevel().getBlockState(ore).isAir(), "Hidden ore is physically excavated"))
         .thenExecute(
             () -> {
-              for (var entry : shell.entrySet())
-                h.assertTrue(
-                    h.getLevel().getBlockState(entry.getKey()).equals(entry.getValue()),
-                    "No shell excavation");
-              h.getLevel().setBlockAndUpdate(opening, Blocks.AIR.defaultBlockState());
-            })
-        .thenWaitUntil(
-            () ->
-                h.assertTrue(
-                    h.getLevel().getBlockState(ore).isAir(), "Exposed selected ore can be mined"))
-        .thenExecute(
-            () -> {
-              for (var entry : shell.entrySet())
-                if (!entry.getKey().equals(opening))
-                  h.assertTrue(
-                      h.getLevel().getBlockState(entry.getKey()).equals(entry.getValue()),
-                      "Unselected shell remains");
-              h.assertTrue(f.miner.getPickaxe().getDamageValue() == 1, "Real tool wear");
-              f.miner.setWaiting(true);
+              h.assertTrue(
+                  f.miner.getPickaxe().getDamageValue() > 1, "Access rock and ore wear the tool");
+              h.assertTrue(
+                  f.miner.getBag().occupiedSlots().stream()
+                      .anyMatch(i -> f.miner.getBag().getStackInSlot(i).is(Items.DIAMOND)),
+                  "Ore is collected in the real bag");
               f.miner.discard();
               f.area.close();
             })
@@ -203,6 +187,7 @@ public final class NextGenerationMiningGameTests {
     f.miner.setTunedStat(SlimeStat.WORK_SPEED, 1e12);
     var ore = pos(f, 5, 101, 6);
     h.getLevel().setBlockAndUpdate(ore, Blocks.DIAMOND_ORE.defaultBlockState());
+    int[] wear = {-1};
     h.startSequence()
         .thenWaitUntil(
             () ->
@@ -214,13 +199,19 @@ public final class NextGenerationMiningGameTests {
             () ->
                 h.assertTrue(
                     f.miner.getMiningStatus() == MiningSlime.Status.NEEDS_TIER
-                        && f.miner.getBlockedWorkTicks() >= 40,
+                        && f.miner.getBlockedWorkTicks() >= 1,
                     "Tier reason persists"))
+        .thenExecute(() -> wear[0] = f.miner.getPickaxe().getDamageValue())
+        .thenIdle(40)
         .thenExecute(
             () -> {
               h.assertTrue(
+                  f.miner.getMiningStatus() == MiningSlime.Status.NEEDS_TIER
+                      && f.miner.getBlockedWorkTicks() >= 40,
+                  "Tier warning remains stable");
+              h.assertTrue(
                   h.getLevel().getBlockState(ore).is(Blocks.DIAMOND_ORE)
-                      && f.miner.getPickaxe().getDamageValue() == 0,
+                      && f.miner.getPickaxe().getDamageValue() == wear[0],
                   "Work Speed never bypasses required tier");
               f.miner.discard();
               f.area.close();
@@ -229,7 +220,7 @@ public final class NextGenerationMiningGameTests {
   }
 
   @GameTest(template = "empty", batch = "next_generation_mining", timeoutTicks = 500)
-  public static void selectiveToolRequestReplacesAnOldShovelHintAndAcceptsWarehouseSupply(
+  public static void precisionToolRequestReplacesAnOldShovelHintAndAcceptsWarehouseSupply(
       GameTestHelper h) {
     var f = fixture(h, Items.AIR, 2);
     var raw = f.miner.saveWithoutId(new CompoundTag());
@@ -278,7 +269,7 @@ public final class NextGenerationMiningGameTests {
             () -> {
               h.assertTrue(
                   f.miner.getPickaxe().is(Items.IRON_PICKAXE)
-                      && f.miner.getPickaxe().getDamageValue() == 8
+                      && f.miner.getPickaxe().getDamageValue() > 7
                       && f.miner.getPickaxe().getTag().getString("Lot").equals("royal-supply"),
                   "Tool identity, data and wear retained");
               h.assertTrue(

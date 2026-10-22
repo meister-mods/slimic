@@ -587,7 +587,7 @@
   "item.slimic.royal_gallery_seal.tooltip": "인장을 잃어도 회랑의 기억은 성체에 남습니다.",
   "item.slimic.royal_synthesis_core.tooltip": "성체마다 공용 핵심 하나를 얻을 수 있습니다. 재사용 가능한 왕실 융합 장치를 제작합니다.",
   "item.slimic.royal_survey_compass.tooltip": "무너진 성체 안에서 사용하면 안쪽 구역의 수평 방향을 가리킵니다.",
-  "item.slimic.next_generation_mining_slime.tooltip": "부모의 성장 포인트를 환원받고 채굴 정책을 선택하는 새 채굴 동료입니다.",
+  "item.slimic.next_generation_mining_slime.tooltip": "작은 몸체로 정밀 탐광을 수행하며 부모의 성장과 기력 소모량 절반 특성을 계승합니다.",
   "item.slimic.ancient_kingdom_map.bound": "무너진 성체에 결속됨",
   "item.slimic.ancient_kingdom_map.unbound": "미결속 — The Slimic에서 사용하면 탐색합니다",
   "message.slimic.map_dimension": "The Slimic에서 사용하세요.",
@@ -604,10 +604,8 @@
   "screen.slimic.policy": "채굴 정책",
   "policy.slimic.normal.short": "일반",
   "policy.slimic.ore_priority.short": "광석 우선",
-  "policy.slimic.selective_ore.short": "선택 광석",
   "policy.slimic.normal": "일반: 기존 채굴 규칙에 따라 현재 청크를 굴착합니다.",
   "policy.slimic.ore_priority": "광석 우선: 현재 작업층에서 보이는 광석을 먼저 채굴합니다.",
-  "policy.slimic.selective_ore": "선택 광석: 활성화한 Forge 광석 태그만 채굴합니다. 접근할 수 없는 광맥은 건드리지 않습니다.",
   "screen.slimic.synthesis.confirm": "융합 확정",
   "screen.slimic.synthesis.recover": "미수령 결과 회수",
   "screen.slimic.synthesis.normal": "일반 개체",
@@ -687,7 +685,7 @@
   "entity.slimic.sanctum_role_1": "성체 수호병",
   "entity.slimic.sanctum_role_2": "잊혀진 지휘관",
   "entity.slimic.sanctum_role_3": "심층 정예 수호자",
-  "jei.slimic.next_generation_mining_slime": "왕실 융합 장치에서 본인이 최초 소유자인 일반·고대 채굴 회수 아이템에 슬라임볼 4개와 오래된 명령 파편 2개를 더해 융합합니다. 장착 칸과 가방을 모두 비우세요. 확인된 획득 포인트는 미사용으로 환원되고 새 동료는 대기로 시작합니다. 조작기에서 일반·광석 우선·선택 광석 정책을 고릅니다. 접근할 수 없는 선택 광맥은 건드리지 않습니다.",
+  "jei.slimic.next_generation_mining_slime": "왕실 융합 장치에서 본인이 최초 소유자인 일반·고대 채굴 회수 아이템에 슬라임볼 4개와 오래된 명령 파편 2개를 더해 융합합니다. 장착 칸과 가방을 모두 비우세요. 확인된 성장 포인트는 미사용으로 환원되고 새 동료는 대기로 시작합니다. 모든 정책에서 기력 소모량 절반 특성을 계승합니다. 정밀 탐광은 2×2 수직굴과 안전한 가지굴을 파 선택 광맥에 접근하며, 유체와 위험한 공동은 가능한 경우 우회합니다.",
   "screen.slimic.synthesis.occupied": "%s — %s: %s",
   "screen.slimic.synthesis.bag_slot": "가방 %s번 칸",
   "equipment.slimic.mainhand": "주 장비",
@@ -698,5 +696,7 @@
   "equipment.slimic.feet": "발",
   "screen.slimic.synthesis.total": "결과 미사용 포인트: %s",
   "screen.slimic.synthesis.excludes": "확인된 성장만 계승합니다. 기본 능력치·고대 특성·장비는 포인트가 되지 않으며 두 부모는 소모됩니다.",
-  "synthesis.slimic.attachments": "추가 장비·인벤토리 데이터의 비움을 확인할 수 없습니다. 부착물을 먼저 제거하세요. 두 입력은 보존됩니다."
+  "synthesis.slimic.attachments": "추가 장비·인벤토리 데이터의 비움을 확인할 수 없습니다. 부착물을 먼저 제거하세요. 두 입력은 보존됩니다.",
+  "policy.slimic.precision_prospecting.short": "정밀 탐광",
+  "policy.slimic.precision_prospecting": "정밀 탐광: 2×2 수직굴을 파고 벽 너머의 선택 광맥을 탐지해 안전한 가지굴로 접근합니다."
 }

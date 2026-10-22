@@ -4,6 +4,20 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.5] - 2026-10-22
+
+### Changed
+
+- Give Next-Generation Mining Slimes the ancient miner’s half-stamina-cost passive in every policy, and reduce their physical and rendered size to 75% of an ordinary companion.
+- Replace Selective Ore with Precision Prospecting: physical 2×2 shafts, incremental through-wall ore surveys, supported 2×2 branch excavation, stepped routes, and exposed-ore priority. Avoid unsupported cavities, fluids, unsafe roofs, protected stairs, and containers; attempt lateral shaft bypasses and stop when no safe route exists.
+- Preserve identity, growth, tools, cargo, ore masks, and policy ordinal 2. Save prospecting fronts and return trails, deploy recovered companions in Wait, and pause legacy Selective Ore workers before newly destructive excavation.
+- Add textured safety goggles and move the royal crest to the helmet side while retaining the headlamp. Update policy descriptions, scanner previews, bilingual documents, and the in-game guide.
+
+### Validation
+
+- All 163 focused native server cases pass with JEI and Patchouli; 35 core cases pass without optional mods. Coverage includes physical 2×2 descent, hidden ores at different heights, safe returns, lava and cavity bypasses, gravity floors, protected blocks and stairs, real tool supply, full bags, live filters, interrupted saves, recovery, and no extra chunk tickets.
+- Native clients verify compact size, goggles, the side crest, dye colors, bilingual policy controls, and synthesis. The revised guide renders in English, Korean, and fallback with both fonts. Bilingual resources, packaged assets, Google Java Format, and the Java 17 build pass verification.
+
 ## [0.4.4] - 2026-10-22
 
 ### Changed
