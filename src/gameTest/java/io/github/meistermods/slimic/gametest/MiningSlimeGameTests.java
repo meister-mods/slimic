@@ -187,12 +187,16 @@ public final class MiningSlimeGameTests {
   @GameTest(template = "empty", timeoutTicks = 160)
   public static void miningCollectsLootWearsToolAndEarnsOnlyCompletedActivity(
       GameTestHelper helper) {
-    MiningSlime miner = miner(helper, new ItemStack(Items.IRON_PICKAXE));
+    // Quarry searches span a whole chunk, beyond the boundaries of an empty test structure.
+    var area = new LoadedWorkArea(helper);
+    MiningSlime miner = isolatedMiner(helper, area, new ItemStack(Items.IRON_PICKAXE));
     seed(miner, 0, 31, 100);
-    helper.setBlock(ORE, Blocks.STONE);
+    BlockPos ore = BlockPos.containing(area.point(8, 101, 8));
+    helper.getLevel().setBlockAndUpdate(ore, Blocks.STONE.defaultBlockState());
+    helper.getLevel().addFreshEntity(miner);
     helper.succeedWhen(
         () -> {
-          helper.assertBlockPresent(Blocks.AIR, ORE);
+          helper.assertTrue(helper.getLevel().getBlockState(ore).isAir(), "Target is mined");
           helper.assertTrue(
               count(miner, Items.COBBLESTONE) == 1, "The mined result must enter the bag");
           helper.assertTrue(
@@ -205,6 +209,8 @@ public final class MiningSlimeGameTests {
           helper.assertTrue(
               miner.getStamina() < miner.getMaxStamina(), "Successful work must consume stamina");
           miner.setWorking(false);
+          miner.discard();
+          area.close();
         });
   }
 

@@ -13,14 +13,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
-/** Policy selection is the reward; ordinary tool, stamina, logistics and safety rules remain. */
+/** A compact mining veteran with inherited efficiency and selectable excavation policies. */
 public final class NextGenerationMiningSlime extends MiningSlime {
   public enum Policy {
     NORMAL,
     ORE_PRIORITY,
-    SELECTIVE_ORE
+    PRECISION_PROSPECTING
   }
 
   public static final List<String> ORES =
@@ -39,8 +38,7 @@ public final class NextGenerationMiningSlime extends MiningSlime {
       SynchedEntityData.defineId(NextGenerationMiningSlime.class, EntityDataSerializers.INT);
   private static final EntityDataAccessor<Integer> ORE_MASK =
       SynchedEntityData.defineId(NextGenerationMiningSlime.class, EntityDataSerializers.INT);
-  private int scanCursor;
-  private boolean sawOre, blockedOre, missingTool, insufficientTool;
+  private final PrecisionProspecting prospecting = new PrecisionProspecting(this);
 
   public NextGenerationMiningSlime(
       EntityType<? extends NextGenerationMiningSlime> type, Level level) {
@@ -58,33 +56,44 @@ public final class NextGenerationMiningSlime extends MiningSlime {
     return Policy.values()[entityData.get(POLICY)];
   }
 
+  private void updateNavigation() {
+    getNavigation().stop();
+    navigation =
+        specializedMining()
+            ? new WorkNavigation(this, level())
+            : new QuarryNavigation(this, level());
+  }
+
   public int oreMask() {
     return entityData.get(ORE_MASK);
   }
 
   public void setPolicy(Policy policy) {
+    if (policy() == policy) return;
     entityData.set(POLICY, policy.ordinal());
     resetSelection();
+    updateNavigation();
   }
 
   public void toggleOre(int ore) {
     if (ore >= 0 && ore < ORES.size()) {
       entityData.set(ORE_MASK, oreMask() ^ (1 << ore));
-      resetSelection();
+      clearTarget();
+      prospecting.filtersChanged();
+      status = Status.IDLE;
     }
   }
 
   private void resetSelection() {
     clearTarget();
-    scanCursor = 0;
-    sawOre = blockedOre = missingTool = insufficientTool = false;
+    prospecting.reset();
     status = Status.IDLE;
     refreshFluidSourceGuard();
   }
 
   @Override
-  protected boolean selectiveMining() {
-    return policy() == Policy.SELECTIVE_ORE;
+  protected boolean specializedMining() {
+    return policy() == Policy.PRECISION_PROSPECTING;
   }
 
   public boolean allowsOre(BlockState state) {
@@ -99,13 +108,8 @@ public final class NextGenerationMiningSlime extends MiningSlime {
   }
 
   @Override
-  protected boolean terrain(BlockPos pos, BlockState state) {
-    return super.terrain(pos, state) && (!selectiveMining() || allowsOre(state));
-  }
-
-  @Override
   protected boolean rampFloor(BlockPos pos) {
-    return selectiveMining()
+    return specializedMining()
         ? level() instanceof ServerLevel server && QuarryStaircaseData.get(server).protects(pos)
         : super.rampFloor(pos);
   }
@@ -121,80 +125,38 @@ public final class NextGenerationMiningSlime extends MiningSlime {
   }
 
   @Override
-  protected BlockPos findTarget(ServerLevel server) {
-    if (!selectiveMining()) return super.findTarget(server);
-    pruneSkipped(server.getGameTime());
-    if (!server.hasChunk(getMiningChunk().x, getMiningChunk().z)) {
-      status = Status.UNREACHABLE;
-      return null;
-    }
-    if (oreMask() == 0) {
-      status = Status.COMPLETE;
-      return null;
-    }
-    double detection = SlimeStat.DETECTION_RANGE.value(this);
-    int minY = (int) Math.max(server.getMinBuildHeight(), getY() - detection),
-        maxY = (int) Math.min(server.getMaxBuildHeight() - 1, getY() + detection);
-    int height = Math.max(1, maxY - minY + 1), total = height * 256;
-    int firstLayer = Math.max(0, Math.min(height - 1, getBlockY() - minY));
-    var chunk = getMiningChunk();
-    BlockPos best = null;
-    double closest = Double.MAX_VALUE;
-    // Scan at most 1,024 positions per search slice, irrespective of Creative Detection Range.
-    for (int budget = 0; budget < 1024 && scanCursor < total; budget++, scanCursor++) {
-      int value = scanCursor;
-      var pos =
-          new BlockPos(
-              chunk.getMinBlockX() + (value & 15),
-              minY + (firstLayer + value / 256) % height,
-              chunk.getMinBlockZ() + (value >> 4 & 15));
-      var state = server.getBlockState(pos);
-      if (!allowsOre(state)
-          || position().distanceToSqr(Vec3.atCenterOf(pos)) > detection * detection) continue;
-      sawOre = true;
-      if (!terrain(pos, state)) {
-        blockedOre = true;
-        continue;
-      }
-      if (targetSkipped(pos)) {
-        blockedOre = true;
-        continue;
-      }
-      if (!canSee(pos)) {
-        blockedOre = true;
-        continue;
-      }
-      int tool = toolFor(state);
-      if (tool < 0) {
-        if (missingRequiredTool(state)) missingTool = true;
-        else insufficientTool = true;
-        continue;
-      }
-      double distance = pos.distToCenterSqr(position());
-      if (distance < closest) {
-        closest = distance;
-        best = pos;
-      }
-    }
-    if (best != null) {
-      scanCursor = 0;
-      status = Status.IDLE;
-      return best;
-    }
-    if (scanCursor >= total) {
-      status =
-          missingTool
-              ? Status.NO_TOOL
-              : insufficientTool
-                  ? Status.NEEDS_TIER
-                  : sawOre || blockedOre ? Status.UNREACHABLE : Status.COMPLETE;
-      scanCursor = 0;
-      sawOre = blockedOre = missingTool = insufficientTool = false;
-    } else if (status != Status.UNREACHABLE
-        && status != Status.NO_TOOL
-        && status != Status.NEEDS_TIER
-        && status != Status.COMPLETE) status = Status.IDLE;
-    return null;
+  protected boolean spendStamina(float amount) {
+    return super.spendStamina(amount * .5F);
+  }
+
+  @Override
+  protected boolean tickSpecializedMining(ServerLevel server) {
+    if (!specializedMining()) return false;
+    prospecting.tick(server);
+    return true;
+  }
+
+  public PrecisionProspecting prospecting() {
+    return prospecting;
+  }
+
+  @Override
+  public void setWorking(boolean value) {
+    super.setWorking(value);
+    if (prospecting != null) prospecting.interrupt();
+  }
+
+  @Override
+  public void onReleased() {
+    boolean dimensionChanged = hasChangedWorkDimension();
+    super.onReleased();
+    prospecting.relocate(dimensionChanged);
+  }
+
+  @Override
+  protected void clearTarget() {
+    super.clearTarget();
+    if (prospecting != null) prospecting.interrupt();
   }
 
   @Override
@@ -202,6 +164,7 @@ public final class NextGenerationMiningSlime extends MiningSlime {
     super.addAdditionalSaveData(tag);
     tag.putInt("NextGenerationPolicy", policy().ordinal());
     tag.putInt("NextGenerationOreMask", oreMask());
+    tag.put("PrecisionProspecting", prospecting.save());
   }
 
   @Override
@@ -214,7 +177,14 @@ public final class NextGenerationMiningSlime extends MiningSlime {
         tag.contains("NextGenerationOreMask")
             ? tag.getInt("NextGenerationOreMask") & ((1 << ORES.size()) - 1)
             : (1 << ORES.size()) - 1);
-    scanCursor = 0;
+    updateNavigation();
+    prospecting.load(tag.getCompound("PrecisionProspecting"));
+    if (selected == 2
+        && tag.contains("NextGenerationPolicy")
+        && !tag.contains("PrecisionProspecting")) {
+      setWorking(false);
+      setWaiting(true);
+    }
   }
 
   @Override

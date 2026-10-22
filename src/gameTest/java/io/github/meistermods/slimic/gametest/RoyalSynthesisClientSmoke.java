@@ -255,7 +255,7 @@ final class RoyalSynthesisClientSmoke {
             var mob = (NextGenerationMiningSlime) owner.serverLevel().getEntity(resultId);
             check(
                 mob.isOrderedToSit()
-                    && mob.policy() == NextGenerationMiningSlime.Policy.SELECTIVE_ORE,
+                    && mob.policy() == NextGenerationMiningSlime.Policy.PRECISION_PROSPECTING,
                 "Server policy and Wait");
             owner.closeContainer();
           });

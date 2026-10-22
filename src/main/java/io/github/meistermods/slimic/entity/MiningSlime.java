@@ -142,7 +142,7 @@ public class MiningSlime extends BagSlime {
 
   @Override
   public void move(MoverType type, Vec3 movement) {
-    if (usesQuarry() && isWorking() && quarry != null) {
+    if (usesQuarry() && isWorking() && quarry != null && !specializedMining()) {
       double radius = getBbWidth() / 2.0;
       double minX = chunkX * 16 + radius, maxX = chunkX * 16 + 16 - radius;
       double minZ = chunkZ * 16 + radius, maxZ = chunkZ * 16 + 16 - radius;
@@ -428,7 +428,7 @@ public class MiningSlime extends BagSlime {
 
   public void shareStaircase() {
     if (usesQuarry()
-        && !selectiveMining()
+        && !specializedMining()
         && level() instanceof ServerLevel server
         && !hasChangedWorkDimension()
         && quarry != null
@@ -554,7 +554,7 @@ public class MiningSlime extends BagSlime {
 
   public void refreshFluidSourceGuard() {
     if (!usesQuarry()) return;
-    if (selectiveMining()) {
+    if (specializedMining()) {
       forgetFluidSourceGuard();
       return;
     }
@@ -1372,12 +1372,14 @@ public class MiningSlime extends BagSlime {
         }
         resting = false;
       }
+      if (tickSpecializedMining(server)) return;
       if (fluidCooldown > 0) {
         fluidCooldown--;
         return;
       }
-      if (!selectiveMining() && (tickCount % 5 == 0 || wallTarget != null) && !ensureWalls(server))
-        return;
+      if (!specializedMining()
+          && (tickCount % 5 == 0 || wallTarget != null)
+          && !ensureWalls(server)) return;
       if (target == null) {
         if (tickCount % 5 != 0) {
           if (supportTarget != null) finishApproach();
@@ -1390,7 +1392,22 @@ public class MiningSlime extends BagSlime {
     }
   }
 
-  protected boolean selectiveMining() {
+  protected boolean specializedMining() {
     return false;
+  }
+
+  /** Specialized excavation keeps the shared order, supplies, permission and rest gates. */
+  protected boolean tickSpecializedMining(ServerLevel server) {
+    return false;
+  }
+
+  protected void requestMiningTool(BlockState state) {
+    requiredTool = state.is(BlockTags.MINEABLE_WITH_SHOVEL) ? 1 : 0;
+    status = getTool(requiredTool).isEmpty() ? Status.NO_TOOL : Status.NEEDS_TIER;
+  }
+
+  protected void pauseForFullBag() {
+    status = Status.FULL;
+    fullRevision = bagRevision;
   }
 }

@@ -64,9 +64,10 @@ The following scenarios have independent native game regressions. Transfers chec
 | I54 | Guardian / Royal Guard / persistence | Apply fourfold common Health once, retain training, clamp legacy excess health without healing, and preserve Creative health. |
 | I55 | Creative editor / bags / logistics | Accept values beyond recommendations, synchronize exact values, preserve sparse cargo across pages and recovery, and reject occupied-slot removal. |
 | I56 | Creative attacks / recovery | Keep native damage and victim absorption finite at extreme Attack; retain the exact saved base and clear nonfinite absorption from older payloads without healing. |
-| I57 | Next-generation miner / Transport / Warehouse | A selected ore requests the appropriate real tool; delivery preserves its identity and wear and resumes work without mining unselected blocks. |
+| I57 | Next-generation miner / Transport / Warehouse | Precision excavation requests the appropriate real tool; delivery preserves its identity and wear and resumes physical access-rock and selected-ore mining. |
 | I58 | Parent companions / synthesis station | Refuse occupied bags, equipment, unverified attachments and foreign ownership without consuming anything; legal growth refunds exactly into a new waiting identity. |
 | I59 | Sanctum elite / royal remnants | One persistent reinforcement appears below half health; existing native identities recover missing spawn flags and defeated waves never respawn. |
+| I60 | Precision miner / terrain / saves | Supported 2×2 shafts and stepped branches avoid fluid openings and cavities, preserve protected blocks, and retain the front and return trail across saves; legacy selective orders pause safely. |
 
 Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 

@@ -587,7 +587,7 @@
   "item.slimic.royal_gallery_seal.tooltip": "The gallery memory persists even if this seal is lost.",
   "item.slimic.royal_synthesis_core.tooltip": "One shared core per sanctum. Crafts a reusable Royal Synthesis Station.",
   "item.slimic.royal_survey_compass.tooltip": "Use inside the Fallen Sanctum to follow a horizontal bearing inward.",
-  "item.slimic.next_generation_mining_slime.tooltip": "A new mining companion with selectable excavation policies and refunded parental growth points.",
+  "item.slimic.next_generation_mining_slime.tooltip": "A compact mining veteran with half stamina costs, inherited growth, and precision prospecting.",
   "item.slimic.ancient_kingdom_map.bound": "Bound to a Fallen Sanctum",
   "item.slimic.ancient_kingdom_map.unbound": "Unbound — use in The Slimic to search",
   "message.slimic.map_dimension": "Use in The Slimic.",
@@ -604,10 +604,8 @@
   "screen.slimic.policy": "Policy",
   "policy.slimic.normal.short": "Normal",
   "policy.slimic.ore_priority.short": "Ore first",
-  "policy.slimic.selective_ore.short": "Selected",
   "policy.slimic.normal": "Normal: excavate the current chunk using ordinary mining rules.",
   "policy.slimic.ore_priority": "Ore Priority: prefer visible ores in the active layer.",
-  "policy.slimic.selective_ore": "Selective Ore: mine enabled Forge ore tags only; blocked deposits remain untouched.",
   "screen.slimic.synthesis.confirm": "Confirm synthesis",
   "screen.slimic.synthesis.recover": "Recover pending result",
   "screen.slimic.synthesis.normal": "Normal",
@@ -687,7 +685,7 @@
   "entity.slimic.sanctum_role_1": "Sanctum Warden",
   "entity.slimic.sanctum_role_2": "Forgotten Commander",
   "entity.slimic.sanctum_role_3": "Deepcore Elite Guardian",
-  "jei.slimic.next_generation_mining_slime": "Use a Royal Synthesis Station to combine your recovered ordinary Mining Slime and Ancient Mining Slime with four slimeballs and two Old Command Fragments. Empty all equipment and bags. Verified earned points return unused; the new child starts waiting. Choose Normal, Ore Priority, or Selective Ore through its Slime Tuner. Unreachable selected deposits remain untouched.",
+  "jei.slimic.next_generation_mining_slime": "Use a Royal Synthesis Station with your recovered ordinary and Ancient Mining Slimes, four slimeballs, and two Old Command Fragments. Empty equipment and bags first. Verified growth returns unused; the child starts in Wait. It inherits half stamina costs in every policy. Precision Prospecting excavates a 2×2 shaft and supported branches to selected ores behind walls, bypassing liquids and unsafe cavities when possible.",
   "screen.slimic.synthesis.occupied": "%s — %s: %s",
   "screen.slimic.synthesis.bag_slot": "Bag slot %s",
   "equipment.slimic.mainhand": "Main hand",
@@ -698,5 +696,7 @@
   "equipment.slimic.feet": "Feet",
   "screen.slimic.synthesis.total": "Result: %s unused points",
   "screen.slimic.synthesis.excludes": "Only verified growth transfers. Base attributes, ancient passives, and equipment do not become points. Both parents are consumed.",
-  "synthesis.slimic.attachments": "Additional equipment or inventory data cannot be verified. Remove the attachments first; both inputs are preserved."
+  "synthesis.slimic.attachments": "Additional equipment or inventory data cannot be verified. Remove the attachments first; both inputs are preserved.",
+  "policy.slimic.precision_prospecting.short": "Prospect",
+  "policy.slimic.precision_prospecting": "Precision Prospecting: dig a 2×2 shaft, detect selected ores through walls, and excavate safe branches to them."
 }

@@ -1586,6 +1586,201 @@
           "material": "purple"
         }
       ]
+    },
+    "prospecting_goggles": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        64,
+        64
+      ],
+      "renderer": "MiningSlimeLayer",
+      "boxes": [
+        {
+          "part": "goggles",
+          "cube": 1,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            3.8,
+            0.4,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 2,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            3.8,
+            0.4,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 3,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            3.8,
+            0.4,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 4,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            3.8,
+            0.4,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 5,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            0.4,
+            2.2,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 6,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            0.4,
+            2.2,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 7,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            0.4,
+            2.2,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 8,
+          "uv": [
+            0,
+            0
+          ],
+          "size": [
+            0.4,
+            2.2,
+            0.4
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 9,
+          "uv": [
+            32,
+            0
+          ],
+          "size": [
+            0.6,
+            0.4,
+            0.3
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 10,
+          "uv": [
+            32,
+            32
+          ],
+          "size": [
+            0.3,
+            0.6,
+            7.5
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "goggles",
+          "cube": 11,
+          "uv": [
+            32,
+            32
+          ],
+          "size": [
+            0.3,
+            0.6,
+            7.5
+          ],
+          "material": "mixed metal and leather"
+        },
+        {
+          "part": "lenses",
+          "cube": 1,
+          "uv": [
+            0,
+            32
+          ],
+          "size": [
+            3.0,
+            2.2,
+            0.1
+          ],
+          "material": "cyan glass"
+        },
+        {
+          "part": "lenses",
+          "cube": 2,
+          "uv": [
+            0,
+            32
+          ],
+          "size": [
+            3.0,
+            2.2,
+            0.1
+          ],
+          "material": "cyan glass"
+        }
+      ]
     }
   }
 }

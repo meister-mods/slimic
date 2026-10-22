@@ -50,13 +50,19 @@ Open the new miner's ordinary **Slime Tuner management screen → Policy**. Its 
 | --- | --- |
 | Normal | Ordinary current-chunk quarrying with the existing fluid, wall, tool, and shared-stair rules |
 | Ore Priority | Prefer visible Forge-tagged ores in the active quarry layer; do not expose distant deposits or skip layers |
-| Selective Ore | Mine only enabled Forge ore tags that are visible and accessible within the current chunk and detection range |
+| Precision Prospecting | Dig a 2×2 shaft and supported branches toward selected ores behind walls, bypassing unsafe terrain |
 
-Selective Ore offers coal, copper, iron, gold, redstone, lapis, diamond, emerald, quartz, and ancient debris tag filters. It does not clear unselected surrounding stone to reach hidden ore, excavate quarry layers, drain the site, or build quarry walls. An inaccessible deposit reports blocked work. Protection events, tool speed and tier, protected staircases, bags, and stamina still apply.
+**Precision Prospecting** replaces Selective Ore. It descends through a **two-by-two vertical shaft**, one supported level at a time. Its physical width and height are 75% of an ordinary miner, about **0.78 blocks**. Branch passages are **two blocks wide and two high**. Issue a work order separately through the Tuner.
 
-A Slime Scanner shows the selective search window clipped to the current chunk and detection height. It does not display a full-depth quarry, invent a next excavation layer, or reveal hidden ores.
+Loaded terrain is surveyed for enabled Forge ore tags, including deposits behind walls. Supported branches lead toward selected deposits; rising or descending branches can advance two blocks and change height by one. Actual breaking proceeds through visible blocks within tool reach and prioritizes exposed selected ores. Rock, dirt, and unselected ores obstructing a physical passage also enter its bag. Drop amounts and required tool tiers remain unchanged. Filters cover coal, copper, iron, gold, redstone, lapis, diamond, emerald, quartz, and ancient debris.
 
-The miner uses ordinary Mining Slime health, stamina, and capacity. It does not inherit the ancient miner's half-cost passive. Transport and Warehouse Slimes supply tools and unload cargo; Signaling Slimes report blocked work. Recovery, revival, portals, and redeployment retain the ordinary preservation rules and return it to Wait.
+Each next passage checks all four floor blocks, its body volume, adjacent fluids, and falling-block roof. Magma blocks are avoided, and sand or gravel floors must have solid support beneath their falling column. Unsupported cavities and routes opening into water or lava are avoided. A blocked shaft prompts a lateral search for another safe descending column. If none is safe, it pauses as unreachable. It never forcibly removes fluids or jumps into unsupported holes. Protected stairs, block entities, unbreakable blocks, and protection callbacks remain respected. Completed branches retain a return trail to the shaft, and every physical step is checked again before excavation.
+
+Prospecting never acquires new chunks. Ordinary trained detection ranges apply; very large Creative values still use a per-survey window capped at radius 32. No access ladder or surface-return staircase is installed, so transport companions need a separate usable return route for deep work. Changing selected tags restarts target selection while retaining shaft progress.
+
+The Scanner previews the **two-by-two shaft**, detection window, and immediate planned face. Previewing alone neither surveys terrain nor reveals hidden ore positions.
+
+Health, maximum stamina, and capacity use ordinary Mining Slime values; **the ancient miner’s half-stamina-cost passive is inherited in every policy**. Transport and Warehouse Slimes supply tools and unload cargo where they can reach; Signaling Slimes report blocked work. Recovery, revival, portals, and redeployment preserve ordinary companion data and return it to Wait. Old Selective Ore saves retain their policy and traits but migrate to Wait; explicitly resume work before the newly destructive excavation begins.
 
 ## Interrupted transactions
 
