@@ -1,6 +1,6 @@
 package io.github.meistermods.slimic.recipe;
 
-import io.github.meistermods.slimic.item.HeraldSlimeItem;
+import io.github.meistermods.slimic.item.SignalingSlimeItem;
 import io.github.meistermods.slimic.registry.ModItems;
 import io.github.meistermods.slimic.registry.ModRecipes;
 import net.minecraft.core.NonNullList;
@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
-public final class HeraldSlimeRecipe extends CustomRecipe {
-  public HeraldSlimeRecipe(ResourceLocation id, CraftingBookCategory category) {
+public final class SignalingSlimeRecipe extends CustomRecipe {
+  public SignalingSlimeRecipe(ResourceLocation id, CraftingBookCategory category) {
     super(id, category);
   }
 
@@ -34,11 +34,11 @@ public final class HeraldSlimeRecipe extends CustomRecipe {
   }
 
   public static ItemStack specialize(ItemStack friendly, ItemStack rocket) {
-    ItemStack result = new ItemStack(ModItems.HERALD_SLIME.get());
+    ItemStack result = new ItemStack(ModItems.SIGNALING_SLIME.get());
     CompanionBase.copyData(friendly, result);
     result
         .getOrCreateTag()
-        .put(HeraldSlimeItem.INITIAL_FIREWORK, rocket.copyWithCount(1).save(new CompoundTag()));
+        .put(SignalingSlimeItem.INITIAL_FIREWORK, rocket.copyWithCount(1).save(new CompoundTag()));
     return result;
   }
 
@@ -65,6 +65,6 @@ public final class HeraldSlimeRecipe extends CustomRecipe {
 
   @Override
   public RecipeSerializer<?> getSerializer() {
-    return ModRecipes.HERALD_SLIME.get();
+    return ModRecipes.SIGNALING_SLIME.get();
   }
 }

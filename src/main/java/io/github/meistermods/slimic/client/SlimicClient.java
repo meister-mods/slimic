@@ -45,18 +45,18 @@ public final class SlimicClient {
     event.registerEntityRenderer(
         ModEntities.FORGOTTEN_TRANSPORT_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(
-        ModEntities.ANCIENT_COMMANDER_SLIME.get(), AncientSlimeRenderer::new);
+        ModEntities.ANCIENT_COMMAND_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(
         ModEntities.ANCIENT_MINING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(
         ModEntities.ANCIENT_TUNNEL_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(
-        ModEntities.FORGOTTEN_MINER_SLIME.get(), AncientSlimeRenderer::new);
+        ModEntities.FORGOTTEN_MINING_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(
         ModEntities.FORGOTTEN_TUNNEL_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.MINE_GUARDIAN_SLIME.get(), AncientSlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.GLOW_SLIME.get(), FriendlySlimeRenderer::new);
-    event.registerEntityRenderer(ModEntities.COMMANDER_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.COMMAND_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ENDER_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.ATTENTION_SLIME.get(), FriendlySlimeRenderer::new);
 
@@ -72,15 +72,15 @@ public final class SlimicClient {
     event.registerEntityRenderer(
         ModEntities.GUARDIAN_ANGEL_SLIME.get(), GuardianAngelSlimeRenderer::new);
     event.registerBlockEntityRenderer(ModBlocks.SLIME_CHEST_ENTITY.get(), SlimeChestRenderer::new);
-    event.registerEntityRenderer(ModEntities.LUMBERJACK_SLIME.get(), FriendlySlimeRenderer::new);
-    event.registerEntityRenderer(ModEntities.FARMER_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.LOGGING_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.FARMING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.SADDLE_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.FRIENDLY_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.MINING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.TRANSPORT_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.COMBAT_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(ModEntities.CLEANING_SLIME.get(), FriendlySlimeRenderer::new);
-    event.registerEntityRenderer(ModEntities.HERALD_SLIME.get(), FriendlySlimeRenderer::new);
+    event.registerEntityRenderer(ModEntities.SIGNALING_SLIME.get(), FriendlySlimeRenderer::new);
   }
 
   @SubscribeEvent
@@ -111,7 +111,7 @@ public final class SlimicClient {
                 ItemProperties.getProperty(
                     net.minecraft.world.item.Items.COMPASS,
                     ResourceLocation.withDefaultNamespace("angle"))));
-    event.enqueueWork(() -> MenuScreens.register(ModMenus.COMMANDER.get(), CommanderScreen::new));
+    event.enqueueWork(() -> MenuScreens.register(ModMenus.COMMAND.get(), CommandScreen::new));
     event.enqueueWork(() -> MenuScreens.register(ModMenus.SLIME.get(), SlimeScreen::new));
     event.enqueueWork(
         () -> MenuScreens.register(ModMenus.CREATIVE_TUNER.get(), CreativeSlimeTunerScreen::new));
@@ -134,7 +134,7 @@ public final class SlimicClient {
                   var role = io.github.meistermods.slimic.item.AncientSlimeCoreItem.role(stack);
                   if (role == null) return 0;
                   return switch (role) {
-                    case MINER -> 1;
+                    case MINING -> 1;
                     case TUNNEL -> 2;
                     case MINE_GUARD -> 3;
                     default -> 0;

@@ -68,7 +68,7 @@ public final class CompanionTeleport {
 
   public static void pause(FriendlySlime slime) {
     if (slime instanceof BagSlime worker) worker.setWorking(false);
-    if (slime instanceof HeraldSlime herald) herald.setMonitoring(false);
+    if (slime instanceof SignalingSlime signaling) signaling.setMonitoring(false);
     slime.setWaiting(true);
     slime.getNavigation().stop();
     slime.setDeltaMovement(Vec3.ZERO);

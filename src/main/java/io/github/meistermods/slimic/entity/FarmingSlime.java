@@ -30,13 +30,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.ToolActions;
 
-public final class FarmerSlime extends FieldSlime {
+public final class FarmingSlime extends FieldSlime {
   private final Set<BlockPos> plots = new LinkedHashSet<>();
   private BlockSurvey survey;
   private int plotCursor;
   private final Map<BlockPos, Block> crops = new HashMap<>();
 
-  public FarmerSlime(EntityType<? extends FarmerSlime> type, Level level) {
+  public FarmingSlime(EntityType<? extends FarmingSlime> type, Level level) {
     super(type, level);
   }
 
@@ -66,7 +66,7 @@ public final class FarmerSlime extends FieldSlime {
 
   @Override
   public ItemStack getPickResult() {
-    return new ItemStack(ModItems.FARMER_SLIME.get());
+    return new ItemStack(ModItems.FARMING_SLIME.get());
   }
 
   public Set<BlockPos> getFarmPlots() {

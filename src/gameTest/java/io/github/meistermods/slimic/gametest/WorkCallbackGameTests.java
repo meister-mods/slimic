@@ -122,8 +122,8 @@ public final class WorkCallbackGameTests {
         kind == 0
             ? ModEntities.MINING_SLIME.get().create(level)
             : kind == 1
-                ? ModEntities.FARMER_SLIME.get().create(level)
-                : ModEntities.LUMBERJACK_SLIME.get().create(level);
+                ? ModEntities.FARMING_SLIME.get().create(level)
+                : ModEntities.LOGGING_SLIME.get().create(level);
     actor.tame(h.makeMockSurvivalPlayer());
     actor.moveTo(area.point(6.5, 101, 8.5));
     actor.onReleased();
@@ -181,13 +181,13 @@ public final class WorkCallbackGameTests {
     if (logger) area.clearSurroundingTrees();
     BagSlime actor =
         logger
-            ? ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel())
+            ? ModEntities.LOGGING_SLIME.get().create(h.getLevel())
             : ModEntities.CLEANING_SLIME.get().create(h.getLevel());
     actor.tame(h.makeMockSurvivalPlayer());
     actor.moveTo(area.point(6.5, 101, 8.5));
     actor.onReleased();
     actor.setNoAi(true);
-    if (logger) ((LumberjackSlime) actor).setTool(new ItemStack(Items.DIAMOND_AXE));
+    if (logger) ((LoggingSlime) actor).setTool(new ItemStack(Items.DIAMOND_AXE));
     SlimeStat.REACH.tune(actor, 32);
     SlimeStat.WORK_SPEED.tune(actor, 32);
     actor.setWorking(true);
@@ -248,7 +248,7 @@ public final class WorkCallbackGameTests {
     level.setBlockAndUpdate(
         soil, Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7));
     level.setBlockAndUpdate(soil.east(), Blocks.WATER.defaultBlockState());
-    var actor = ModEntities.FARMER_SLIME.get().create(level);
+    var actor = ModEntities.FARMING_SLIME.get().create(level);
     actor.tame(h.makeMockSurvivalPlayer());
     actor.moveTo(area.point(till ? 8.5 : 6.5, 101, 8.5));
     actor.onReleased();

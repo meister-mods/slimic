@@ -7,8 +7,8 @@ import io.github.meistermods.slimic.client.SlimeScreen;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
-import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.TransportSlime;
 import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
@@ -489,16 +489,16 @@ public final class SlimeClientSmoke {
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
                 var level = owner.serverLevel();
                 if (level.getEntity(carrierId) != null) level.getEntity(carrierId).discard();
-                HeraldSlime herald = ModEntities.HERALD_SLIME.get().create(level);
-                herald.setMonitoring(true);
-                herald.moveTo(10.5, 101, 8.5, 90, 0);
-                herald.setNoAi(true);
-                herald.tame(owner);
-                herald.dye(owner, new ItemStack(Items.WHITE_DYE));
-                herald.setCustomName(Component.literal("Beacon"));
-                herald.setCustomNameVisible(true);
-                herald.setDelayMinutes(3);
-                level.addFreshEntity(herald);
+                SignalingSlime signaling = ModEntities.SIGNALING_SLIME.get().create(level);
+                signaling.setMonitoring(true);
+                signaling.moveTo(10.5, 101, 8.5, 90, 0);
+                signaling.setNoAi(true);
+                signaling.tame(owner);
+                signaling.dye(owner, new ItemStack(Items.WHITE_DYE));
+                signaling.setCustomName(Component.literal("Beacon"));
+                signaling.setCustomNameVisible(true);
+                signaling.setDelayMinutes(3);
+                level.addFreshEntity(signaling);
               });
       phase = 8;
       phaseTicks = 0;
@@ -508,15 +508,15 @@ public final class SlimeClientSmoke {
   private static void toolsSmoke(Minecraft client) {
     boolean jei = ModList.get().isLoaded("jei");
     String prefix = jei ? "jei-" : "no-jei-";
-    var heralds =
+    var signalings =
         client.level.getEntitiesOfClass(
-            HeraldSlime.class, client.player.getBoundingBox().inflate(12));
-    if (heralds.isEmpty()) return;
-    HeraldSlime herald = heralds.get(0);
+            SignalingSlime.class, client.player.getBoundingBox().inflate(12));
+    if (signalings.isEmpty()) return;
+    SignalingSlime signaling = signalings.get(0);
     if (phase == 8) {
-      if (herald.getDyeColorId() != DyeColor.WHITE.getId() || ++phaseTicks < 40) return;
+      if (signaling.getDyeColorId() != DyeColor.WHITE.getId() || ++phaseTicks < 40) return;
       screenshot(client, prefix + "herald-world");
-      int id = herald.getId();
+      int id = signaling.getId();
       client
           .getSingleplayerServer()
           .execute(
@@ -528,7 +528,7 @@ public final class SlimeClientSmoke {
                         .getPlayer(client.player.getUUID());
                 owner.setItemInHand(
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
-                ((HeraldSlime) owner.serverLevel().getEntity(id))
+                ((SignalingSlime) owner.serverLevel().getEntity(id))
                     .mobInteract(owner, InteractionHand.MAIN_HAND);
               });
       phase = 9;
@@ -546,7 +546,7 @@ public final class SlimeClientSmoke {
       if (screen.getMenu().data(SlimeMenu.ALERT_MINUTES) != 4 || ++phaseTicks < 20) return;
       screenshot(client, prefix + "herald-menu");
       client.player.closeContainer();
-      int id = herald.getId();
+      int id = signaling.getId();
       client
           .getSingleplayerServer()
           .execute(
@@ -561,7 +561,8 @@ public final class SlimeClientSmoke {
                 owner.setItemInHand(
                     InteractionHand.MAIN_HAND, new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()));
                 owner.inventoryMenu.broadcastChanges();
-                CreativeSlimeTunerItem.open(owner, (HeraldSlime) owner.serverLevel().getEntity(id));
+                CreativeSlimeTunerItem.open(
+                    owner, (SignalingSlime) owner.serverLevel().getEntity(id));
               });
       phase = 11;
       phaseTicks = 0;
@@ -651,10 +652,10 @@ public final class SlimeClientSmoke {
               .findFirst()
               .orElseThrow();
       if (miner.hasTag()) throw new IllegalStateException("Creative miner has initial equipment");
-      if (jei && JeiClientSmoke.heraldRecipes() != 1) return;
+      if (jei && JeiClientSmoke.signalingRecipes() != 1) return;
       screenshot(client, prefix + "tuner");
       client.player.closeContainer();
-      int id = herald.getId();
+      int id = signaling.getId();
       client
           .getSingleplayerServer()
           .execute(
@@ -731,12 +732,12 @@ public final class SlimeClientSmoke {
               ModItems.HEALING_SLIME.get(),
               ModItems.WAREHOUSE_SLIME.get(),
               ModItems.TRANSPORT_SLIME.get(),
-              ModItems.HERALD_SLIME.get(),
+              ModItems.SIGNALING_SLIME.get(),
               ModItems.COMBAT_SLIME.get(),
               ModItems.CLEANING_SLIME.get(),
               ModItems.SADDLE_SLIME.get(),
-              ModItems.FARMER_SLIME.get(),
-              ModItems.LUMBERJACK_SLIME.get(),
+              ModItems.FARMING_SLIME.get(),
+              ModItems.LOGGING_SLIME.get(),
               ModItems.GUARDIAN_ANGEL_SLIME.get()))
         if (!client
             .getItemRenderer()
@@ -752,7 +753,7 @@ public final class SlimeClientSmoke {
                   "iron_pickaxe",
                   ModItems.TRANSPORT_SLIME.get(),
                   "bundle",
-                  ModItems.HERALD_SLIME.get(),
+                  ModItems.SIGNALING_SLIME.get(),
                   "firework_rocket",
                   ModItems.COMBAT_SLIME.get(),
                   "iron_sword",
@@ -760,9 +761,9 @@ public final class SlimeClientSmoke {
                   "brush",
                   ModItems.SADDLE_SLIME.get(),
                   "saddle",
-                  ModItems.FARMER_SLIME.get(),
+                  ModItems.FARMING_SLIME.get(),
                   "iron_hoe",
-                  ModItems.LUMBERJACK_SLIME.get(),
+                  ModItems.LOGGING_SLIME.get(),
                   "iron_axe")
               .entrySet()) {
         var expected =
@@ -1003,7 +1004,7 @@ public final class SlimeClientSmoke {
                     new net.minecraft.world.item.Item[] {
                       ModItems.SLIME_CHEST.get(), ModItems.FRIENDLY_SLIME.get(),
                           ModItems.MINING_SLIME.get(),
-                      ModItems.TRANSPORT_SLIME.get(), ModItems.HERALD_SLIME.get(),
+                      ModItems.TRANSPORT_SLIME.get(), ModItems.SIGNALING_SLIME.get(),
                           ModItems.COMBAT_SLIME.get(),
                       ModItems.CLEANING_SLIME.get(), ModItems.SADDLE_SLIME.get(),
                           ModItems.BROKEN_SLIME.get()

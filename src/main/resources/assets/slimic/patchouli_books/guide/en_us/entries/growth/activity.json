@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Horizontal movement while following, riding, Attention roaming, or fleeing earns one unit per 100 movement ticks by default. Heralds earn the same while monitoring active or blocked workers. Enemy damage or shield blocks earn at most one unit per second; owner and environmental damage earn none."
+      "text": "Horizontal movement while following, riding, Attention roaming, or fleeing earns one unit per 100 movement ticks by default. Signaling Slimes earn the same while monitoring active or blocked workers. Enemy damage or shield blocks earn at most one unit per second; owner and environmental damage earn none."
     }
   ]
 }

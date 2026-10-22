@@ -87,23 +87,23 @@ public final class SupportNavigationGameTests {
   }
 
   @GameTest(template = "empty", batch = "support_navigation")
-  public static void farmerRejectsUnloadedDestination(GameTestHelper h) {
-    check(h, ModEntities.FARMER_SLIME.get(), false);
+  public static void farmingRejectsUnloadedDestination(GameTestHelper h) {
+    check(h, ModEntities.FARMING_SLIME.get(), false);
   }
 
   @GameTest(template = "empty", batch = "support_navigation")
-  public static void farmerRejectsUnloadedGap(GameTestHelper h) {
-    check(h, ModEntities.FARMER_SLIME.get(), true);
+  public static void farmingRejectsUnloadedGap(GameTestHelper h) {
+    check(h, ModEntities.FARMING_SLIME.get(), true);
   }
 
   @GameTest(template = "empty", batch = "support_navigation")
-  public static void lumberjackRejectsUnloadedDestination(GameTestHelper h) {
-    check(h, ModEntities.LUMBERJACK_SLIME.get(), false);
+  public static void loggingRejectsUnloadedDestination(GameTestHelper h) {
+    check(h, ModEntities.LOGGING_SLIME.get(), false);
   }
 
   @GameTest(template = "empty", batch = "support_navigation")
-  public static void lumberjackRejectsUnloadedGap(GameTestHelper h) {
-    check(h, ModEntities.LUMBERJACK_SLIME.get(), true);
+  public static void loggingRejectsUnloadedGap(GameTestHelper h) {
+    check(h, ModEntities.LOGGING_SLIME.get(), true);
   }
 
   @GameTest(template = "empty", batch = "support_navigation")

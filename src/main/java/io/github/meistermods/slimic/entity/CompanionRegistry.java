@@ -75,9 +75,9 @@ public final class CompanionRegistry extends SavedData {
   }
 
   // Reservations only span a spawn transaction and never survive a restart.
-  private record PendingCommander(UUID identity, Entry previous) {}
+  private record PendingCommand(UUID identity, Entry previous) {}
 
-  private final Map<UUID, PendingCommander> pendingCommanders = new HashMap<>();
+  private final Map<UUID, PendingCommand> pendingCommands = new HashMap<>();
 
   private long relationshipRevision;
 
@@ -154,8 +154,8 @@ public final class CompanionRegistry extends SavedData {
     return !owns(owner, player) && enemies.getOrDefault(owner, Set.of()).contains(player);
   }
 
-  /** Shared-access edges form an undirected group only for the commander population limit. */
-  private Set<UUID> commanderGroup(UUID owner) {
+  /** Shared-access edges form an undirected group only for the command population limit. */
+  private Set<UUID> commandGroup(UUID owner) {
     var adjacency = new HashMap<UUID, Set<UUID>>();
     coOwners.forEach(
         (primary, shared) -> {
@@ -174,42 +174,42 @@ public final class CompanionRegistry extends SavedData {
     return group;
   }
 
-  private static boolean worldCommander(Entry entry) {
+  private static boolean worldCommand(Entry entry) {
     return entry != null
         && entry.location == Location.WORLD
         && entry.health > 0
-        && entry.type.equals(ModEntities.COMMANDER_SLIME.getId().toString());
+        && entry.type.equals(ModEntities.COMMAND_SLIME.getId().toString());
   }
 
-  private long commanderCount(Set<UUID> group, UUID exceptId, UUID exceptReservationOwner) {
+  private long commandCount(Set<UUID> group, UUID exceptId, UUID exceptReservationOwner) {
     long count =
         companions.values().stream()
-            .filter(e -> group.contains(e.owner) && !e.id.equals(exceptId) && worldCommander(e))
+            .filter(e -> group.contains(e.owner) && !e.id.equals(exceptId) && worldCommand(e))
             .count();
-    for (var pending : pendingCommanders.entrySet())
+    for (var pending : pendingCommands.entrySet())
       if (group.contains(pending.getKey())
           && !pending.getKey().equals(exceptReservationOwner)
           && (pending.getValue() == null
-              || !worldCommander(companions.get(pending.getValue().identity())))) count++;
+              || !worldCommand(companions.get(pending.getValue().identity())))) count++;
     return count;
   }
 
-  /** Reserves capacity before spawn callbacks can recursively release another commander. */
-  public boolean reserveCommander(UUID owner) {
-    if (owner == null || commanderCount(commanderGroup(owner), null, null) > 0) return false;
-    pendingCommanders.put(owner, null);
+  /** Reserves capacity before spawn callbacks can recursively release another command. */
+  public boolean reserveCommand(UUID owner) {
+    if (owner == null || commandCount(commandGroup(owner), null, null) > 0) return false;
+    pendingCommands.put(owner, null);
     return true;
   }
 
-  public boolean prepareCommanderSpawn(CommanderSlime slime) {
+  public boolean prepareCommandSpawn(CommandSlime slime) {
     var owner = slime.getOwnerUUID();
-    if (owner == null || !pendingCommanders.containsKey(owner)) return false;
-    pendingCommanders.put(owner, new PendingCommander(slime.getUUID(), find(slime.getUUID())));
-    return commanderCount(commanderGroup(owner), slime.getUUID(), owner) == 0;
+    if (owner == null || !pendingCommands.containsKey(owner)) return false;
+    pendingCommands.put(owner, new PendingCommand(slime.getUUID(), find(slime.getUUID())));
+    return commandCount(commandGroup(owner), slime.getUUID(), owner) == 0;
   }
 
-  public void releaseCommanderReservation(UUID owner, boolean spawned) {
-    var pending = pendingCommanders.remove(owner);
+  public void releaseCommandReservation(UUID owner, boolean spawned) {
+    var pending = pendingCommands.remove(owner);
     if (!spawned && pending != null) {
       // Join listeners may observe the candidate before another listener cancels insertion.
       if (pending.previous() == null) companions.remove(pending.identity());
@@ -218,19 +218,19 @@ public final class CompanionRegistry extends SavedData {
     }
   }
 
-  public boolean commanderMergeConflict(UUID owner, UUID target) {
+  public boolean commandMergeConflict(UUID owner, UUID target) {
     if (owner == null || target == null) return false;
-    var group = commanderGroup(owner);
+    var group = commandGroup(owner);
     if (group.contains(target)) return false;
-    group.addAll(commanderGroup(target));
-    return commanderCount(group, null, null) > 1;
+    group.addAll(commandGroup(target));
+    return commandCount(group, null, null) > 1;
   }
 
   public boolean setRelation(UUID owner, UUID target, boolean shared, boolean enabled) {
     if (owner == null || target == null || owner.equals(target)) return false;
     var map = shared ? coOwners : enemies;
     if (enabled && !shared && owns(owner, target)) return false;
-    if (enabled && shared && commanderMergeConflict(owner, target)) return false;
+    if (enabled && shared && commandMergeConflict(owner, target)) return false;
     var values = map.computeIfAbsent(owner, ignored -> new HashSet<>());
     if (enabled && values.size() >= (shared ? 64 : 256) && !values.contains(target)) return false;
     boolean changed = enabled ? values.add(target) : values.remove(target);

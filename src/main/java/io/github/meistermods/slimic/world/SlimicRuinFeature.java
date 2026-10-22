@@ -146,7 +146,7 @@ public final class SlimicRuinFeature extends Feature<NoneFeatureConfiguration> {
             ruin,
             source,
             destination,
-            ModEntities.ANCIENT_COMMANDER_SLIME.get(),
+            ModEntities.ANCIENT_COMMAND_SLIME.get(),
             3);
       if (type == 4)
         spawn(

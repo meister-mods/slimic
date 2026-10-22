@@ -27,8 +27,8 @@ public record SlimeRestorationRecipe(AncientSlime.Role role) {
         switch (role) {
           case GUARD, MINE_GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
           case TRANSPORT -> ModItems.TRANSPORT_SLIME.get();
-          case COMMANDER -> ModItems.COMMANDER_SLIME.get();
-          case MINER -> ModItems.ANCIENT_MINING_SLIME.get();
+          case COMMAND -> ModItems.COMMAND_SLIME.get();
+          case MINING -> ModItems.ANCIENT_MINING_SLIME.get();
           case TUNNEL -> ModItems.ANCIENT_TUNNEL_SLIME.get();
         });
   }

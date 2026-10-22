@@ -1,8 +1,8 @@
 package io.github.meistermods.slimic.recipe;
 
 import io.github.meistermods.slimic.entity.CombatSlime;
-import io.github.meistermods.slimic.entity.FarmerSlime;
-import io.github.meistermods.slimic.entity.LumberjackSlime;
+import io.github.meistermods.slimic.entity.FarmingSlime;
+import io.github.meistermods.slimic.entity.LoggingSlime;
 import io.github.meistermods.slimic.item.CombatSlimeItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.registry.ModItems;
@@ -25,8 +25,8 @@ public final class CompanionRecipe extends CustomRecipe {
     CLEANING,
     ARMOR,
     SADDLE,
-    FARMER,
-    LUMBERJACK,
+    FARMING,
+    LOGGING,
     SOGGY,
     HEALING
   }
@@ -48,8 +48,8 @@ public final class CompanionRecipe extends CustomRecipe {
       case CLEANING -> stack.is(Items.ROTTEN_FLESH);
       case ARMOR -> stack.is(Items.SLIME_BALL);
       case SADDLE -> stack.is(Items.SADDLE);
-      case FARMER -> FarmerSlime.isHoe(stack);
-      case LUMBERJACK -> LumberjackSlime.isAxe(stack);
+      case FARMING -> FarmingSlime.isHoe(stack);
+      case LOGGING -> LoggingSlime.isAxe(stack);
       case SOGGY -> stack.is(Items.SLIME_BALL);
       case HEALING -> stack.is(Items.GOLDEN_CARROT);
     };
@@ -102,9 +102,9 @@ public final class CompanionRecipe extends CustomRecipe {
     return result;
   }
 
-  public static ItemStack field(ItemStack friendly, ItemStack tool, boolean farmer) {
+  public static ItemStack field(ItemStack friendly, ItemStack tool, boolean farming) {
     ItemStack result =
-        new ItemStack(farmer ? ModItems.FARMER_SLIME.get() : ModItems.LUMBERJACK_SLIME.get());
+        new ItemStack(farming ? ModItems.FARMING_SLIME.get() : ModItems.LOGGING_SLIME.get());
     CompanionBase.copyData(friendly, result);
     result.getOrCreateTag().put("InitialWorkTool", tool.copyWithCount(1).save(new CompoundTag()));
     return result;
@@ -124,8 +124,8 @@ public final class CompanionRecipe extends CustomRecipe {
       case CLEANING -> cleaning(first);
       case ARMOR -> SlimeArmorItem.fromChestplate(first);
       case SADDLE -> saddle(first, second);
-      case FARMER -> field(first, second, true);
-      case LUMBERJACK -> field(first, second, false);
+      case FARMING -> field(first, second, true);
+      case LOGGING -> field(first, second, false);
       case SOGGY -> soggy(first);
       case HEALING -> healing(first);
     };
@@ -148,8 +148,8 @@ public final class CompanionRecipe extends CustomRecipe {
       case CLEANING -> ModRecipes.CLEANING_SLIME.get();
       case ARMOR -> ModRecipes.SLIME_ARMOR.get();
       case SADDLE -> ModRecipes.SADDLE_SLIME.get();
-      case FARMER -> ModRecipes.FARMER_SLIME.get();
-      case LUMBERJACK -> ModRecipes.LUMBERJACK_SLIME.get();
+      case FARMING -> ModRecipes.FARMING_SLIME.get();
+      case LOGGING -> ModRecipes.LOGGING_SLIME.get();
       case SOGGY -> ModRecipes.SOGGY_SLIME.get();
       case HEALING -> ModRecipes.HEALING_SLIME.get();
     };

@@ -6,6 +6,7 @@ import io.github.meistermods.slimic.item.*;
 import io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe;
 import io.github.meistermods.slimic.registry.*;
 import io.github.meistermods.slimic.world.*;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.core.*;
@@ -28,6 +29,26 @@ import net.minecraftforge.gametest.*;
 @GameTestHolder(Slimic.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class ForgottenOrdersGameTests {
+  @GameTest(template = "empty", batch = "forgotten_orders")
+  public static void legacyCoreRoleNamesRemainReadableAndStable(GameTestHelper h) {
+    var names = List.of("GUARD", "TRANSPORT", "COMMANDER", "MINER", "TUNNEL", "MINE_GUARD");
+    var roles = AncientSlime.Role.values();
+    for (int i = 0; i < roles.length; i++) {
+      var core = AncientSlimeCoreItem.fromRemains(roles[i], UUID.randomUUID(), 2);
+      core.getTag().putString("AncientRole", names.get(i));
+      h.assertTrue(
+          AncientSlimeCoreItem.role(ItemStack.of(core.save(new CompoundTag()))) == roles[i],
+          "Previously saved core roles remain readable after Java enum renaming");
+      h.assertTrue(
+          AncientSlimeCoreItem.creativeVariant(roles[i])
+              .getTag()
+              .getString("AncientRole")
+              .equals(names.get(i)),
+          "New cores retain the established role identifiers");
+    }
+    h.succeed();
+  }
+
   private record Site(GameTestHelper h, LoadedWorkArea area, Player owner, BlockPos pedestal) {}
 
   private static Site site(GameTestHelper h) {
@@ -46,8 +67,8 @@ public final class ForgottenOrdersGameTests {
         switch (role) {
           case GUARD -> ModEntities.ANCIENT_GUARD_SLIME.get();
           case TRANSPORT -> ModEntities.FORGOTTEN_TRANSPORT_SLIME.get();
-          case COMMANDER -> ModEntities.ANCIENT_COMMANDER_SLIME.get();
-          case MINER -> ModEntities.FORGOTTEN_MINER_SLIME.get();
+          case COMMAND -> ModEntities.ANCIENT_COMMAND_SLIME.get();
+          case MINING -> ModEntities.FORGOTTEN_MINING_SLIME.get();
           case TUNNEL -> ModEntities.FORGOTTEN_TUNNEL_SLIME.get();
           case MINE_GUARD -> ModEntities.MINE_GUARDIAN_SLIME.get();
         };
@@ -131,7 +152,7 @@ public final class ForgottenOrdersGameTests {
     var s = site(h);
     for (var role :
         new AncientSlime.Role[] {
-          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMAND
         }) {
       var enemy = ancient(s, role, 5);
       h.assertTrue(
@@ -152,7 +173,7 @@ public final class ForgottenOrdersGameTests {
     materials(s, 4);
     for (var role :
         new AncientSlime.Role[] {
-          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMAND
         }) {
       var core = core(s, role);
       var old = core.getTag().getUUID("AncientIdentity");
@@ -164,8 +185,8 @@ public final class ForgottenOrdersGameTests {
           switch (role) {
             case GUARD, MINE_GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
             case TRANSPORT -> ModItems.TRANSPORT_SLIME.get();
-            case COMMANDER -> ModItems.COMMANDER_SLIME.get();
-            case MINER -> ModItems.ANCIENT_MINING_SLIME.get();
+            case COMMAND -> ModItems.COMMAND_SLIME.get();
+            case MINING -> ModItems.ANCIENT_MINING_SLIME.get();
             case TUNNEL -> ModItems.ANCIENT_TUNNEL_SLIME.get();
           };
       h.assertTrue(
@@ -649,22 +670,22 @@ public final class ForgottenOrdersGameTests {
   }
 
   @GameTest(template = "empty", batch = "forgotten_orders")
-  public static void commanderAlertsOnlyGuardsOfItsOwnRuin(GameTestHelper h) {
+  public static void commandAlertsOnlyGuardsOfItsOwnRuin(GameTestHelper h) {
     var s = site(h);
-    var commander = ancient(s, AncientSlime.Role.COMMANDER, 5);
+    var command = ancient(s, AncientSlime.Role.COMMAND, 5);
     var guard = ancient(s, AncientSlime.Role.GUARD, 6);
     var outsider = ancient(s, AncientSlime.Role.GUARD, 7);
     var carrier = ancient(s, AncientSlime.Role.TRANSPORT, 9);
     var ally = ally(s);
-    guard.bindToRuin(commander.getRuinHome(), commander.getRuinId(), null, null, 1);
-    carrier.bindToRuin(commander.getRuinHome(), commander.getRuinId(), null, null, 1);
-    for (var npc : new AncientSlime[] {commander, guard, outsider, carrier}) {
+    guard.bindToRuin(command.getRuinHome(), command.getRuinId(), null, null, 1);
+    carrier.bindToRuin(command.getRuinHome(), command.getRuinId(), null, null, 1);
+    for (var npc : new AncientSlime[] {command, guard, outsider, carrier}) {
       npc.setNoAi(true);
       h.getLevel().addFreshEntity(npc);
     }
-    commander.alert(ally);
+    command.alert(ally);
     h.assertTrue(
-        commander.getTarget() == ally
+        command.getTarget() == ally
             && guard.getTarget() == ally
             && outsider.getTarget() == null
             && carrier.getTarget() == null,
@@ -780,7 +801,7 @@ public final class ForgottenOrdersGameTests {
     var ally = ally(s);
     for (var role :
         new AncientSlime.Role[] {
-          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMAND
         }) {
       var npc = ancient(s, role, 5);
       npc.setNoAi(true);
@@ -815,7 +836,7 @@ public final class ForgottenOrdersGameTests {
     var s = site(h);
     for (var role :
         new AncientSlime.Role[] {
-          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMAND
         }) {
       var npc = ancient(s, role, 5);
       var copy = (AncientSlime) npc.getType().create(h.getLevel());
@@ -1057,7 +1078,7 @@ public final class ForgottenOrdersGameTests {
     var companionIds = new java.util.HashSet<UUID>();
     for (var role :
         new AncientSlime.Role[] {
-          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMANDER
+          AncientSlime.Role.GUARD, AncientSlime.Role.TRANSPORT, AncientSlime.Role.COMMAND
         }) {
       var prototype = AncientSlimeCoreItem.creativeVariant(role);
       var original = prototype.copy();
@@ -1076,8 +1097,8 @@ public final class ForgottenOrdersGameTests {
             switch (role) {
               case GUARD, MINE_GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
               case TRANSPORT -> ModItems.TRANSPORT_SLIME.get();
-              case COMMANDER -> ModItems.COMMANDER_SLIME.get();
-              case MINER -> ModItems.ANCIENT_MINING_SLIME.get();
+              case COMMAND -> ModItems.COMMAND_SLIME.get();
+              case MINING -> ModItems.ANCIENT_MINING_SLIME.get();
               case TUNNEL -> ModItems.ANCIENT_TUNNEL_SLIME.get();
             };
         var result = s.owner.getMainHandItem();

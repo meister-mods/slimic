@@ -21,11 +21,11 @@ public final class ModMenus {
               () ->
                   IForgeMenuType.create(io.github.meistermods.slimic.menu.RoyalSynthesisMenu::new));
 
-  public static final RegistryObject<MenuType<io.github.meistermods.slimic.menu.CommanderMenu>>
-      COMMANDER =
+  public static final RegistryObject<MenuType<io.github.meistermods.slimic.menu.CommandMenu>>
+      COMMAND =
           MENUS.register(
               "commander",
-              () -> IForgeMenuType.create(io.github.meistermods.slimic.menu.CommanderMenu::new));
+              () -> IForgeMenuType.create(io.github.meistermods.slimic.menu.CommandMenu::new));
 
   private ModMenus() {}
 

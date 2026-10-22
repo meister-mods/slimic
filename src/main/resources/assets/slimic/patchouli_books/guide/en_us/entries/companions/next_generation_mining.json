@@ -1,12 +1,13 @@
 {
-  "name": "Next-Gen Mining",
+  "name": "Next-Generation Mining Slime",
   "icon": "slimic:next_generation_mining_slime",
   "category": "slimic:companions",
   "sortnum": 26,
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "$(l:world/royal_synthesis)Royal synthesis$() creates the Next-Generation Mining Slime. Its gold crest surrounds a green core badge. Health, stamina, tools, and bags use ordinary Mining Slime rules. It starts in Wait. Normal excavates a chunk; Ore Priority favors visible ores in the active layer."
+      "type": "slimic:companion_intro",
+      "text": "$(l:world/royal_synthesis)Royal synthesis$() creates this companion. It starts in Wait with ordinary Mining Slime health, stamina, tools, and bags. Normal excavates its chunk; Ore Priority favors visible ores in the active layer.",
+      "title": "Next-Generation Mining Slime"
     },
     {
       "type": "patchouli:text",

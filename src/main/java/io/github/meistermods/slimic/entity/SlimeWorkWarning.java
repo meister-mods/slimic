@@ -25,9 +25,9 @@ public final class SlimeWorkWarning {
       String tool =
           worker instanceof MiningSlime miner
               ? miner.getRequiredToolSlot() == 1 ? "shovel" : "pickaxe"
-              : worker instanceof FarmerSlime
+              : worker instanceof FarmingSlime
                   ? "hoe"
-                  : worker instanceof LumberjackSlime
+                  : worker instanceof LoggingSlime
                       ? "axe"
                       : worker instanceof FishingSlime
                           ? "fishing_rod"
@@ -35,7 +35,7 @@ public final class SlimeWorkWarning {
       return Component.translatable("message.slimic.blocked.tool_missing." + tool);
     }
     String key =
-        status.reason() == WorkStatus.Reason.SEEDS_MISSING && worker instanceof LumberjackSlime
+        status.reason() == WorkStatus.Reason.SEEDS_MISSING && worker instanceof LoggingSlime
             ? "saplings_missing"
             : status.reason().name().toLowerCase(Locale.ROOT);
     return Component.translatable("message.slimic.blocked." + key);

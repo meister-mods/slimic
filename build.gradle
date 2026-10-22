@@ -357,6 +357,18 @@ tasks.register('verifyGuidebook') {
             [book.name, book.landing_text, book.subtitle].each { key ->
                 require(strings[key] instanceof String && !strings[key].blank, 'Missing guide translation: ' + lang + '/' + key)
             }
+            entries.findAll { it.startsWith('companions/') }.each { id ->
+                def entry = parse(new File(base, lang + '/entries/' + id + '.json'))
+                def item = entry.icon.replaceFirst('^slimic:', '')
+                def canonical = strings['entity.slimic.' + item]
+                require(canonical && canonical == strings['item.slimic.' + item]
+                        && canonical == entry.name,
+                        'Companion item, entity and guide names must agree: ' + lang + '/' + id)
+                if (entry.pages[0].type == 'slimic:companion_intro') {
+                    require(entry.pages[0].title == canonical,
+                            'Wrapped companion headings must retain the full name: ' + lang + '/' + id)
+                }
+            }
         }
         logger.lifecycle("Guide verified: ${categories.size()} categories, ${entries.size()} entries, ${pages} pages per language; bilingual links and recipes valid.")
     }

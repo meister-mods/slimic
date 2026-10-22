@@ -205,8 +205,8 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
       BlockPos face,
       net.minecraft.core.Direction direction) {
     var type =
-        role == io.github.meistermods.slimic.entity.AncientSlime.Role.MINER
-            ? io.github.meistermods.slimic.registry.ModEntities.FORGOTTEN_MINER_SLIME.get()
+        role == io.github.meistermods.slimic.entity.AncientSlime.Role.MINING
+            ? io.github.meistermods.slimic.registry.ModEntities.FORGOTTEN_MINING_SLIME.get()
             : role == io.github.meistermods.slimic.entity.AncientSlime.Role.TUNNEL
                 ? io.github.meistermods.slimic.registry.ModEntities.FORGOTTEN_TUNNEL_SLIME.get()
                 : io.github.meistermods.slimic.registry.ModEntities.MINE_GUARDIAN_SLIME.get();
@@ -280,7 +280,7 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
   }
 
   private static void quarry(Layout l, WorldGenLevel level, QuarryPlan plan, int bottom) {
-    l.workRole = io.github.meistermods.slimic.entity.AncientSlime.Role.MINER;
+    l.workRole = io.github.meistermods.slimic.entity.AncientSlime.Role.MINING;
     for (int x = 0; x < 16; x++)
       for (int z = 0; z < 16; z++) {
         var floor = new BlockPos(l.chunk.getMinBlockX() + x, bottom, l.chunk.getMinBlockZ() + z);

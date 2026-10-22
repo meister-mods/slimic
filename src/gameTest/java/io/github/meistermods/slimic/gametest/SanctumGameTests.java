@@ -91,7 +91,7 @@ public final class SanctumGameTests {
         restorationPos, Block.byItem(restoration.getItem()).defaultBlockState());
     var damaged =
         io.github.meistermods.slimic.item.AncientSlimeCoreItem.fromRemains(
-            io.github.meistermods.slimic.entity.AncientSlime.Role.MINER, UUID.randomUUID(), 2);
+            io.github.meistermods.slimic.entity.AncientSlime.Role.MINING, UUID.randomUUID(), 2);
     owner.setItemInHand(InteractionHand.OFF_HAND, damaged);
     owner.moveTo(net.minecraft.world.phys.Vec3.atCenterOf(restorationPos));
     h.assertTrue(
@@ -428,7 +428,7 @@ public final class SanctumGameTests {
         corpse != null
             && level.getBlockState(corpsePos).getValue(BrokenSlimeBlock.MINERALIZED)
             && io.github.meistermods.slimic.item.AncientSlimeCoreItem.role(corpse.getAncientCore())
-                == io.github.meistermods.slimic.entity.AncientSlime.Role.MINER,
+                == io.github.meistermods.slimic.entity.AncientSlime.Role.MINING,
         "Courtyard mining remains use their mineralized appearance and contain the promised core");
     for (int zone = 1; zone <= 4; zone++) {
       int z = -40 + zone * 16 + 8, y = z < 20 ? 0 : -Math.min(4, (z - 20) / 2);

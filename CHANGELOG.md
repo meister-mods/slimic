@@ -4,6 +4,21 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-10-22
+
+### Changed
+
+- Name working slime types after their activities: Logging Slime, Signaling Slime, Command Slime, Ancient Command Slime, and Forgotten Mining Slime. Align English items, entities, spawn eggs, guide entries, and current documentation with the established Korean names.
+- Rename Java classes, registry constants, menus, packets, and recipe kinds to action names while retaining persistent IDs, resource paths, configuration keys, and NBT keys. Decouple ancient core save names from enum names to preserve existing cores.
+- Use the complete Next-Generation Mining Slime name in the guide and wrap its opening heading within the page.
+- Document the naming convention and verify matching item, entity, and guide-entry names in both supported languages.
+
+### Validation
+
+- Native 0.4.1 data imports preserve all 26 companion world and stored-item payloads, waiting deployment, six hostile snapshots, six core roles, and the saved Command Slime population limit.
+- All 154 focused server cases pass with JEI and Patchouli. Native guide rendering and localized searches pass for all 66 entries and 213 pages in English, Korean, and fallback text with both fonts.
+- Native clients verify all 26 companion models and summon items, Command roster and relation packets, bilingual restoration screens, core names, specialization recipes, and JEI lookups.
+
 ## [0.4.1] - 2026-10-22
 
 ### Fixed

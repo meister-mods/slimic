@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Ruin guards, transports, and commanders leave cores restored with seals. $(l:world/mine_recovery)Mine cores$() come from broken corpses or mine remnants and use command fragments instead. Restoration makes a new companion; your own fallen companions use their usual revival."
+      "text": "Ruin guards, transports, and command slimes leave cores restored with seals. $(l:world/mine_recovery)Mine cores$() come from broken corpses or mine remnants and use command fragments instead. Restoration makes a new companion; your own fallen companions use their usual revival."
     },
     {
       "type": "patchouli:text",
@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Guards become $(l:companions/royal_guard)Royal Guards$(), carriers become $(l:companions/transport)Transports$(), and commanders become $(l:companions/commander)Commanders$(). Each receives a new identity and your ownership, and starts waiting at one health. The usual group-wide Commander spawn limit still applies."
+      "text": "Guards become $(l:companions/royal_guard)Royal Guards$(), carriers become $(l:companions/transport)Transports$(), and command slimes become $(l:companions/commander)Command Slimes$(). Each receives a new identity and your ownership, and starts waiting at one health. The usual group-wide Command spawn limit still applies."
     },
     {
       "type": "patchouli:text",

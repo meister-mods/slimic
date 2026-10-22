@@ -107,7 +107,7 @@ Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. U
 
 ## Ruins and records
 
-Scattered workshops, supply depots, road fragments, archives, and royal wards use local masonry, broken furniture, lamps, and weathered markers. Newly generated occupied ruins contain ancient guards, carriers, and sometimes commanders still obeying the lost kingdom's orders. Their actual Slime Chests move supplies, while ordinary chests contain supplies and translated records, with a chance to find a command seal.
+Scattered workshops, supply depots, road fragments, archives, and royal wards use local masonry, broken furniture, lamps, and weathered markers. Newly generated occupied ruins contain ancient guards, carriers, and sometimes command slimes still obeying the lost kingdom's orders. Their actual Slime Chests move supplies, while ordinary chests contain supplies and translated records, with a chance to find a command seal.
 
 Defeat a remnant and restore its core at an intact Slime Restoration Station, or use a seal to specialize an existing Combat Slime. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for both acquisition paths, occupied depots, archives, and old royal wards. Opening an ancient Slime Chest removes its carrier link. The intact pedestal now restores cores; other ornamental furniture retains its decorative role. Records describe the absent XXX, the kingdom's fading supply routes, and the last watch.
 
@@ -126,4 +126,4 @@ Generation stays within one chunk and rejects wet sites, existing block entities
 
 Unmounted companions can enter slime portals. Their UUID, owner, health, stamina, stat upgrades, equipment, and cargo are preserved. **Every companion arrives in Wait.** Work origins follow each profession's relocation rules; miners establish a new quarry plan in the new dimension. Inspect the destination with a Slime Scanner and explicitly start work when ready.
 
-Recovery and item release also work across dimensions. Release starts in Wait and follows the existing [preservation rules](GAMEPLAY.md#recovery-and-preserved-traits). Shared-owner and Commander population rules continue to apply across the entire save.
+Recovery and item release also work across dimensions. Release starts in Wait and follows the existing [preservation rules](GAMEPLAY.md#recovery-and-preserved-traits). Shared-owner and Command population rules continue to apply across the entire save.

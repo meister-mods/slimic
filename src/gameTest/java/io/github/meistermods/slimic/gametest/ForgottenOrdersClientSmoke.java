@@ -63,7 +63,7 @@ public final class ForgottenOrdersClientSmoke {
         var role = io.github.meistermods.slimic.item.AncientSlimeCoreItem.role(core);
         var expected =
             switch (role) {
-              case MINER -> "item/damaged_mining_slime_core";
+              case MINING -> "item/damaged_mining_slime_core";
               case TUNNEL -> "item/damaged_tunnel_slime_core";
               case MINE_GUARD -> "item/damaged_mine_guardian_core";
               default -> "item/damaged_ancient_slime_core";
@@ -130,8 +130,8 @@ public final class ForgottenOrdersClientSmoke {
           List.of(
               ModEntities.ANCIENT_GUARD_SLIME.get(),
               ModEntities.FORGOTTEN_TRANSPORT_SLIME.get(),
-              ModEntities.ANCIENT_COMMANDER_SLIME.get(),
-              ModEntities.FORGOTTEN_MINER_SLIME.get(),
+              ModEntities.ANCIENT_COMMAND_SLIME.get(),
+              ModEntities.FORGOTTEN_MINING_SLIME.get(),
               ModEntities.FORGOTTEN_TUNNEL_SLIME.get(),
               ModEntities.MINE_GUARDIAN_SLIME.get())) {
         var slime = type.create(c.level);
@@ -149,9 +149,9 @@ public final class ForgottenOrdersClientSmoke {
       transport.setAncientOrigin(true);
       models.add(transport);
       names.add("Restored Transport");
-      var commander = ModEntities.COMMANDER_SLIME.get().create(c.level);
-      commander.setAncientOrigin(true);
-      models.add(commander);
+      var command = ModEntities.COMMAND_SLIME.get().create(c.level);
+      command.setAncientOrigin(true);
+      models.add(command);
       names.add("Restored Commander");
       for (var model : models) ((Mob) model).setNoAi(true);
       for (var item :
@@ -164,7 +164,7 @@ public final class ForgottenOrdersClientSmoke {
               ModItems.DAMAGED_ANCIENT_SLIME_CORE.get(),
               ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get(),
               ModItems.FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG.get(),
-              ModItems.ANCIENT_COMMANDER_SLIME_SPAWN_EGG.get(),
+              ModItems.ANCIENT_COMMAND_SLIME_SPAWN_EGG.get(),
               ModWorldBlocks.block("command_pedestal").asItem())) {
         var stack = new ItemStack(item);
         var model = c.getItemRenderer().getModel(stack, c.level, c.player, 0);

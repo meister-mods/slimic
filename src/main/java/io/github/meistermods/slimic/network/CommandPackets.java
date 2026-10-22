@@ -1,6 +1,6 @@
 package io.github.meistermods.slimic.network;
 
-import io.github.meistermods.slimic.menu.CommanderMenu;
+import io.github.meistermods.slimic.menu.CommandMenu;
 import java.util.*;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
@@ -9,8 +9,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.*;
 
-public final class CommanderPackets {
-  private CommanderPackets() {}
+public final class CommandPackets {
+  private CommandPackets() {}
 
   public record Row(
       UUID id,
@@ -68,7 +68,7 @@ public final class CommanderPackets {
       int gathered = b.readVarInt(), requested = b.readVarInt();
       boolean primary = b.readBoolean();
       int count = b.readUnsignedByte();
-      if (count > CommanderMenu.PAGE_SIZE)
+      if (count > CommandMenu.PAGE_SIZE)
         throw new IllegalArgumentException("Oversized roster page");
       var rows = new ArrayList<Row>();
       for (int i = 0; i < count; i++)
@@ -92,7 +92,7 @@ public final class CommanderPackets {
           () ->
               DistExecutor.unsafeRunWhenOn(
                   Dist.CLIENT,
-                  () -> () -> io.github.meistermods.slimic.client.CommanderClient.receive(packet)));
+                  () -> () -> io.github.meistermods.slimic.client.CommandClient.receive(packet)));
       context.setPacketHandled(true);
     }
   }
@@ -117,7 +117,7 @@ public final class CommanderPackets {
           () -> {
             var sender = context.getSender();
             if (sender != null
-                && sender.containerMenu instanceof CommanderMenu menu
+                && sender.containerMenu instanceof CommandMenu menu
                 && menu.containerId == packet.menuId)
               menu.perform(sender, packet.action, packet.page, packet.target, packet.tag);
           });

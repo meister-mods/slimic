@@ -33,15 +33,31 @@ import net.minecraftforge.event.ForgeEventFactory;
 /** A remnant of the old kingdom, bound to its own ruin and never a player-owned companion. */
 public final class AncientSlime extends Monster {
   public enum Role {
-    GUARD,
-    TRANSPORT,
-    COMMANDER,
-    MINER,
-    TUNNEL,
-    MINE_GUARD;
+    GUARD("GUARD"),
+    TRANSPORT("TRANSPORT"),
+    COMMAND("COMMANDER"),
+    MINING("MINER"),
+    TUNNEL("TUNNEL"),
+    MINE_GUARD("MINE_GUARD");
+
+    private final String savedName;
+
+    Role(String savedName) {
+      this.savedName = savedName;
+    }
+
+    /** Stable core data and translation identifiers, independent of Java enum names. */
+    public String savedName() {
+      return savedName;
+    }
+
+    public static Role fromSavedName(String name) {
+      for (Role role : values()) if (role.savedName.equals(name)) return role;
+      throw new IllegalArgumentException("Unknown ancient slime role: " + name);
+    }
 
     public boolean isMine() {
-      return this == MINER || this == TUNNEL || this == MINE_GUARD;
+      return this == MINING || this == TUNNEL || this == MINE_GUARD;
     }
   }
 
@@ -81,7 +97,7 @@ public final class AncientSlime extends Monster {
           }
         };
     xpReward = 5;
-    if (role() == Role.MINER || role() == Role.TUNNEL) {
+    if (role() == Role.MINING || role() == Role.TUNNEL) {
       setItemInHand(
           net.minecraft.world.InteractionHand.MAIN_HAND,
           new ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
@@ -98,24 +114,24 @@ public final class AncientSlime extends Monster {
         .add(Attributes.MAX_HEALTH, health(role))
         .add(
             Attributes.ATTACK_DAMAGE,
-            role == Role.COMMANDER
+            role == Role.COMMAND
                 ? 12
-                : role == Role.TRANSPORT || role == Role.MINER || role == Role.TUNNEL
+                : role == Role.TRANSPORT || role == Role.MINING || role == Role.TUNNEL
                     ? 6
                     : role == Role.MINE_GUARD ? 10 : 8)
         .add(
             Attributes.ARMOR,
-            role == Role.COMMANDER || role == Role.MINE_GUARD
+            role == Role.COMMAND || role == Role.MINE_GUARD
                 ? 12
-                : role == Role.TRANSPORT || role == Role.MINER || role == Role.TUNNEL ? 6 : 8)
-        .add(Attributes.MOVEMENT_SPEED, role == Role.MINER || role == Role.TUNNEL ? .18 : .25)
+                : role == Role.TRANSPORT || role == Role.MINING || role == Role.TUNNEL ? 6 : 8)
+        .add(Attributes.MOVEMENT_SPEED, role == Role.MINING || role == Role.TUNNEL ? .18 : .25)
         .add(Attributes.FOLLOW_RANGE, 16);
   }
 
   private static double health(Role role) {
     return switch (role) {
-      case COMMANDER -> 96;
-      case TRANSPORT, MINER -> 48;
+      case COMMAND -> 96;
+      case TRANSPORT, MINING -> 48;
       case TUNNEL -> 56;
       case MINE_GUARD -> 96;
       default -> 64;
@@ -123,12 +139,12 @@ public final class AncientSlime extends Monster {
   }
 
   public Role role() {
-    if (getType() == ModEntities.FORGOTTEN_MINER_SLIME.get()) return Role.MINER;
+    if (getType() == ModEntities.FORGOTTEN_MINING_SLIME.get()) return Role.MINING;
     if (getType() == ModEntities.FORGOTTEN_TUNNEL_SLIME.get()) return Role.TUNNEL;
     if (getType() == ModEntities.MINE_GUARDIAN_SLIME.get()) return Role.MINE_GUARD;
     return getType() == ModEntities.FORGOTTEN_TRANSPORT_SLIME.get()
         ? Role.TRANSPORT
-        : getType() == ModEntities.ANCIENT_COMMANDER_SLIME.get() ? Role.COMMANDER : Role.GUARD;
+        : getType() == ModEntities.ANCIENT_COMMAND_SLIME.get() ? Role.COMMAND : Role.GUARD;
   }
 
   public void bindMineFace(BlockPos face, net.minecraft.core.Direction direction) {
@@ -161,7 +177,7 @@ public final class AncientSlime extends Monster {
     setHealth(getMaxHealth());
     setCustomName(
         Component.translatable(
-            "name.slimic.ancient_" + role().name().toLowerCase(java.util.Locale.ROOT)));
+            "name.slimic.ancient_" + role().savedName().toLowerCase(java.util.Locale.ROOT)));
   }
 
   @Override
@@ -222,7 +238,7 @@ public final class AncientSlime extends Monster {
   public void alert(LivingEntity intruder) {
     if (!mayAttack(intruder)) return;
     setTarget(intruder);
-    if (role() != Role.COMMANDER || ruin == null) return;
+    if (role() != Role.COMMAND || ruin == null) return;
     for (var guard :
         level()
             .getEntitiesOfClass(
@@ -256,7 +272,8 @@ public final class AncientSlime extends Monster {
     io.github.meistermods.slimic.world.SanctumEncounters.tick(this);
     if (attackCooldown > 0) attackCooldown--;
     if (home == null) home = blockPosition().immutable();
-    if (getTarget() == null && (role() == Role.MINER || role() == Role.TUNNEL)) mineWork.tick(this);
+    if (getTarget() == null && (role() == Role.MINING || role() == Role.TUNNEL))
+      mineWork.tick(this);
     else mineWork.resetProgress(this);
     if ((tickCount + getId()) % 10 != 0) return;
     var victim = getTarget();
@@ -293,7 +310,7 @@ public final class AncientSlime extends Monster {
       navigateTo(Vec3.atBottomCenterOf(home), 1);
       return;
     }
-    if ((role() == Role.MINER || role() == Role.TUNNEL) && mineWork.hasWorkFace()) return;
+    if ((role() == Role.MINING || role() == Role.TUNNEL) && mineWork.hasWorkFace()) return;
     if (role() == Role.TRANSPORT && tickCount % 40 < 10) haul();
     else if (role() != Role.TRANSPORT && tickCount % 80 < 10 && getNavigation().isDone()) {
       int[][] points = {{3, 2}, {-3, 2}, {-3, -2}, {3, -2}};
@@ -420,17 +437,17 @@ public final class AncientSlime extends Monster {
       float health = getHealth();
       float oldMaximum = getMaxHealth();
       var maximum = getAttribute(Attributes.MAX_HEALTH);
-      double oldBase = role() == Role.COMMANDER ? 40 : 28;
+      double oldBase = role() == Role.COMMAND ? 40 : 28;
       if (maximum.getBaseValue() == oldBase) {
-        maximum.setBaseValue(role() == Role.COMMANDER ? 96 : role() == Role.TRANSPORT ? 48 : 64);
+        maximum.setBaseValue(role() == Role.COMMAND ? 96 : role() == Role.TRANSPORT ? 48 : 64);
         setHealth(health * getMaxHealth() / oldMaximum);
       }
       var attack = getAttribute(Attributes.ATTACK_DAMAGE);
-      if (attack.getBaseValue() == (role() == Role.COMMANDER ? 5 : 4))
-        attack.setBaseValue(role() == Role.COMMANDER ? 12 : role() == Role.TRANSPORT ? 6 : 8);
+      if (attack.getBaseValue() == (role() == Role.COMMAND ? 5 : 4))
+        attack.setBaseValue(role() == Role.COMMAND ? 12 : role() == Role.TRANSPORT ? 6 : 8);
       var armor = getAttribute(Attributes.ARMOR);
       if (armor.getBaseValue() == 3)
-        armor.setBaseValue(role() == Role.COMMANDER ? 12 : role() == Role.TRANSPORT ? 6 : 8);
+        armor.setBaseValue(role() == Role.COMMAND ? 12 : role() == Role.TRANSPORT ? 6 : 8);
     }
     setTarget(null);
     pathDestination = null;

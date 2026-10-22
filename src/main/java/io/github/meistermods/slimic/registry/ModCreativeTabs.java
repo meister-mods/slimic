@@ -32,7 +32,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.DRAGON_SLIME.get());
                         output.accept(ModItems.MEOW_SLIME.get());
                         output.accept(ModItems.GLOW_SLIME.get());
-                        output.accept(ModItems.COMMANDER_SLIME.get());
+                        output.accept(ModItems.COMMAND_SLIME.get());
                         output.accept(ModItems.ENDER_SLIME.get());
                         output.accept(ModItems.ATTENTION_SLIME.get());
                         output.accept(ModItems.WAREHOUSE_SLIME.get());
@@ -42,13 +42,13 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.NEXT_GENERATION_MINING_SLIME.get());
                         output.accept(ModItems.ANCIENT_TUNNEL_SLIME.get());
                         output.accept(ModItems.TRANSPORT_SLIME.get());
-                        output.accept(ModItems.HERALD_SLIME.get());
+                        output.accept(ModItems.SIGNALING_SLIME.get());
                         output.accept(ModItems.COMBAT_SLIME.get());
                         output.accept(ModItems.ROYAL_GUARD_SLIME.get());
                         output.accept(ModItems.CLEANING_SLIME.get());
                         output.accept(ModItems.SADDLE_SLIME.get());
-                        output.accept(ModItems.FARMER_SLIME.get());
-                        output.accept(ModItems.LUMBERJACK_SLIME.get());
+                        output.accept(ModItems.FARMING_SLIME.get());
+                        output.accept(ModItems.LOGGING_SLIME.get());
                         output.accept(ModItems.GUARDIAN_ANGEL_SLIME.get());
                         output.accept(ModItems.SOGGY_SLIME.get());
                         output.accept(ModItems.SLIME_TRAIL.get());
@@ -68,8 +68,8 @@ public final class ModCreativeTabs {
                         output.accept(ModWorldBlocks.block("command_pedestal"));
                         output.accept(ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.FORGOTTEN_TRANSPORT_SLIME_SPAWN_EGG.get());
-                        output.accept(ModItems.ANCIENT_COMMANDER_SLIME_SPAWN_EGG.get());
-                        output.accept(ModItems.FORGOTTEN_MINER_SLIME_SPAWN_EGG.get());
+                        output.accept(ModItems.ANCIENT_COMMAND_SLIME_SPAWN_EGG.get());
+                        output.accept(ModItems.FORGOTTEN_MINING_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.FORGOTTEN_TUNNEL_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.MINE_GUARDIAN_SLIME_SPAWN_EGG.get());
                         output.accept(ModItems.SLIME_CHEST.get());

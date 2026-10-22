@@ -82,6 +82,8 @@ final class RestorationJeiClientSmoke {
   }
 
   private static List<SlimeRestorationRecipe> verify(Minecraft client) {
+    if (!JeiClientSmoke.companionInformationReady() || !JeiClientSmoke.attentionBaseRecipesReady())
+      throw new IllegalStateException("Missing companion information or specialization recipes");
     var runtime = JeiClientSmoke.runtime();
     var manager = runtime.getRecipeManager();
     var focuses = runtime.getJeiHelpers().getFocusFactory();
@@ -100,6 +102,14 @@ final class RestorationJeiClientSmoke {
     if (!category.getTitle().getString().equals(expectedTitle))
       throw new IllegalStateException("Missing translated restoration title");
     for (var recipe : recipes) {
+      for (var text :
+          recipe
+              .core()
+              .getTooltipLines(
+                  client.player, net.minecraft.world.item.TooltipFlag.Default.NORMAL)) {
+        if (text.getString().contains("item.slimic.") || text.getString().contains("name.slimic."))
+          throw new IllegalStateException("Untranslated core name or role: " + recipe.role());
+      }
       for (int rank : new int[] {0, 3}) {
         var natural = AncientSlimeCoreItem.fromRemains(recipe.role(), UUID.randomUUID(), rank);
         natural.setHoverName(Component.literal("Old worker " + UUID.randomUUID()));

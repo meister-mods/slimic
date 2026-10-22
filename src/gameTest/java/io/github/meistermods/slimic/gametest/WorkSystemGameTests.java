@@ -191,7 +191,7 @@ public final class WorkSystemGameTests {
         new EntityType<?>[] {
           ModEntities.FRIENDLY_SLIME.get(), ModEntities.MINING_SLIME.get(),
               ModEntities.TRANSPORT_SLIME.get(),
-          ModEntities.HERALD_SLIME.get(), ModEntities.COMBAT_SLIME.get(),
+          ModEntities.SIGNALING_SLIME.get(), ModEntities.COMBAT_SLIME.get(),
               ModEntities.CLEANING_SLIME.get()
         }) {
       for (int maximum : new int[] {100, 200, 500}) {
@@ -296,7 +296,7 @@ public final class WorkSystemGameTests {
   }
 
   @GameTest(template = "empty", batch = "work_system", timeoutTicks = 160)
-  public static void heraldGrowthRequiresAnActiveSameOwnerWorker(GameTestHelper h) {
+  public static void signalingGrowthRequiresAnActiveSameOwnerWorker(GameTestHelper h) {
     LoadedWorkArea arena = new LoadedWorkArea(h);
     var owner = h.makeMockSurvivalPlayer();
     var miner = ModEntities.MINING_SLIME.get().create(h.getLevel());
@@ -309,41 +309,41 @@ public final class WorkSystemGameTests {
     miner.load(blocked);
     miner.onReleased();
     h.getLevel().addFreshEntity(miner);
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.setMonitoring(true);
-    herald.moveTo(arena.point(8, 101, 8));
-    herald.tame(owner);
-    CompoundTag saved = herald.saveWithoutId(new CompoundTag());
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.setMonitoring(true);
+    signaling.moveTo(arena.point(8, 101, 8));
+    signaling.tame(owner);
+    CompoundTag saved = signaling.saveWithoutId(new CompoundTag());
     saved.putInt(
         "HeraldMonitoringActivityTicks", SlimicConfig.MONITOR_ACTIVITY_INTERVAL.get() - 20);
-    herald.load(saved);
-    var restored = ModEntities.HERALD_SLIME.get().create(h.getLevel());
+    signaling.load(saved);
+    var restored = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
     restored.setMonitoring(true);
-    restored.load(FriendlySlimeItem.fromSlime(herald).getTag().getCompound("SlimeData"));
+    restored.load(FriendlySlimeItem.fromSlime(signaling).getTag().getCompound("SlimeData"));
     h.assertTrue(
         restored.saveWithoutId(new CompoundTag()).getInt("HeraldMonitoringActivityTicks")
             == SlimicConfig.MONITOR_ACTIVITY_INTERVAL.get() - 20,
         "Monitoring growth fractions must survive recovery");
-    h.getLevel().addFreshEntity(herald);
+    h.getLevel().addFreshEntity(signaling);
     AtomicInteger earned = new AtomicInteger();
     h.startSequence()
         .thenWaitUntil(
             () ->
                 h.assertTrue(
-                    herald.getActivityProgress() == 1,
+                    signaling.getActivityProgress() == 1,
                     "Monitoring an active worker must earn growth"))
         .thenExecute(
             () -> {
-              earned.set(herald.getActivityProgress());
+              earned.set(signaling.getActivityProgress());
               miner.setWaiting(true);
             })
         .thenIdle(60)
         .thenExecute(
             () -> {
               h.assertTrue(
-                  herald.getActivityProgress() == earned.get(),
+                  signaling.getActivityProgress() == earned.get(),
                   "Waiting workers do not generate monitoring growth");
-              herald.discard();
+              signaling.discard();
               miner.discard();
               arena.close();
             })

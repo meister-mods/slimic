@@ -20,7 +20,7 @@ Sanctums generate in **new damp-plains chunks**, using five connected native str
 | --- | --- | --- |
 | Outer approach | Broken road, royal markers, fallen banners, gate silhouettes | A small ancient watch |
 | Courtyard | Ruined defenses and a mineralized miner | Shield remnants; courtyard relay remembers seal A |
-| Command gallery | Damaged command furniture and the central opening | Commander and escorts; gallery relay remembers seal B and grants a survey compass |
+| Command gallery | Damaged command furniture and the central opening | Ancient Command Slime and escorts; gallery relay remembers seal B and grants a survey compass |
 | Synthesis laboratory | Gel crystals, basins, and a damaged synthesis apparatus | Shield watch; records explain synthesis |
 | Deep core | Descending central passage and the final command relay | Elite guardian; royal core after both chamber memories and this watch are cleared |
 
@@ -32,7 +32,7 @@ The ruins may be dismantled or remodeled. A destroyed relay can be crafted again
 
 ## Royal remnants
 
-Existing ancient entities take site-bound equipment and roles. Shield remnants raise shields against visible nearby targets; wardens guard their rooms; the gallery commander alerts nearby allies. The deep elite has 160 base health and can call one shield reinforcement after falling to half health. The watch stays near its post and does not load distant chunks.
+Existing ancient entities take site-bound equipment and roles. Shield remnants raise shields against visible nearby targets; wardens guard their rooms; the gallery command slime alerts nearby allies. The deep elite has 160 base health and can call one shield reinforcement after falling to half health. The watch stays near its post and does not load distant chunks.
 
 Combat follows existing ancient alliance, home-range, damage-event, and companion protection rules. In **Peaceful**, the relays allow noncombat progression, including both seals and the final core. Revisiting or reloading a chamber does not repeatedly populate its watch.
 

@@ -139,7 +139,7 @@ public final class MenuReliabilityGameTests {
     for (EntityType<?> type :
         new EntityType<?>[] {
           ModEntities.FRIENDLY_SLIME.get(), ModEntities.MINING_SLIME.get(),
-          ModEntities.TRANSPORT_SLIME.get(), ModEntities.HERALD_SLIME.get(),
+          ModEntities.TRANSPORT_SLIME.get(), ModEntities.SIGNALING_SLIME.get(),
           ModEntities.COMBAT_SLIME.get(), ModEntities.CLEANING_SLIME.get()
         }) {
       FriendlySlime slime = (FriendlySlime) type.create(h.getLevel());

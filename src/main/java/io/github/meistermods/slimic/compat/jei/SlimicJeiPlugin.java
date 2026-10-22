@@ -2,17 +2,17 @@ package io.github.meistermods.slimic.compat.jei;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.CombatSlime;
-import io.github.meistermods.slimic.entity.FarmerSlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
-import io.github.meistermods.slimic.entity.LumberjackSlime;
+import io.github.meistermods.slimic.entity.FarmingSlime;
+import io.github.meistermods.slimic.entity.LoggingSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import io.github.meistermods.slimic.item.AncientSlimeCoreItem;
 import io.github.meistermods.slimic.item.SlimeArmorItem;
 import io.github.meistermods.slimic.recipe.CompanionBase;
 import io.github.meistermods.slimic.recipe.CompanionRecipe;
 import io.github.meistermods.slimic.recipe.GuardianAngelSlimeRecipe;
-import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
 import io.github.meistermods.slimic.recipe.MiningSlimeRecipe;
+import io.github.meistermods.slimic.recipe.SignalingSlimeRecipe;
 import io.github.meistermods.slimic.recipe.TransportSlimeRecipe;
 import io.github.meistermods.slimic.registry.ModItems;
 import io.github.meistermods.slimic.registry.ModWorldBlocks;
@@ -60,7 +60,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
           @Override
           public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
             var role = AncientSlimeCoreItem.role(stack);
-            return role == null ? "" : role.name();
+            return role == null ? "" : role.savedName();
           }
         });
   }
@@ -168,8 +168,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
             ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "herald_slime/firework"),
             "slimic:herald_slime",
             CraftingBookCategory.MISC,
-            HeraldSlimeRecipe.specialize(
-                new ItemStack(ModItems.FRIENDLY_SLIME.get()), HeraldSlime.defaultFirework()),
+            SignalingSlimeRecipe.specialize(
+                new ItemStack(ModItems.FRIENDLY_SLIME.get()), SignalingSlime.defaultFirework()),
             NonNullList.of(
                 Ingredient.EMPTY,
                 CompanionBase.ingredient(),
@@ -177,16 +177,16 @@ public final class SlimicJeiPlugin implements IModPlugin {
     for (var item : ForgeRegistries.ITEMS.getValues()) {
       ItemStack stack = new ItemStack(item);
       var key = ForgeRegistries.ITEMS.getKey(item);
-      if (FarmerSlime.isHoe(stack) || LumberjackSlime.isAxe(stack)) {
-        boolean farmer = FarmerSlime.isHoe(stack);
-        String role = farmer ? "farmer" : "lumberjack";
+      if (FarmingSlime.isHoe(stack) || LoggingSlime.isAxe(stack)) {
+        boolean farming = FarmingSlime.isHoe(stack);
+        String role = farming ? "farmer" : "lumberjack";
         recipes.add(
             new ShapelessRecipe(
                 ResourceLocation.fromNamespaceAndPath(
                     Slimic.MOD_ID, role + "_slime/" + key.getNamespace() + "/" + key.getPath()),
                 "slimic:" + role + "_slime",
                 CraftingBookCategory.MISC,
-                CompanionRecipe.field(new ItemStack(ModItems.FRIENDLY_SLIME.get()), stack, farmer),
+                CompanionRecipe.field(new ItemStack(ModItems.FRIENDLY_SLIME.get()), stack, farming),
                 NonNullList.of(
                     Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(stack))));
       }
@@ -224,8 +224,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
           ModItems.COMBAT_SLIME.get(),
           ModItems.CLEANING_SLIME.get(),
           ModItems.SLIME_ARMOR.get(),
-          ModItems.FARMER_SLIME.get(),
-          ModItems.LUMBERJACK_SLIME.get()
+          ModItems.FARMING_SLIME.get(),
+          ModItems.LOGGING_SLIME.get()
         }) {
       registration.addIngredientInfo(
           new ItemStack(item),
@@ -280,7 +280,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
                     .toList();
             case ABUNDANCE -> List.of(new ItemStack(Items.BONE_MEAL));
             case GLOW -> List.of(new ItemStack(Items.GLOWSTONE_DUST));
-            case COMMANDER -> List.of(new ItemStack(Items.BOOK));
+            case COMMAND -> List.of(new ItemStack(Items.BOOK));
             case ENDER -> List.of(new ItemStack(Items.ENDER_PEARL));
             case ATTENTION -> List.of(new ItemStack(Items.REDSTONE));
             case ROYAL_GUARD -> List.of(new ItemStack(ModItems.ANCIENT_COMMAND_SEAL.get()));
@@ -301,7 +301,10 @@ public final class SlimicJeiPlugin implements IModPlugin {
         ingredients.add(Ingredient.of(ingredient));
         if (kind == io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.Kind.ABUNDANCE)
           ingredients.add(Ingredient.of(Items.NETHER_STAR));
-        String role = kind.name().toLowerCase(java.util.Locale.ROOT) + "_slime";
+        String role =
+            ForgeRegistries.ITEMS
+                .getKey(io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.result(kind))
+                .getPath();
         var key = ForgeRegistries.ITEMS.getKey(ingredient.getItem());
         recipes.add(
             new ShapelessRecipe(
@@ -362,7 +365,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.slime_chest"));
     registration.addIngredientInfo(
-        new ItemStack(ModItems.HERALD_SLIME.get()),
+        new ItemStack(ModItems.SIGNALING_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.herald_slime"));
     registration.addIngredientInfo(

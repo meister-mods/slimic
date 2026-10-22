@@ -5,16 +5,16 @@ import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
-import io.github.meistermods.slimic.entity.FarmerSlime;
+import io.github.meistermods.slimic.entity.FarmingSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
-import io.github.meistermods.slimic.entity.LumberjackSlime;
+import io.github.meistermods.slimic.entity.LoggingSlime;
 import io.github.meistermods.slimic.entity.MeowSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.entity.SoggySlime;
 import io.github.meistermods.slimic.entity.TransportSlime;
@@ -139,7 +139,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                       b -> sendButton(SlimeMenu.ACTIVE))
                   .bounds(leftPos + SlimeMenu.SLOTS_X, topPos + 89, 100, 18)
                   .build());
-    if (menu.slime() instanceof io.github.meistermods.slimic.entity.CommanderSlime)
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.CommandSlime)
       addRenderableWidget(
           Button.builder(
                   Component.translatable("screen.slimic.roster.open"),
@@ -200,12 +200,12 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               .build());
     if (menu.slime() instanceof HealingSlime)
       addOrder(SlimeMenu.WORK, menu.slime() instanceof AbundanceSlime ? "abundance" : "heal", 308);
-    if (menu.slime() instanceof FarmerSlime) addOrder(SlimeMenu.WORK, "farm", 308);
-    if (menu.slime() instanceof LumberjackSlime) addOrder(SlimeMenu.WORK, "log", 308);
+    if (menu.slime() instanceof FarmingSlime) addOrder(SlimeMenu.WORK, "farm", 308);
+    if (menu.slime() instanceof LoggingSlime) addOrder(SlimeMenu.WORK, "log", 308);
     if (menu.slime() instanceof CleaningSlime) addOrder(SlimeMenu.WORK, "clean", 308);
     if (menu.slime() instanceof MiningSlime)
       addOrder(SlimeMenu.WORK, menu.slime() instanceof TunnelSlime ? "tunnel" : "mine", 308);
-    if (menu.slime() instanceof HeraldSlime) {
+    if (menu.slime() instanceof SignalingSlime) {
       addOrder(SlimeMenu.WORK, "monitor", 308);
       addRenderableWidget(
           Button.builder(
@@ -480,7 +480,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               .toLowerCase(Locale.ROOT);
       graphics.drawWordWrap(
           font,
-          menu.slime() instanceof LumberjackSlime logger
+          menu.slime() instanceof LoggingSlime logger
                   && key.equals("no_seeds")
                   && !logger.getRequiredSapling().isEmpty()
               ? Component.translatable(
@@ -498,7 +498,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                                   : menu.slime() instanceof WarehouseSlime
                                       ? "warehouse."
                                       : menu.slime() instanceof FieldSlime
-                                          ? (menu.slime() instanceof FarmerSlime
+                                          ? (menu.slime() instanceof FarmingSlime
                                               ? "farmer."
                                               : "lumberjack.")
                                           : menu.slime() instanceof TransportSlime
@@ -569,7 +569,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           84,
           162,
           0xffb4c9d1);
-    } else if (menu.slime() instanceof HeraldSlime) {
+    } else if (menu.slime() instanceof SignalingSlime) {
       graphics.drawWordWrap(
           font,
           Component.translatable("screen.slimic.herald_help"),

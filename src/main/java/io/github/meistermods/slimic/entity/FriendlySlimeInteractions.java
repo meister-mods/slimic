@@ -68,7 +68,7 @@ public final class FriendlySlimeInteractions {
 
   @SubscribeEvent
   public static void preserveFarmland(BlockEvent.FarmlandTrampleEvent event) {
-    if (event.getEntity() instanceof FarmerSlime
+    if (event.getEntity() instanceof FarmingSlime
         || event.getEntity() instanceof AbundanceSlime
         || event.getEntity() instanceof AttentionSlime) event.setCanceled(true);
   }
@@ -189,7 +189,7 @@ public final class FriendlySlimeInteractions {
   @SubscribeEvent
   public static void harmlessSignal(LivingAttackEvent event) {
     if (event.getSource().getDirectEntity() instanceof FireworkRocketEntity rocket
-        && rocket.getPersistentData().getBoolean(HeraldSlime.SIGNAL_MARKER))
+        && rocket.getPersistentData().getBoolean(SignalingSlime.SIGNAL_MARKER))
       event.setCanceled(true);
   }
 }

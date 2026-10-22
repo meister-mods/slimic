@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Carriers recheck the request before delivery, so two carriers do not overfill it. Follow and Wait withdraw requests. $(l:companions/herald)Heralds$() report continuous blocked work; a retry alone does not erase that duration."
+      "text": "Carriers recheck the request before delivery, so two carriers do not overfill it. Follow and Wait withdraw requests. $(l:companions/herald)Signaling Slimes$() report continuous blocked work; a retry alone does not erase that duration."
     }
   ]
 }

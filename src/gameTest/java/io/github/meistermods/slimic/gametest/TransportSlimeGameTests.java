@@ -43,7 +43,7 @@ import net.minecraftforge.items.IItemHandler;
 @GameTestHolder(Slimic.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class TransportSlimeGameTests {
-  private static final BlockPos MINER = new BlockPos(3, 2, 5);
+  private static final BlockPos MINING = new BlockPos(3, 2, 5);
   private static final BlockPos CARRIER = new BlockPos(5, 2, 5);
   private static final BlockPos CHEST = new BlockPos(8, 2, 5);
 
@@ -63,7 +63,7 @@ public final class TransportSlimeGameTests {
     helper.assertTrue(
         recipe.assemble(grid, helper.getLevel().registryAccess()).is(ModItems.SLIME_CHEST.get()),
         "Eight planks and a slime ball must craft a Slime Chest");
-    FriendlySlime friendly = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), MINER);
+    FriendlySlime friendly = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), MINING);
     friendly.tame(helper.makeMockSurvivalPlayer());
     friendly.setHealth(5);
     friendly.setCustomName(Component.literal("Porter"));
@@ -97,7 +97,7 @@ public final class TransportSlimeGameTests {
 
   @GameTest(template = "empty")
   public static void capacityIsExactlyDoubleAtEveryUpgrade(GameTestHelper helper) {
-    MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), MINER);
+    MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), MINING);
     miner.setWorking(true);
     TransportSlime carrier = helper.spawn(ModEntities.TRANSPORT_SLIME.get(), CARRIER);
     carrier.setWorking(true);
@@ -842,7 +842,7 @@ public final class TransportSlimeGameTests {
   }
 
   private static MiningSlime miner(GameTestHelper helper, TransportSlime carrier, ItemStack tool) {
-    MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), MINER);
+    MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), MINING);
     miner.setWorking(true);
     miner.setOwnerUUID(carrier.getOwnerUUID());
     miner.setTame(true);
@@ -852,9 +852,9 @@ public final class TransportSlimeGameTests {
   }
 
   private static BlockPos ore(GameTestHelper helper, MiningSlime miner) {
-    BlockPos relative = MINER.west();
+    BlockPos relative = MINING.west();
     if (!new ChunkPos(helper.absolutePos(relative)).equals(miner.getMiningChunk()))
-      relative = MINER.east();
+      relative = MINING.east();
     return relative;
   }
 

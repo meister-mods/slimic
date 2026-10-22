@@ -15,7 +15,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
 
-public final class CommanderMenu extends AbstractContainerMenu {
+public final class CommandMenu extends AbstractContainerMenu {
   public static final int PAGE_SIZE = 6,
       COMPANIONS = 0,
       PLAYERS = 1,
@@ -23,45 +23,46 @@ public final class CommanderMenu extends AbstractContainerMenu {
       GATHER = 3,
       SHARE = 4,
       ENEMY = 5;
-  private final CommanderSlime commander;
+  private final CommandSlime command;
   private final Player viewer;
   private boolean players;
   private int page, refresh;
   private long lastActionTick = Long.MIN_VALUE;
-  private CommanderPackets.Page snapshot;
+  private CommandPackets.Page snapshot;
 
-  public CommanderMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
+  public CommandMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
     this(id, inventory, resolve(inventory, buffer));
   }
 
-  private static CommanderSlime resolve(Inventory inventory, FriendlyByteBuf buffer) {
+  private static CommandSlime resolve(Inventory inventory, FriendlyByteBuf buffer) {
     var entity = inventory.player.level().getEntity(buffer.readVarInt());
-    if (entity instanceof CommanderSlime commander) return commander;
+    if (entity instanceof CommandSlime command) return command;
     // An entity removal can reach the client before its menu-opening packet.
     var missing =
-        io.github.meistermods.slimic.registry.ModEntities.COMMANDER_SLIME
+        io.github.meistermods.slimic.registry.ModEntities.COMMAND_SLIME
             .get()
             .create(inventory.player.level());
-    if (missing == null) throw new IllegalStateException("Commander entity type is unavailable");
+    if (missing == null)
+      throw new IllegalStateException("Command Slime entity type is unavailable");
     missing.discard();
     return missing;
   }
 
-  public CommanderMenu(int id, Inventory inventory, CommanderSlime slime) {
-    super(ModMenus.COMMANDER.get(), id);
-    commander = Objects.requireNonNull(slime);
+  public CommandMenu(int id, Inventory inventory, CommandSlime slime) {
+    super(ModMenus.COMMAND.get(), id);
+    command = Objects.requireNonNull(slime);
     viewer = inventory.player;
   }
 
-  public CommanderSlime commander() {
-    return commander;
+  public CommandSlime command() {
+    return command;
   }
 
-  public CommanderPackets.Page snapshot() {
+  public CommandPackets.Page snapshot() {
     return snapshot;
   }
 
-  public void accept(CommanderPackets.Page value) {
+  public void accept(CommandPackets.Page value) {
     if (value.menuId() == containerId) snapshot = value;
   }
 
@@ -74,17 +75,17 @@ public final class CommanderMenu extends AbstractContainerMenu {
   public boolean stillValid(Player player) {
     return !player.isSpectator()
         && player.isAlive()
-        && commander.isAlive()
-        && !commander.isRemoved()
-        && player.level() == commander.level()
-        && commander.canManage(player)
-        && player.distanceToSqr(commander) <= 64;
+        && command.isAlive()
+        && !command.isRemoved()
+        && player.level() == command.level()
+        && command.canManage(player)
+        && player.distanceToSqr(command) <= 64;
   }
 
   private boolean knownPlayer(ServerPlayer player, UUID target, CompanionRegistry registry) {
     return player.server.getPlayerList().getPlayer(target) != null
-        || registry.coOwners(commander.getOwnerUUID()).contains(target)
-        || registry.enemies(commander.getOwnerUUID()).contains(target);
+        || registry.coOwners(command.getOwnerUUID()).contains(target)
+        || registry.enemies(command.getOwnerUUID()).contains(target);
   }
 
   public boolean perform(
@@ -101,26 +102,26 @@ public final class CommanderMenu extends AbstractContainerMenu {
         page = selectedPage;
         accepted = true;
       }
-      case SET_TAG -> accepted = registry.setTag(commander.getOwnerUUID(), target, tag);
-      case GATHER -> accepted = commander.gather(player, tag);
+      case SET_TAG -> accepted = registry.setTag(command.getOwnerUUID(), target, tag);
+      case GATHER -> accepted = command.gather(player, tag);
       case SHARE, ENEMY -> {
-        if (!player.getUUID().equals(commander.getOwnerUUID())
+        if (!player.getUUID().equals(command.getOwnerUUID())
             || !knownPlayer(player, target, registry)) return false;
         boolean shared = action == SHARE;
         boolean enabled =
             !(shared
-                    ? registry.coOwners(commander.getOwnerUUID())
-                    : registry.enemies(commander.getOwnerUUID()))
+                    ? registry.coOwners(command.getOwnerUUID())
+                    : registry.enemies(command.getOwnerUUID()))
                 .contains(target);
-        if (shared && enabled && registry.commanderMergeConflict(commander.getOwnerUUID(), target))
+        if (shared && enabled && registry.commandMergeConflict(command.getOwnerUUID(), target))
           player.displayClientMessage(
               Component.translatable("message.slimic.commander_group_merge"), true);
-        accepted = registry.setRelation(commander.getOwnerUUID(), target, shared, enabled);
+        accepted = registry.setRelation(command.getOwnerUUID(), target, shared, enabled);
         if (accepted)
           for (var level : player.server.getAllLevels())
             for (var entity : level.getAllEntities())
               if (entity instanceof FriendlySlime slime
-                  && commander.getOwnerUUID().equals(slime.getOwnerUUID()))
+                  && command.getOwnerUUID().equals(slime.getOwnerUUID()))
                 slime.refreshOwnerAccess();
       }
       default -> {
@@ -132,16 +133,16 @@ public final class CommanderMenu extends AbstractContainerMenu {
     return accepted;
   }
 
-  public CommanderPackets.Page createPage(ServerPlayer player) {
+  public CommandPackets.Page createPage(ServerPlayer player) {
     var registry = CompanionRegistry.get(player.server);
-    var rows = new ArrayList<CommanderPackets.Row>();
+    var rows = new ArrayList<CommandPackets.Row>();
     int pages;
     if (players) {
       var ids = new TreeSet<UUID>();
       player.server.getPlayerList().getPlayers().forEach(p -> ids.add(p.getUUID()));
-      ids.addAll(registry.coOwners(commander.getOwnerUUID()));
-      ids.addAll(registry.enemies(commander.getOwnerUUID()));
-      ids.remove(commander.getOwnerUUID());
+      ids.addAll(registry.coOwners(command.getOwnerUUID()));
+      ids.addAll(registry.enemies(command.getOwnerUUID()));
+      ids.remove(command.getOwnerUUID());
       var all = new ArrayList<>(ids);
       pages = Math.max(1, (all.size() + PAGE_SIZE - 1) / PAGE_SIZE);
       page = Math.min(page, pages - 1);
@@ -156,19 +157,19 @@ public final class CommanderMenu extends AbstractContainerMenu {
                     .map(com.mojang.authlib.GameProfile::getName)
                     .orElse(id.toString().substring(0, 8));
         rows.add(
-            new CommanderPackets.Row(
+            new CommandPackets.Row(
                 id,
                 Component.literal(name),
                 Component.translatable(
                     "screen.slimic.roster." + (online != null ? "online" : "offline")),
                 Component.empty(),
                 "",
-                registry.coOwners(commander.getOwnerUUID()).contains(id),
-                registry.enemies(commander.getOwnerUUID()).contains(id),
+                registry.coOwners(command.getOwnerUUID()).contains(id),
+                registry.enemies(command.getOwnerUUID()).contains(id),
                 online != null));
       }
     } else {
-      var all = registry.owned(commander.getOwnerUUID());
+      var all = registry.owned(command.getOwnerUUID());
       pages = Math.max(1, (all.size() + PAGE_SIZE - 1) / PAGE_SIZE);
       page = Math.min(page, pages - 1);
       for (int i = page * PAGE_SIZE; i < Math.min(all.size(), (page + 1) * PAGE_SIZE); i++) {
@@ -202,7 +203,7 @@ public final class CommanderMenu extends AbstractContainerMenu {
                 : Component.translatable(
                     "roster.slimic.reason."
                         + (e.reason().equals("SEEDS_MISSING")
-                                && e.type().equals(ModEntities.LUMBERJACK_SLIME.getId().toString())
+                                && e.type().equals(ModEntities.LOGGING_SLIME.getId().toString())
                             ? "saplings_missing"
                             : e.reason().toLowerCase(Locale.ROOT)));
         var detail =
@@ -222,20 +223,19 @@ public final class CommanderMenu extends AbstractContainerMenu {
                     + e.position().getY()
                     + ", "
                     + e.position().getZ());
-        rows.add(
-            new CommanderPackets.Row(e.id(), name, detail, pos, e.tag(), false, false, loaded));
+        rows.add(new CommandPackets.Row(e.id(), name, detail, pos, e.tag(), false, false, loaded));
       }
     }
-    return new CommanderPackets.Page(
+    return new CommandPackets.Page(
         containerId,
         players,
         page,
         pages,
-        commander.getStamina(),
-        commander.getMaxStamina(),
-        commander.gathered(),
-        commander.requested(),
-        player.getUUID().equals(commander.getOwnerUUID()),
+        command.getStamina(),
+        command.getMaxStamina(),
+        command.gathered(),
+        command.requested(),
+        player.getUUID().equals(command.getOwnerUUID()),
         rows);
   }
 

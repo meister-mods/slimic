@@ -114,7 +114,7 @@ public final class MiningSlimeGameTests {
             .getRecipeFor(RecipeType.CRAFTING, invalid, helper.getLevel())
             .orElseThrow()
             .assemble(invalid, helper.getLevel().registryAccess())
-            .is(ModItems.LUMBERJACK_SLIME.get()),
+            .is(ModItems.LOGGING_SLIME.get()),
         "Axes specialize as lumberjacks instead of miners");
     helper.succeed();
   }

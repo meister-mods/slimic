@@ -27,7 +27,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
     DRAGON,
     MEOW,
     GLOW,
-    COMMANDER,
+    COMMAND,
     ENDER,
     ATTENTION,
     ROYAL_GUARD
@@ -57,7 +57,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case DRAGON -> ModItems.DRAGON_SLIME.get();
       case MEOW -> ModItems.MEOW_SLIME.get();
       case GLOW -> ModItems.GLOW_SLIME.get();
-      case COMMANDER -> ModItems.COMMANDER_SLIME.get();
+      case COMMAND -> ModItems.COMMAND_SLIME.get();
       case ENDER -> ModItems.ENDER_SLIME.get();
       case ATTENTION -> ModItems.ATTENTION_SLIME.get();
       case ROYAL_GUARD -> ModItems.ROYAL_GUARD_SLIME.get();
@@ -82,7 +82,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case FISHING -> FishingSlime.isRod(stack);
       case ABUNDANCE -> stack.is(Items.BONE_MEAL);
       case GLOW -> stack.is(Items.GLOWSTONE_DUST);
-      case COMMANDER -> stack.is(Items.BOOK);
+      case COMMAND -> stack.is(Items.BOOK);
       case ENDER -> stack.is(Items.ENDER_PEARL);
       case ATTENTION -> stack.is(Items.REDSTONE);
       case ROYAL_GUARD -> stack.is(ModItems.ANCIENT_COMMAND_SEAL.get());
@@ -164,7 +164,7 @@ public final class AdvancedCompanionRecipe extends CustomRecipe {
       case DRAGON -> ModRecipes.DRAGON_SLIME.get();
       case MEOW -> ModRecipes.MEOW_SLIME.get();
       case GLOW -> ModRecipes.GLOW_SLIME.get();
-      case COMMANDER -> ModRecipes.COMMANDER_SLIME.get();
+      case COMMAND -> ModRecipes.COMMAND_SLIME.get();
       case ENDER -> ModRecipes.ENDER_SLIME.get();
       case ATTENTION -> ModRecipes.ATTENTION_SLIME.get();
       case ROYAL_GUARD -> ModRecipes.ROYAL_GUARD_SLIME.get();

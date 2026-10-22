@@ -2,15 +2,15 @@ package io.github.meistermods.slimic.gametest;
 
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
 import io.github.meistermods.slimic.entity.MiningSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.item.CreativeSlimeTunerItem;
 import io.github.meistermods.slimic.item.FriendlySlimeItem;
-import io.github.meistermods.slimic.item.HeraldSlimeItem;
+import io.github.meistermods.slimic.item.SignalingSlimeItem;
 import io.github.meistermods.slimic.menu.CreativeSlimeTunerMenu;
 import io.github.meistermods.slimic.menu.SlimeMenu;
-import io.github.meistermods.slimic.recipe.HeraldSlimeRecipe;
+import io.github.meistermods.slimic.recipe.SignalingSlimeRecipe;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.registry.ModItems;
 import java.util.UUID;
@@ -45,12 +45,12 @@ public final class SlimeToolsGameTests {
           ModEntities.FRIENDLY_SLIME.get(),
           ModEntities.MINING_SLIME.get(),
           ModEntities.TRANSPORT_SLIME.get(),
-          ModEntities.HERALD_SLIME.get(),
+          ModEntities.SIGNALING_SLIME.get(),
           ModEntities.COMBAT_SLIME.get(),
           ModEntities.CLEANING_SLIME.get(),
           ModEntities.SADDLE_SLIME.get(),
-          ModEntities.FARMER_SLIME.get(),
-          ModEntities.LUMBERJACK_SLIME.get(),
+          ModEntities.FARMING_SLIME.get(),
+          ModEntities.LOGGING_SLIME.get(),
           ModEntities.GUARDIAN_ANGEL_SLIME.get(),
           ModEntities.SOGGY_SLIME.get(),
           ModEntities.HEALING_SLIME.get(),
@@ -183,12 +183,12 @@ public final class SlimeToolsGameTests {
   }
 
   @GameTest(template = "empty")
-  public static void heraldRecipeKeepsExactFireworkAndCompanionData(GameTestHelper helper) {
+  public static void signalingRecipeKeepsExactFireworkAndCompanionData(GameTestHelper helper) {
     FriendlySlime pet = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), PET);
     pet.tame(helper.makeMockSurvivalPlayer());
     pet.setHealth(7);
     ItemStack friendly = FriendlySlimeItem.fromSlime(pet);
-    ItemStack rocket = HeraldSlime.defaultFirework();
+    ItemStack rocket = SignalingSlime.defaultFirework();
     rocket.getOrCreateTagElement("Fireworks").putByte("Flight", (byte) 3);
     rocket
         .getTagElement("Fireworks")
@@ -200,9 +200,9 @@ public final class SlimeToolsGameTests {
         .getList("Explosions", Tag.TAG_COMPOUND)
         .getCompound(0)
         .putIntArray("Colors", new int[] {0xff0000, 0x00ffff});
-    ItemStack result = HeraldSlimeRecipe.specialize(friendly, rocket);
+    ItemStack result = SignalingSlimeRecipe.specialize(friendly, rocket);
     helper.assertTrue(
-        result.is(ModItems.HERALD_SLIME.get())
+        result.is(ModItems.SIGNALING_SLIME.get())
             && result
                 .getTag()
                 .getCompound("SlimeData")
@@ -210,42 +210,43 @@ public final class SlimeToolsGameTests {
         "Specialization must retain the recovered companion's traits");
     helper.assertTrue(
         ItemStack.matches(
-            rocket, ItemStack.of(result.getTag().getCompound(HeraldSlimeItem.INITIAL_FIREWORK))),
+            rocket, ItemStack.of(result.getTag().getCompound(SignalingSlimeItem.INITIAL_FIREWORK))),
         "Flight, shape, colors, and full rocket data must be copied");
     helper.succeed();
   }
 
   @GameTest(template = "empty")
-  public static void creativeHeraldUsesWhiteRoundFireworkAndOwnDelay(GameTestHelper helper) {
-    HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET);
-    herald.setMonitoring(true);
-    CompoundTag fireworks = herald.getFirework().getTagElement("Fireworks");
+  public static void creativeSignalingUsesWhiteRoundFireworkAndOwnDelay(GameTestHelper helper) {
+    SignalingSlime signaling = helper.spawn(ModEntities.SIGNALING_SLIME.get(), PET);
+    signaling.setMonitoring(true);
+    CompoundTag fireworks = signaling.getFirework().getTagElement("Fireworks");
     CompoundTag explosion = fireworks.getList("Explosions", Tag.TAG_COMPOUND).getCompound(0);
     helper.assertTrue(
         explosion.getByte("Type") == 0
             && explosion.getIntArray("Colors")[0] == DyeColor.WHITE.getFireworkColor(),
         "Default summons must have a white round firework");
     Player owner = helper.makeMockSurvivalPlayer();
-    herald.tame(owner);
-    owner.moveTo(herald.position());
-    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), herald);
-    int previous = herald.getDelayMinutes();
+    signaling.tame(owner);
+    owner.moveTo(signaling.position());
+    SlimeMenu menu = TestMenus.create(1, owner.getInventory(), signaling);
+    int previous = signaling.getDelayMinutes();
     helper.assertTrue(
-        menu.clickMenuButton(owner, SlimeMenu.DELAY_UP) && herald.getDelayMinutes() == previous + 1,
+        menu.clickMenuButton(owner, SlimeMenu.DELAY_UP)
+            && signaling.getDelayMinutes() == previous + 1,
         "Owners must be able to configure alert minutes");
-    CompoundTag saved = herald.saveWithoutId(new CompoundTag());
-    HeraldSlime restored = ModEntities.HERALD_SLIME.get().create(helper.getLevel());
+    CompoundTag saved = signaling.saveWithoutId(new CompoundTag());
+    SignalingSlime restored = ModEntities.SIGNALING_SLIME.get().create(helper.getLevel());
     restored.setMonitoring(true);
     restored.load(saved);
     helper.assertTrue(
         restored.getDelayMinutes() == previous + 1
-            && ItemStack.matches(restored.getFirework(), herald.getFirework()),
+            && ItemStack.matches(restored.getFirework(), signaling.getFirework()),
         "Alert setting and default design must persist");
     helper.succeed();
   }
 
   @GameTest(template = "empty", timeoutTicks = 120)
-  public static void heraldSignalsBlockedWorkOnlyOnceWithoutConsumingRockets(
+  public static void signalingSignalsBlockedWorkOnlyOnceWithoutConsumingRockets(
       GameTestHelper helper) {
     Player owner = helper.makeMockSurvivalPlayer();
     MiningSlime miner = helper.spawn(ModEntities.MINING_SLIME.get(), PET);
@@ -257,13 +258,13 @@ public final class SlimeToolsGameTests {
     workerState.putInt("BlockedWorkTicks", 1200);
     workerState.putLong("BlockedEpisode", 5);
     miner.load(workerState);
-    HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET.east(2));
-    herald.setMonitoring(true);
-    herald.tame(owner);
-    herald.setDelayMinutes(1);
-    ItemStack design = HeraldSlime.defaultFirework();
+    SignalingSlime signaling = helper.spawn(ModEntities.SIGNALING_SLIME.get(), PET.east(2));
+    signaling.setMonitoring(true);
+    signaling.tame(owner);
+    signaling.setDelayMinutes(1);
+    ItemStack design = SignalingSlime.defaultFirework();
     design.getOrCreateTagElement("Fireworks").putByte("Flight", (byte) 3);
-    herald.setFirework(design);
+    signaling.setFirework(design);
     helper.runAfterDelay(
         25,
         () -> {
@@ -273,11 +274,11 @@ public final class SlimeToolsGameTests {
                   .stream()
                   .filter(
                       rocket ->
-                          rocket.getPersistentData().getBoolean(HeraldSlime.SIGNAL_MARKER)
-                              && rocket.getOwner() == herald)
+                          rocket.getPersistentData().getBoolean(SignalingSlime.SIGNAL_MARKER)
+                              && rocket.getOwner() == signaling)
                   .count();
           helper.assertTrue(
-              count == 1 && ItemStack.matches(herald.getFirework(), design),
+              count == 1 && ItemStack.matches(signaling.getFirework(), design),
               "An incident must launch one matching rocket without consuming its template");
         });
     helper.runAfterDelay(
@@ -287,10 +288,10 @@ public final class SlimeToolsGameTests {
               helper
                   .getEntities(net.minecraft.world.entity.EntityType.FIREWORK_ROCKET, PET, 64)
                   .stream()
-                  .noneMatch(rocket -> rocket.getOwner() == herald),
+                  .noneMatch(rocket -> rocket.getOwner() == signaling),
               "The same incident must not launch another rocket after the cooldown");
           helper.assertTrue(
-              herald
+              signaling
                       .saveWithoutId(new CompoundTag())
                       .getCompound("HeraldWarnings")
                       .getLong(miner.getUUID().toString())
@@ -301,12 +302,12 @@ public final class SlimeToolsGameTests {
   }
 
   @GameTest(template = "empty", timeoutTicks = 100)
-  public static void heraldDoesNotSignalWaitingOrForeignWorkers(GameTestHelper helper) {
+  public static void signalingDoesNotSignalWaitingOrForeignWorkers(GameTestHelper helper) {
     Player owner = helper.makeMockSurvivalPlayer();
-    HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET.east(2));
-    herald.setMonitoring(true);
-    herald.tame(owner);
-    herald.setDelayMinutes(1);
+    SignalingSlime signaling = helper.spawn(ModEntities.SIGNALING_SLIME.get(), PET.east(2));
+    signaling.setMonitoring(true);
+    signaling.tame(owner);
+    signaling.setDelayMinutes(1);
     MiningSlime waiting = helper.spawn(ModEntities.MINING_SLIME.get(), PET);
     waiting.setWorking(true);
     waiting.tame(owner);
@@ -324,7 +325,7 @@ public final class SlimeToolsGameTests {
         60,
         () -> {
           helper.assertTrue(
-              herald.saveWithoutId(new CompoundTag()).getCompound("HeraldWarnings").isEmpty(),
+              signaling.saveWithoutId(new CompoundTag()).getCompound("HeraldWarnings").isEmpty(),
               "Manual waiting and other owners are excluded from alerts");
           helper.succeed();
         });
@@ -335,42 +336,47 @@ public final class SlimeToolsGameTests {
     FriendlySlime pet = helper.spawn(ModEntities.FRIENDLY_SLIME.get(), PET);
     FireworkRocketEntity rocket =
         new FireworkRocketEntity(
-            helper.getLevel(), pet.getX(), pet.getY(), pet.getZ(), HeraldSlime.defaultFirework());
-    rocket.getPersistentData().putBoolean(HeraldSlime.SIGNAL_MARKER, true);
+            helper.getLevel(),
+            pet.getX(),
+            pet.getY(),
+            pet.getZ(),
+            SignalingSlime.defaultFirework());
+    rocket.getPersistentData().putBoolean(SignalingSlime.SIGNAL_MARKER, true);
     pet.hurt(helper.getLevel().damageSources().fireworks(rocket, null), 8);
     helper.assertTrue(pet.getHealth() == pet.getMaxHealth(), "Signal rockets must be harmless");
     helper.succeed();
   }
 
   @GameTest(template = "empty")
-  public static void heraldRecoveryRetainsDesignDyeTuningAndWarningHistory(GameTestHelper helper) {
+  public static void signalingRecoveryRetainsDesignDyeTuningAndWarningHistory(
+      GameTestHelper helper) {
     for (int x = 0; x < 12; x++)
       for (int z = 0; z < 12; z++)
         helper.setBlock(x, 1, z, net.minecraft.world.level.block.Blocks.BEDROCK);
     Player owner = helper.makeMockSurvivalPlayer();
-    HeraldSlime herald = helper.spawn(ModEntities.HERALD_SLIME.get(), PET);
-    herald.setMonitoring(true);
-    herald.tame(owner);
-    herald.setNoAi(true);
-    herald.dye(owner, new ItemStack(Items.PURPLE_DYE));
-    SlimeStat.HEALTH.tune(herald, 40);
-    SlimeStat.WORK_SPEED.tune(herald, 3);
-    herald.setTunedVitals(13, 77, 9);
-    herald.setDelayMinutes(11);
-    herald.setMonitoring(false);
-    ItemStack design = HeraldSlime.defaultFirework();
+    SignalingSlime signaling = helper.spawn(ModEntities.SIGNALING_SLIME.get(), PET);
+    signaling.setMonitoring(true);
+    signaling.tame(owner);
+    signaling.setNoAi(true);
+    signaling.dye(owner, new ItemStack(Items.PURPLE_DYE));
+    SlimeStat.HEALTH.tune(signaling, 40);
+    SlimeStat.WORK_SPEED.tune(signaling, 3);
+    signaling.setTunedVitals(13, 77, 9);
+    signaling.setDelayMinutes(11);
+    signaling.setMonitoring(false);
+    ItemStack design = SignalingSlime.defaultFirework();
     design.getOrCreateTagElement("Fireworks").putByte("Flight", (byte) 3);
-    herald.setFirework(design);
-    CompoundTag state = herald.saveWithoutId(new CompoundTag());
+    signaling.setFirework(design);
+    CompoundTag state = signaling.saveWithoutId(new CompoundTag());
     String incident = UUID.randomUUID().toString();
     state.getCompound("HeraldWarnings").putLong(incident, 19);
     state.putInt("HeraldCooldown", 31);
-    herald.load(state);
-    UUID identity = herald.getUUID();
-    helper.assertTrue(herald.capture(owner).consumesAction(), "Herald must be recoverable");
+    signaling.load(state);
+    UUID identity = signaling.getUUID();
+    helper.assertTrue(signaling.capture(owner).consumesAction(), "Herald must be recoverable");
     ItemStack stored =
         owner.getInventory().items.stream()
-            .filter(stack -> stack.is(ModItems.HERALD_SLIME.get()))
+            .filter(stack -> stack.is(ModItems.SIGNALING_SLIME.get()))
             .findFirst()
             .orElseThrow();
     ItemStack reloaded = ItemStack.of(stored.save(new CompoundTag()));
@@ -391,7 +397,7 @@ public final class SlimeToolsGameTests {
                         false)))
             .consumesAction(),
         "Stored herald must release");
-    HeraldSlime restored = helper.getEntities(ModEntities.HERALD_SLIME.get(), PET, 6).get(0);
+    SignalingSlime restored = helper.getEntities(ModEntities.SIGNALING_SLIME.get(), PET, 6).get(0);
     CompoundTag saved = restored.saveWithoutId(new CompoundTag());
     helper.assertTrue(
         restored.getUUID().equals(identity)

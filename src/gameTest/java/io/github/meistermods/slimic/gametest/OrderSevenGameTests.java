@@ -28,12 +28,12 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Slimic.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class OrderSevenGameTests {
-  private record Farm(LoadedWorkArea area, FarmerSlime pet, Player owner, BlockPos plot) {}
+  private record Farm(LoadedWorkArea area, FarmingSlime pet, Player owner, BlockPos plot) {}
 
   private static Farm farm(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var owner = h.makeMockSurvivalPlayer();
-    var pet = ModEntities.FARMER_SLIME.get().create(h.getLevel());
+    var pet = ModEntities.FARMING_SLIME.get().create(h.getLevel());
     pet.moveTo(area.point(6.5, 101, 5.5));
     pet.tame(owner);
     pet.setTool(new ItemStack(Items.IRON_HOE));
@@ -53,9 +53,9 @@ public final class OrderSevenGameTests {
     return n;
   }
 
-  private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea area) {
+  private static LoggingSlime logger(GameTestHelper h, LoadedWorkArea area) {
     area.clearSurroundingTrees();
-    var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    var pet = ModEntities.LOGGING_SLIME.get().create(h.getLevel());
     pet.setWorking(true);
     pet.moveTo(area.point(6.5, 101, 5.5));
     pet.tame(h.makeMockSurvivalPlayer());
@@ -83,15 +83,15 @@ public final class OrderSevenGameTests {
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 80)
   public static void everyHoeAndAxeRecipePreservesOriginalToolAndIdentity(GameTestHelper h) {
-    for (boolean farmer : List.of(true, false)) {
-      var kind = farmer ? CompanionRecipe.Kind.FARMER : CompanionRecipe.Kind.LUMBERJACK;
+    for (boolean farming : List.of(true, false)) {
+      var kind = farming ? CompanionRecipe.Kind.FARMING : CompanionRecipe.Kind.LOGGING;
       var recipe =
           new CompanionRecipe(
               ResourceLocation.fromNamespaceAndPath("slimic", "recipe_audit"),
               CraftingBookCategory.MISC,
               kind);
       for (Item item :
-          farmer
+          farming
               ? List.of(
                   Items.WOODEN_HOE,
                   Items.STONE_HOE,
@@ -240,7 +240,7 @@ public final class OrderSevenGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 40)
-  public static void farmerHopsNeverTrampleFarmland(GameTestHelper h) {
+  public static void farmingHopsNeverTrampleFarmland(GameTestHelper h) {
     var f = farm(h);
     f.pet.setNoAi(true);
     for (int i = 0; i < 40; i++)
@@ -256,7 +256,7 @@ public final class OrderSevenGameTests {
   public static void fieldDetectionAlwaysDoublesUnderlyingStatAndMenusExposeTool(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var owner = h.makeMockSurvivalPlayer();
-    for (var type : List.of(ModEntities.FARMER_SLIME.get(), ModEntities.LUMBERJACK_SLIME.get())) {
+    for (var type : List.of(ModEntities.FARMING_SLIME.get(), ModEntities.LOGGING_SLIME.get())) {
       var pet = (FieldSlime) type.create(h.getLevel());
       pet.tame(owner);
       pet.moveTo(area.point(5.5, 101, 5.5));
@@ -272,7 +272,7 @@ public final class OrderSevenGameTests {
           menu.slots.size() == 64
               && menu.getSlot(0)
                   .mayPlace(
-                      new ItemStack(pet instanceof FarmerSlime ? Items.IRON_HOE : Items.IRON_AXE))
+                      new ItemStack(pet instanceof FarmingSlime ? Items.IRON_HOE : Items.IRON_AXE))
               && !menu.getSlot(0).mayPlace(new ItemStack(Items.IRON_PICKAXE)),
           "One filtered equipment slot plus ordinary bag");
     }
@@ -281,7 +281,7 @@ public final class OrderSevenGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 1000)
-  public static void lumberjackFellsTallTreeAndReplantsAtOriginalStump(GameTestHelper h) {
+  public static void loggingFellsTallTreeAndReplantsAtOriginalStump(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var pet = logger(h, area);
     var root = tree(h, area, Blocks.OAK_LOG, Blocks.OAK_LEAVES, 6);
@@ -314,7 +314,7 @@ public final class OrderSevenGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 180)
-  public static void lumberjackRequiresMatchingSaplingsBeforeAnyCut(GameTestHelper h) {
+  public static void loggingRequiresMatchingSaplingsBeforeAnyCut(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var pet = logger(h, area);
     var root = tree(h, area, Blocks.BIRCH_LOG, Blocks.BIRCH_LEAVES, 3);
@@ -342,7 +342,7 @@ public final class OrderSevenGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 180)
-  public static void lumberjackLeavesBuildingsAndPersistentDecorativeLeavesAlone(GameTestHelper h) {
+  public static void loggingLeavesBuildingsAndPersistentDecorativeLeavesAlone(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var pet = logger(h, area);
     var root = tree(h, area, Blocks.OAK_LOG, Blocks.OAK_LEAVES, 3);
@@ -459,7 +459,7 @@ public final class OrderSevenGameTests {
               for (FieldSlime pet : List.of(f.pet, log)) {
                 var tool =
                     new ItemStack(
-                        pet instanceof FarmerSlime ? Items.DIAMOND_HOE : Items.DIAMOND_AXE);
+                        pet instanceof FarmingSlime ? Items.DIAMOND_HOE : Items.DIAMOND_AXE);
                 tool.setDamageValue(11);
                 tool.setHoverName(Component.literal("Supplied"));
                 h.assertTrue(
@@ -480,15 +480,15 @@ public final class OrderSevenGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 100)
-  public static void farmerSnapshotAndGearSurviveRecoverySerialization(GameTestHelper h) {
+  public static void farmingSnapshotAndGearSurviveRecoverySerialization(GameTestHelper h) {
     var f = farm(h);
     f.pet.setTunedVitals(9, 37, 0);
     f.pet.setWorking(true);
     var stack = FriendlySlimeItem.fromSlime(f.pet);
-    var restored = ModEntities.FARMER_SLIME.get().create(h.getLevel());
+    var restored = ModEntities.FARMING_SLIME.get().create(h.getLevel());
     restored.load(stack.getTag().getCompound("SlimeData"));
     h.assertTrue(
-        stack.is(ModItems.FARMER_SLIME.get())
+        stack.is(ModItems.FARMING_SLIME.get())
             && restored.getFarmPlots().contains(f.plot)
             && restored.getUUID().equals(f.pet.getUUID())
             && restored.getHealth() == 9
@@ -519,7 +519,7 @@ public final class OrderSevenGameTests {
                     .setValue(LeavesBlock.DISTANCE, 1));
       }
     pet.getBag().setStackInSlot(0, new ItemStack(Items.DARK_OAK_SAPLING, 4));
-    final LumberjackSlime[] current = {pet};
+    final LoggingSlime[] current = {pet};
     h.startSequence()
         .thenWaitUntil(
             () -> h.assertTrue(pet.getPendingPlantings() == 4, "Wait for four reserved saplings"))
@@ -538,7 +538,7 @@ public final class OrderSevenGameTests {
               h.runAfterDelay(
                   1,
                   () -> {
-                    var loaded = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+                    var loaded = ModEntities.LOGGING_SLIME.get().create(h.getLevel());
                     loaded.setWorking(true);
                     loaded.load(saved);
                     h.getLevel().addFreshEntity(loaded);
@@ -577,7 +577,7 @@ public final class OrderSevenGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_seven", timeoutTicks = 180)
-  public static void lumberjackCollectsDroppedLogsAndSaplingsWithPickupDelay(GameTestHelper h) {
+  public static void loggingCollectsDroppedLogsAndSaplingsWithPickupDelay(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var pet = logger(h, area);
     var log =

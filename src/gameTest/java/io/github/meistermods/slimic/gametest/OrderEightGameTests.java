@@ -102,42 +102,43 @@ public final class OrderEightGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_eight", timeoutTicks = 100)
-  public static void heraldCopiesOneRocketAndFiresWithoutConsumingMore(GameTestHelper h) {
+  public static void signalingCopiesOneRocketAndFiresWithoutConsumingMore(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var owner = h.makeMockSurvivalPlayer();
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.setMonitoring(true);
-    herald.tame(owner);
-    herald.moveTo(area.point(8, 101, 8));
-    h.getLevel().addFreshEntity(herald);
-    owner.moveTo(herald.position());
-    var rockets = HeraldSlime.defaultFirework();
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.setMonitoring(true);
+    signaling.tame(owner);
+    signaling.moveTo(area.point(8, 101, 8));
+    h.getLevel().addFreshEntity(signaling);
+    owner.moveTo(signaling.position());
+    var rockets = SignalingSlime.defaultFirework();
     rockets.setCount(4);
     rockets.getOrCreateTag().putString("PatternName", "kept");
     owner.setItemInHand(InteractionHand.MAIN_HAND, rockets);
-    herald.mobInteract(owner, InteractionHand.MAIN_HAND);
+    signaling.mobInteract(owner, InteractionHand.MAIN_HAND);
     h.assertTrue(
         owner.getMainHandItem().getCount() == 3
-            && herald.getFirework().getTag().getString("PatternName").equals("kept"),
+            && signaling.getFirework().getTag().getString("PatternName").equals("kept"),
         "One original firework configures the design");
     owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-    herald.mobInteract(owner, InteractionHand.MAIN_HAND);
+    signaling.mobInteract(owner, InteractionHand.MAIN_HAND);
     h.runAfterDelay(
         12,
         () -> {
           owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
-          var menu = new SlimeMenu(1, owner.getInventory(), herald);
+          var menu = new SlimeMenu(1, owner.getInventory(), signaling);
           h.assertTrue(
               menu.clickMenuButton(owner, SlimeMenu.FIRE_SIGNAL),
               "Management button launches stored design");
           var signals =
               h.getLevel()
                   .getEntitiesOfClass(
-                      FireworkRocketEntity.class, herald.getBoundingBox().inflate(32));
+                      FireworkRocketEntity.class, signaling.getBoundingBox().inflate(32));
           h.assertTrue(
               signals.size() == 2
                   && signals.stream()
-                      .allMatch(r -> r.getPersistentData().getBoolean(HeraldSlime.SIGNAL_MARKER)),
+                      .allMatch(
+                          r -> r.getPersistentData().getBoolean(SignalingSlime.SIGNAL_MARKER)),
               "Two harmless manual signals without rocket supply");
           area.close();
           h.succeed();
@@ -288,9 +289,9 @@ public final class OrderEightGameTests {
     h.succeed();
   }
 
-  private static LumberjackSlime logger(GameTestHelper h, LoadedWorkArea a) {
+  private static LoggingSlime logger(GameTestHelper h, LoadedWorkArea a) {
     a.clearSurroundingTrees();
-    var pet = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
+    var pet = ModEntities.LOGGING_SLIME.get().create(h.getLevel());
     pet.setWorking(true);
     pet.moveTo(a.point(6.5, 101, 5.5));
     pet.tame(h.makeMockSurvivalPlayer());
@@ -316,7 +317,7 @@ public final class OrderEightGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_eight", timeoutTicks = 900)
-  public static void suppliedSaplingRestartsWaitingLumberjackAcrossDistance(GameTestHelper h) {
+  public static void suppliedSaplingRestartsWaitingLoggingAcrossDistance(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var pet = logger(h, a);
     pet.moveTo(a.point(3.5, 101, 5.5));

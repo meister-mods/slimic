@@ -26,7 +26,7 @@ import net.minecraftforge.gametest.*;
 
 @GameTestHolder(Slimic.MOD_ID)
 @PrefixGameTestTemplate(false)
-public final class CommanderLimitGameTests {
+public final class CommandLimitGameTests {
   private static ServerPlayer owner(GameTestHelper h) {
     var player =
         new ServerPlayer(
@@ -57,24 +57,23 @@ public final class CommanderLimitGameTests {
   }
 
   private record PlayerContext(GameTestHelper helper, LoadedWorkArea area, ServerPlayer player) {
-    CommanderSlime release(int x, int z) {
-      var stack = new ItemStack(ModItems.COMMANDER_SLIME.get());
+    CommandSlime release(int x, int z) {
+      var stack = new ItemStack(ModItems.COMMAND_SLIME.get());
       helper.assertTrue(summon(this, stack, x, z).consumesAction(), "Release the first commander");
       return helper
           .getLevel()
           .getEntitiesOfClass(
-              CommanderSlime.class,
-              new AABB(BlockPos.containing(area.point(x, 101, z))).inflate(.25))
+              CommandSlime.class, new AABB(BlockPos.containing(area.point(x, 101, z))).inflate(.25))
           .get(0);
     }
   }
 
   @GameTest(template = "empty", batch = "commander_limits", timeoutTicks = 100)
-  public static void secondCommanderIsRejectedInSurvivalAndCreative(GameTestHelper h) {
+  public static void secondCommandIsRejectedInSurvivalAndCreative(GameTestHelper h) {
     var a = new LoadedWorkArea(h);
     var c = new PlayerContext(h, a, owner(h));
     var first = c.release(3, 3);
-    var stack = new ItemStack(ModItems.COMMANDER_SLIME.get(), 2);
+    var stack = new ItemStack(ModItems.COMMAND_SLIME.get(), 2);
     h.assertTrue(
         summon(c, stack, 9, 3) == InteractionResult.FAIL && stack.getCount() == 2,
         "Survival cannot release a second commander or consume the item");
@@ -104,8 +103,8 @@ public final class CommanderLimitGameTests {
             && registry.setRelation(second.player.getUUID(), bridge.getUUID(), true, true)
             && registry.setRelation(third.player.getUUID(), second.player.getUUID(), true, true),
         "One-sided edges and a common shared owner connect the full group");
-    var commander = first.release(3, 3);
-    var item = new ItemStack(ModItems.COMMANDER_SLIME.get());
+    var command = first.release(3, 3);
+    var item = new ItemStack(ModItems.COMMAND_SLIME.get());
     h.assertTrue(
         summon(third, item, 9, 3) == InteractionResult.FAIL && item.getCount() == 1,
         "The indirect shared owner cannot release another commander");
@@ -123,7 +122,7 @@ public final class CommanderLimitGameTests {
     h.assertTrue(
         registry.setRelation(bridge.getUUID(), third.player.getUUID(), true, true),
         "The groups can merge after one commander leaves the world");
-    commander.discard();
+    command.discard();
     first.player.discard();
     second.player.discard();
     third.player.discard();
@@ -133,15 +132,15 @@ public final class CommanderLimitGameTests {
   }
 
   @GameTest(template = "empty", batch = "commander_limits", timeoutTicks = 1600)
-  public static void unloadedCommanderStillOccupiesItsSavedWorldSlot(GameTestHelper h) {
+  public static void unloadedCommandStillOccupiesItsSavedWorldSlot(GameTestHelper h) {
     var source = new LoadedWorkArea(h);
     var destination = new LoadedWorkArea(h);
     var player = owner(h);
     var c = new PlayerContext(h, source, player);
-    var commander = c.release(3, 3);
-    commander.setNoAi(true);
-    var id = commander.getUUID();
-    var center = commander.blockPosition();
+    var command = c.release(3, 3);
+    command.setNoAi(true);
+    var id = command.getUUID();
+    var center = command.blockPosition();
     player.moveTo(destination.point(7, 101, 7));
     source.close();
     h.startSequence()
@@ -156,9 +155,9 @@ public final class CommanderLimitGameTests {
                   CompanionRegistry.load(
                       CompanionRegistry.get(h.getLevel()).save(new CompoundTag()));
               h.assertTrue(
-                  !copy.reserveCommander(player.getUUID()),
+                  !copy.reserveCommand(player.getUUID()),
                   "Population remains occupied after registry serialization");
-              var stack = new ItemStack(ModItems.COMMANDER_SLIME.get());
+              var stack = new ItemStack(ModItems.COMMAND_SLIME.get());
               h.assertTrue(
                   summon(new PlayerContext(h, destination, player), stack, 3, 3)
                           == InteractionResult.FAIL
@@ -180,11 +179,11 @@ public final class CommanderLimitGameTests {
         registry.setRelation(primary.getUUID(), shared.player.getUUID(), true, true),
         "Grant shared access");
     var nether = h.getLevel().getServer().getLevel(Level.NETHER);
-    var distant = ModEntities.COMMANDER_SLIME.get().create(nether);
+    var distant = ModEntities.COMMAND_SLIME.get().create(nether);
     distant.tame(primary);
     distant.moveTo(4000.5, 140, 4000.5);
     registry.observe(distant);
-    var stack = new ItemStack(ModItems.COMMANDER_SLIME.get());
+    var stack = new ItemStack(ModItems.COMMAND_SLIME.get());
     h.assertTrue(
         summon(shared, stack, 3, 3) == InteractionResult.FAIL && stack.getCount() == 1,
         "A recorded commander in another dimension blocks the entire connected group");
@@ -195,7 +194,7 @@ public final class CommanderLimitGameTests {
     h.assertTrue(
         summon(shared, stored, 3, 3).consumesAction() && stored.isEmpty(),
         "A stored release counts its original owner rather than the player holding it");
-    var restored = (CommanderSlime) h.getLevel().getEntity(distant.getUUID());
+    var restored = (CommandSlime) h.getLevel().getEntity(distant.getUUID());
     h.assertTrue(
         restored != null && restored.getOwnerUUID().equals(primary.getUUID()),
         "The stored commander retains its original owner");
@@ -228,7 +227,7 @@ public final class CommanderLimitGameTests {
     h.assertTrue(
         summon(c, stored, 3, 3).consumesAction() && stored.isEmpty(),
         "A commander can be restored after the occupied slot is released");
-    original = (CommanderSlime) h.getLevel().getEntity(savedId);
+    original = (CommandSlime) h.getLevel().getEntity(savedId);
     h.assertTrue(
         original != null && original.getHealth() == 7 && original.getStatPoints() == 3,
         "Restoration preserves health, growth, and identity");
@@ -262,7 +261,7 @@ public final class CommanderLimitGameTests {
                 .consumesAction()
             && ball.getCount() == 1,
         "Revival succeeds and consumes one ball after capacity is freed");
-    var revived = (CommanderSlime) h.getLevel().getEntity(savedId);
+    var revived = (CommandSlime) h.getLevel().getEntity(savedId);
     h.assertTrue(
         revived != null && revived.getHealth() == 1 && revived.getStatPoints() == 3,
         "Revival retains identity and growth and restores exactly one health");
@@ -279,11 +278,11 @@ public final class CommanderLimitGameTests {
     var other = new PlayerContext(h, a, owner(h));
     var independent = other.release(12, 12);
     var registry = CompanionRegistry.get(h.getLevel());
-    var outer = new ItemStack(ModItems.COMMANDER_SLIME.get());
-    var nested = new ItemStack(ModItems.COMMANDER_SLIME.get());
+    var outer = new ItemStack(ModItems.COMMAND_SLIME.get());
+    var nested = new ItemStack(ModItems.COMMAND_SLIME.get());
     Consumer<EntityJoinLevelEvent> listener =
         event -> {
-          if (!(event.getEntity() instanceof CommanderSlime slime)
+          if (!(event.getEntity() instanceof CommandSlime slime)
               || !c.player.getUUID().equals(slime.getOwnerUUID())) return;
           h.assertTrue(
               summon(c, nested, 9, 3) == InteractionResult.FAIL && nested.getCount() == 1,
@@ -301,11 +300,11 @@ public final class CommanderLimitGameTests {
     } finally {
       MinecraftForge.EVENT_BUS.unregister(listener);
     }
-    var commander = c.release(3, 3);
+    var command = c.release(3, 3);
     h.assertTrue(
         !registry.owns(c.player.getUUID(), other.player.getUUID()),
         "The rejected merge did not grant ownership");
-    commander.discard();
+    command.discard();
     independent.discard();
     c.player.discard();
     other.player.discard();

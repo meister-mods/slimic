@@ -97,7 +97,7 @@ public final class SlimeRestorationCategory implements IRecipeCategory<SlimeRest
     graphics.drawString(
         font,
         Component.translatable(
-            "name.slimic.ancient_" + recipe.role().name().toLowerCase(Locale.ROOT)),
+            "name.slimic.ancient_" + recipe.role().savedName().toLowerCase(Locale.ROOT)),
         0,
         2,
         0x404040,
@@ -126,6 +126,6 @@ public final class SlimeRestorationCategory implements IRecipeCategory<SlimeRest
   @Override
   public ResourceLocation getRegistryName(SlimeRestorationRecipe recipe) {
     return ResourceLocation.fromNamespaceAndPath(
-        "slimic", "restoration/" + recipe.role().name().toLowerCase(Locale.ROOT));
+        "slimic", "restoration/" + recipe.role().savedName().toLowerCase(Locale.ROOT));
   }
 }

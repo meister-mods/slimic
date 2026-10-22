@@ -108,9 +108,9 @@ public final class OrderThirteenClientSmoke {
     return true;
   }
 
-  private static void action(CommanderMenu menu, int action, int page, UUID id, String tag) {
+  private static void action(CommandMenu menu, int action, int page, UUID id, String tag) {
     ModNetwork.CHANNEL.sendToServer(
-        new CommanderPackets.Action(
+        new CommandPackets.Action(
             menu.containerId, action, page, id == null ? new UUID(0, 0) : id, tag));
   }
 
@@ -192,7 +192,7 @@ public final class OrderThirteenClientSmoke {
               + " screen="
               + c.screen
               + " snapshot="
-              + (c.player.containerMenu instanceof CommanderMenu m ? m.snapshot() : "none"));
+              + (c.player.containerMenu instanceof CommandMenu m ? m.snapshot() : "none"));
     if (!done()) return false;
     if (phase == 0) {
       c.options.guiScale().set(2);
@@ -273,7 +273,7 @@ public final class OrderThirteenClientSmoke {
       return false;
     }
     if (phase == 7) {
-      if (!(c.screen instanceof CommanderScreen screen)
+      if (!(c.screen instanceof CommandScreen screen)
           || screen.getMenu().snapshot() == null
           || ticks < 10) return false;
       var menu = screen.getMenu();
@@ -304,34 +304,34 @@ public final class OrderThirteenClientSmoke {
                 "Roster widget clips at minimum native GUI size: " + widget.getMessage());
       shot(c, "roster");
       selected = snap.rows().get(0).id();
-      action(menu, CommanderMenu.SET_TAG, 0, selected, "pals");
+      action(menu, CommandMenu.SET_TAG, 0, selected, "pals");
       next();
       return false;
     }
     if (phase == 8) {
       if (ticks < 6) return false;
-      if (!(c.screen instanceof CommanderScreen screen) || screen.getMenu().snapshot() == null)
+      if (!(c.screen instanceof CommandScreen screen) || screen.getMenu().snapshot() == null)
         return false;
       var p = screen.getMenu().snapshot();
       if (p.rows().stream().noneMatch(r -> r.id().equals(selected) && r.tag().equals("pals")))
         return false;
       shot(c, "roster-tag-saved");
-      action(screen.getMenu(), CommanderMenu.PLAYERS, 0, null, "");
+      action(screen.getMenu(), CommandMenu.PLAYERS, 0, null, "");
       next();
       return false;
     }
     if (phase == 9) {
-      if (!(c.screen instanceof CommanderScreen screen) || screen.getMenu().snapshot() == null)
+      if (!(c.screen instanceof CommandScreen screen) || screen.getMenu().snapshot() == null)
         return false;
       var p = screen.getMenu().snapshot();
       if (!p.players() || p.rows().size() != 2 || ticks < 10) return false;
       shot(c, "player-relations");
-      action(screen.getMenu(), CommanderMenu.SHARE, 0, SHARED, "");
+      action(screen.getMenu(), CommandMenu.SHARE, 0, SHARED, "");
       next();
       return false;
     }
     if (phase == 10) {
-      if (!(c.screen instanceof CommanderScreen screen) || screen.getMenu().snapshot() == null)
+      if (!(c.screen instanceof CommandScreen screen) || screen.getMenu().snapshot() == null)
         return false;
       var p = screen.getMenu().snapshot();
       if (!p.players() || p.rows().stream().anyMatch(r -> r.id().equals(SHARED))) return false;
@@ -357,25 +357,25 @@ public final class OrderThirteenClientSmoke {
       return false;
     }
     if (phase == 13) {
-      if (!(c.screen instanceof CommanderScreen screen)
+      if (!(c.screen instanceof CommandScreen screen)
           || screen.getMenu().snapshot() == null
           || ticks < 10) return false;
       shot(c, "roster");
-      action(screen.getMenu(), CommanderMenu.PLAYERS, 0, null, "");
+      action(screen.getMenu(), CommandMenu.PLAYERS, 0, null, "");
       next();
       return false;
     }
     if (phase == 14) {
-      if (!(c.screen instanceof CommanderScreen screen) || screen.getMenu().snapshot() == null)
+      if (!(c.screen instanceof CommandScreen screen) || screen.getMenu().snapshot() == null)
         return false;
       var p = screen.getMenu().snapshot();
       if (!p.players() || ticks < 10) return false;
-      action(screen.getMenu(), CommanderMenu.SHARE, 0, ENEMY, "");
+      action(screen.getMenu(), CommandMenu.SHARE, 0, ENEMY, "");
       next();
       return false;
     }
     if (phase == 15) {
-      if (!(c.screen instanceof CommanderScreen screen) || screen.getMenu().snapshot() == null)
+      if (!(c.screen instanceof CommandScreen screen) || screen.getMenu().snapshot() == null)
         return false;
       var p = screen.getMenu().snapshot();
       if (ticks < 10

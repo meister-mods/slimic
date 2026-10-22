@@ -34,17 +34,17 @@ public final class ModNetwork {
         Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     CHANNEL.registerMessage(
         3,
-        CommanderPackets.Action.class,
-        CommanderPackets.Action::encode,
-        CommanderPackets.Action::decode,
-        CommanderPackets.Action::handle,
+        CommandPackets.Action.class,
+        CommandPackets.Action::encode,
+        CommandPackets.Action::decode,
+        CommandPackets.Action::handle,
         Optional.of(NetworkDirection.PLAY_TO_SERVER));
     CHANNEL.registerMessage(
         4,
-        CommanderPackets.Page.class,
-        CommanderPackets.Page::encode,
-        CommanderPackets.Page::decode,
-        CommanderPackets.Page::handle,
+        CommandPackets.Page.class,
+        CommandPackets.Page::encode,
+        CommandPackets.Page::decode,
+        CommandPackets.Page::handle,
         Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     CHANNEL.registerMessage(
         2,

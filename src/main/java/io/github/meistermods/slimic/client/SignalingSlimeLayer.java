@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.entity.FriendlySlime;
-import io.github.meistermods.slimic.entity.HeraldSlime;
+import io.github.meistermods.slimic.entity.SignalingSlime;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -13,14 +13,15 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public final class HeraldSlimeLayer extends RenderLayer<FriendlySlime, SlimeModel<FriendlySlime>> {
+public final class SignalingSlimeLayer
+    extends RenderLayer<FriendlySlime, SlimeModel<FriendlySlime>> {
   private static final ResourceLocation TEXTURE =
       ResourceLocation.fromNamespaceAndPath(Slimic.MOD_ID, "textures/entity/herald_hat.png");
   private static final float RADIUS = 0.27F;
   private static final float BASE = 1.0F;
   private static final float TIP = 0.62F;
 
-  public HeraldSlimeLayer(RenderLayerParent<FriendlySlime, SlimeModel<FriendlySlime>> parent) {
+  public SignalingSlimeLayer(RenderLayerParent<FriendlySlime, SlimeModel<FriendlySlime>> parent) {
     super(parent);
   }
 
@@ -36,7 +37,7 @@ public final class HeraldSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
       float age,
       float headYaw,
       float headPitch) {
-    if (!(slime instanceof HeraldSlime) || slime.isInvisible()) return;
+    if (!(slime instanceof SignalingSlime) || slime.isInvisible()) return;
     VertexConsumer vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
     for (int side = 0; side < 8; side++) {
       double a = side * Math.PI / 4, b = (side + 1) * Math.PI / 4;

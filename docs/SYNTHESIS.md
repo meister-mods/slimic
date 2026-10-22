@@ -56,7 +56,7 @@ Selective Ore offers coal, copper, iron, gold, redstone, lapis, diamond, emerald
 
 A Slime Scanner shows the selective search window clipped to the current chunk and detection height. It does not display a full-depth quarry, invent a next excavation layer, or reveal hidden ores.
 
-The miner uses ordinary Mining Slime health, stamina, and capacity. It does not inherit the ancient miner's half-cost passive. Transport and Warehouse Slimes supply tools and unload cargo; Herald Slimes report blocked work. Recovery, revival, portals, and redeployment retain the ordinary preservation rules and return it to Wait.
+The miner uses ordinary Mining Slime health, stamina, and capacity. It does not inherit the ancient miner's half-cost passive. Transport and Warehouse Slimes supply tools and unload cargo; Signaling Slimes report blocked work. Recovery, revival, portals, and redeployment retain the ordinary preservation rules and return it to Wait.
 
 ## Interrupted transactions
 

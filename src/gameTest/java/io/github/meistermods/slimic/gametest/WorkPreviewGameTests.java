@@ -89,7 +89,7 @@ public final class WorkPreviewGameTests {
       var area = SlimeWorkArea.of(slime);
       boolean supported =
           slime instanceof BagSlime
-              || slime instanceof HeraldSlime
+              || slime instanceof SignalingSlime
               || slime instanceof GuardianAngelSlime
               || slime instanceof SoggySlime;
       h.assertTrue(
@@ -175,10 +175,10 @@ public final class WorkPreviewGameTests {
     var soil = h.absolutePos(new BlockPos(1, 1, 1));
     var original = level.getBlockState(soil);
     level.setBlock(soil, net.minecraft.world.level.block.Blocks.FARMLAND.defaultBlockState(), 2);
-    var farmer = ModEntities.FARMER_SLIME.get().create(level);
-    farmer.moveTo(Vec3.atBottomCenterOf(soil.above()));
-    farmer.setWorking(true);
-    h.assertTrue(farmer.getFarmPlots().isEmpty(), "The new survey has not inspected its palette");
+    var farming = ModEntities.FARMING_SLIME.get().create(level);
+    farming.moveTo(Vec3.atBottomCenterOf(soil.above()));
+    farming.setWorking(true);
+    h.assertTrue(farming.getFarmPlots().isEmpty(), "The new survey has not inspected its palette");
     int[] loads = {0};
     java.util.function.Consumer<net.minecraftforge.event.level.ChunkEvent.Load> listener =
         event -> {
@@ -186,9 +186,10 @@ public final class WorkPreviewGameTests {
         };
     net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(listener);
     try {
-      for (int query = 0; query < 100; query++) SlimeWorkArea.of(farmer);
+      for (int query = 0; query < 100; query++) SlimeWorkArea.of(farming);
       h.assertTrue(
-          farmer.getFarmPlots().isEmpty() && farmer.getFieldStatus() == FieldSlime.Status.SURVEYING,
+          farming.getFarmPlots().isEmpty()
+              && farming.getFieldStatus() == FieldSlime.Status.SURVEYING,
           "Previewing an active farmer does not serialize or complete its survey");
       var cold = new BlockPos(15_000_008, 101, -15_000_008);
       h.assertTrue(!level.hasChunkAt(cold), "Preview terrain starts unloaded");
@@ -208,7 +209,7 @@ public final class WorkPreviewGameTests {
 
   @GameTest(template = "empty")
   public static void relocatedFieldsKeepTheirRegisteredCenterDuringTravel(GameTestHelper h) {
-    for (var type : List.of(ModEntities.FARMER_SLIME.get(), ModEntities.LUMBERJACK_SLIME.get())) {
+    for (var type : List.of(ModEntities.FARMING_SLIME.get(), ModEntities.LOGGING_SLIME.get())) {
       FieldSlime field = type.create(h.getLevel());
       field.moveTo(17_000_008.5, 101, -17_000_008.5);
       field.onReleased();
@@ -224,7 +225,7 @@ public final class WorkPreviewGameTests {
           "A relocated worker's movement does not move its registered field area: " + type);
       field.setWaiting(true);
       var plannedCenter =
-          field instanceof FarmerSlime ? Vec3.atCenterOf(field.blockPosition()) : center;
+          field instanceof FarmingSlime ? Vec3.atCenterOf(field.blockPosition()) : center;
       h.assertTrue(
           SlimeWorkArea.of(field).shapes().get(0).bounds().getCenter().equals(plannedCenter),
           "Planned farming adopts its next survey center while logging keeps its area: " + type);
@@ -513,13 +514,13 @@ public final class WorkPreviewGameTests {
                   SlimeWorkWarning.reason(miner, WorkStatus.blocked(WorkStatus.Order.MINE, reason)))
               .contains("message.slimic.blocked."),
           "Every blocked cause has a localized message: " + reason);
-    var lumberjack = ModEntities.LUMBERJACK_SLIME.get().create(h.getLevel());
-    var farmer = ModEntities.FARMER_SLIME.get().create(h.getLevel());
+    var logging = ModEntities.LOGGING_SLIME.get().create(h.getLevel());
+    var farming = ModEntities.FARMING_SLIME.get().create(h.getLevel());
     var seeds = WorkStatus.blocked(WorkStatus.Order.LOG, WorkStatus.Reason.SEEDS_MISSING);
     h.assertTrue(
-        Component.Serializer.toJson(SlimeWorkWarning.reason(lumberjack, seeds))
+        Component.Serializer.toJson(SlimeWorkWarning.reason(logging, seeds))
                 .contains("saplings_missing")
-            && Component.Serializer.toJson(SlimeWorkWarning.reason(farmer, seeds))
+            && Component.Serializer.toJson(SlimeWorkWarning.reason(farming, seeds))
                 .contains("seeds_missing"),
         "Lumberjack saplings and Farming seeds remain distinct");
     h.succeed();
@@ -574,7 +575,7 @@ public final class WorkPreviewGameTests {
   }
 
   @GameTest(template = "empty", timeoutTicks = 160)
-  public static void heraldMessagesOwnersAndSharedOwnersOncePerSignalCooldown(GameTestHelper h) {
+  public static void signalingMessagesOwnersAndSharedOwnersOncePerSignalCooldown(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var owner = new Receiver(h);
     var shared =
@@ -595,12 +596,12 @@ public final class WorkPreviewGameTests {
     saved.putLong("BlockedEpisode", 5);
     miner.load(saved);
     h.getLevel().addFreshEntity(miner);
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.moveTo(area.point(8, 101, 10));
-    herald.tame(owner);
-    herald.setMonitoring(true);
-    herald.setDelayMinutes(1);
-    h.getLevel().addFreshEntity(herald);
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.moveTo(area.point(8, 101, 10));
+    signaling.tame(owner);
+    signaling.setMonitoring(true);
+    signaling.setDelayMinutes(1);
+    h.getLevel().addFreshEntity(signaling);
     h.startSequence()
         .thenWaitUntil(
             () ->
@@ -619,7 +620,7 @@ public final class WorkPreviewGameTests {
               h.assertTrue(
                   message.contains("Qurry")
                       && message.contains("tool_missing.pickaxe")
-                      && herald
+                      && signaling
                               .saveWithoutId(new CompoundTag())
                               .getCompound("HeraldWarnings")
                               .size()

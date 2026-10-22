@@ -136,12 +136,12 @@ public final class OrderInterruptionGameTests {
   }
 
   @GameTest(template = "empty", batch = "order_interruption", timeoutTicks = 220)
-  public static void cancelledFarmerPreservesCropAndTool(GameTestHelper h) {
+  public static void cancelledFarmingPreservesCropAndTool(GameTestHelper h) {
     terrainCancellation(h, 1);
   }
 
   @GameTest(template = "empty", batch = "order_interruption", timeoutTicks = 220)
-  public static void cancelledLumberjackPreservesPreparedTreeAndTool(GameTestHelper h) {
+  public static void cancelledLoggingPreservesPreparedTreeAndTool(GameTestHelper h) {
     terrainCancellation(h, 2);
   }
 
@@ -174,8 +174,8 @@ public final class OrderInterruptionGameTests {
         kind == 0
             ? ModEntities.MINING_SLIME.get().create(level)
             : kind == 1
-                ? ModEntities.FARMER_SLIME.get().create(level)
-                : ModEntities.LUMBERJACK_SLIME.get().create(level);
+                ? ModEntities.FARMING_SLIME.get().create(level)
+                : ModEntities.LOGGING_SLIME.get().create(level);
     actor.tame(h.makeMockSurvivalPlayer());
     actor.moveTo(a.point(6.5, 101, 8.5));
     actor.onReleased();
@@ -199,7 +199,7 @@ public final class OrderInterruptionGameTests {
             () ->
                 h.assertTrue(
                     kind == 2
-                        ? ((LumberjackSlime) actor).getPendingPlantings() == 1
+                        ? ((LoggingSlime) actor).getPendingPlantings() == 1
                             && actor.getActivityProgress() == 0
                         : actor.getWorkStatus().reason() == WorkStatus.Reason.EXHAUSTED,
                     "Native work goal has prepared its next action"))

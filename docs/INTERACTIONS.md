@@ -12,7 +12,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I02 | Transport / Mining | Supply the exact spare tool, retaining its data. |
 | I03 | Transport / Mining | Deliver one bucket and resume fluid removal. |
 | I04 | Transport / Mining | Limit cobblestone delivery to one requested stack. |
-| I05 | Transport / Farming / Lumberjack | Match hoes and axes to each worker. |
+| I05 | Transport / Farming / Logging | Match hoes and axes to each worker. |
 | I06 | Transport / Combat | Replace a missing sword without replacing other gear. |
 | I07 | Transport / Cleaning | Unload a full cleaner and resume collection. |
 | I08 | Transport / Healing / Warehouse | Use an owned waiting warehouse as a supply source. |
@@ -23,7 +23,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I13 | Transport / Warehouse | Exclude storage without same-owner or mutual sharing authorization. |
 | I14 | Transport / Warehouse | Revalidate ownership immediately before transfer. |
 | I15 | Healing / patient | Charge only the healer that completes treatment. |
-| I16 | Healing / Herald | Retain blocked duration across failed approaches. |
+| I16 | Healing / Signaling | Retain blocked duration across failed approaches. |
 | I17 | Healing / stored companion | Reject duplicate identity revival without costs. |
 | I18 | Healing / Warehouse | Revive with tuned capacity and final-slot cargo intact. |
 | I19 | Workers / Transport / Warehouse | Conserve exact cargo and source tags under competition. |
@@ -34,7 +34,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I24 | Guardian / Saddle / owner | Protect a mounted owner without removing rider or gear. |
 | I25 | Combat / all twenty-six professions | Same-owner companions remain excluded with all filters enabled. |
 | I26 | Transport / worker | Competing carriers cannot duplicate spare tools. |
-| I27 | Herald / worker | A signal callback cannot continue a cancelled monitoring order. |
+| I27 | Signaling / worker | A signal callback cannot continue a cancelled monitoring order. |
 | I28 | Warehouse / worker | Use a real loaded detour to reach cargo. |
 | I29 | Healing / Soggy | Keep Roam and its fixed origin during treatment. |
 | I30 | Mining / Mining | Share one chunk staircase across start heights; preserve legacy floors, queued protection, exact repair costs and loot. |
@@ -44,7 +44,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I34 | Meow / Creeper | Use native cat avoidance while active, independently of Wait or Roam. |
 | I35 | Combat / Dragon / Transport | Collect own kill loot and request unloading without stopping full-bag combat. |
 | I36 | Fishing / recovery | Preserve pending catches through recovery and successive partial unloadings. |
-| I37 | Commander / workers | Gather tagged living companions across chunks and dimensions, preserve traits, and arrive in Wait. |
+| I37 | Command / workers | Gather tagged living companions across chunks and dimensions, preserve traits, and arrive in Wait. |
 | I38 | Shared owners / all companions | Allow delegated management, preserve the primary owner, and revoke access immediately. |
 | I39 | Transport / shared Warehouse | Reject one-sided access; allow mutual cooperation and stop transfers on revocation. |
 | I40 | Ender / player | Retain identity-bound tokens and exact pinned chunks across cold restarts; reject unsafe or revoked travel without costs. |
@@ -52,7 +52,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I42 | Shared owners / Saddle / Combat | Eject revoked riders; enemy assignments retain PvP, team, Creative, and ally protection. |
 | I43 | Recovery / all twenty-six professions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
 | I44 | Scanner / workers | Preview bounded current or planned areas without starting work, loading chunks, or recovering the companion; enforce current access and range. |
-| I45 | Herald / blocked worker / owners | Report type, custom name, and cause to authorized online owners, including other dimensions; respect cooldowns and revoked access. |
+| I45 | Signaling / blocked worker / owners | Report type, custom name, and cause to authorized online owners, including other dimensions; respect cooldowns and revoked access. |
 | I46 | Wild Slime / player | Convert one size-one Slime with one Survival golden apple; start owned and waiting, retain its name, and use normal owner-only Shift recovery. Event or spawn vetoes preserve inputs. |
 | I47 | Ancient remnant / companions | Remnants recognize companions as intruders; companion combat recognizes the ancient faction as hostile. Home boundaries end pursuit. |
 | I48 | Ancient carrier / depot / player | Move exact physical cargo only between matching ruin depots. Opening a chest claims it; mob griefing can deny transfers. |

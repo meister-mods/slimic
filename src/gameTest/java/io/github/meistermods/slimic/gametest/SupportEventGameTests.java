@@ -186,16 +186,16 @@ public final class SupportEventGameTests {
   }
 
   @GameTest(template = "empty", batch = "support_events", timeoutTicks = 500)
-  public static void heraldStopsScanningWhenSignalCallbackChangesCommand(GameTestHelper h) {
+  public static void signalingStopsScanningWhenSignalCallbackChangesCommand(GameTestHelper h) {
     var area = new LoadedWorkArea(h);
     var level = h.getLevel();
     var owner = h.makeMockSurvivalPlayer();
-    var herald = ModEntities.HERALD_SLIME.get().create(level);
-    herald.tame(owner);
-    herald.moveTo(area.point(8.5, 101, 8.5));
-    herald.setNoAi(true);
-    herald.setDelayMinutes(1);
-    herald.setMonitoring(true);
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(level);
+    signaling.tame(owner);
+    signaling.moveTo(area.point(8.5, 101, 8.5));
+    signaling.setNoAi(true);
+    signaling.setDelayMinutes(1);
+    signaling.setMonitoring(true);
     var workers = new java.util.ArrayList<MiningSlime>();
     for (int i = 0; i < 2; i++) {
       var worker = ModEntities.MINING_SLIME.get().create(level);
@@ -214,30 +214,30 @@ public final class SupportEventGameTests {
     Consumer<EntityJoinLevelEvent> command =
         event -> {
           if (!(event.getEntity() instanceof FireworkRocketEntity rocket)
-              || rocket.getOwner() != herald) return;
+              || rocket.getOwner() != signaling) return;
           calls[0]++;
-          herald.setMonitoring(false);
-          herald.setWaiting(true);
+          signaling.setMonitoring(false);
+          signaling.setWaiting(true);
         };
     h.startSequence()
         .thenWaitUntil(
             () ->
                 h.assertTrue(
-                    level.isPositionEntityTicking(herald.blockPosition()), "Signal area ticks"))
+                    level.isPositionEntityTicking(signaling.blockPosition()), "Signal area ticks"))
         .thenExecute(
             () -> {
               workers.forEach(level::addFreshEntity);
               MinecraftForge.EVENT_BUS.addListener(command);
               try {
-                herald.tickCount = 20;
-                goals(herald).tick();
+                signaling.tickCount = 20;
+                goals(signaling).tick();
                 h.assertTrue(
                     calls[0] == 1,
                     "The first signal callback stops later signals in the same scan: " + calls[0]);
                 h.assertTrue(
-                    herald.isOrderedToSit() && !herald.isWorking(),
+                    signaling.isOrderedToSit() && !signaling.isWorking(),
                     "Wait remains effective after signaling");
-                var saved = herald.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+                var saved = signaling.saveWithoutId(new net.minecraft.nbt.CompoundTag());
                 h.assertTrue(
                     saved.getCompound("HeraldWarnings").size() == 1,
                     "Only the completed signal records a warning");
@@ -246,11 +246,11 @@ public final class SupportEventGameTests {
                 level
                     .getEntitiesOfClass(
                         FireworkRocketEntity.class,
-                        new net.minecraft.world.phys.AABB(herald.blockPosition()).inflate(16),
-                        rocket -> rocket.getOwner() == herald)
+                        new net.minecraft.world.phys.AABB(signaling.blockPosition()).inflate(16),
+                        rocket -> rocket.getOwner() == signaling)
                     .forEach(FireworkRocketEntity::discard);
                 workers.forEach(FriendlySlime::discard);
-                herald.discard();
+                signaling.discard();
                 area.close();
               }
             })

@@ -12,12 +12,12 @@ import net.minecraftforge.gametest.*;
 @PrefixGameTestTemplate(false)
 public final class ForestrySurfaceGameTests {
   @GameTest(template = "empty", batch = "forestry_surface", timeoutTicks = 1000)
-  public static void lumberjackApproachesAStumpAcrossMud(GameTestHelper h) {
+  public static void loggingApproachesAStumpAcrossMud(GameTestHelper h) {
     surface(h, false);
   }
 
   @GameTest(template = "empty", batch = "forestry_surface", timeoutTicks = 1000)
-  public static void lumberjackApproachesAStumpAcrossThinSnow(GameTestHelper h) {
+  public static void loggingApproachesAStumpAcrossThinSnow(GameTestHelper h) {
     surface(h, true);
   }
 
@@ -46,7 +46,7 @@ public final class ForestrySurfaceGameTests {
             .setValue(LeavesBlock.PERSISTENT, false)
             .setValue(LeavesBlock.DISTANCE, 1),
         18);
-    var logger = ModEntities.LUMBERJACK_SLIME.get().create(level);
+    var logger = ModEntities.LOGGING_SLIME.get().create(level);
     logger.tame(h.makeMockSurvivalPlayer());
     logger.moveTo(a.point(3.5, snow ? 101.125 : 101, 8.5));
     logger.onReleased();

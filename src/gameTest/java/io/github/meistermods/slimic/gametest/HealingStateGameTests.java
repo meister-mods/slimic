@@ -191,21 +191,21 @@ public final class HealingStateGameTests {
   }
 
   @GameTest(template = "empty", batch = "healing_watchdog", timeoutTicks = 4000)
-  public static void repeatedUnreachableRetriesStillReachHeraldDelay(GameTestHelper h) {
+  public static void repeatedUnreachableRetriesStillReachSignalingDelay(GameTestHelper h) {
     var s = site(h);
     s.patient.moveTo(s.area.point(11.5, 101, 8.5));
     SlimeStat.MOVEMENT_SPEED.tune(s.medic, 0);
-    var herald = ModEntities.HERALD_SLIME.get().create(h.getLevel());
-    herald.tame(s.owner);
-    herald.moveTo(s.area.point(7.5, 101, 5.5));
-    herald.setDelayMinutes(1);
-    herald.setMonitoring(true);
+    var signaling = ModEntities.SIGNALING_SLIME.get().create(h.getLevel());
+    signaling.tame(s.owner);
+    signaling.moveTo(s.area.point(7.5, 101, 5.5));
+    signaling.setDelayMinutes(1);
+    signaling.setMonitoring(true);
     s.start()
-        .thenExecute(() -> h.getLevel().addFreshEntity(herald))
+        .thenExecute(() -> h.getLevel().addFreshEntity(signaling))
         .thenWaitUntil(
             () ->
                 h.assertTrue(
-                    herald
+                    signaling
                         .saveWithoutId(new CompoundTag())
                         .getCompound("HeraldWarnings")
                         .contains(s.medic.getUUID().toString()),
@@ -235,7 +235,7 @@ public final class HealingStateGameTests {
                         + s.medic.getNavigation().getPath()))
         .thenExecute(
             () -> {
-              herald.discard();
+              signaling.discard();
               s.close();
             })
         .thenSucceed();

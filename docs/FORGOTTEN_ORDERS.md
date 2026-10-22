@@ -8,13 +8,13 @@ The old kingdom's slimes still follow orders left at their ruins. Forgotten Orde
 
 ## Occupied ruins
 
-Newly generated workshops and supply depots contain an Ancient Guard, a Forgotten Transport, linked Slime Chests, an intact Slime Restoration Station, and an ordinary loot chest. Road fragments remain unoccupied. Archives add bookshelves, tablets, an Ancient Commander, and **Waiting for XXX** record, which links the kingdom’s beginnings to XXX’s absence. Rarer royal wards add royal insignia, another guard, and **The Last Watch** record. These are weathered sections of the old capital, built within individual chunks.
+Newly generated workshops and supply depots contain an Ancient Guard, a Forgotten Transport, linked Slime Chests, an intact Slime Restoration Station, and an ordinary loot chest. Road fragments remain unoccupied. Archives add bookshelves, tablets, an Ancient Command Slime, and **Waiting for XXX** record, which links the kingdom’s beginnings to XXX’s absence. Rarer royal wards add royal insignia, another guard, and **The Last Watch** record. These are weathered sections of the old capital, built within individual chunks.
 
 | Remnant | Duty |
 | --- | --- |
 | Ancient Guard Slime | Patrol its ruin and attack nearby intruders. |
 | Forgotten Transport Slime | Carry actual items between its own two depots; resist attackers. |
-| Ancient Commander Slime | Defend its ruin and alert guards belonging to the same ruin. |
+| Ancient Command Slime | Defend its ruin and alert guards belonging to the same ruin. |
 
 Remnants are distinct hostile entities, with no player owner or companion recovery block. Guards detect intruders within 16 blocks and end pursuit beyond 24 blocks from home. They return to the ruin instead of following an escaping player indefinitely. Creative and Spectator players and fellow ancient slimes are excluded. They can fight player companions; Combat, Dragon, and Royal Guard Slimes recognize them as hostile mobs under their normal filters.
 
@@ -22,15 +22,15 @@ Ancient carriers never search for arbitrary player storage. Their two depots mus
 
 ## Finding a royal ward
 
-Enter The Slimic through a slime-block portal and explore newly generated surface chunks. Royal wards are rare variants among the ruins, marked by royal crests, old slime banners, a commander, and extra guards. They have no fixed coordinates, separate portal, or entry requirement. Flat land above sea level can contain ruins; steep terrain and existing containers prevent placement. Ruins are world-generation features, so `/locate structure` does not locate them. Older generated chunks do not gain new ruins automatically.
+Enter The Slimic through a slime-block portal and explore newly generated surface chunks. Royal wards are rare variants among the ruins, marked by royal crests, old slime banners, a command slime, and extra guards. They have no fixed coordinates, separate portal, or entry requirement. Flat land above sea level can contain ruins; steep terrain and existing containers prevent placement. Ruins are world-generation features, so `/locate structure` does not locate them. Older generated chunks do not gain new ruins automatically.
 
-Base health, attack damage, and armor are 64/8/8 for Ancient Guards, 48/6/6 for Forgotten Transports, and 96/12/12 for Ancient Commanders. Unmodified remnants from earlier saves receive the new defaults once while retaining their health proportion, ruin, cargo, and name. Custom attributes remain unchanged. Creative provides one ordinary spawn egg per hostile role. Spawn eggs create unowned remnants; carriers without linked ruin depots have no delivery route.
+Base health, attack damage, and armor are 64/8/8 for Ancient Guards, 48/6/6 for Forgotten Transports, and 96/12/12 for Ancient Command Slimes. Unmodified remnants from earlier saves receive the new defaults once while retaining their health proportion, ruin, cargo, and name. Custom attributes remain unchanged. Creative provides one ordinary spawn egg per hostile role. Spawn eggs create unowned remnants; carriers without linked ruin depots have no delivery route.
 
 The recovered books speak in the voices of slimes who kept supplies, pressed records into clay, and stood watch. The name `XXX` obscures a missing figure. Their experiences leave restoration clues without describing player controls or progression systems.
 
 ## Restore a remnant
 
-Creative provides Guard, Transport, and Commander core variants in the main Slimic tab, beside the seal and restoration station. Their tooltips identify the former role. Each newly taken core can be restored using the same materials and procedure.
+Creative provides Guard, Transport, and Command core variants in the main Slimic tab, beside the seal and restoration station. Their tooltips identify the former role. Each newly taken core can be restored using the same materials and procedure.
 
 The **Slime Restoration Station** is the intact pedestal found in ruins. Find it beside the seal in the main Slimic Creative tab. Right-click without a core for instructions, or look up the station in the guidebook’s **Slime restoration** entry.
 
@@ -45,11 +45,11 @@ Defeating a ruin remnant yourself or with a tamed Slimic companion yields one **
 | --- | --- |
 | Guard | Royal Guard Slime |
 | Transport | Transport Slime |
-| Commander | Commander Slime |
+| Command | Command Slime |
 
 The restored companion receives a new UUID and the restoring player's ownership. It retains an ancient name, a white insignia, and inherited Endurance training. Restoration also distributes a core-stable total of 12–28 invested points among useful profession stats. No hostile entity snapshot, target, old order, or old ownership is imported. Ancient carriers' physical cargo remains ordinary loot rather than being copied into the new companion.
 
-Each ancient identity can be redeemed only once across all dimensions of the saved world, including after restart. Missing materials, invalid or already restored cores, and unavailable pedestals preserve the core and materials. The usual Commander limit still applies when releasing a restored commander: one spawned Commander per connected co-owner group across the world. Restored companions then use the same recovery, revival, growth, sharing, portal, logistics, and command rules as their profession.
+Each ancient identity can be redeemed only once across all dimensions of the saved world, including after restart. Missing materials, invalid or already restored cores, and unavailable pedestals preserve the core and materials. The usual Command Slime limit still applies when releasing a restored command slime: one spawned Command Slime per connected co-owner group across the world. Restored companions then use the same recovery, revival, growth, sharing, portal, logistics, and command rules as their profession.
 
 JEI’s **Slime Restoration** category shows all six station restoration paths. View a core’s uses, a catalyst’s uses, or a resulting companion’s recipes to see the matching ingredients and result. The intact station is the reusable recipe catalyst; mine cores require the Overworld and use command fragments instead of seals.
 
@@ -69,4 +69,4 @@ While working with a shield, a guard can intercept **35%** of an owner's or coop
 
 Protection costs at least four stamina, or twice the intercepted damage when larger. At least four stamina and more than one health are required. Redirection is capped at the guard's health above one; normal armor and protection still apply to the guard's hit. Blocking the redirected hit with a raised shield still spends stamina. Interception also contributes to growth. With insufficient stamina, missing equipment, no eligible attacker, or a Wait/Follow order, the original hit proceeds normally. It does not grant passive invulnerability.
 
-Transport and Warehouse Slimes can resupply swords and unload combat loot, healers can tend the guard, Heralds report blocked orders, and Commanders gather it into Wait. A Slime Scanner shows the guard-post detection range and its smaller protection radius. Gold crowns identify Royal Guards; restored veterans additionally carry white insignia.
+Transport and Warehouse Slimes can resupply swords and unload combat loot, healers can tend the guard, Signaling Slimes report blocked orders, and Command Slimes gather it into Wait. A Slime Scanner shows the guard-post detection range and its smaller protection radius. Gold crowns identify Royal Guards; restored veterans additionally carry white insignia.

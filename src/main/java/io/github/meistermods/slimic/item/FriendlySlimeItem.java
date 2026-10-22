@@ -1,6 +1,6 @@
 package io.github.meistermods.slimic.item;
 
-import io.github.meistermods.slimic.entity.CommanderSlime;
+import io.github.meistermods.slimic.entity.CommandSlime;
 import io.github.meistermods.slimic.entity.CompanionRegistry;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.SlimeData;
@@ -156,14 +156,14 @@ public class FriendlySlimeItem extends Item {
       boolean alignToSurface,
       boolean offsetUp,
       boolean reviving) {
-    if (entityType() != ModEntities.COMMANDER_SLIME.get())
+    if (entityType() != ModEntities.COMMAND_SLIME.get())
       return spawnWithIdentityGuard(
           level, player, stack, position, alignToSurface, offsetUp, reviving);
     var registry = CompanionRegistry.get(level.getServer());
     var saved = hasStoredSlime(stack) ? stack.getTag().getCompound(SLIME_DATA) : null;
     UUID owner =
         saved != null && saved.hasUUID("Owner") ? saved.getUUID("Owner") : player.getUUID();
-    if (!registry.reserveCommander(owner)) {
+    if (!registry.reserveCommand(owner)) {
       player.displayClientMessage(Component.translatable("message.slimic.commander_limit"), true);
       return false;
     }
@@ -174,7 +174,7 @@ public class FriendlySlimeItem extends Item {
               level, player, stack, position, alignToSurface, offsetUp, reviving);
       return spawned;
     } finally {
-      registry.releaseCommanderReservation(owner, spawned);
+      registry.releaseCommandReservation(owner, spawned);
     }
   }
 
@@ -273,8 +273,8 @@ public class FriendlySlimeItem extends Item {
                 MobSpawnType.SPAWN_EGG,
                 alignToSurface,
                 offsetUp);
-    if (slime instanceof CommanderSlime commander
-        && !CompanionRegistry.get(level.getServer()).prepareCommanderSpawn(commander)) {
+    if (slime instanceof CommandSlime command
+        && !CompanionRegistry.get(level.getServer()).prepareCommandSpawn(command)) {
       player.displayClientMessage(Component.translatable("message.slimic.commander_limit"), true);
       return false;
     }

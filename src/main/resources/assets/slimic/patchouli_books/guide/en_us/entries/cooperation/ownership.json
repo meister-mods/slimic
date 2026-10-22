@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Shared ownership is configured through a $(l:companions/commander)Commander Slime$(). The original owner UUID remains the primary identity in worlds and stored items. Only that player may change shared owners or enemies. Giving someone a stored item does not grant ownership."
+      "text": "Shared ownership is configured through a $(l:companions/commander)Command Slime$(). The original owner UUID remains the primary identity in worlds and stored items. Only that player may change shared owners or enemies. Giving someone a stored item does not grant ownership."
     },
     {
       "type": "patchouli:text",

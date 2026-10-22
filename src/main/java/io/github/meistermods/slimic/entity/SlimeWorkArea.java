@@ -114,11 +114,11 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
                 true));
     } else if (slime instanceof FieldSlime field) {
       BlockPos center = field.getPreviewWorkHome();
-      if (slime instanceof FarmerSlime && !slime.isWorking()) center = slime.blockPosition();
+      if (slime instanceof FarmingSlime && !slime.isWorking()) center = slime.blockPosition();
       shapes.add(range(Vec3.atCenterOf(center), radius));
-      if (slime instanceof FarmerSlime farmer && slime.isWorking()) {
+      if (slime instanceof FarmingSlime farming && slime.isWorking()) {
         AABB plots = null;
-        for (var plot : farmer.getFarmPlots())
+        for (var plot : farming.getFarmPlots())
           plots = plots == null ? new AABB(plot) : plots.minmax(new AABB(plot));
         if (plots != null) shapes.add(new Shape(plots, false, true));
       }
@@ -142,7 +142,7 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
               Vec3.atCenterOf(slime.isWorking() ? guard.getGuardPost() : slime.blockPosition()),
               radius));
       shapes.add(range(slime.position(), 4));
-    } else if (slime instanceof HeraldSlime || slime instanceof CombatSlime) {
+    } else if (slime instanceof SignalingSlime || slime instanceof CombatSlime) {
       shapes.add(range(slime.position(), radius));
     } else if (slime instanceof SoggySlime soggy) {
       shapes.add(
