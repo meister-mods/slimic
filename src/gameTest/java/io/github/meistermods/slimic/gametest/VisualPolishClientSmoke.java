@@ -93,14 +93,30 @@ public final class VisualPolishClientSmoke {
                               && q.isTinted()),
           "Native grass fringe on " + face);
     }
-    var portal =
-        c.getModelManager()
-            .getAtlas(TextureAtlas.LOCATION_BLOCKS)
-            .getSprite(id("block/world/slimic_portal"))
-            .contents();
+    var atlas = c.getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
+    for (String texture :
+        java.util.List.of(
+            "slimic_soil",
+            "slimic_tiles",
+            "damp_grass_top",
+            "slimic_stone",
+            "congealed_slime",
+            "slime_silt",
+            "slime_marble",
+            "slimic_bricks")) {
+      var name = id("block/world/" + texture);
+      var contents = atlas.getSprite(name).contents();
+      check(
+          contents.name().equals(name)
+              && contents.width() == 16
+              && contents.height() == 16
+              && contents.getUniqueFrames().count() == 1,
+          "Native atlas stitches the 16x16 static material " + texture);
+    }
+    var portal = atlas.getSprite(id("block/world/slimic_portal")).contents();
     check(
-        portal.width() == 32 && portal.height() == 32 && portal.getUniqueFrames().count() == 16,
-        "Native atlas loads sixteen 32x32 portal frames");
+        portal.width() == 16 && portal.height() == 16 && portal.getUniqueFrames().count() == 16,
+        "Native atlas loads sixteen 16x16 portal frames");
   }
 
   private static long portalPixels(Minecraft c) {
@@ -114,8 +130,9 @@ public final class VisualPolishClientSmoke {
       pixels.downloadTexture(0, false);
       int x = Math.round(sprite.getU0() * width), y = Math.round(sprite.getV0() * height);
       long hash = 1;
-      for (int dx = 0; dx < 32; dx++)
-        for (int dy = 0; dy < 32; dy++) hash = hash * 31 + pixels.getPixelRGBA(x + dx, y + dy);
+      for (int dx = 0; dx < sprite.contents().width(); dx++)
+        for (int dy = 0; dy < sprite.contents().height(); dy++)
+          hash = hash * 31 + pixels.getPixelRGBA(x + dx, y + dy);
       return hash;
     } finally {
       RenderSystem.bindTexture(previous);
@@ -261,9 +278,9 @@ public final class VisualPolishClientSmoke {
         try {
           Files.writeString(
               OUTPUT.resolve("result.txt"),
-              "PASS: EN/KR short tabs, 32 minimal tooltips, 86 models, native chest"
-                  + " atlas/body/lid/latch, four facings, grass fringe, sixteen portal frames and"
-                  + " changing GPU pixels.\n");
+              "PASS: EN/KR short tabs, 31 minimal tooltips, 86 models, eight 16x16 materials,"
+                  + " native chest atlas/body/lid/latch, four facings, grass fringe, sixteen 16x16"
+                  + " portal frames and changing GPU pixels.\n");
         } catch (Exception e) {
           throw new IllegalStateException(e);
         }

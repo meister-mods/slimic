@@ -77,7 +77,7 @@ public final class ColonyFragmentRenderer
                 1,
                 1,
                 1,
-                .6F);
+                .85F);
             cores
                 .getChild(entity.role().name().toLowerCase(java.util.Locale.ROOT))
                 .render(

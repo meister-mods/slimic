@@ -76,13 +76,13 @@ The visual-polish check covers localized material tabs, minimal decoration toolt
 
 ## World materials
 
-The Slimic uses eight opaque **32×32** material textures and one animated portal strip in [`assets/slimic/textures/block/world`](../src/main/resources/assets/slimic/textures/block/world): stone, bricks, tiles, soil, damp grass, silt, congealed gel, marble, and the portal surface. Pixel-art sources were exported with nearest-neighbor sampling. The portal is a **32×512** strip of sixteen 32×32 frames. Its `.png.mcmeta` advances every three ticks and interpolates frames; keep the strip and metadata together. Damp Grass combines its top texture and local soil with Minecraft’s irregular grass-side overlay.
+The Slimic uses eight opaque **16×16** material textures and one animated portal strip in [`assets/slimic/textures/block/world`](../src/main/resources/assets/slimic/textures/block/world): stone, bricks, tiles, soil, damp grass, silt, congealed gel, marble, and the portal surface. Pixel-art sources were exported with nearest-neighbor sampling. The portal is a **16×256** strip of sixteen 16×16 frames. Its `.png.mcmeta` advances every three ticks and interpolates frames; keep the strip and metadata together. Damp Grass combines its top texture and local soil with Minecraft’s irregular grass-side overlay.
 
 Block models under `models/block/world` combine these textures with referenced Minecraft surfaces and tint index 0. `SlimicWorldClient` applies each catalog entry's tint to blocks and items. Stairs, slabs, walls, cutout plants, translucent glass, and the portal declare their Forge render type in JSON. Resource packs can replace the surfaces without changing collision shapes or world-generation rules.
 
 ## Slime Chest
 
-`textures/block/slime_chest.png` follows the native single-chest **64×64 UV atlas**. Body, lid, and latch share it in both the world and item models. Keep the native transparent interior and unused regions; `slime_chest_particle.png` provides the breaking-particle surface.
+`textures/block/slime_chest.png` follows the native single-chest **64×64 UV atlas**. Body, lid, and latch share it in both the world and item models. Their face islands use vanilla density: one texture pixel per 1/16 block of surface. Keep the native transparent interior and unused regions; `slime_chest_particle.png` provides the breaking-particle surface.
 
 The Ancient Command Seal uses a dedicated transparent 16×16 item texture at `assets/slimic/textures/item/ancient_command_seal.png`: a gold tablet with clipped corners, a dark outline, a bright upper-left bevel, and a large purple spiral insignia. Its model uses one layer; hostile spawn eggs use the native tinted egg model.
 

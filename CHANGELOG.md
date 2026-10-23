@@ -4,6 +4,14 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-10-24
+
+### Changed
+
+- Increase the opacity of the Aimless Colony and its fragments so their bodies remain visible while their internal cores can still be seen.
+- Use 16×16 pixels for the eight world material textures and each of the portal's sixteen animation frames. Preserve the native Slime Chest UV atlas and pixel density.
+- Update the English and Korean texture documentation and native atlas checks for the reduced material resolution.
+
 ## [0.5.3] - 2026-10-23
 
 ### Fixed
