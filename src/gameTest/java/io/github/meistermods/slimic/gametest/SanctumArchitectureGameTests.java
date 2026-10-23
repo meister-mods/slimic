@@ -177,7 +177,14 @@ public final class SanctumArchitectureGameTests {
               new BlockPos(25, 0, -21),
               new BlockPos(-25, -4, 31),
               new BlockPos(25, -4, 31),
-              new BlockPos(-16, 0, -14)))
+              new BlockPos(-16, 0, -14),
+              new BlockPos(-5, 8, 6),
+              new BlockPos(0, 8, 6),
+              new BlockPos(10, 8, 24),
+              new BlockPos(-16, 0, 8),
+              new BlockPos(16, 0, 16),
+              new BlockPos(-22, 0, 13),
+              new BlockPos(22, 0, 13)))
         h.assertTrue(
             seen.contains(at(anchor, rotation, local.getX(), local.getY(), local.getZ())),
             "Walk to wall, upper gallery or courtyard remains " + rotation + "/" + local);
@@ -225,7 +232,7 @@ public final class SanctumArchitectureGameTests {
     for (int zone = 0; zone < 5; zone++) {
       var saved = piece(level, a, 0, zone).createTag(context);
       h.assertTrue(
-          saved.getInt("ArchitectureVersion") == 2
+          saved.getInt("ArchitectureVersion") == 3
               && saved.equals(new FallenSanctumPiece(context, saved).createTag(context)),
           "Architectural version and bounds round trip");
     }
@@ -331,7 +338,7 @@ public final class SanctumArchitectureGameTests {
   public static void savedCastlePiecesKeepTheirUnfurnishedLayout(GameTestHelper h) {
     var level = h.getLevel();
     var context = StructurePieceSerializationContext.fromLevel(level);
-    for (int version : new int[] {1, 2}) {
+    for (int version : new int[] {1, 2, 3}) {
       var anchor = anchor();
       var tag = new FallenSanctumPiece(anchor, 0, 1).createTag(context);
       tag.putInt("ArchitectureVersion", version);
@@ -353,9 +360,43 @@ public final class SanctumArchitectureGameTests {
               .is(version == 1 ? Blocks.AIR : ModWorldBlocks.block("low_stone_table")),
           "Only newly planned castles receive furnishings");
       h.assertTrue(
+          level.getBlockState(at(anchor, 0, 0, 7, 6)).isAir(),
+          "An unrelated piece never writes bridge blocks outside its zone");
+      h.assertTrue(
           level.noCollision(new AABB(at(anchor, 0, -16, 0, -14)))
               && level.getBlockEntity(at(anchor, 0, 6, 0, -16)) instanceof SanctumRelayBlockEntity,
           "Saved courtyard remains and relay keep their access");
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "sanctum_architecture", timeoutTicks = 600)
+  public static void savedVersionTwoKeepsOriginalGalleriesWhileNewPiecesConnectThem(
+      GameTestHelper h) {
+    var level = h.getLevel();
+    var context = StructurePieceSerializationContext.fromLevel(level);
+    for (int version : new int[] {2, 3}) {
+      var anchor = anchor();
+      var tag = new FallenSanctumPiece(anchor, 0, 2).createTag(context);
+      tag.putInt("ArchitectureVersion", version);
+      var piece = new FallenSanctumPiece(context, tag);
+      piece.postProcess(
+          level,
+          level.structureManager(),
+          level.getChunkSource().getGenerator(),
+          RandomSource.create(),
+          piece.getBoundingBox(),
+          new ChunkPos(anchor),
+          anchor);
+      h.assertTrue(
+          level.getBlockState(at(anchor, 0, 0, 7, 6)).isAir() == (version == 2),
+          "Saved galleries are unchanged; only version three gains a crossing");
+      h.assertTrue(
+          level.getBlockState(at(anchor, 0, 13, 0, 5)).isAir() == (version == 2),
+          "New side rooms never appear in saved version-two pieces");
+      h.assertTrue(
+          level.noCollision(new AABB(at(anchor, 0, 0, 8, 6)).expandTowards(0, 1, 0)),
+          "Crossing has headroom");
     }
     h.succeed();
   }

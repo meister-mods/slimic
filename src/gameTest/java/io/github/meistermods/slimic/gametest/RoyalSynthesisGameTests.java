@@ -113,6 +113,9 @@ public final class RoyalSynthesisGameTests {
   @GameTest(template = "empty", batch = "royal_synthesis")
   public static void fullRefundCreatesOneNewWaitingMinerWithZeroInvestment(GameTestHelper h) {
     var f = fixture(h);
+    var firstName =
+        net.minecraft.network.chat.Component.Serializer.toJson(f.station.getItem(0).getHoverName());
+    f.station.getItem(1).setHoverName(net.minecraft.network.chat.Component.literal("Custom XXX"));
     var first = data(f.station.getItem(0)).getUUID("UUID");
     var second = data(f.station.getItem(1)).getUUID("UUID");
     h.assertTrue(
@@ -145,6 +148,13 @@ public final class RoyalSynthesisGameTests {
         ancestry.getUUID("NormalParent").equals(first)
             && ancestry.getUUID("AncientParent").equals(second),
         "Ancestry retains both identities");
+    h.assertTrue(
+        ancestry.getString("NormalNameComponent").equals(firstName)
+            && net.minecraft.network.chat.Component.Serializer.fromJson(
+                    ancestry.getString("AncientNameComponent"))
+                .getString()
+                .equals("Custom XXX"),
+        "Translated defaults and custom names retain component structure");
     var ledger = RoyalSynthesisData.get(h.getLevel());
     h.assertTrue(ledger.consumed(first) && ledger.consumed(second), "Both parents retired");
     h.assertTrue(f.station.isEmpty(), "Exact reagents consumed");

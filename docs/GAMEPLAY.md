@@ -215,7 +215,11 @@ Ordinary right-click launches a manual signal without consuming rockets. Right-c
 
 ## Slime Tuners
 
-Craft one **slimeball** with one **iron ingot**, without a fixed shape, to make a **Slime Tuner**. Use it directly on an owned companion within normal interaction reach to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. While using management, stay within eight blocks and keep the tuner in either hand. The ordinary tuner does not edit base stats. Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. Dark cells are locked by Capacity and cannot hold items. Paging controls appear only when the bag spans multiple pages. The management panel is 368×240 GUI units; lower Minecraft's GUI Scale if it extends beyond the window.
+Place one **slimeball directly above one iron ingot** to craft a **Slime Tuner**. This vertical recipe also fits the 2×2 inventory crafting grid. Use it directly on an owned companion within normal interaction reach to inspect its status, spend earned points, rename it, manage gear and cargo, or change orders. While using management, stay within eight blocks and keep the tuner in either hand. The ordinary tuner does not edit base stats.
+
+Companion bags use nine columns and up to three rows per page, aligned with the player inventory and hotbar. **Sort** organizes every bag page at once, merges matching stacks and fills earlier slots first. Differently named, enchanted or otherwise distinct items remain separate. Equipment and the player inventory stay in place. A colony sorts both member bags together.
+
+Dark cells are locked by Capacity and cannot receive new items. Paging controls appear only when the bag spans multiple pages. The management panel is 368×240 GUI units; lower Minecraft's GUI Scale if it extends beyond the window.
 
 Place one **Slime Tuner** in the center of a crafting table, with **glass blocks above, below, left, and right**, to make a **Slime Scanner**. Ordinary right-click with the scanner previews work areas. Shift-right-click recovers a companion regardless of the held tool.
 

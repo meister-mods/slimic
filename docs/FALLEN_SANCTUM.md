@@ -20,7 +20,9 @@ New sanctums have a dry defensive ditch and timber bridge, a twin gatehouse, cre
 
 New sanctums generated from 0.4.4 also feature faded royal standards, projecting gate trim, entrance arches, and a diamond-shaped glazed keep window. Barracks tables and supplies, a timber well windlass, watchtower furniture, upper record shelves, chain-hung chandeliers, and laboratory benches reveal the rooms’ former uses. Keep posterns open onto the inner curtain lanes and the rear tower ground rooms. Standards, shelves, and furniture are scenery rather than relays or reward containers.
 
-The castle layout applies to **sanctums newly generated from 0.4.3**, and the additional decoration to **new sanctums from 0.4.4**. Existing sanctums and previously saved unfinished structure pieces retain their original appearance. Map destinations, relay sockets, encounters, chests, and claimed reward records remain unchanged. A five-block-wide central expedition route connects all five zones.
+**Sanctums newly generated from 0.5.2** also contain side record rooms and armories with arched doorways, plus covered service passages. Two transverse bridges connect the upper galleries into a circuit above the central hall. Existing stairs reach this upper route, while posterns lead to the inner curtain lanes. The central expedition route remains open at ground level.
+
+The castle layout applies to **sanctums newly generated from 0.4.3**, furnishings to **new sanctums from 0.4.4**, and the expanded rooms and routes to **new sanctums from 0.5.2**. Existing sanctums and previously saved unfinished structure pieces retain their original appearance. Map destinations, relay sockets, encounters, chests, and claimed reward records remain unchanged. A five-block-wide central expedition route connects all five zones.
 
 | Zone | Landmarks and route | Watch and progress |
 | --- | --- | --- |

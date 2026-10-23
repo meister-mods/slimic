@@ -87,7 +87,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
   public void registerRecipes(IRecipeRegistration registration) {
     for (var item :
         List.of(ModItems.BOUND_TRANSPORT_SLIME.get(), ModItems.BOUND_COMBAT_SLIME.get()))
-      registration.addIngredientInfo(
+      LocalizedIngredientInformation.add(
+          registration,
           item.getDefaultInstance(),
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
@@ -98,7 +99,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
             ModItems.COHESION_SHARD.get(),
             ModItems.ASSEMBLY_CLUE.get(),
             ModItems.ASSEMBLY_CORE.get()))
-      registration.addIngredientInfo(
+      LocalizedIngredientInformation.add(
+          registration,
           item.getDefaultInstance(),
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic.assembly.path"));
@@ -113,21 +115,25 @@ public final class SlimicJeiPlugin implements IModPlugin {
             ModItems.ANCIENT_KINGDOM_MAP.get(),
             ModItems.KINGDOM_MAP_FRAGMENT.get(),
             ModItems.ROYAL_SURVEY_COMPASS.get()))
-      registration.addIngredientInfo(
+      LocalizedIngredientInformation.add(
+          registration,
           item.getDefaultInstance(),
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic.sanctum.path"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         ModItems.NEXT_GENERATION_MINING_SLIME.get().getDefaultInstance(),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.next_generation_mining_slime"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         ModItems.NEXT_GENERATION_TUNNEL_SLIME.get().getDefaultInstance(),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.next_generation_tunnel_slime"));
     var restorations = SlimeRestorationRecipe.all();
     registration.addRecipes(SlimeRestorationCategory.TYPE, restorations);
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         restorations.stream().map(SlimeRestorationRecipe::core).toList(),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.damaged_ancient_slime_core"));
@@ -151,7 +157,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
             new ItemStack(ModItems.WAREHOUSE_SLIME.get()),
             warehouseIngredients));
     for (var item : new Item[] {ModItems.HEALING_SLIME.get(), ModItems.WAREHOUSE_SLIME.get()})
-      registration.addIngredientInfo(
+      LocalizedIngredientInformation.add(
+          registration,
           new ItemStack(item),
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
@@ -163,7 +170,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
             CompanionRecipe.soggy(new ItemStack(ModItems.FRIENDLY_SLIME.get())),
             NonNullList.of(
                 Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(Items.SLIME_BALL))));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.SOGGY_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.soggy_slime"));
@@ -253,7 +261,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
           ModItems.FARMING_SLIME.get(),
           ModItems.LOGGING_SLIME.get()
         }) {
-      registration.addIngredientInfo(
+      LocalizedIngredientInformation.add(
+          registration,
           new ItemStack(item),
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
@@ -267,7 +276,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 new ItemStack(ModItems.FRIENDLY_SLIME.get()), new ItemStack(Items.SADDLE)),
             NonNullList.of(
                 Ingredient.EMPTY, CompanionBase.ingredient(), Ingredient.of(Items.SADDLE))));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.SADDLE_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.saddle_slime"));
@@ -284,15 +294,18 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 CompanionBase.ingredient(),
                 Ingredient.of(Items.NETHER_STAR),
                 Ingredient.of(Items.TOTEM_OF_UNDYING))));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.GUARDIAN_ANGEL_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.guardian_angel_slime"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.SLIME_TUNER.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.slime_tuner"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.SLIME_SCANNER.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.slime_scanner"));
@@ -346,7 +359,8 @@ public final class SlimicJeiPlugin implements IModPlugin {
                 ingredients));
       }
       var item = io.github.meistermods.slimic.recipe.AdvancedCompanionRecipe.result(kind);
-      registration.addIngredientInfo(
+      LocalizedIngredientInformation.add(
+          registration,
           new ItemStack(item),
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
@@ -359,42 +373,51 @@ public final class SlimicJeiPlugin implements IModPlugin {
           ModItems.ANCIENT_MINING_SLIME.get(),
           ModItems.ANCIENT_TUNNEL_SLIME.get()
         })
-      registration.addIngredientInfo(
+      LocalizedIngredientInformation.add(
+          registration,
           new ItemStack(relic),
           VanillaTypes.ITEM_STACK,
           Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(relic).getPath()));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModWorldBlocks.block("command_pedestal")),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.command_pedestal"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         ModWorldBlocks.entries().stream()
             .filter(entry -> entry.category() == ModWorldBlocks.Category.BUILDING)
             .map(entry -> new ItemStack(entry.item().get()))
             .toList(),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.world_building"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.FRIENDLY_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.friendly_slime"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.MINING_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.mining_slime"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.TRANSPORT_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.transport_slime"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.SLIME_CHEST.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.slime_chest"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.SIGNALING_SLIME.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.herald_slime"));
-    registration.addIngredientInfo(
+    LocalizedIngredientInformation.add(
+        registration,
         new ItemStack(ModItems.CREATIVE_SLIME_TUNER.get()),
         VanillaTypes.ITEM_STACK,
         Component.translatable("jei.slimic.creative_slime_tuner"));

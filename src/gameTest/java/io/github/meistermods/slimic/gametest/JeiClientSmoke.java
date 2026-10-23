@@ -9,8 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 @JeiPlugin
 public final class JeiClientSmoke implements IModPlugin {
   private static IJeiRuntime runtime;
-  private static final java.util.Map<ResourceLocation, String> registeredInformation =
-      new java.util.HashMap<>();
 
   @Override
   public ResourceLocation getPluginUid() {
@@ -20,16 +18,6 @@ public final class JeiClientSmoke implements IModPlugin {
   @Override
   public void onRuntimeAvailable(IJeiRuntime value) {
     runtime = value;
-    // JEI expands information components in its registration language, before later GUI reloads.
-    registeredInformation.clear();
-    for (var item : net.minecraftforge.registries.ForgeRegistries.ITEMS.getValues()) {
-      var id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item);
-      if (id.getNamespace().equals("slimic"))
-        registeredInformation.put(
-            id,
-            net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
-                .getString());
-    }
   }
 
   static IJeiRuntime runtime() {
@@ -54,7 +42,9 @@ public final class JeiClientSmoke implements IModPlugin {
                 var id =
                     net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(
                         stack.get().getItem());
-                var expected = registeredInformation.get(id);
+                var expected =
+                    net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
+                        .getString();
                 var text =
                     recipe.getDescription().stream()
                         .map(net.minecraft.network.chat.FormattedText::getString)
@@ -73,6 +63,56 @@ public final class JeiClientSmoke implements IModPlugin {
     if (found.size() != 29)
       throw new IllegalStateException("Missing JEI profession information: " + found);
     return true;
+  }
+
+  public static void localizedInformationReady() {
+    if (runtime == null) throw new IllegalStateException("JEI is not ready");
+    var building =
+        io.github.meistermods.slimic.registry.ModWorldBlocks.entries().stream()
+            .filter(
+                entry ->
+                    entry.category()
+                        == io.github.meistermods.slimic.registry.ModWorldBlocks.Category.BUILDING)
+            .map(entry -> entry.item().get())
+            .collect(java.util.stream.Collectors.toSet());
+    int checked = 0;
+    for (var recipe :
+        runtime.getRecipeManager().createRecipeLookup(RecipeTypes.INFORMATION).get().toList()) {
+      for (var ingredient : recipe.getIngredients()) {
+        var stack = ingredient.getIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK);
+        if (stack.isEmpty()) continue;
+        var id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.get().getItem());
+        if (!id.getNamespace().equals("slimic")) continue;
+        String key =
+            switch (id.getPath()) {
+              case "colony_heart", "cohesion_shard", "assembly_clue", "assembly_core" ->
+                  "assembly.path";
+              case "royal_synthesis_core",
+                  "ancient_kingdom_map",
+                  "kingdom_map_fragment",
+                  "royal_survey_compass" ->
+                  "sanctum.path";
+              default -> building.contains(stack.get().getItem()) ? "world_building" : id.getPath();
+            };
+        var expected =
+            net.minecraft.network.chat.Component.translatable("jei.slimic." + key).getString();
+        var actual =
+            recipe.getDescription().stream()
+                .map(net.minecraft.network.chat.FormattedText::getString)
+                .collect(java.util.stream.Collectors.joining());
+        if (!actual.replaceAll("\\s+", "").equals(expected.replaceAll("\\s+", "")))
+          throw new IllegalStateException(
+              "Stale localized JEI information " + id + ": " + actual + "; expected=" + expected);
+        checked++;
+      }
+    }
+    if (checked < 50)
+      throw new IllegalStateException("Too few localized information ingredients: " + checked);
+    System.out.println(
+        "SLIMIC JEI LOCALIZED INFORMATION PASSED: "
+            + net.minecraft.client.Minecraft.getInstance().options.languageCode
+            + " ingredients="
+            + checked);
   }
 
   public static boolean restorationInformationReady() {
@@ -139,7 +179,9 @@ public final class JeiClientSmoke implements IModPlugin {
                 if (stack.isEmpty() || !expectedItems.contains(stack.get().getItem())) continue;
                 var item = stack.get().getItem();
                 var id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item);
-                var expected = registeredInformation.get(id);
+                var expected =
+                    net.minecraft.network.chat.Component.translatable("jei.slimic." + id.getPath())
+                        .getString();
                 var actual =
                     recipe.getDescription().stream()
                         .map(net.minecraft.network.chat.FormattedText::getString)

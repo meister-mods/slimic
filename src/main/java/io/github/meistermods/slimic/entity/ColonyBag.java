@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 public final class ColonyBag extends SlimeBag {
   private final Supplier<List<SlimeBag>> members;
   private final Runnable changed;
+  private final Runnable afterSorting;
   private final Supplier<List<Integer>> spans;
 
   public ColonyBag(
@@ -16,10 +17,20 @@ public final class ColonyBag extends SlimeBag {
       Supplier<List<SlimeBag>> members,
       Supplier<List<Integer>> spans,
       Runnable changed) {
+    this(baseSlots, members, spans, changed, () -> {});
+  }
+
+  public ColonyBag(
+      int baseSlots,
+      Supplier<List<SlimeBag>> members,
+      Supplier<List<Integer>> spans,
+      Runnable changed,
+      Runnable afterSorting) {
     super(baseSlots, () -> 0, changed);
     this.members = members;
     this.changed = changed;
     this.spans = spans;
+    this.afterSorting = afterSorting;
   }
 
   private SlimeBag bag(int slot) {
@@ -120,10 +131,23 @@ public final class ColonyBag extends SlimeBag {
   }
 
   @Override
+  public boolean sortContents() {
+    if (!sortMemberBags(members.get())) return false;
+    afterSorting.run();
+    changed.run();
+    return true;
+  }
+
+  @Override
   public SlimeBag copyForSimulation() {
     List<SlimeBag> copies = members.get().stream().map(SlimeBag::copyForSimulation).toList();
-    List<Integer> widths = List.copyOf(spans.get());
-    return new ColonyBag(baseSlots(), () -> copies, () -> widths, () -> {});
+    var widths = new java.util.concurrent.atomic.AtomicReference<>(List.copyOf(spans.get()));
+    return new ColonyBag(
+        baseSlots(),
+        () -> copies,
+        widths::get,
+        () -> {},
+        () -> widths.set(copies.stream().map(SlimeBag::storageSlots).toList()));
   }
 
   // Member NBT is canonical. Native BagSlime's parallel inventory field intentionally stays empty.

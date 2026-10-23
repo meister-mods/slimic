@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "We still hear the last assembly order in that great gel body. Its three phases follow remaining health. Under default settings it has 320 health, six armor and eight attack damage. It cannot tear apart the chamber."
+      "text": "The Aimless Colony is a boss with three phases based on remaining health. Under default settings it has 320 health, six armor and eight attack damage. Its attacks do not damage the chamber."
     },
     {
       "type": "patchouli:text",
-      "text": "Charge lanes and slam rings warn before impact. Leave the marked path or ring. A gathering pull leads to a short shockwave. The last rally warns for 2.5 seconds; kill or separate returning fragments to deny healing. Warnings remain when particles are reduced."
+      "text": "Leave charge lanes and slam circles. From Division, ring waves leave the center safe; Frenzy adds crossed lanes aimed at a fixed position. Move diagonally out of crossings. Charges can lead to rings and pulls to crossings; each follow-up has its own warning. The last rally warns for 2.5 seconds: stop returning fragments to deny healing."
     },
     {
       "type": "patchouli:text",

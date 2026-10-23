@@ -186,6 +186,32 @@ public final class AncientRecordsClientSmoke {
     var item = ItemStack.of(books.get(bookIndex));
     if (item.getHoverName().getString().contains("lore.slimic."))
       throw new IllegalStateException("Missing localized record title");
+    var before = item.save(new CompoundTag());
+    if (item.getTag().getString("author").equals("Royal Archives")) {
+      var byline =
+          net.minecraft.network.chat.Component.translatable(
+                  "book.byAuthor",
+                  net.minecraft.network.chat.Component.translatable(
+                      "lore.slimic.royal_archives.author"))
+              .getString();
+      if (item.getTooltipLines(c.player, TooltipFlag.NORMAL).stream()
+          .map(net.minecraft.network.chat.Component::getString)
+          .noneMatch(byline::equals))
+        throw new IllegalStateException("Archive author is not localized");
+      var unrelated = item.copy();
+      var pages = new net.minecraft.nbt.ListTag();
+      pages.add(net.minecraft.nbt.StringTag.valueOf("{\"text\":\"My own story\"}"));
+      unrelated.getTag().put("pages", pages);
+      var originalByline =
+          net.minecraft.network.chat.Component.translatable("book.byAuthor", "Royal Archives")
+              .getString();
+      if (unrelated.getTooltipLines(c.player, TooltipFlag.NORMAL).stream()
+          .map(net.minecraft.network.chat.Component::getString)
+          .noneMatch(originalByline::equals))
+        throw new IllegalStateException("Player-written author must remain unchanged");
+    }
+    if (!before.equals(item.save(new CompoundTag())))
+      throw new IllegalStateException("Archive tooltip must not modify book data");
     access = BookViewScreen.BookAccess.fromItem(item);
     pageIndex = 0;
     c.setScreen(new RecordScreen(access));

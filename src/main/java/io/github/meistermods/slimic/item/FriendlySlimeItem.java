@@ -348,6 +348,18 @@ public class FriendlySlimeItem extends Item {
     return true;
   }
 
+  private static Component ancestryName(CompoundTag ancestry, String key) {
+    if (ancestry.contains(key + "Component", net.minecraft.nbt.Tag.TAG_STRING)) {
+      try {
+        Component name = Component.Serializer.fromJson(ancestry.getString(key + "Component"));
+        if (name != null) return name;
+      } catch (RuntimeException ignored) {
+        // Older saves and malformed optional names keep their original literal fallback.
+      }
+    }
+    return Component.literal(ancestry.getString(key));
+  }
+
   @Override
   public void appendHoverText(
       ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
@@ -362,8 +374,8 @@ public class FriendlySlimeItem extends Item {
         tooltip.add(
             Component.translatable(
                     "item.slimic.synthesis.ancestry",
-                    ancestry.getString("NormalName"),
-                    ancestry.getString("AncientName"))
+                    ancestryName(ancestry, "NormalName"),
+                    ancestryName(ancestry, "AncientName"))
                 .withStyle(ChatFormatting.GOLD));
         tooltip.add(
             Component.translatable(

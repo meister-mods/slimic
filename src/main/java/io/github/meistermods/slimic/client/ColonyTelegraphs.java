@@ -34,36 +34,60 @@ public final class ColonyTelegraphs {
       double radius =
           pattern == AimlessColony.Pattern.SLAM
               ? 5.5
-              : pattern == AimlessColony.Pattern.PULL ? 4 : 7;
+              : pattern == AimlessColony.Pattern.PULL
+                  ? 4
+                  : pattern == AimlessColony.Pattern.RING ? 8 : 7;
       Vec3 origin = boss.position().add(0, .12, 0);
       if (pattern == AimlessColony.Pattern.DASH || pattern == AimlessColony.Pattern.DASHING) {
-        Vec3 direction =
-            Vec3.atCenterOf(boss.aim()).subtract(boss.position()).multiply(1, 0, 1).normalize();
-        Vec3 side = new Vec3(-direction.z, 0, direction.x).scale(1.6);
+        Vec3 direction = boss.dashDirection();
+        double halfWidth = boss.dashHalfWidth();
+        Vec3 side = new Vec3(-direction.z, 0, direction.x).scale(halfWidth);
+        Vec3 rear = origin.subtract(direction.scale(halfWidth));
+        Vec3 front = origin.add(direction.scale(boss.dashRemainingDistance() + halfWidth));
         for (int sign : new int[] {-1, 1})
-          line(
-              pose,
-              sink,
-              origin.add(side.scale(sign)),
-              origin.add(direction.scale(10)).add(side.scale(sign)),
-              1,
-              .65F,
-              .15F);
-      } else
-        for (int segment = 0; segment < 64; segment++) {
-          double a = segment * Math.PI / 32, b = (segment + 1) * Math.PI / 32;
-          line(
-              pose,
-              sink,
-              origin.add(Math.cos(a) * radius, 0, Math.sin(a) * radius),
-              origin.add(Math.cos(b) * radius, 0, Math.sin(b) * radius),
-              pattern == AimlessColony.Pattern.RALLY ? .7F : 1,
-              .7F,
-              .2F);
-        }
+          line(pose, sink, rear.add(side.scale(sign)), front.add(side.scale(sign)), 1, .65F, .15F);
+        line(pose, sink, rear.subtract(side), rear.add(side), 1, .65F, .15F);
+        line(pose, sink, front.subtract(side), front.add(side), 1, .65F, .15F);
+      } else if (pattern == AimlessColony.Pattern.CROSS) {
+        Vec3 center = Vec3.atBottomCenterOf(boss.aim()).add(0, .12, 0);
+        for (int axis = 0; axis < 2; axis++)
+          for (int sign : new int[] {-1, 1}) {
+            Vec3 a = axis == 0 ? new Vec3(-8, 0, sign * 1.25) : new Vec3(sign * 1.25, 0, -8);
+            Vec3 b = axis == 0 ? new Vec3(8, 0, sign * 1.25) : new Vec3(sign * 1.25, 0, 8);
+            line(pose, sink, center.add(a), center.add(b), 1, .4F, .2F);
+            Vec3 endA = axis == 0 ? new Vec3(sign * 8, 0, -1.25) : new Vec3(-1.25, 0, sign * 8);
+            Vec3 endB = axis == 0 ? new Vec3(sign * 8, 0, 1.25) : new Vec3(1.25, 0, sign * 8);
+            line(pose, sink, center.add(endA), center.add(endB), 1, .4F, .2F);
+          }
+      } else {
+        if (pattern == AimlessColony.Pattern.RING) circle(pose, sink, origin, 3.5, .4F, 1, .5F);
+        circle(
+            pose, sink, origin, radius, pattern == AimlessColony.Pattern.RALLY ? .7F : 1, .7F, .2F);
+      }
     }
     buffer.endBatch(RenderType.lines());
     pose.popPose();
+  }
+
+  private static void circle(
+      PoseStack pose,
+      VertexConsumer sink,
+      Vec3 origin,
+      double radius,
+      float r,
+      float g,
+      float blue) {
+    for (int segment = 0; segment < 64; segment++) {
+      double a = segment * Math.PI / 32, b = (segment + 1) * Math.PI / 32;
+      line(
+          pose,
+          sink,
+          origin.add(Math.cos(a) * radius, 0, Math.sin(a) * radius),
+          origin.add(Math.cos(b) * radius, 0, Math.sin(b) * radius),
+          r,
+          g,
+          blue);
+    }
   }
 
   private static void line(

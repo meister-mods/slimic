@@ -1,14 +1,18 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "equipment",
-  "ingredients": [
-    {
+  "pattern": [
+    "S",
+    "I"
+  ],
+  "key": {
+    "S": {
       "item": "minecraft:slime_ball"
     },
-    {
+    "I": {
       "item": "minecraft:iron_ingot"
     }
-  ],
+  },
   "result": {
     "item": "slimic:slime_tuner"
   }

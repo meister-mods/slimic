@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The first member supplies the active weapon, shield and armor; wear belongs to those real items. The second member's equipment stays stored. One movement and combat order replaces two independent fighters. The two connected bodies retain their own colors and gear."
+      "text": "The first member supplies active weapons, shield and armor, including their wear. Both bodies display that armor's material, dye and glint. Member two's original equipment stays stored for unbinding. Each body keeps its own color and held-item appearance."
     },
     {
       "type": "patchouli:text",

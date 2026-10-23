@@ -6,6 +6,8 @@ The **Slimic Companion Guide** is available with optional Patchouli. Craft one b
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
+Ordinary entries explain features and controls. Slime records appear as separate narrative passages, retaining each writer’s observations, recollections and references to `XXX`.
+
 The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Generation Mining Slime** and **Next-Generation Tunnel Slime**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
 
 The links below open the corresponding web instructions. Item diagrams show specialization ingredients. Equipment and stored companion traits follow the preservation rules described in the gameplay guide.
