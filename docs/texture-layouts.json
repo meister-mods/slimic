@@ -1782,5 +1782,57 @@
         }
       ]
     }
+  },
+  "entity_skins": {
+    "aimless_colony": {
+      "logical_size": [
+        64,
+        64
+      ],
+      "pixel_size": [
+        64,
+        64
+      ],
+      "renderer": "AimlessColonyModel",
+      "core_field": [
+        56,
+        56,
+        8,
+        8
+      ]
+    },
+    "colony_fragment_attack": {
+      "logical_size": [
+        64,
+        32
+      ],
+      "pixel_size": [
+        64,
+        32
+      ],
+      "renderer": "ColonyFragmentRenderer"
+    },
+    "colony_fragment_cohesion": {
+      "logical_size": [
+        64,
+        32
+      ],
+      "pixel_size": [
+        64,
+        32
+      ],
+      "renderer": "ColonyFragmentRenderer"
+    },
+    "colony_fragment_returning": {
+      "logical_size": [
+        64,
+        32
+      ],
+      "pixel_size": [
+        64,
+        32
+      ],
+      "renderer": "ColonyFragmentRenderer"
+    }
   }
 }

@@ -127,3 +127,7 @@ Generation stays within one chunk and rejects wet sites, existing block entities
 Unmounted companions can enter slime portals. Their UUID, owner, health, stamina, stat upgrades, equipment, and cargo are preserved. **Every companion arrives in Wait.** Work origins follow each profession's relocation rules; miners establish a new quarry plan in the new dimension. Inspect the destination with a Slime Scanner and explicitly start work when ready.
 
 Recovery and item release also work across dimensions. Release starts in Wait and follows the existing [preservation rules](GAMEPLAY.md#recovery-and-preserved-traits). Shared-owner and Command population rules continue to apply across the entire save.
+
+## Abandoned assembly chambers
+
+[Assembly Chambers](AIMLESS_COLONY.md) add a visible surface stair and an underground arena to new Damp Plains terrain. Their world-owned encounters, observer records and personal rewards lead to reversible [Colony Bonding](COLONY_BONDING.md). Existing sanctums, mines and old chunks retain their own progress and terrain.

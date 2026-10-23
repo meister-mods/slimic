@@ -55,6 +55,7 @@ public final class RoyalGuardProtection {
           && guard.isAlive()
           && guard.isWorking()) {
         guard.recordInterception(diverted);
+        io.github.meistermods.slimic.world.AssemblySites.contribute(guard);
         event.setAmount(Math.max(0, event.getAmount() - diverted));
         return;
       }

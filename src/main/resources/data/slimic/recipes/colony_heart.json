@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "slimic:cohesion_shard"
+    },
+    {
+      "item": "slimic:cohesion_shard"
+    },
+    {
+      "item": "slimic:cohesion_shard"
+    },
+    {
+      "item": "slimic:cohesion_shard"
+    }
+  ],
+  "result": {
+    "item": "slimic:colony_heart"
+  }
+}

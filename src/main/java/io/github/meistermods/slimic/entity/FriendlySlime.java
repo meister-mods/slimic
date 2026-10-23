@@ -65,6 +65,9 @@ public class FriendlySlime extends TamableAnimal {
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.BOOLEAN);
   private static final EntityDataAccessor<CompoundTag> OWNER_ACCESS =
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private static final EntityDataAccessor<CompoundTag> COLONY_APPEARANCE =
+      SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.COMPOUND_TAG);
+  private boolean renderingSecondMember;
   private static final EntityDataAccessor<java.util.Optional<java.util.UUID>> FOLLOWING_OWNER =
       SynchedEntityData.defineId(FriendlySlime.class, EntityDataSerializers.OPTIONAL_UUID);
   private String companionTag = "";
@@ -147,6 +150,7 @@ public class FriendlySlime extends TamableAnimal {
     entityData.define(DYE_COLOR, -1);
     entityData.define(ANCIENT_ORIGIN, false);
     entityData.define(OWNER_ACCESS, new CompoundTag());
+    entityData.define(COLONY_APPEARANCE, new CompoundTag());
     entityData.define(FOLLOWING_OWNER, java.util.Optional.empty());
   }
 
@@ -155,10 +159,14 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public final boolean hasAncientOrigin() {
+    if (renderingSecondMember && this instanceof BoundColony)
+      return entityData.get(COLONY_APPEARANCE).getBoolean("SecondAncient");
     return entityData.get(ANCIENT_ORIGIN);
   }
 
   public final void setAncientOrigin(boolean value) {
+    var colony = BoundColony.ready(this);
+    if (colony != null && !level().isClientSide) colony.trainingMember().setAncientOrigin(value);
     entityData.set(ANCIENT_ORIGIN, value);
   }
 
@@ -251,13 +259,37 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public int getDyeColorId() {
+    if (renderingSecondMember && this instanceof BoundColony)
+      return entityData.get(COLONY_APPEARANCE).getInt("SecondDye");
     return entityData.get(DYE_COLOR);
+  }
+
+  public void setDyeColorId(int color) {
+    var colony = BoundColony.ready(this);
+    if (colony != null && !level().isClientSide) colony.trainingMember().setDyeColorId(color);
+    entityData.set(DYE_COLOR, Mth.clamp(color, -1, 15));
+  }
+
+  public final CompoundTag colonyAppearance() {
+    return entityData.get(COLONY_APPEARANCE);
+  }
+
+  public final void setColonyAppearance(CompoundTag data) {
+    entityData.set(COLONY_APPEARANCE, data.copy());
+  }
+
+  public final void setRenderingSecondMember(boolean value) {
+    renderingSecondMember = value;
+  }
+
+  public final boolean isRenderingSecondMember() {
+    return renderingSecondMember;
   }
 
   public boolean dye(Player player, ItemStack stack) {
     if (!canManage(player) || !(stack.getItem() instanceof DyeItem dye) || !isAlive()) return false;
     if (!level().isClientSide) {
-      entityData.set(DYE_COLOR, dye.getDyeColor().getId());
+      setDyeColorId(dye.getDyeColor().getId());
       if (!player.getAbilities().instabuild) stack.shrink(1);
     }
     return true;
@@ -288,6 +320,11 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public void setTunedStat(SlimeStat stat, double value) {
+    var colony = BoundColony.ready(this);
+    if (colony != null) {
+      colony.tune(stat, value);
+      return;
+    }
     CompoundTag tuned = entityData.get(TUNED_STATS).copy();
     tuned.putDouble(stat.key(), value);
     entityData.set(TUNED_STATS, tuned);
@@ -298,6 +335,11 @@ public class FriendlySlime extends TamableAnimal {
   protected void onStatsTuned() {}
 
   public void setTunedVitals(float health, float energy, long points) {
+    var colony = BoundColony.ready(this);
+    if (colony != null) {
+      colony.setVitals(health, energy, points);
+      return;
+    }
     setHealth(Mth.clamp(health, 0, getMaxHealth()));
     stamina = Mth.clamp(energy, 0, getMaxStamina());
     statPoints = Math.max(0, points);
@@ -327,18 +369,26 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public int getStatLevel(SlimeStat stat) {
+    var colony = BoundColony.ready(this);
+    if (colony != null) return colony.trainingMember().getStatLevel(stat);
     return entityData.get(STAT_LEVELS).getInt(stat.key());
   }
 
   public long getStatPoints() {
+    var colony = BoundColony.ready(this);
+    if (colony != null) return colony.trainingMember().getStatPoints();
     return statPoints;
   }
 
   public long getGrowthEarned() {
+    var colony = BoundColony.ready(this);
+    if (colony != null) return colony.trainingMember().getGrowthEarned();
     return growthEarned;
   }
 
   public boolean hasTrustedGrowth() {
+    var colony = BoundColony.ready(this);
+    if (colony != null) return colony.records().stream().allMatch(FriendlySlime::hasTrustedGrowth);
     long invested = java.util.Arrays.stream(SlimeStat.values()).mapToLong(this::getStatLevel).sum();
     return growthTrusted
         && entityData.get(TUNED_STATS).isEmpty()
@@ -355,10 +405,14 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public int getActivityProgress() {
+    var colony = BoundColony.ready(this);
+    if (colony != null) return colony.trainingMember().getActivityProgress();
     return activityProgress;
   }
 
   public int getNextPointCost() {
+    var colony = BoundColony.ready(this);
+    if (colony != null) return colony.trainingMember().getNextPointCost();
     return (int) Math.min(MAX_POINT_COST, 32L + earnedPoints * 64L);
   }
 
@@ -432,6 +486,8 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public boolean upgradeStat(SlimeStat stat) {
+    var colony = BoundColony.ready(this);
+    if (colony != null) return colony.upgrade(stat);
     if (level().isClientSide || statPoints <= 0 || getStatLevel(stat) >= stat.maxLevel())
       return false;
     CompoundTag levels = entityData.get(STAT_LEVELS).copy();
@@ -447,6 +503,11 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   protected void recordCompletedWork(int units) {
+    var colony = BoundColony.ready(this);
+    if (colony != null) {
+      colony.activity(units);
+      return;
+    }
     if (level().isClientSide) return;
     activityProgress =
         (int) Math.min(Integer.MAX_VALUE, (long) activityProgress + Mth.clamp(units, 0, 64));
@@ -750,7 +811,7 @@ public class FriendlySlime extends TamableAnimal {
     if (canManage(player) && isAlive() && held.is(Items.WATER_BUCKET)) {
       if (getDyeColorId() < 0) return InteractionResult.sidedSuccess(level().isClientSide);
       if (!level().isClientSide) {
-        entityData.set(DYE_COLOR, -1);
+        setDyeColorId(-1);
         player.setItemInHand(
             hand, ItemUtils.createFilledResult(held, player, new ItemStack(Items.BUCKET)));
         playSound(SoundEvents.BUCKET_EMPTY, 1, 1);
@@ -771,6 +832,9 @@ public class FriendlySlime extends TamableAnimal {
     if (level().isClientSide) {
       return InteractionResult.SUCCESS;
     }
+    var bonding = io.github.meistermods.slimic.world.ColonyBondingData.get((ServerLevel) level());
+    if (bonding.controlled(getUUID()))
+      return bonding.capture((net.minecraft.server.level.ServerPlayer) player, this);
     int slot = player.getInventory().getFreeSlot();
     if (slot < 0) {
       player.displayClientMessage(

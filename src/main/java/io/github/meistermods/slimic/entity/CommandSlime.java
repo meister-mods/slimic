@@ -159,6 +159,7 @@ public final class CommandSlime extends FriendlySlime {
                           && candidate.getCompanionTag().equals(rallyTag))
               != null) {
         gathered++;
+        io.github.meistermods.slimic.world.AssemblySites.contribute(this);
         recordCompletedWork();
       }
     }

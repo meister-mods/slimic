@@ -89,7 +89,7 @@ public final class BrokenSlimeBlock extends BaseEntityBlock {
     slime.discard();
   }
 
-  private static ItemStack recoveryItem(ItemStack stored) {
+  public static ItemStack recoveryItem(ItemStack stored) {
     ItemStack recovery = new ItemStack(ModItems.BROKEN_SLIME.get());
     CompoundTag data = new CompoundTag();
     data.put("Slime", stored.save(new CompoundTag()));

@@ -12,6 +12,12 @@ import net.minecraftforge.registries.RegistryObject;
 public final class ModMenus {
   public static final DeferredRegister<MenuType<?>> MENUS =
       DeferredRegister.create(ForgeRegistries.MENU_TYPES, Slimic.MOD_ID);
+  public static final RegistryObject<MenuType<io.github.meistermods.slimic.menu.ColonyBondingMenu>>
+      COLONY_BONDING =
+          MENUS.register(
+              "colony_bonding",
+              () ->
+                  IForgeMenuType.create(io.github.meistermods.slimic.menu.ColonyBondingMenu::new));
   public static final RegistryObject<MenuType<SlimeMenu>> SLIME =
       MENUS.register("slime", () -> IForgeMenuType.create(SlimeMenu::new));
   public static final RegistryObject<MenuType<io.github.meistermods.slimic.menu.RoyalSynthesisMenu>>

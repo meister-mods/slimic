@@ -16,7 +16,8 @@ public final class CompanionRegistry extends SavedData {
     WORLD,
     ITEM,
     BROKEN,
-    REMOVED
+    REMOVED,
+    BOUND
   }
 
   public record Entry(
@@ -291,7 +292,11 @@ public final class CompanionRegistry extends SavedData {
         || !SlimeData.canLoad(data)
         || !Float.isFinite(data.getFloat("Health"))) return;
     var previous = find(data.getUUID("UUID"));
-    if (previous != null && previous.location == Location.WORLD) return;
+    var bonding = io.github.meistermods.slimic.world.ColonyBondingData.get(level);
+    if (bonding.memberBound(data.getUUID("UUID"))
+        || bonding.controlled(data.getUUID("UUID")) && !bonding.mayRestore(data)) return;
+    if (previous != null
+        && (previous.location == Location.WORLD || previous.location == Location.BOUND)) return;
     var type = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item.getItem());
     if (type == null
         || !net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.containsKey(type)) return;

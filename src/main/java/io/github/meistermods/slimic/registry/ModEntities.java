@@ -38,6 +38,59 @@ public final class ModEntities {
   // Registry IDs are persistent save identifiers; Java type names may evolve independently.
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
       DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Slimic.MOD_ID);
+  public static final RegistryObject<
+          EntityType<io.github.meistermods.slimic.entity.BoundTransportSlime>>
+      BOUND_TRANSPORT_SLIME =
+          ENTITY_TYPES.register(
+              "bound_transport_slime",
+              () ->
+                  EntityType.Builder.of(
+                          io.github.meistermods.slimic.entity.BoundTransportSlime::new,
+                          MobCategory.CREATURE)
+                      .sized(1.55F, 1.04F)
+                      .clientTrackingRange(10)
+                      .build("slimic:bound_transport_slime"));
+  public static final RegistryObject<
+          EntityType<io.github.meistermods.slimic.entity.BoundCombatSlime>>
+      BOUND_COMBAT_SLIME =
+          ENTITY_TYPES.register(
+              "bound_combat_slime",
+              () ->
+                  EntityType.Builder.of(
+                          io.github.meistermods.slimic.entity.BoundCombatSlime::new,
+                          MobCategory.CREATURE)
+                      .sized(1.55F, 1.04F)
+                      .clientTrackingRange(10)
+                      .build("slimic:bound_combat_slime"));
+  public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AimlessColony>>
+      AIMLESS_COLONY =
+          ENTITY_TYPES.register(
+              "aimless_colony",
+              () ->
+                  EntityType.Builder.of(
+                          io.github.meistermods.slimic.entity.AimlessColony::new,
+                          MobCategory.MONSTER)
+                      .sized(3.2F, 2.4F)
+                      .clientTrackingRange(12)
+                      .build("slimic:aimless_colony"));
+  public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.ColonyFragment>>
+      ATTACK_COLONY_FRAGMENT = colonyFragment("attack_colony_fragment");
+  public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.ColonyFragment>>
+      COHESION_COLONY_FRAGMENT = colonyFragment("cohesion_colony_fragment");
+  public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.ColonyFragment>>
+      RETURNING_COLONY_FRAGMENT = colonyFragment("returning_colony_fragment");
+
+  private static RegistryObject<EntityType<io.github.meistermods.slimic.entity.ColonyFragment>>
+      colonyFragment(String name) {
+    return ENTITY_TYPES.register(
+        name,
+        () ->
+            EntityType.Builder.of(
+                    io.github.meistermods.slimic.entity.ColonyFragment::new, MobCategory.MONSTER)
+                .sized(.8F, .8F)
+                .clientTrackingRange(10)
+                .build("slimic:" + name));
+  }
 
   public static final RegistryObject<
           EntityType<io.github.meistermods.slimic.entity.NextGenerationMiningSlime>>
@@ -307,6 +360,18 @@ public final class ModEntities {
         .toList();
   }
 
+  /**
+   * Individual acquisition/crafting professions; bound forms have a separate two-member contract.
+   */
+  public static java.util.Collection<RegistryObject<EntityType<?>>> individualCompanionTypes() {
+    return companionTypes().stream()
+        .filter(
+            type ->
+                !type.getId().equals(BOUND_TRANSPORT_SLIME.getId())
+                    && !type.getId().equals(BOUND_COMBAT_SLIME.getId()))
+        .toList();
+  }
+
   public static final RegistryObject<EntityType<SoggySlime>> SOGGY_SLIME =
       ENTITY_TYPES.register(
           "soggy_slime",
@@ -327,6 +392,17 @@ public final class ModEntities {
 
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
+    event.put(BOUND_TRANSPORT_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(BOUND_COMBAT_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(
+        AIMLESS_COLONY.get(),
+        io.github.meistermods.slimic.entity.AimlessColony.createAttributes().build());
+    for (var type :
+        java.util.List.of(
+            ATTACK_COLONY_FRAGMENT, COHESION_COLONY_FRAGMENT, RETURNING_COLONY_FRAGMENT))
+      event.put(
+          type.get(),
+          io.github.meistermods.slimic.entity.ColonyFragment.createAttributes().build());
     event.put(NEXT_GENERATION_MINING_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(NEXT_GENERATION_TUNNEL_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(ANCIENT_MINING_SLIME.get(), FriendlySlime.createAttributes().build());

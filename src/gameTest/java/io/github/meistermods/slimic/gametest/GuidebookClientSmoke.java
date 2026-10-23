@@ -144,7 +144,7 @@ public final class GuidebookClientSmoke {
     for (String entry :
         List.of("healing", "next_generation_mining", "lumberjack", "commander", "herald")) {
       c.setScreen((Screen) type.getConstructor(book.getClass()).newInstance(book));
-      if (((List<?>) field(c.screen, "allEntries")).size() != 67)
+      if (((List<?>) field(c.screen, "allEntries")).size() != 73)
         throw new IllegalStateException("The searchable index must include all guide entries");
       String query = Component.translatable("entity.slimic." + entry + "_slime").getString();
       for (char letter : query.toCharArray()) c.screen.charTyped(letter, 0);
@@ -281,7 +281,7 @@ public final class GuidebookClientSmoke {
           throw new IllegalStateException(
               "Guide contents failed to build: " + invoke(contents, "getException"));
         var all = (Map<?, ?>) field(contents, "entries");
-        if (all.size() != 67 || ((Map<?, ?>) field(contents, "categories")).size() != 7)
+        if (all.size() != 73 || ((Map<?, ?>) field(contents, "categories")).size() != 7)
           throw new IllegalStateException("Incomplete guide contents: " + all.size());
         for (var item : ForgeRegistries.ITEMS.getEntries()) {
           if (!item.getKey().location().getNamespace().equals("slimic")) continue;
@@ -395,12 +395,12 @@ public final class GuidebookClientSmoke {
           openEntry(c);
           return false;
         }
-        if (rendered != 217)
-          throw new IllegalStateException("Expected 217 content pages, rendered " + rendered);
+        if (rendered != 237)
+          throw new IllegalStateException("Expected 237 content pages, rendered " + rendered);
         System.out.println(
             "SLIMIC GUIDEBOOK LANGUAGE PASSED: "
                 + LANGUAGES.get(language)
-                + "; 67 entries; 217 rendered pages");
+                + "; 73 entries; 237 rendered pages");
         if (++language < LANGUAGES.size()) {
           phase = 3;
           return false;
@@ -414,9 +414,9 @@ public final class GuidebookClientSmoke {
                 "languages",
                 LANGUAGES,
                 "entries",
-                67,
+                73,
                 "pages_per_language",
-                217,
+                237,
                 "item_lookups",
                 checkedLookups,
                 "entry_links",

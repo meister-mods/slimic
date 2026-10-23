@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ISI",
+    "SHS",
+    "BBB"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:slime_ball"
+    },
+    "H": {
+      "item": "slimic:colony_heart"
+    },
+    "B": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "item": "slimic:colony_bonding_station"
+  }
+}

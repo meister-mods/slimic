@@ -1,0 +1,24 @@
+{
+  "name": "전투 슬라임 군체",
+  "icon": "slimic:bound_combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "일반 $(l:companions/combat)전투 슬라임$() 둘이 $(l:world/colony_bonding)군체 결속$()으로 임시 몸을 공유한다. 체력을 더하고 제한적인 협동 공격 보너스를 얻는다. 처음 배치하거나 회수 후 다시 놓으면 항상 대기로 시작한다.",
+      "title": "전투 슬라임 군체"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "첫 구성원이 실제 무기·방패·갑옷을 사용하며 내구도도 그 장비에서 줄어든다. 둘째의 장비는 보관된다. 독립된 전투원 둘을 대신해 이동·전투 명령 하나를 따른다. 붙어 있는 두 몸에는 각자의 색과 장비가 보인다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "피해와 회복은 생명력을 늘려 만들지 않고 나누어 반영한다. 활동은 번갈아 얻지만 강화와 조작은 첫 구성원이 맡는다. 회수 후 해체하면 원래 UUID·장비·화물·성장·남은 기력을 돌려받는다. 군체의 초기 공격 대상 설정은 첫 구성원을 따른다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_combat_slime": 0
+  }
+}

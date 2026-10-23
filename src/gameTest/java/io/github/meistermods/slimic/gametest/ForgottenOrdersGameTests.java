@@ -146,9 +146,9 @@ public final class ForgottenOrdersGameTests {
   @GameTest(template = "empty", batch = "forgotten_orders")
   public static void hostileRemnantsHaveASeparateCompanionAndItemContract(GameTestHelper h) {
     h.assertTrue(
-        ModEntities.companionTypes().size() == 27
-            && ModEntities.ENTITY_TYPES.getEntries().size() == 33,
-        "27 companions and six hostile remnants");
+        ModEntities.companionTypes().size() == 29
+            && ModEntities.ENTITY_TYPES.getEntries().size() == 39,
+        "29 companion forms and ten hostile types");
     var s = site(h);
     for (var role :
         new AncientSlime.Role[] {

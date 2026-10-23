@@ -4,6 +4,26 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-23
+
+### Added
+
+- The Aimless Colony, a translucent slug-shaped boss with three phases, visible attack warnings, three fragment roles, conserved cohesion, limited reabsorption and personal rewards.
+- Abandoned Assembly Chambers in new The Slimic terrain, permanent stair access, Assembly Clues, observer records, free failed-attempt retries, paid repeat encounters and a one-time Peaceful alternative.
+- Colony Hearts, Cohesion Shards and reusable Colony Bonding Stations. Bind exact ordinary Transport or Combat pairs and restore the original two identities through safe unbinding.
+- Member-owned cargo, equipment, growth and remaining health/stamina, independent membership and release records, recoverable pending delivery, bilingual guides and optional JEI/Patchouli information.
+
+### Changed
+
+- Network protocol 22 requires matching clients and servers. Existing companion identifiers, companion schema 1, sanctum progress and Royal Synthesis records remain compatible.
+- Preserve stored cargo when Creative capacity is reduced; the insertion limit continues to follow the configured capacity.
+
+### Validation
+
+- Native integration and focused regressions cover companion behavior, conserved fragments, personal reward receipts, reversible membership, Forge cancellation and existing Royal Synthesis. Optional JEI/Patchouli combinations pass dedicated coverage.
+- Native server restarts retain original identities, cargo, remaining health, weapon wear, release epochs and encounter mass. Nine automated survival scenarios cover one, two and four players with zero, five and twenty companions; their timings do not establish first-attempt human balance.
+- English/Korean clients verify station transactions, both member appearances, boss phases, minimal-particle warnings, JEI and texture replacement/restoration. All 73 guide entries and 237 pages pass native default/uniform-font checks. Java 17 packaging, bilingual resources and Google Java Format checks pass.
+
 ## [0.4.9] - 2026-10-23
 
 ### Fixed

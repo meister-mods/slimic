@@ -12,9 +12,9 @@ Build a team of companions to gather resources, move supplies, care for crops an
 
 Companions grow through activity and stat upgrades. Name and manage them with a Slime Tuner, then recover them as items with their saved traits. A Creative Slime Tuner allows direct stat editing. Optional JEI integration provides recipes and companion information, while Patchouli adds an in-game guidebook.
 
-Explore **The Slimic**, a damp world of gel-covered terrain and abandoned workshops, recover ancient cores from collapsed mines, restore new companions, follow kingdom maps into a fallen royal sanctuary, and combine experienced miners into a new generation. Its distinctive materials and ruin decorations also support building.
+Explore **The Slimic**, a damp world of gel-covered terrain and abandoned workshops, recover ancient cores from collapsed mines, restore new companions, follow kingdom maps into a fallen royal sanctuary, and combine experienced miners into a new generation. Face the remnants of an endless assembly and temporarily bind matching companions into reversible colonies. Its distinctive materials and ruin decorations also support building.
 
-Slimic is in early development within the `0.4.x` series.
+Slimic is in early development within the `0.5.x` series.
 
 ## Platform
 
@@ -28,6 +28,8 @@ Minecraft **1.20.1**, Minecraft Forge **47.x**, and Java **17**.
 - [The Slimic dimension](docs/THE_SLIMIC.md) · [한국어](docs/THE_SLIMIC.kr.md)
 - [Forgotten Orders](docs/FORGOTTEN_ORDERS.md) · [한국어](docs/FORGOTTEN_ORDERS.kr.md)
 - [Fallen Sanctum](docs/FALLEN_SANCTUM.md) · [한국어](docs/FALLEN_SANCTUM.kr.md)
+- [The Aimless Colony](docs/AIMLESS_COLONY.md) · [한국어](docs/AIMLESS_COLONY.kr.md)
+- [Colony bonding](docs/COLONY_BONDING.md) · [한국어](docs/COLONY_BONDING.kr.md)
 - [Royal synthesis](docs/SYNTHESIS.md) · [한국어](docs/SYNTHESIS.kr.md)
 - [Mine recovery](docs/MINE_RECOVERY.md) · [한국어](docs/MINE_RECOVERY.kr.md)
 - [Companion interactions](docs/INTERACTIONS.md) · [한국어](docs/INTERACTIONS.kr.md)

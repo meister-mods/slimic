@@ -160,7 +160,7 @@ public final class OrderThirteenClientSmoke {
     p.onUpdateAbilities();
     p.getInventory().clearContent();
     int i = 0;
-    for (var value : ModEntities.companionTypes()) {
+    for (var value : ModEntities.individualCompanionTypes()) {
       var s = (FriendlySlime) value.get().create(level);
       s.tame(p);
       s.moveTo(4.5 + i % 6 * 4, 101, 10.5 + i / 6 * 3.5, 180, 0);
@@ -550,7 +550,7 @@ public final class OrderThirteenClientSmoke {
       g.fill(0, 0, width, height, 0xff202830);
       g.drawCenteredString(font, title, width / 2, 12, 0xffffff);
       int i = 0;
-      for (var registered : ModEntities.companionTypes()) {
+      for (var registered : ModEntities.individualCompanionTypes()) {
         var item = net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(registered.getId());
         int x = width / 2 - 265 + (i % 6) * 90, y = 45 + (i / 6) * 70;
         g.pose().pushPose();

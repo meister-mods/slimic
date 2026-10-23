@@ -13,7 +13,11 @@ public abstract class BagSlime extends FriendlySlime {
   protected BagSlime(EntityType<? extends BagSlime> type, Level level, int slots) {
     super(type, level);
     setWaiting(true);
-    bag = new SlimeBag(slots, this::getCapacity, () -> bagRevision++);
+    bag = createBag(slots);
+  }
+
+  protected SlimeBag createBag(int slots) {
+    return new SlimeBag(slots, this::getCapacity, () -> bagRevision++);
   }
 
   public final SlimeBag getBag() {

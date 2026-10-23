@@ -104,6 +104,10 @@ public final class SlimeClientSmoke {
       if (RoyalSynthesisClientSmoke.tick(client)) client.stop();
       return;
     }
+    if (Boolean.getBoolean("slimic.colonyOnly")) {
+      if (ColonyClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.creativeFreedomOnly")) {
       if (CreativeFreedomClientSmoke.tick(client)) client.stop();
       return;

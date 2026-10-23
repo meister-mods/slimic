@@ -113,6 +113,8 @@ public final class FriendlySlimeInteractions {
     if (!event.getLevel().isClientSide
         && event.getEntity() instanceof Mob mob
         && mob instanceof Enemy
+        && !(mob instanceof AimlessColony)
+        && !(mob instanceof ColonyFragment)
         && !(mob instanceof Creeper)
         && !(mob instanceof EnderMan))
       mob.targetSelector.addGoal(
@@ -133,7 +135,25 @@ public final class FriendlySlimeInteractions {
     if (!event.getEntity().level().isClientSide
         && event.getEntity() instanceof FriendlySlime slime) {
       if (slime.isPendingSpawn()) slime.discard();
-      else BrokenSlimeBlock.preserve(slime);
+      else {
+        var level = (net.minecraft.server.level.ServerLevel) slime.level();
+        var bonding = io.github.meistermods.slimic.world.ColonyBondingData.get(level);
+        if (!bonding.store(level, slime)) {
+          slime.setHealth(1);
+          event.setCanceled(true);
+          return;
+        }
+        BrokenSlimeBlock.preserve(slime);
+        if (bonding.controlled(slime.getUUID())) {
+          try {
+            level.save(null, true, false);
+            // Retain its damaged fallback until recovery or a native stored-data proof.
+          } catch (RuntimeException failure) {
+            com.mojang.logging.LogUtils.getLogger()
+                .error("Could not checkpoint broken colony {}", slime.getUUID(), failure);
+          }
+        }
+      }
       event.setCanceled(true);
     }
   }

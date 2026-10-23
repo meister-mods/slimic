@@ -1,0 +1,20 @@
+{
+  "name": "집합실 관찰 기록",
+  "icon": "slimic:last_rally_record",
+  "category": "slimic:world",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "집합 소리를 듣고 우리는 짐을 내려놓았다. XXX가 돌아올 길은 열어 두었다. 해산 명령은 없었다. 핵들이 서로를 따라 같은 말을 할 때에도, 나는 아직 곁의 동료들을 셀 수 있었다. — 마지막 집합 기록"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "큰 덩어리는 작은 조각이 돌아올 때 상처를 닫았다. 부서진 조각의 자리는 비어 있었다. 뜻을 함께한 핵 둘의 작은 결속은 안전하게 풀렸고, 우리는 이름을 기억했다. XXX의 일은 더 알지 못한다. — 끝나지 않는 집합 기록"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:last_rally_record": 0,
+    "slimic:endless_assembly_record": 1
+  }
+}

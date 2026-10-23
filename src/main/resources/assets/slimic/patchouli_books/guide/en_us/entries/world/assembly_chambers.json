@@ -1,0 +1,28 @@
+{
+  "name": "Assembly Chambers",
+  "icon": "slimic:assembly_clue",
+  "category": "slimic:world",
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "We followed converging gel trails to a chamber beneath new terrain in The Slimic. Lamps mark a stair mouth. $(l:world/kingdom_maps)Sanctum$() and mine supplies may hold an Assembly Clue. Use it here to mark a candidate without loading terrain."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The clue is no key. Use the Assembly Core to begin a two-second awakening. The first attempt and retries after failure are free. The stair stays open; retreating for a minute while the encounter remains loaded resets it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "After a victory, the same altar asks for eight slimeballs and two Old Command Fragments, after one day. Server settings can change these costs. Each participant claims a personal reward at a core; full bags keep the reward pending."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "In Peaceful, no colony awakens. Eight Old Command Fragments and 32 slimeballs unlock your first reward at that chamber once. A replacement core at the original altar restores access; any assembly core can deliver pending personal rewards."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:assembly_clue": 0,
+    "slimic:assembly_core": 1
+  }
+}

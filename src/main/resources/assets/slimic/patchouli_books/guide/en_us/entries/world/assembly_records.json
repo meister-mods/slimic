@@ -1,0 +1,20 @@
+{
+  "name": "Assembly Observations",
+  "icon": "slimic:last_rally_record",
+  "category": "slimic:world",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "We heard the call and laid our packs down. The passage for XXX stayed open. No dismissal followed. When our cores began repeating one another, I could still count the companions beside me. — Last Rally Record"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The great heap closes its wounds when little pieces return. Those we broke left gaps. A small bond between two willing cores parted safely; we remembered our names. I know nothing more of XXX. — Endless Assembly Record"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:last_rally_record": 0,
+    "slimic:endless_assembly_record": 1
+  }
+}

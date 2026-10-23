@@ -20,13 +20,27 @@ import net.minecraft.world.level.saveddata.maps.*;
 public final class KingdomMapItem extends MapItem {
   public static final String BINDING = "SlimicKingdomMap";
   private static final Map<UUID, UUID> SEARCHING = new java.util.concurrent.ConcurrentHashMap<>();
+  private final boolean assembly;
 
   public static void clearSearches() {
     SEARCHING.clear();
   }
 
   public KingdomMapItem(Properties properties) {
+    this(properties, false);
+  }
+
+  public KingdomMapItem(Properties properties, boolean assembly) {
     super(properties);
+    this.assembly = assembly;
+  }
+
+  private String bindingKey() {
+    return assembly ? "SlimicAssemblyMap" : BINDING;
+  }
+
+  private boolean isBound(ItemStack stack) {
+    return stack.hasTag() && stack.getTag().getCompound(bindingKey()).hasUUID("Site");
   }
 
   public static boolean bound(ItemStack stack) {
@@ -41,8 +55,8 @@ public final class KingdomMapItem extends MapItem {
       player.displayClientMessage(Component.translatable("message.slimic.map_dimension"), true);
       return InteractionResultHolder.fail(stack);
     }
-    if (bound(stack)) {
-      var data = stack.getTag().getCompound(BINDING);
+    if (isBound(stack)) {
+      var data = stack.getTag().getCompound(bindingKey());
       var anchor = NbtUtils.readBlockPos(data.getCompound("Anchor"));
       double distance = Math.hypot(anchor.getX() - player.getX(), anchor.getZ() - player.getZ());
       player.displayClientMessage(
@@ -63,7 +77,13 @@ public final class KingdomMapItem extends MapItem {
     int radius = SlimicConfig.SANCTUM_SEARCH_RADIUS.get();
     player.displayClientMessage(Component.translatable("message.slimic.map_searching"), true);
     CompletableFuture.supplyAsync(
-            () -> SanctumPlacement.find(level, origin, radius),
+            () -> {
+              if (!assembly) return SanctumPlacement.find(level, origin, radius);
+              var candidate = AssemblyPlacement.find(level, origin, radius);
+              return candidate == null
+                  ? null
+                  : new SanctumPlacement.Candidate(candidate.anchor(), 0);
+            },
             net.minecraft.Util.backgroundExecutor())
         .whenComplete(
             (candidate, error) -> {
@@ -89,7 +109,7 @@ public final class KingdomMapItem extends MapItem {
                             break;
                           }
                         }
-                        if (current.isEmpty() || bound(current)) return;
+                        if (current.isEmpty() || isBound(current)) return;
                         current.getTag().remove("SlimicMapSearch");
                         if (error != null)
                           LogUtils.getLogger().warn("Kingdom map search failed", error);
@@ -103,7 +123,8 @@ public final class KingdomMapItem extends MapItem {
                               Component.translatable("message.slimic.map_not_found"), true);
                           return;
                         }
-                        bind(current, level, candidate);
+                        if (assembly) bindAssembly(current, level, candidate.anchor());
+                        else bind(current, level, candidate);
                         player.inventoryMenu.broadcastChanges();
                         player.displayClientMessage(
                             Component.translatable("message.slimic.map_found"), true);
@@ -136,10 +157,25 @@ public final class KingdomMapItem extends MapItem {
         MapDecoration.Type.MANSION);
   }
 
+  public static void bindAssembly(
+      ItemStack stack, net.minecraft.server.level.ServerLevel level, BlockPos anchor) {
+    var data = new CompoundTag();
+    data.putInt("Schema", 1);
+    data.putString("Destination", "abandoned_assembly_chamber");
+    data.putString("Dimension", SlimicWorld.DIMENSION.location().toString());
+    data.putUUID("Site", AssemblySites.identity(level.getSeed(), anchor));
+    data.put("Anchor", NbtUtils.writeBlockPos(anchor));
+    var vanilla = MapItem.create(level, anchor.getX(), anchor.getZ() - 62, (byte) 3, true, true);
+    stack.getOrCreateTag().putInt("map", MapItem.getMapId(vanilla));
+    stack.getTag().put("SlimicAssemblyMap", data);
+    MapItemSavedData.addTargetDecoration(
+        stack, anchor.offset(0, 0, -62), "assembly_chamber", MapDecoration.Type.MONUMENT);
+  }
+
   @Override
   public void inventoryTick(
       ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
-    if (!level.isClientSide && bound(stack) && entity instanceof Player player) {
+    if (!level.isClientSide && isBound(stack) && entity instanceof Player player) {
       var data = MapItem.getSavedData(stack, level);
       if (data != null) data.tickCarriedBy(player, stack);
     }
@@ -150,9 +186,13 @@ public final class KingdomMapItem extends MapItem {
       ItemStack stack, Level level, List<Component> lines, TooltipFlag flag) {
     lines.add(
         Component.translatable(
-            bound(stack)
-                ? "item.slimic.ancient_kingdom_map.bound"
-                : "item.slimic.ancient_kingdom_map.unbound"));
+            assembly
+                ? isBound(stack)
+                    ? "item.slimic.assembly_clue.bound"
+                    : "item.slimic.assembly_clue.unbound"
+                : isBound(stack)
+                    ? "item.slimic.ancient_kingdom_map.bound"
+                    : "item.slimic.ancient_kingdom_map.unbound"));
     lines.add(Component.translatable("message.slimic.map_dimension"));
   }
 }

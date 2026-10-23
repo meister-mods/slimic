@@ -27,6 +27,15 @@ public final class ModWorldgen {
       FALLEN_SANCTUM =
           STRUCTURE_TYPES.register("fallen_sanctum", () -> () -> FallenSanctumStructure.CODEC);
   public static final RegistryObject<
+          net.minecraft.world.level.levelgen.structure.StructureType<AssemblyChamberStructure>>
+      ASSEMBLY_CHAMBER =
+          STRUCTURE_TYPES.register(
+              "abandoned_assembly_chamber", () -> () -> AssemblyChamberStructure.CODEC);
+  public static final RegistryObject<
+          net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType>
+      ASSEMBLY_PIECE =
+          PIECE_TYPES.register("abandoned_assembly_chamber", () -> AssemblyChamberPiece::new);
+  public static final RegistryObject<
           net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType>
       SANCTUM_PIECE = PIECE_TYPES.register("fallen_sanctum", () -> FallenSanctumPiece::new);
   public static final DeferredRegister<Feature<?>> FEATURES =

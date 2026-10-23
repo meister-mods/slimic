@@ -358,7 +358,7 @@ public final class OrderThirteenGameTests {
               var registry = CompanionRegistry.get(h.getLevel());
               registry.setRelation(primary.getUUID(), shared.getUUID(), true, true);
               int count = 0;
-              for (var value : ModEntities.companionTypes()) {
+              for (var value : ModEntities.individualCompanionTypes()) {
                 var type = value.get();
                 var slime = (FriendlySlime) type.create(h.getLevel());
                 slime.tame(primary);
@@ -518,7 +518,7 @@ public final class OrderThirteenGameTests {
     var command = pet(h, destination, ModEntities.COMMAND_SLIME.get(), owner, 7, 7);
     command.setNoAi(true);
     var registry = CompanionRegistry.get(h.getLevel());
-    for (var registered : ModEntities.companionTypes()) {
+    for (var registered : ModEntities.individualCompanionTypes()) {
       var slime = (FriendlySlime) registered.get().create(h.getLevel());
       slime.tame(owner);
       slime.setNoAi(true);

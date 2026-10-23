@@ -58,7 +58,7 @@ public final class VanillaSlimeAggroGameTests {
     List<LoadedWorkArea> areas = new ArrayList<>();
     List<Slime> wildSlimes = new ArrayList<>();
     List<FriendlySlime> companions = new ArrayList<>();
-    for (var registered : ModEntities.companionTypes()) {
+    for (var registered : ModEntities.individualCompanionTypes()) {
       var area = new LoadedWorkArea(h);
       areas.add(area);
       companions.add(waiting(h, area, registered.get(), owner, 7));

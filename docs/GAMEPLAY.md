@@ -513,3 +513,9 @@ When a Signaling Slime launches an automatic blocked-work signal, the worker’s
 ## The Slimic
 
 Explore a separate world of damp plains, gel-covered terrain, and abandoned workshops. A Nether-shaped slime-block frame activated with a slimeball connects it to the Overworld. Building materials and decorations have separate Creative tabs. See [The Slimic](THE_SLIMIC.md) for portal rules, materials, ruins, wildlife, and companion travel.
+
+## Assembly encounters and colonies
+
+[The Aimless Colony](AIMLESS_COLONY.md) lives in underground Assembly Chambers in new The Slimic terrain. Clues from sanctums and mines help locate an entrance, but no key is required. Its personal rewards include Colony Hearts and Cohesion Shards, with a configurable Peaceful alternative.
+
+Use a heart to craft a reusable [Colony Bonding Station](COLONY_BONDING.md). Bind two ordinary Transport Slimes or two ordinary Combat Slimes with the same primary owner, operate one representative, and unbind back into the original two identities with actual remaining traits. Deployed and restored colonies start in Wait.

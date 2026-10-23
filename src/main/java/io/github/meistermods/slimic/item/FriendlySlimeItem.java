@@ -5,6 +5,7 @@ import io.github.meistermods.slimic.entity.CompanionRegistry;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.SlimeData;
 import io.github.meistermods.slimic.registry.ModEntities;
+import io.github.meistermods.slimic.registry.ModItems;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -211,6 +212,10 @@ public class FriendlySlimeItem extends Item {
     boolean restoring = hasStoredSlime(stack);
     CompoundTag saved =
         restoring ? SlimeData.migrate(stack.getTag().getCompound(SLIME_DATA)) : null;
+    var bonding = io.github.meistermods.slimic.world.ColonyBondingData.get(level);
+    if (!restoring
+        && (stack.is(ModItems.BOUND_TRANSPORT_SLIME.get())
+            || stack.is(ModItems.BOUND_COMBAT_SLIME.get()))) return false;
     if (restoring) {
       if (!SlimeData.canLoad(saved)
           || stack.getCount() != 1
@@ -221,7 +226,8 @@ public class FriendlySlimeItem extends Item {
           || (!reviving && saved.getFloat("Health") <= 0.0F)) {
         return false;
       }
-      if (!io.github.meistermods.slimic.world.RoyalSynthesisData.get(level).mayRestore(saved)) {
+      if (!bonding.mayRestore(saved)
+          || !io.github.meistermods.slimic.world.RoyalSynthesisData.get(level).mayRestore(saved)) {
         player.displayClientMessage(
             Component.translatable("message.slimic.synthesis_consumed"), true);
         return false;
@@ -292,6 +298,7 @@ public class FriendlySlimeItem extends Item {
     UUID owner = slime.getOwnerUUID();
     boolean admitted = false;
     slime.setPendingSpawn(true);
+    if (restoring && bonding.controlled(identity)) bonding.admitting(identity, true);
     try {
       admitted =
           level.addFreshEntity(slime)
@@ -309,6 +316,7 @@ public class FriendlySlimeItem extends Item {
             Component.translatable("message.slimic.ender_anchor_limit"), true);
       }
     } finally {
+      bonding.admitting(identity, false);
       slime.setPendingSpawn(false);
       if (!admitted) {
         // Admission callbacks may remove an entity before native registration completes.
@@ -317,6 +325,10 @@ public class FriendlySlimeItem extends Item {
       }
     }
     if (!admitted) return false;
+    if (restoring && bonding.controlled(identity) && !bonding.released(level, slime)) {
+      slime.discard();
+      return false;
+    }
     if (restoring
         && !io.github.meistermods.slimic.world.RoyalSynthesisData.get(level)
             .released(level, slime)) {

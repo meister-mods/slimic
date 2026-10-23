@@ -1,0 +1,33 @@
+{
+  "name": "The Aimless Colony",
+  "icon": "slimic:colony_heart",
+  "category": "slimic:world",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "We still hear the last assembly order in that great gel body. Its three phases follow remaining health. Under default settings it has 320 health, six armor and eight attack damage. It cannot tear apart the chamber."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Charge lanes and slam rings warn before impact. Leave the marked path or ring. A gathering pull leads to a short shockwave. The last rally warns for 2.5 seconds; kill or separate returning fragments to deny healing. Warnings remain when particles are reduced."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The body owns 100 cohesion. Each fragment borrows 12; at most six are active. A killed piece never returns its share. Cohesion of 60 or more reduces damage by 10%; at 40 or less the exposed core briefly takes 20% more. The body is always vulnerable."
+    },
+    {
+      "type": "patchouli:crafting",
+      "text": "Stay near the chamber for at least 30 seconds and contribute damage, healing, protection or a real rally. Each slime's owner gets credit. Your first clear here grants one heart and a record; later clears grant two shards. Four shards make another heart.",
+      "recipe": "slimic:colony_heart"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:colony_heart": 0,
+    "slimic:cohesion_shard": 3,
+    "slimic:aimless_colony_spawn_egg": 0,
+    "slimic:attack_colony_fragment_spawn_egg": 2,
+    "slimic:cohesion_colony_fragment_spawn_egg": 2,
+    "slimic:returning_colony_fragment_spawn_egg": 2
+  }
+}

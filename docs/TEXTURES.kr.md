@@ -95,3 +95,11 @@ The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/asset
 차세대 채굴 소환 아이템은 공통 슬라임 바탕과 전용 `next_generation_mining_crest` 문장을 사용합니다. 채굴모의 왕실 합성 핵심 문양은 헤드 랜턴을 피한 옆면에 표시합니다. 안전 안경은 전용 64×64 `prospecting_goggles` UV 아틀라스의 짙은 금속·철·청록 유리·가죽 영역을 사용합니다. 테는 불투명하며 렌즈는 얼굴 위에 반투명으로 표시합니다. 몸체와 부착 장비는 일반 동료의 75%로 함께 렌더링합니다. 길들인 고대 동료의 머리 표식은 계속 하얀색입니다. 융합 장치와 성체 중계대 모델은 왕실 아이템 그림과 금·석재 표면을 결합합니다. 결속한 왕국 지도를 손에 들면 바닐라 지도 데이터·플레이어 표식·지도 렌더러를 사용합니다.
 
 차세대 터널 슬라임은 작은 채굴모·안전 안경과 좁은 수레를 사용하고 소환 아이템은 공통 금 블록 판을 상속합니다. 전용 투명 16×16 `next_generation_tunnel_crest` 문장은 청록색 정사각형 굴을 둘러싼 은색 측정 도구와 초록 왕실 표식을 표현하며 불투명 색상은 최대 12색입니다.
+
+## 집합실과 군체 에셋
+
+새 재료·기록 아이콘은 `textures/item`의 `colony_heart`, `cohesion_shard`, `assembly_clue`, `last_rally_record`, `endless_assembly_record`이며 기본 **16×16** PNG입니다. 결속 소환 아이템 둘은 `slime_summon_base`를 유지하고, 각각 16×16 `bound_transport_slime_crest`, `bound_combat_slime_crest` 문장을 얹습니다. `textures/block/colony_bonding_top.png`는 별도의 16×16 장치 표면입니다.
+
+보스는 **64×64** 논리 아틀라스인 `textures/entity/aimless_colony.png`를 사용합니다. 오른쪽 아래 8×8 영역이 내부 금색 핵의 표면이며, 모델은 불투명한 핵을 별도로 그린 뒤 반투명 초록 외피를 혼합합니다. **64×32** 분체 피부 셋 `colony_fragment_attack`, `colony_fragment_cohesion`, `colony_fragment_returning`은 각각 주황·보라·청록 계열입니다. 금색 핵의 형태도 서로 달라 역할을 구별할 수 있습니다. 결속 동료의 붙어 있는 몸 둘은 기존 역할 모델과 실제 구성원의 염색·장비를 재사용합니다.
+
+리소스 팩은 같은 경로와 비례 해상도로 교체할 수 있습니다. 보스의 핵 영역과 기본 슬라임 UV 영역을 유지하세요. 공격 바닥 윤곽선·소리·경고 문구·핵 노출 조명은 동적으로 렌더링합니다.

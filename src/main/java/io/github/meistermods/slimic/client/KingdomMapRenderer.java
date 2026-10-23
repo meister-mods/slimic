@@ -28,7 +28,12 @@ public final class KingdomMapRenderer {
   @SubscribeEvent
   public static void hand(RenderHandEvent event) {
     var stack = event.getItemStack();
-    if (!stack.is(ModItems.ANCIENT_KINGDOM_MAP.get()) || !KingdomMapItem.bound(stack)) return;
+    boolean assembly =
+        stack.is(ModItems.ASSEMBLY_CLUE.get())
+            && stack.hasTag()
+            && stack.getTag().getCompound("SlimicAssemblyMap").hasUUID("Site");
+    if (!assembly
+        && (!stack.is(ModItems.ANCIENT_KINGDOM_MAP.get()) || !KingdomMapItem.bound(stack))) return;
     var minecraft = Minecraft.getInstance();
     var data = MapItem.getSavedData(stack, minecraft.level);
     var id = MapItem.getMapId(stack);

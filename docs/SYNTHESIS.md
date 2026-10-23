@@ -2,7 +2,7 @@
 
 English | [한국어](SYNTHESIS.kr.md) · [Fallen Sanctum](FALLEN_SANCTUM.md) · [Gameplay](GAMEPLAY.md)
 
-Royal synthesis consumes two recovered companions to create one new companion. In 0.4.x the supported families are **ordinary Mining Slime + Ancient Mining Slime → Next-Generation Mining Slime** and **ordinary Tunnel Slime + Ancient Tunnel Slime → Next-Generation Tunnel Slime**. Guard synthesis is not implemented. A next-generation companion cannot be a parent for another synthesis.
+Royal synthesis consumes two recovered companions to create one new companion. In 0.5.x the supported families are **ordinary Mining Slime + Ancient Mining Slime → Next-Generation Mining Slime** and **ordinary Tunnel Slime + Ancient Tunnel Slime → Next-Generation Tunnel Slime**. Guard synthesis is not implemented. A next-generation companion cannot be a parent for another synthesis.
 
 ## Station and materials
 

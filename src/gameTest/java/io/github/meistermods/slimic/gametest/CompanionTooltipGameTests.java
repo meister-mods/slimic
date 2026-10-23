@@ -28,7 +28,7 @@ public final class CompanionTooltipGameTests {
   @GameTest(template = "empty", timeoutTicks = 20)
   public static void everyFreshProfessionHasExactlyItsOwnDescription(GameTestHelper h) {
     int count = 0;
-    for (var type : ModEntities.companionTypes()) {
+    for (var type : ModEntities.individualCompanionTypes()) {
       var item = ForgeRegistries.ITEMS.getValue(type.getId());
       var stack = new ItemStack(item);
       var lines = keys(stack, h);
@@ -49,7 +49,7 @@ public final class CompanionTooltipGameTests {
 
   @GameTest(template = "empty", timeoutTicks = 20)
   public static void everyStoredProfessionRetainsItsDescriptionAndExactData(GameTestHelper h) {
-    for (var type : ModEntities.companionTypes()) {
+    for (var type : ModEntities.individualCompanionTypes()) {
       var slime = (FriendlySlime) type.get().create(h.getLevel());
       slime.setOwnerUUID(UUID.randomUUID());
       slime.setTame(true);
