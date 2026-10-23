@@ -65,6 +65,17 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.ROYAL_GALLERY_SEAL.get());
                         output.accept(ModItems.ROYAL_SYNTHESIS_CORE.get());
                         output.accept(ModItems.ROYAL_SYNTHESIS_STATION.get());
+                        output.accept(ModItems.ASSEMBLY_CORE.get());
+                        output.accept(ModItems.COLONY_BONDING_STATION.get());
+                        output.accept(ModItems.COLONY_HEART.get());
+                        output.accept(ModItems.COHESION_SHARD.get());
+                        output.accept(ModItems.ASSEMBLY_CLUE.get());
+                        output.accept(ModItems.LAST_RALLY_RECORD.get());
+                        output.accept(ModItems.ENDLESS_ASSEMBLY_RECORD.get());
+                        output.accept(ModItems.AIMLESS_COLONY_SPAWN_EGG.get());
+                        output.accept(ModItems.ATTACK_COLONY_FRAGMENT_SPAWN_EGG.get());
+                        output.accept(ModItems.COHESION_COLONY_FRAGMENT_SPAWN_EGG.get());
+                        output.accept(ModItems.RETURNING_COLONY_FRAGMENT_SPAWN_EGG.get());
                         output.accept(ModItems.SANCTUM_RELAY.get());
                         output.accept(ModWorldBlocks.block("command_pedestal"));
                         output.accept(ModItems.ANCIENT_GUARD_SLIME_SPAWN_EGG.get());

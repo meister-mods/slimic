@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "slimic:abandoned_assembly_chamber",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 11501750,
+    "spacing": 80,
+    "separation": 32
+  }
+}

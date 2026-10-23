@@ -82,7 +82,7 @@ public final class WorkPreviewGameTests {
 
   @GameTest(template = "empty")
   public static void allProfessionPreviewsAreBoundedAndDoNotStartWork(GameTestHelper h) {
-    for (var type : ModEntities.companionTypes()) {
+    for (var type : ModEntities.individualCompanionTypes()) {
       var slime = (FriendlySlime) type.get().create(h.getLevel());
       slime.moveTo(123.5, 101, 234.5);
       slime.setWaiting(true);
@@ -143,7 +143,7 @@ public final class WorkPreviewGameTests {
 
   @GameTest(template = "empty")
   public static void allProfessionAreasRemainFiniteAtWorldBorderAndZeroRange(GameTestHelper h) {
-    for (var type : ModEntities.companionTypes()) {
+    for (var type : ModEntities.individualCompanionTypes()) {
       for (int sign : new int[] {-1, 1}) {
         var pet = (FriendlySlime) type.get().create(h.getLevel());
         pet.moveTo(sign * 29_999_980.5, 101, sign * 29_999_980.5);
@@ -193,7 +193,7 @@ public final class WorkPreviewGameTests {
           "Previewing an active farmer does not serialize or complete its survey");
       var cold = new BlockPos(15_000_008, 101, -15_000_008);
       h.assertTrue(!level.hasChunkAt(cold), "Preview terrain starts unloaded");
-      for (var type : ModEntities.companionTypes()) {
+      for (var type : ModEntities.individualCompanionTypes()) {
         var pet = (FriendlySlime) type.get().create(level);
         pet.moveTo(Vec3.atCenterOf(cold));
         for (int query = 0; query < 100; query++) SlimeWorkArea.of(pet);
@@ -376,7 +376,7 @@ public final class WorkPreviewGameTests {
     var owner = h.makeMockSurvivalPlayer();
     owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_SCANNER.get()));
     int checked = 0;
-    for (var registered : ModEntities.companionTypes()) {
+    for (var registered : ModEntities.individualCompanionTypes()) {
       var slime = (FriendlySlime) registered.get().create(h.getLevel());
       slime.tame(owner);
       owner.moveTo(slime.position());

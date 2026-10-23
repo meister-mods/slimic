@@ -10,6 +10,16 @@ public final class SlimicConfig {
   public static final ForgeConfigSpec.IntValue FOLLOW_ACTIVITY_INTERVAL;
   public static final ForgeConfigSpec.IntValue MONITOR_ACTIVITY_INTERVAL;
   public static final ForgeConfigSpec.IntValue SANCTUM_SEARCH_RADIUS;
+  public static final ForgeConfigSpec.DoubleValue COLONY_HEALTH;
+  public static final ForgeConfigSpec.DoubleValue COLONY_ARMOR;
+  public static final ForgeConfigSpec.DoubleValue COLONY_DAMAGE;
+  public static final ForgeConfigSpec.IntValue COLONY_FRAGMENTS;
+  public static final ForgeConfigSpec.IntValue ASSEMBLY_COOLDOWN;
+  public static final ForgeConfigSpec.IntValue ASSEMBLY_REPEAT_SLIMEBALLS;
+  public static final ForgeConfigSpec.IntValue ASSEMBLY_REPEAT_FRAGMENTS;
+  public static final ForgeConfigSpec.IntValue ASSEMBLY_PEACEFUL_SLIMEBALLS;
+  public static final ForgeConfigSpec.IntValue ASSEMBLY_PEACEFUL_FRAGMENTS;
+  public static final ForgeConfigSpec.IntValue ASSEMBLY_PARTICIPATION;
 
   static {
     ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -44,6 +54,25 @@ public final class SlimicConfig {
         builder
             .comment("Maximum pinned Ender Slimes per primary owner. Each keeps one chunk ticking.")
             .defineInRange("enderAnchorsPerOwner", 8, 1, 128);
+    builder.push("aimlessColony");
+    COLONY_HEALTH = builder.defineInRange("health", 320D, 40D, 10000D);
+    COLONY_ARMOR = builder.defineInRange("armor", 6D, 0D, 30D);
+    COLONY_DAMAGE = builder.defineInRange("attackDamage", 8D, 1D, 100D);
+    COLONY_FRAGMENTS =
+        builder
+            .comment("Both this cap and the conserved mass budget apply.")
+            .defineInRange("maxActiveFragments", 6, 0, 6);
+    ASSEMBLY_COOLDOWN = builder.defineInRange("repeatCooldownTicks", 24000, 0, 2400000);
+    ASSEMBLY_REPEAT_SLIMEBALLS = builder.defineInRange("repeatSlimeballs", 8, 0, 64);
+    ASSEMBLY_REPEAT_FRAGMENTS = builder.defineInRange("repeatCommandFragments", 2, 0, 64);
+    ASSEMBLY_PEACEFUL_SLIMEBALLS = builder.defineInRange("peacefulSlimeballs", 32, 1, 64);
+    ASSEMBLY_PEACEFUL_FRAGMENTS = builder.defineInRange("peacefulCommandFragments", 8, 1, 64);
+    ASSEMBLY_PARTICIPATION =
+        builder
+            .comment(
+                "Nearby encounter ticks plus an actual combat/support contribution are required.")
+            .defineInRange("participationTicks", 600, 20, 12000);
+    builder.pop();
     SPEC = builder.build();
   }
 

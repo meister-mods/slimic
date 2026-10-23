@@ -12,7 +12,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 /** Sparse storage keeps large Creative bags proportional to their actual contents. */
-public final class SlimeBag extends ItemStackHandler {
+public class SlimeBag extends ItemStackHandler {
   private final TreeMap<Integer, ItemStack> contents = new TreeMap<>();
   private final int baseSlots;
   private final IntSupplier capacity;
@@ -29,6 +29,10 @@ public final class SlimeBag extends ItemStackHandler {
     return baseSlots;
   }
 
+  public int storageSlots() {
+    return Math.max(capacity.getAsInt(), contents.isEmpty() ? 0 : contents.lastKey() + 1);
+  }
+
   public List<Integer> occupiedSlots() {
     contents.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     return List.copyOf(contents.keySet());
@@ -42,7 +46,7 @@ public final class SlimeBag extends ItemStackHandler {
 
   @Override
   public int getSlots() {
-    return Math.max(baseSlots, capacity.getAsInt());
+    return Math.max(baseSlots, storageSlots());
   }
 
   @Override
@@ -133,7 +137,9 @@ public final class SlimeBag extends ItemStackHandler {
       var item = (CompoundTag) entry;
       int slot = item.getInt("Slot");
       var stack = ItemStack.of(item);
-      if (slot >= 0 && slot < getSlots() && !stack.isEmpty()) contents.put(slot, stack);
+      // Capacity may have been lowered in Creative. Existing cargo remains extractable;
+      // the insertion limit still follows capacity, so this cannot create extra usable slots.
+      if (slot >= 0 && slot < Integer.MAX_VALUE && !stack.isEmpty()) contents.put(slot, stack);
     }
     changed.run();
   }
@@ -143,6 +149,16 @@ public final class SlimeBag extends ItemStackHandler {
     var copy = new SlimeBag(baseSlots, () -> limit, () -> {});
     contents.forEach((slot, stack) -> copy.contents.put(slot, stack.copy()));
     return copy;
+  }
+
+  /** Sparse gap lookup is also implemented by partitioned colony storage. */
+  public int firstEmptySlot() {
+    int empty = 0;
+    for (int slot : contents.keySet()) {
+      if (slot > empty) break;
+      if (slot == empty) empty++;
+    }
+    return empty < capacity.getAsInt() ? empty : -1;
   }
 
   public static ItemStack insertItemStacked(
@@ -156,12 +172,8 @@ public final class SlimeBag extends ItemStackHandler {
       remaining = bag.insertItem(slot, remaining, false);
     }
     while (!remaining.isEmpty()) {
-      int empty = 0;
-      for (int slot : bag.contents.keySet()) {
-        if (slot > empty) break;
-        if (slot == empty) empty++;
-      }
-      if (empty >= bag.capacity.getAsInt()) break;
+      int empty = bag.firstEmptySlot();
+      if (empty < 0) break;
       remaining = bag.insertItem(empty, remaining, false);
     }
     return remaining;

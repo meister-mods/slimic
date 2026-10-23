@@ -1,0 +1,33 @@
+{
+  "name": "목적을 잃은 군체",
+  "icon": "slimic:colony_heart",
+  "category": "slimic:world",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "그 커다란 점액 몸에서 아직 마지막 집합 명령이 들린다. 남은 체력에 따라 세 단계로 변한다. 기본 설정은 체력 320, 방어력 6, 공격력 8이며 집합실을 파괴하지 않는다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "돌진 경로와 내려찍기 원이 공격 전에 표시된다. 표시된 길이나 원에서 벗어나라. 흡인 뒤에는 짧은 충격파가 온다. 마지막 집합은 2.5초간 예고된다. 분체의 귀환을 막으면 회복을 줄인다. 파티클을 줄여도 경고는 남는다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "본체는 결속량 100을 지닌다. 분체 하나가 12를 나누어 가지며 동시에 여섯을 넘지 않는다. 죽은 분체의 몫은 돌아오지 않는다. 결속량 60 이상에서는 피해를 10% 덜 받고, 40 이하에서는 간헐적으로 핵을 드러내 20% 더 받는다. 본체는 항상 공격할 수 있다."
+    },
+    {
+      "type": "patchouli:crafting",
+      "text": "집합실 가까이에서 30초 이상 참여하고 공격·치유·보호·실제 집합에 기여해야 한다. 동료의 기여는 주인에게 기록된다. 이곳의 첫 공략은 심장 1개와 기록, 이후 공략은 파편 2개를 준다. 파편 4개로 심장을 만든다.",
+      "recipe": "slimic:colony_heart"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:colony_heart": 0,
+    "slimic:cohesion_shard": 3,
+    "slimic:aimless_colony_spawn_egg": 0,
+    "slimic:attack_colony_fragment_spawn_egg": 2,
+    "slimic:cohesion_colony_fragment_spawn_egg": 2,
+    "slimic:returning_colony_fragment_spawn_egg": 2
+  }
+}

@@ -28,6 +28,73 @@ import net.minecraftforge.registries.RegistryObject;
 public final class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Slimic.MOD_ID);
+  public static final RegistryObject<Item> COLONY_HEART = royalRelic("colony_heart");
+  public static final RegistryObject<Item> COLONY_BONDING_STATION =
+      ITEMS.register(
+          "colony_bonding_station",
+          () -> new BlockItem(ModBlocks.COLONY_BONDING_STATION.get(), new Item.Properties()));
+  public static final RegistryObject<Item> BOUND_TRANSPORT_SLIME =
+      ITEMS.register(
+          "bound_transport_slime",
+          () ->
+              new io.github.meistermods.slimic.item.BoundColonyItem(
+                  new Item.Properties(), ModEntities.BOUND_TRANSPORT_SLIME));
+  public static final RegistryObject<Item> BOUND_COMBAT_SLIME =
+      ITEMS.register(
+          "bound_combat_slime",
+          () ->
+              new io.github.meistermods.slimic.item.BoundColonyItem(
+                  new Item.Properties(), ModEntities.BOUND_COMBAT_SLIME));
+  public static final RegistryObject<Item> ASSEMBLY_CLUE =
+      ITEMS.register(
+          "assembly_clue",
+          () ->
+              new io.github.meistermods.slimic.item.KingdomMapItem(
+                  new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON), true));
+  public static final RegistryObject<Item> ASSEMBLY_CORE =
+      ITEMS.register(
+          "assembly_core",
+          () -> new BlockItem(ModBlocks.ASSEMBLY_CORE.get(), new Item.Properties()));
+  public static final RegistryObject<Item> COHESION_SHARD = royalRelic("cohesion_shard");
+  public static final RegistryObject<Item> LAST_RALLY_RECORD =
+      ITEMS.register(
+          "last_rally_record",
+          () ->
+              new io.github.meistermods.slimic.item.AssemblyRecordItem(
+                  new Item.Properties().stacksTo(1), "last_rally"));
+  public static final RegistryObject<Item> ENDLESS_ASSEMBLY_RECORD =
+      ITEMS.register(
+          "endless_assembly_record",
+          () ->
+              new io.github.meistermods.slimic.item.AssemblyRecordItem(
+                  new Item.Properties().stacksTo(1), "endless_assembly"));
+  public static final RegistryObject<Item> AIMLESS_COLONY_SPAWN_EGG =
+      ITEMS.register(
+          "aimless_colony_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.AIMLESS_COLONY, 0x427954, 0xE8D79A, new Item.Properties()));
+  public static final RegistryObject<Item> ATTACK_COLONY_FRAGMENT_SPAWN_EGG =
+      ITEMS.register(
+          "attack_colony_fragment_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.ATTACK_COLONY_FRAGMENT, 0x84684A, 0xE8C578, new Item.Properties()));
+  public static final RegistryObject<Item> COHESION_COLONY_FRAGMENT_SPAWN_EGG =
+      ITEMS.register(
+          "cohesion_colony_fragment_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.COHESION_COLONY_FRAGMENT, 0x6E6389, 0xF1E3B5, new Item.Properties()));
+  public static final RegistryObject<Item> RETURNING_COLONY_FRAGMENT_SPAWN_EGG =
+      ITEMS.register(
+          "returning_colony_fragment_spawn_egg",
+          () ->
+              new net.minecraftforge.common.ForgeSpawnEggItem(
+                  ModEntities.RETURNING_COLONY_FRAGMENT,
+                  0x488B7E,
+                  0xE1F6CC,
+                  new Item.Properties()));
 
   public static final RegistryObject<Item> KINGDOM_MAP_FRAGMENT =
       royalRelic("kingdom_map_fragment");

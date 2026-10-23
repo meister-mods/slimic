@@ -1,0 +1,24 @@
+{
+  "name": "Combat Slime Colony",
+  "icon": "slimic:bound_combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "Two ordinary $(l:companions/combat)Combat Slimes$() share a temporary body through $(l:world/colony_bonding)Colony Bonding$(). The colony combines their health and uses a modest cooperation attack bonus. First deployment and recovery always select Wait.",
+      "title": "Combat Slime Colony"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The first member supplies the active weapon, shield and armor; wear belongs to those real items. The second member's equipment stays stored. One movement and combat order replaces two independent fighters. The two connected bodies retain their own colors and gear."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Damage and healing are shared without creating extra life. Activity alternates, but training and tuning use member one. Recover and unbind to restore the two original UUIDs, gear, cargo, growth and remaining energy. Group target settings begin with the first member's filters."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_combat_slime": 0
+  }
+}

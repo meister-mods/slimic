@@ -1,0 +1,24 @@
+{
+  "name": "운반 슬라임 군체",
+  "icon": "slimic:bound_transport_slime",
+  "category": "slimic:companions",
+  "sortnum": 28,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "일반 $(l:companions/transport)운반 슬라임$() 둘은 $(l:world/colony_bonding)군체 결속$()으로 몸을 함께 쓸 수 있다. 원래 개체의 신분은 그 안에 남는다. 처음 배치하거나 회수 후 복구한 군체는 대기로 시작한다.",
+      "title": "운반 슬라임 군체"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "군체는 이동과 운반 명령 하나를 따른다. 적재량은 두 구성원의 실제 적재량을 더한 값이다. 일반 운반 슬라임의 적재량 보너스도 이미 포함된다. 기존 물류 체계에서 화물을 수거하고 도구나 작업 재료를 보급한다."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "운반할 때마다 구성원의 실제 가방이 변한다. 해체하면 남은 체력과 기력도 개별 슬라임에 따라간다. 성장 역시 개별 기록이다. 회수 후 결속기에서 원래 둘을 가까이 대기 상태로 복구한다. 먼 두 작업장을 동시에 맡을 수는 없다."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_transport_slime": 0
+  }
+}

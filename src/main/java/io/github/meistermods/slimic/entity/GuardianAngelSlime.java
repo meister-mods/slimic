@@ -196,6 +196,7 @@ public final class GuardianAngelSlime extends FriendlySlime {
         CriteriaTriggers.USED_TOTEM.trigger(server, used);
       }
       recordCompletedWork(4);
+      io.github.meistermods.slimic.world.AssemblySites.contribute(this);
       return true;
     } finally {
       protecting = false;

@@ -1,0 +1,7 @@
+{
+  "type": "slimic:abandoned_assembly_chamber",
+  "biomes": "#slimic:has_structure/abandoned_assembly_chamber",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

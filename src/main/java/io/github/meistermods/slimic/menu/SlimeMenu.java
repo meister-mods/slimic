@@ -34,6 +34,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public final class SlimeMenu extends AbstractContainerMenu {
   public static final int TUNNEL_SIZE = 20;
+  private static final int BAG_EXTENT = 22;
   public static final int POLICY = 20, ORE_MASK = 21, POLICY_BUTTON = 70, ORE_BUTTON = 80;
   public static final int SLOT_SPACING = 18, SLOT_COLUMNS = 9, BAG_ROWS = 3;
   public static final int BAG_PAGE_SIZE = SLOT_COLUMNS * BAG_ROWS;
@@ -89,7 +90,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     this.slime = slime;
     wireData =
         new NumericContainerData(
-            22,
+            23,
             inventory.player.level().isClientSide,
             inventory.player.level().isClientSide
                 ? null
@@ -160,6 +161,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
                     }
                     case TARGET_PAGE -> targetPage;
                     case BAG_PAGE -> bagPage;
+                    case BAG_EXTENT ->
+                        slime instanceof BagSlime bag ? bag.getBag().storageSlots() : 0;
                     case ALERT_MINUTES ->
                         slime instanceof SignalingSlime signaling ? signaling.getDelayMinutes() : 0;
                     default -> 0;
@@ -312,7 +315,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private int getSynchronizedCapacity() {
-    return (int) value(SlimeStat.CAPACITY);
+    return (int) wireData.value(BAG_EXTENT);
   }
 
   public int bagPages() {
@@ -322,7 +325,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   @Override
   public void broadcastChanges() {
     if (!slime.level().isClientSide)
-      bagPage = Math.min(bagPage, Math.max(0, (slime.getCapacity() - 1) / BAG_PAGE_SIZE));
+      bagPage = Math.min(bagPage, Math.max(0, (getSynchronizedCapacity() - 1) / BAG_PAGE_SIZE));
     super.broadcastChanges();
   }
 

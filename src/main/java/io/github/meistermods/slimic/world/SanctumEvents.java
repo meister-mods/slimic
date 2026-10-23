@@ -26,28 +26,48 @@ public final class SanctumEvents {
   @SubscribeEvent
   public static void unload(LevelEvent.Unload event) {
     if (event.getLevel() instanceof ServerLevel level
-        && level.dimension().equals(SlimicWorld.DIMENSION)) SanctumPlacement.forget(level);
+        && level.dimension().equals(SlimicWorld.DIMENSION)) {
+      SanctumPlacement.forget(level);
+      AssemblyPlacement.forget(level);
+    }
   }
 
   @SubscribeEvent
   public static void chunkLoad(net.minecraftforge.event.level.ChunkEvent.Load event) {
-    if (event.getChunk() instanceof net.minecraft.world.level.chunk.LevelChunk chunk)
+    if (event.getChunk() instanceof net.minecraft.world.level.chunk.LevelChunk chunk) {
       SanctumPlacement.chunk(chunk, true);
+      AssemblyPlacement.chunk(chunk, true);
+    }
   }
 
   @SubscribeEvent
   public static void chunkUnload(net.minecraftforge.event.level.ChunkEvent.Unload event) {
-    if (event.getChunk() instanceof net.minecraft.world.level.chunk.LevelChunk chunk)
+    if (event.getChunk() instanceof net.minecraft.world.level.chunk.LevelChunk chunk) {
       SanctumPlacement.chunk(chunk, false);
+      AssemblyPlacement.chunk(chunk, false);
+    }
   }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void join(EntityJoinLevelEvent event) {
+    if (event.getLevel() instanceof ServerLevel world
+        && event.getEntity() instanceof AimlessColony boss
+        && boss.siteId() != null) {
+      var site = AssemblySites.get(world).find(boss.siteId());
+      if (site == null
+          || !site.dimension.equals(world.dimension().location().toString())
+          || !site.active(boss.encounterId(), boss.getUUID())) {
+        event.setCanceled(true);
+        return;
+      }
+      if (!site.body.isEmpty()) boss.load(site.body.copy());
+    }
     if (event.getLevel() instanceof ServerLevel level
         && event.getEntity() instanceof FriendlySlime slime
         && level.getServer().overworld() != null) {
       var data = RoyalSynthesisData.get(level);
-      if (data.unavailable(slime.getUUID())
+      if (!ColonyBondingData.get(level).mayJoin(slime)
+          || data.unavailable(slime.getUUID())
           || slime.getPersistentData().hasUUID("SynthesisTransaction")
               && !data.mayRestore(slime.saveWithoutId(new net.minecraft.nbt.CompoundTag())))
         event.setCanceled(true);

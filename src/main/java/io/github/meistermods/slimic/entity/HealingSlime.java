@@ -266,6 +266,7 @@ public class HealingSlime extends BagSlime {
               && BrokenSlimeBlock.revive(server, treatingBroken, player);
     }
     if (success) {
+      io.github.meistermods.slimic.world.AssemblySites.contribute(this);
       treatmentBlocked = false;
       getBag().extractItem(slot, 1, false);
       spendStamina(1);

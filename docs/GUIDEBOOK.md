@@ -2,7 +2,7 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 67 entries and 217 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 73 entries and 237 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
 The Slime Tuners entry also includes the Slime Scanner recipe and controls.
 
@@ -111,3 +111,7 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | Royal Synthesis | [Station and materials](SYNTHESIS.md#station-and-materials) |
 | Royal Watch | [Royal remnants](FALLEN_SANCTUM.md#royal-remnants) |
 | Sealed Laboratory | [Preparing and confirming](SYNTHESIS.md#preparing-and-confirming) |
+
+## Assembly and colony entries
+
+Assembly Chambers, The Aimless Colony, Colony Bonding, Assembly Observations, Transport Slime Colony and Combat Slime Colony are included. See [assembly encounters](AIMLESS_COLONY.md) and [Colony Bonding](COLONY_BONDING.md) for web instructions.

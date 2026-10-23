@@ -345,7 +345,7 @@ public final class SlimicWorldGameTests {
           18);
     frame(target, end, Direction.Axis.X, 2, 3, true, true);
     int[] count = {0};
-    for (var entry : ModEntities.companionTypes()) {
+    for (var entry : ModEntities.individualCompanionTypes()) {
       var entity = entry.get().create(h.getLevel());
       if (!(entity instanceof FriendlySlime slime)) continue;
       count[0]++;

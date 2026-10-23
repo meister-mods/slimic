@@ -36,7 +36,7 @@ public final class CompanionTooltipClientSmoke {
 
   private static void prepare(Minecraft client) {
     samples.clear();
-    for (var type : ModEntities.companionTypes()) {
+    for (var type : ModEntities.individualCompanionTypes()) {
       var item = ForgeRegistries.ITEMS.getValue(type.getId());
       samples.add(new ItemStack(item));
       var pet = (FriendlySlime) type.get().create(client.level);
@@ -180,7 +180,7 @@ public final class CompanionTooltipClientSmoke {
       Files.writeString(
           directory.resolve("tooltips.json"),
           new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(report));
-      if (checks != ModEntities.companionTypes().size() * 2 * 2 * 3 * 2)
+      if (checks != ModEntities.individualCompanionTypes().size() * 2 * 2 * 3 * 2)
         throw new IllegalStateException(
             "Expected every profession, stored state, font, language, and tooltip mode");
       System.out.println(

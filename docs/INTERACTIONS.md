@@ -32,7 +32,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I22 | Healing / Saddle | Heal without changing armor, wings, saddle or Wait. |
 | I23 | Healing / Saddle | Revive at one health with all three exact gear items. |
 | I24 | Guardian / Saddle / owner | Protect a mounted owner without removing rider or gear. |
-| I25 | Combat / all twenty-seven professions | Same-owner companions remain excluded with all filters enabled. |
+| I25 | Combat / all ordinary and colony companions | Same-owner companions remain excluded with all filters enabled. |
 | I26 | Transport / worker | Competing carriers cannot duplicate spare tools. |
 | I27 | Signaling / worker | A signal callback cannot continue a cancelled monitoring order. |
 | I28 | Warehouse / worker | Use a real loaded detour to reach cargo. |
@@ -50,7 +50,7 @@ The following scenarios have independent native game regressions. Transfers chec
 | I40 | Ender / player | Retain identity-bound tokens and exact pinned chunks across cold restarts; reject unsafe or revoked travel without costs. |
 | I41 | Glow / Glow | Share temporary light leases without deleting another companion’s light or changing fluids and containers. |
 | I42 | Shared owners / Saddle / Combat | Eject revoked riders; enemy assignments retain PvP, team, Creative, and ally protection. |
-| I43 | Recovery / all twenty-seven professions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
+| I43 | Recovery / all ordinary and colony companions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
 | I44 | Scanner / workers | Preview bounded current or planned areas without starting work, loading chunks, or recovering the companion; enforce current access and range. |
 | I45 | Signaling / blocked worker / owners | Report type, custom name, and cause to authorized online owners, including other dimensions; respect cooldowns and revoked access. |
 | I46 | Wild Slime / player | Convert one size-one Slime with one Survival golden apple; start owned and waiting, retain its name, and use normal owner-only Shift recovery. Event or spawn vetoes preserve inputs. |
@@ -75,3 +75,7 @@ The following scenarios have independent native game regressions. Transfers chec
 Endurance validation records real elapsed server time while repeating obstacle detours, deliveries, treatment, collection, stamina recovery and exact item conservation. Each independent scenario uses a separate work area and waits until its entities can tick. Save/reload checks retain work orders, companion identities and equipment. Real route and species-specific terrain fixtures use isolated areas so unrelated work targets cannot substitute for the intended scenario.
 
 Historical release results are recorded in [CHANGELOG.md](../CHANGELOG.md). Current regression coverage also includes fourfold profession health, Creative values above recommendations, exact menu number transport, and expanded bag pages.
+
+## Colony interactions
+
+Transport colonies reuse ordinary cargo collection and tool, bucket, cobblestone and work-material supply. Combat colonies retain allied/shared-owner protection and replacement-tool behavior. Healing changes actual remaining member life; Command rallies move one representative while original roster records remain bound members. Boss contribution is credited to the owner after actual companion effects succeed. The [bonding preservation rules](COLONY_BONDING.md) also apply.

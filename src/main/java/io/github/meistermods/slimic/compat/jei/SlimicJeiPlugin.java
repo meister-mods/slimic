@@ -68,12 +68,15 @@ public final class SlimicJeiPlugin implements IModPlugin {
   @Override
   public void registerCategories(IRecipeCategoryRegistration registration) {
     registration.addRecipeCategories(
+        new ColonyBondingCategory(registration.getJeiHelpers().getGuiHelper()),
         new SlimeRestorationCategory(registration.getJeiHelpers().getGuiHelper()),
         new RoyalSynthesisCategory(registration.getJeiHelpers().getGuiHelper()));
   }
 
   @Override
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+    registration.addRecipeCatalyst(
+        ModItems.COLONY_BONDING_STATION.get(), ColonyBondingCategory.TYPE);
     registration.addRecipeCatalyst(
         ModWorldBlocks.block("command_pedestal"), SlimeRestorationCategory.TYPE);
     registration.addRecipeCatalyst(
@@ -82,6 +85,23 @@ public final class SlimicJeiPlugin implements IModPlugin {
 
   @Override
   public void registerRecipes(IRecipeRegistration registration) {
+    for (var item :
+        List.of(ModItems.BOUND_TRANSPORT_SLIME.get(), ModItems.BOUND_COMBAT_SLIME.get()))
+      registration.addIngredientInfo(
+          item.getDefaultInstance(),
+          VanillaTypes.ITEM_STACK,
+          Component.translatable("jei.slimic." + ForgeRegistries.ITEMS.getKey(item).getPath()));
+    registration.addRecipes(ColonyBondingCategory.TYPE, ColonyBondingCategory.recipes());
+    for (var item :
+        List.of(
+            ModItems.COLONY_HEART.get(),
+            ModItems.COHESION_SHARD.get(),
+            ModItems.ASSEMBLY_CLUE.get(),
+            ModItems.ASSEMBLY_CORE.get()))
+      registration.addIngredientInfo(
+          item.getDefaultInstance(),
+          VanillaTypes.ITEM_STACK,
+          Component.translatable("jei.slimic.assembly.path"));
     registration.addRecipes(
         RoyalSynthesisCategory.TYPE,
         java.util.Arrays.stream(io.github.meistermods.slimic.entity.SynthesisFamily.values())

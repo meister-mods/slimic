@@ -37,7 +37,13 @@ public final class ForgottenRuinGameTests {
 
   private static Plot plot(GameTestHelper h) {
     var level = h.getLevel().getServer().getLevel(SlimicWorld.DIMENSION);
-    int x = 1_600_000 + index++ * 64, z = -1_600_000;
+    int x, z = -1_600_000;
+    do {
+      x = 1_600_000 + index++ * 64;
+    } while (SanctumPlacement.reserved(
+            level, new net.minecraft.world.level.ChunkPos(x >> 4, z >> 4))
+        || AssemblyPlacement.reserved(
+            level, new net.minecraft.world.level.ChunkPos(x >> 4, z >> 4)));
     var center = new BlockPos(x + 8, 300, z + 8);
     for (int dx = -1; dx <= 1; dx++)
       for (int dz = -1; dz <= 1; dz++) {

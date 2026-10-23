@@ -20,6 +20,47 @@ public final class ModBlocks {
       DeferredRegister.create(ForgeRegistries.BLOCKS, Slimic.MOD_ID);
   public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
       DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Slimic.MOD_ID);
+  public static final RegistryObject<Block> COLONY_BONDING_STATION =
+      BLOCKS.register(
+          "colony_bonding_station",
+          () ->
+              new io.github.meistermods.slimic.block.ColonyBondingStationBlock(
+                  BlockBehaviour.Properties.of()
+                      .mapColor(MapColor.COLOR_GREEN)
+                      .strength(4)
+                      .sound(SoundType.STONE)
+                      .noOcclusion()));
+  public static final RegistryObject<
+          BlockEntityType<io.github.meistermods.slimic.block.ColonyBondingStationBlockEntity>>
+      COLONY_BONDING_ENTITY =
+          BLOCK_ENTITIES.register(
+              "colony_bonding_station",
+              () ->
+                  BlockEntityType.Builder.of(
+                          io.github.meistermods.slimic.block.ColonyBondingStationBlockEntity::new,
+                          COLONY_BONDING_STATION.get())
+                      .build(null));
+  public static final RegistryObject<Block> ASSEMBLY_CORE =
+      BLOCKS.register(
+          "assembly_core",
+          () ->
+              new io.github.meistermods.slimic.block.AssemblyCoreBlock(
+                  BlockBehaviour.Properties.of()
+                      .mapColor(MapColor.COLOR_GREEN)
+                      .strength(4)
+                      .sound(SoundType.STONE)
+                      .lightLevel(state -> 7)
+                      .noOcclusion()));
+  public static final RegistryObject<
+          BlockEntityType<io.github.meistermods.slimic.block.AssemblyCoreBlockEntity>>
+      ASSEMBLY_CORE_ENTITY =
+          BLOCK_ENTITIES.register(
+              "assembly_core",
+              () ->
+                  BlockEntityType.Builder.of(
+                          io.github.meistermods.slimic.block.AssemblyCoreBlockEntity::new,
+                          ASSEMBLY_CORE.get())
+                      .build(null));
   public static final RegistryObject<Block> ROYAL_SYNTHESIS_STATION =
       BLOCKS.register(
           "royal_synthesis_station",

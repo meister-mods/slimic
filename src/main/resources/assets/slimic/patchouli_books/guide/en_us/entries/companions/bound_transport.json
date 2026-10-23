@@ -1,0 +1,24 @@
+{
+  "name": "Transport Slime Colony",
+  "icon": "slimic:bound_transport_slime",
+  "category": "slimic:companions",
+  "sortnum": 28,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "Two ordinary $(l:companions/transport)Transport Slimes$() can share a temporary body through $(l:world/colony_bonding)Colony Bonding$(). Their original identities stay within it. Newly deployed and restored colonies start in Wait.",
+      "title": "Transport Slime Colony"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The colony uses one movement and transport order. Its carrying capacity is exactly the sum of both members' real capacities. The native Transport capacity bonus is already included. It collects cargo and brings tools or work supplies through the ordinary logistics network."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every transfer changes real member bags. Remaining health and stamina follow the members when separated. Growth is individual. Recover it, then use a bonding station to restore both original slimes nearby in Wait. It cannot operate in two distant places at once."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_transport_slime": 0
+  }
+}

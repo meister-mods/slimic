@@ -92,7 +92,8 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
 
   @Override
   public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-    if (SanctumPlacement.reserved(context.level().getLevel(), new ChunkPos(context.origin())))
+    if (SanctumPlacement.reserved(context.level().getLevel(), new ChunkPos(context.origin()))
+        || AssemblyPlacement.reserved(context.level().getLevel(), new ChunkPos(context.origin())))
       return false;
     var level = context.level();
     if (!level.getLevel().dimension().equals(SlimicWorld.DIMENSION)) return false;
@@ -169,6 +170,11 @@ public final class CollapsedMineFeature extends Feature<NoneFeatureConfiguration
           4,
           new net.minecraft.world.item.ItemStack(
               io.github.meistermods.slimic.registry.ModItems.KINGDOM_MAP_FRAGMENT.get()));
+      if (random.nextFloat() < .35F)
+        chest.setItem(
+            5,
+            new net.minecraft.world.item.ItemStack(
+                io.github.meistermods.slimic.registry.ModItems.ASSEMBLY_CLUE.get()));
     }
     spawn(
         level,

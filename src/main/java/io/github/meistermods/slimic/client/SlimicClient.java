@@ -38,6 +38,15 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(ModEntities.BOUND_TRANSPORT_SLIME.get(), BoundColonyRenderer::new);
+    event.registerEntityRenderer(ModEntities.BOUND_COMBAT_SLIME.get(), BoundColonyRenderer::new);
+    event.registerEntityRenderer(ModEntities.AIMLESS_COLONY.get(), AimlessColonyRenderer::new);
+    for (var type :
+        java.util.List.of(
+            ModEntities.ATTACK_COLONY_FRAGMENT,
+            ModEntities.COHESION_COLONY_FRAGMENT,
+            ModEntities.RETURNING_COLONY_FRAGMENT))
+      event.registerEntityRenderer(type.get(), ColonyFragmentRenderer::new);
     event.registerEntityRenderer(
         ModEntities.NEXT_GENERATION_MINING_SLIME.get(), FriendlySlimeRenderer::new);
     event.registerEntityRenderer(
@@ -87,6 +96,8 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(AimlessColonyModel.BODY, AimlessColonyModel::bodyLayer);
+    event.registerLayerDefinition(ColonyFragmentRenderer.CORES, ColonyFragmentRenderer::coreLayer);
     event.registerLayerDefinition(RoyalSlimeLayer.CROWN, RoyalSlimeLayer::createLayer);
     event.registerLayerDefinition(AdvancedSlimeLayer.DETAILS, AdvancedSlimeLayer::createLayer);
     event.registerLayerDefinition(HealingSlimeLayer.BAND, HealingSlimeLayer::createLayer);
@@ -103,6 +114,8 @@ public final class SlimicClient {
 
   @SubscribeEvent
   public static void clientSetup(FMLClientSetupEvent event) {
+    event.enqueueWork(
+        () -> MenuScreens.register(ModMenus.COLONY_BONDING.get(), ColonyBondingScreen::new));
     event.enqueueWork(
         () -> MenuScreens.register(ModMenus.ROYAL_SYNTHESIS.get(), RoyalSynthesisScreen::new));
     event.enqueueWork(

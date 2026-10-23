@@ -1,0 +1,28 @@
+{
+  "name": "Colony Bonding",
+  "icon": "slimic:colony_bonding_station",
+  "category": "slimic:world",
+  "sortnum": 22,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "text": "A heart, two iron ingots, three slimeballs and three stone bricks make this reusable station. It binds two ordinary Transport Slimes or two ordinary Combat Slimes. Both must have the same primary owner. Other professions and upper variants are unsupported.",
+      "recipe": "slimic:colony_bonding_station"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recover two living, healthy companions without temporary effects. Put their items in the slots, inspect both records and confirm Bind. Gear and cargo may stay. Original identities and individual growth remain separate inside one representative."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "One representative shares one order. Its bag routes cargo into the actual two member bags. Damage and stamina use reduce their records too. Work activity alternates between members; tuning and active combat gear use the first member. Points are never pooled."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recover the colony and insert it alone, then confirm Unbind. Two safe landing spaces are required. The original identities return in Wait with remaining life, energy, gear and cargo. Cancelled spawns keep the colony. Recover a pending result at any bonding station."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:colony_bonding_station": 0
+  }
+}

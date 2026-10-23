@@ -45,6 +45,7 @@ public final class InitialWorkOrderGameTests {
         ModEntities.ANCIENT_MINING_SLIME.get(),
         ModEntities.NEXT_GENERATION_MINING_SLIME.get(),
         ModEntities.ANCIENT_TUNNEL_SLIME.get(),
+        ModEntities.NEXT_GENERATION_TUNNEL_SLIME.get(),
         ModEntities.TRANSPORT_SLIME.get(),
         ModEntities.SIGNALING_SLIME.get(),
         ModEntities.COMBAT_SLIME.get(),
@@ -66,7 +67,7 @@ public final class InitialWorkOrderGameTests {
   @GameTest(template = "empty", batch = "order_nine")
   public static void allCompanionConstructorsAndCommandlessEntityNbtStartInWait(GameTestHelper h) {
     h.assertTrue(
-        companions().size() == ModEntities.companionTypes().size(),
+        companions().size() == ModEntities.individualCompanionTypes().size(),
         "Initial-order coverage includes every registered companion type");
     var owner = h.makeMockSurvivalPlayer();
     for (var type : companions()) {
