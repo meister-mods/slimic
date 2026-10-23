@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Liquids, unsupported cavities, protected stairs, and unsafe roofs constrain its route. It tries a bypass or pauses if none is safe. Ordinary tools, durability, cargo pickup, and work warnings apply. The Scanner previews the shaft and next face. No access ladder is built; provide a return route for transport companions. Recovered slimes redeploy in Wait."
+      "text": "Liquids, unsupported cavities, protected stairs, and unsafe roofs require a safe bypass; otherwise it pauses. Temporary movement failures retain the next excavation step. Tools, cargo pickup, and work warnings apply. The Scanner previews work. Provide a return route for carriers; it builds no access ladder. Recovery deploys in Wait."
     }
   ],
   "extra_recipe_mappings": {

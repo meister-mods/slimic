@@ -551,16 +551,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
             0xffb4c9d1,
             false);
       }
-    } else if (menu.slime() instanceof BagSlime && tunnelSize == null) {
-      graphics.drawString(
-          font,
-          menu.isBagVisible()
-              ? Component.translatable("screen.slimic.bag", (int) menu.value(SlimeStat.CAPACITY))
-              : Component.translatable("screen.slimic.targets"),
-          SlimeMenu.SLOTS_X,
-          SlimeMenu.BAG_LABEL_Y,
-          0xffe5e9e9,
-          false);
+    } else if (menu.slime() instanceof BagSlime) {
+      if (tunnelSize == null)
+        graphics.drawString(
+            font,
+            menu.isBagVisible()
+                ? Component.translatable("screen.slimic.bag", (int) menu.value(SlimeStat.CAPACITY))
+                : Component.translatable("screen.slimic.targets"),
+            SlimeMenu.SLOTS_X,
+            SlimeMenu.BAG_LABEL_Y,
+            0xffe5e9e9,
+            false);
       Enum<?>[] statuses =
           menu.slime() instanceof FishingSlime
               ? FishingSlime.Status.values()

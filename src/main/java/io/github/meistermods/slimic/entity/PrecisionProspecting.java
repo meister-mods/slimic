@@ -19,6 +19,10 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 /** Incremental, loaded-terrain-only planning and physical two-by-two excavation. */
 public final class PrecisionProspecting {
   private static final int MAX_RADIUS = 32, SCAN_BUDGET = 1024, ROUTE_BUDGET = 96, MAX_NODES = 2048;
+  private static final int SECTION_BUDGET = 32;
+
+  private record SurveySection(BlockPos min, BlockPos max) {}
+
   private final NextGenerationMiningSlime slime;
   private final SlimeBlockBreaking breaking = new SlimeBlockBreaking();
   private final Deque<BlockPos> route = new ArrayDeque<>();
@@ -32,6 +36,8 @@ public final class PrecisionProspecting {
   private int scanCursor, scanRadius, retryAt, lastMoveTick = -1, stalledTicks;
   private double bestDistance = Double.MAX_VALUE, closest = Double.MAX_VALUE;
   private BlockPos breakingPos;
+  private final List<SurveySection> scanSections = new ArrayList<>();
+  private int scanSectionCursor;
 
   PrecisionProspecting(NextGenerationMiningSlime slime) {
     this.slime = slime;
@@ -93,6 +99,8 @@ public final class PrecisionProspecting {
 
   private void resetScan() {
     scanCursor = 0;
+    scanSectionCursor = 0;
+    scanSections.clear();
     scanOrigin = bestOre = null;
     bestDistance = Double.MAX_VALUE;
   }
@@ -376,9 +384,10 @@ public final class PrecisionProspecting {
       } else stalledTicks++;
     }
     if (stalledTicks > 200) {
+      // The next level may already have removed the old cell's floor. Keep that destination so
+      // a temporary movement obstruction cannot strand the worker on an invalid old cell.
+      interrupt();
       stop(MiningSlime.Status.UNREACHABLE, true);
-      route.clear();
-      search = null;
       return false;
     }
     slime.status = MiningSlime.Status.MOVING;
@@ -388,8 +397,41 @@ public final class PrecisionProspecting {
     return false;
   }
 
-  private static int centered(int index) {
-    return (index & 1) == 0 ? index / 2 : -(index + 1) / 2;
+  private double sectionDistance(SurveySection section) {
+    double dx =
+        Math.max(
+            Math.max(section.min.getX() - slime.getX(), slime.getX() - section.max.getX() - 1), 0);
+    double dy =
+        Math.max(
+            Math.max(section.min.getY() - slime.getY(), slime.getY() - section.max.getY() - 1), 0);
+    double dz =
+        Math.max(
+            Math.max(section.min.getZ() - slime.getZ(), slime.getZ() - section.max.getZ() - 1), 0);
+    return dx * dx + dy * dy + dz * dz;
+  }
+
+  private void surveySections(ServerLevel world) {
+    var min = scanOrigin.offset(-scanRadius, -scanRadius, -scanRadius);
+    var max = scanOrigin.offset(scanRadius, scanRadius, scanRadius);
+    int lowY = Math.max(world.getMinBuildHeight(), min.getY());
+    int highY = Math.min(world.getMaxBuildHeight() - 1, max.getY());
+    for (int x = min.getX() >> 4; x <= max.getX() >> 4; x++)
+      for (int z = min.getZ() >> 4; z <= max.getZ() >> 4; z++)
+        for (int y = lowY >> 4; y <= highY >> 4; y++) {
+          var section =
+              new SurveySection(
+                  new BlockPos(
+                      Math.max(min.getX(), x << 4),
+                      Math.max(lowY, y << 4),
+                      Math.max(min.getZ(), z << 4)),
+                  new BlockPos(
+                      Math.min(max.getX(), (x << 4) + 15),
+                      Math.min(highY, (y << 4) + 15),
+                      Math.min(max.getZ(), (z << 4) + 15)));
+          if (sectionDistance(section) <= (double) scanRadius * scanRadius)
+            scanSections.add(section);
+        }
+    scanSections.sort(Comparator.comparingDouble(this::sectionDistance));
   }
 
   private boolean scan(ServerLevel world) {
@@ -400,24 +442,48 @@ public final class PrecisionProspecting {
       bestOre = null;
       bestDistance = Double.MAX_VALUE;
       rejected.values().removeIf(expiry -> expiry <= world.getGameTime());
+      surveySections(world);
     }
-    int side = scanRadius * 2 + 1, total = side * side * side;
-    for (int budget = 0; budget < SCAN_BUDGET && scanCursor < total; budget++, scanCursor++) {
-      int i = scanCursor;
-      var pos =
-          scanOrigin.offset(
-              centered(i % side), centered(i / (side * side)), centered((i / side) % side));
-      if (!loaded(world, pos) || rejected.containsKey(pos.asLong())) continue;
-      double distance = pos.distToCenterSqr(slime.position());
-      if (distance > (double) scanRadius * scanRadius) continue;
-      var state = state(world, pos);
-      if (slime.allowsOre(state) && breakable(world, pos, state) && distance < bestDistance) {
-        bestDistance = distance;
-        bestOre = pos;
+    int budget = 0;
+    for (int sections = 0;
+        sections < SECTION_BUDGET
+            && budget < SCAN_BUDGET
+            && scanSectionCursor < scanSections.size();
+        sections++) {
+      var section = scanSections.get(scanSectionCursor);
+      var chunk =
+          world.getChunkSource().getChunkNow(section.min.getX() >> 4, section.min.getZ() >> 4);
+      if (chunk == null
+          || !chunk.getSections()[chunk.getSectionIndex(section.min.getY())].maybeHas(
+              slime::allowsOre)) {
+        scanSectionCursor++;
+        scanCursor = 0;
+        continue;
+      }
+      int width = section.max.getX() - section.min.getX() + 1;
+      int depth = section.max.getZ() - section.min.getZ() + 1;
+      int total = width * depth * (section.max.getY() - section.min.getY() + 1);
+      while (budget < SCAN_BUDGET && scanCursor < total) {
+        int i = scanCursor++;
+        budget++;
+        var pos = section.min.offset(i % width, i / (width * depth), (i / width) % depth);
+        if (!world.getWorldBorder().isWithinBounds(pos) || rejected.containsKey(pos.asLong()))
+          continue;
+        double distance = pos.distToCenterSqr(slime.position());
+        if (distance > (double) scanRadius * scanRadius) continue;
+        var state = chunk.getBlockState(pos);
+        if (slime.allowsOre(state) && breakable(world, pos, state) && distance < bestDistance) {
+          bestDistance = distance;
+          bestOre = pos;
+        }
+      }
+      if (scanCursor == total) {
+        scanSectionCursor++;
+        scanCursor = 0;
       }
     }
     planning();
-    if (bestOre == null && scanCursor < total) return false;
+    if (bestOre == null && scanSectionCursor < scanSections.size()) return false;
     ore = bestOre;
     resetScan();
     return true;
@@ -444,6 +510,15 @@ public final class PrecisionProspecting {
       stop(MiningSlime.Status.COMPLETE, false);
       return;
     }
+    // Older saves can retain the cleared next shaft level after losing the pending route.
+    if (descended
+        && !returning
+        && !detouring
+        && pending == null
+        && route.isEmpty()
+        && shaft.equals(cell.below())
+        && safe(world, shaft)
+        && open(world, shaft)) pending = shaft;
     if (pending != null && route.isEmpty()) {
       route.add(pending);
       pending = null;
