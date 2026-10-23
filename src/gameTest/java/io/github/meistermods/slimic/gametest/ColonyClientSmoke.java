@@ -36,6 +36,7 @@ public final class ColonyClientSmoke {
   private static volatile int representative, bossEntity;
   private static volatile UUID[] parents;
   private static volatile UUID colonyId;
+  private static volatile Vec3 warnedDashDirection;
   private static BlockPos origin;
   private static final List<Mob> portraits = new ArrayList<>();
   private static final List<String> portraitNames = new ArrayList<>();
@@ -424,6 +425,7 @@ public final class ColonyClientSmoke {
                       var boss = (AimlessColony) level(client).getEntity(bossEntity);
                       boss.setHealth(
                           boss.getMaxHealth() * (warning == 0 ? 1 : warning == 1 ? .6F : .3F));
+                      if (warning == 2) boss.setTarget(actor(client));
                       try {
                         var method =
                             AimlessColony.class.getDeclaredMethod(
@@ -438,6 +440,13 @@ public final class ColonyClientSmoke {
                               case 3 -> AimlessColony.Pattern.RING;
                               default -> AimlessColony.Pattern.CROSS;
                             });
+                        if (warning == 2) {
+                          warnedDashDirection = boss.dashDirection();
+                          Vec3 shove =
+                              new Vec3(-warnedDashDirection.z, 0, warnedDashDirection.x).scale(2);
+                          boss.setPos(boss.position().add(shove));
+                          boss.hasImpulse = true;
+                        }
                       } catch (ReflectiveOperationException e) {
                         throw new IllegalStateException(e);
                       }
@@ -454,6 +463,15 @@ public final class ColonyClientSmoke {
                 && boss.phase() == Math.min(3, warning + 1)
                 && boss.pattern() != AimlessColony.Pattern.IDLE,
             "Real phase and telegraph synchronization with minimal particles");
+        if (warning == 2) {
+          require(
+              warnedDashDirection != null
+                  && boss.dashDirection().distanceToSqr(warnedDashDirection) < 1.0e-10,
+              "Native tracking packets preserve the charge heading after a sideways shove");
+          require(
+              boss.dashRemainingDistance() >= 0 && boss.dashHalfWidth() == boss.getBbWidth() * .5,
+              "The native telegraph uses the shared footprint and remaining travel");
+        }
         shot(client, "boss-phase-" + (warning + 1) + "-minimal-particles");
         if (++warning < 5) {
           phase = 10;

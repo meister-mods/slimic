@@ -40,6 +40,8 @@ public final class AimlessColony extends Monster {
     }
   }
 
+  public static final double DASH_SPEED = .65;
+
   private static final EntityDataAccessor<Integer> PATTERN =
       SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.INT);
   private static final EntityDataAccessor<Integer> TIMER =
@@ -50,12 +52,13 @@ public final class AimlessColony extends Monster {
       SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.BOOLEAN);
   private static final EntityDataAccessor<BlockPos> AIM =
       SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.BLOCK_POS);
+  private static final EntityDataAccessor<org.joml.Vector3f> DASH_DIRECTION =
+      SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.VECTOR3);
   private final ServerBossEvent bossBar =
       new ServerBossEvent(
           getDisplayName(), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.PROGRESS);
   private UUID siteId, encounter;
   private int actionDelay = 60, splitDelay = 60, rallyDelay = 300, exposureDelay, exposedTicks;
-  private Vec3 dash = Vec3.ZERO;
   private int attackCycle;
   private Pattern followUp = Pattern.IDLE;
   private final Set<UUID> hit = new HashSet<>();
@@ -89,6 +92,7 @@ public final class AimlessColony extends Monster {
     entityData.define(COHESION, 100);
     entityData.define(EXPOSED, false);
     entityData.define(AIM, BlockPos.ZERO);
+    entityData.define(DASH_DIRECTION, new org.joml.Vector3f(0, 0, 1));
   }
 
   @Override
@@ -114,6 +118,32 @@ public final class AimlessColony extends Monster {
 
   public BlockPos aim() {
     return entityData.get(AIM);
+  }
+
+  /**
+   * Movement and its warning use the same frozen direction, even after a shove or target change.
+   */
+  public Vec3 dashDirection() {
+    var direction = entityData.get(DASH_DIRECTION);
+    return new Vec3(direction.x(), 0, direction.z()).normalize();
+  }
+
+  public double dashHalfWidth() {
+    return getBbWidth() * .5;
+  }
+
+  public double dashRemainingDistance() {
+    return DASH_SPEED
+        * (pattern() == Pattern.DASH
+            ? Pattern.DASHING.warning
+            : pattern() == Pattern.DASHING ? patternTicks() : 0);
+  }
+
+  private boolean inDashFootprint(Vec3 point) {
+    Vec3 offset = point.subtract(position()), direction = dashDirection();
+    double forward = offset.x * direction.x + offset.z * direction.z;
+    double side = offset.x * direction.z - offset.z * direction.x;
+    return Math.abs(forward) <= dashHalfWidth() && Math.abs(side) <= dashHalfWidth();
   }
 
   public UUID siteId() {
@@ -171,14 +201,25 @@ public final class AimlessColony extends Monster {
     bossBar.removePlayer(player);
   }
 
+  private boolean canUseAttackTarget() {
+    LivingEntity target = getTarget();
+    return target != null
+        && target.level() == level()
+        && validTarget(target)
+        && distanceToSqr(target) <= 36 * 36;
+  }
+
   private void begin(Pattern pattern) {
     entityData.set(PATTERN, pattern.ordinal());
     entityData.set(TIMER, pattern.warning);
     navigation.stop();
     hit.clear();
     if (getTarget() != null) entityData.set(AIM, getTarget().blockPosition());
-    Vec3 direction = Vec3.atCenterOf(aim()).subtract(position()).multiply(1, 0, 1);
-    dash = direction.lengthSqr() < .01 ? new Vec3(0, 0, 1) : direction.normalize();
+    if (pattern == Pattern.DASH || pattern == Pattern.DASHING) {
+      Vec3 direction = Vec3.atCenterOf(aim()).subtract(position()).multiply(1, 0, 1);
+      direction = direction.lengthSqr() < .01 ? new Vec3(0, 0, 1) : direction.normalize();
+      entityData.set(DASH_DIRECTION, direction.toVector3f());
+    }
     playSound(
         pattern == Pattern.RALLY ? SoundEvents.BEACON_POWER_SELECT : SoundEvents.SLIME_SQUISH,
         1.5F,
@@ -257,7 +298,10 @@ public final class AimlessColony extends Monster {
       patternStep(server, site);
       return;
     }
-    if (getTarget() == null) return;
+    if (!canUseAttackTarget()) {
+      setTarget(null);
+      return;
+    }
     if (tickCount % 10 == 0) navigation.moveTo(getTarget(), .8);
     if (--actionDelay > 0) return;
     if (site.cohesion.count() > 0
@@ -289,8 +333,9 @@ public final class AimlessColony extends Monster {
     entityData.set(TIMER, Math.max(0, ticks - 1));
     navigation.stop();
     if (pattern == Pattern.DASHING) {
-      if (safeStep(position().add(dash.scale(.65))))
-        setDeltaMovement(dash.x * .65, getDeltaMovement().y, dash.z * .65);
+      Vec3 dash = dashDirection();
+      if (safeStep(position().add(dash.scale(DASH_SPEED))))
+        setDeltaMovement(dash.x * DASH_SPEED, getDeltaMovement().y, dash.z * DASH_SPEED);
       else entityData.set(TIMER, 0);
       strike(1.2, 1, true);
     } else {
@@ -323,7 +368,7 @@ public final class AimlessColony extends Monster {
       case RALLY -> absorb(server, site);
       default -> {}
     }
-    if (followUp != Pattern.IDLE && getTarget() != null && validTarget(getTarget())) {
+    if (followUp != Pattern.IDLE && canUseAttackTarget()) {
       Pattern next = followUp;
       followUp = Pattern.IDLE;
       begin(next);
@@ -364,7 +409,9 @@ public final class AimlessColony extends Monster {
         level()
             .getEntitiesOfClass(
                 LivingEntity.class, getBoundingBox().inflate(range, 1, range), this::validTarget)) {
-      if (!contact && target.distanceToSqr(this) > range * range
+      if ((contact
+              ? !inDashFootprint(target.position())
+              : target.distanceToSqr(this) > range * range)
           || hit.contains(target.getUUID())
           || !hasLineOfSight(target)) continue;
       hit.add(target.getUUID());
@@ -553,5 +600,6 @@ public final class AimlessColony extends Monster {
     exposedTicks = Math.max(0, Math.min(100, tag.getInt("ExposedTicks")));
     entityData.set(PATTERN, 0);
     entityData.set(TIMER, 0);
+    entityData.set(DASH_DIRECTION, new org.joml.Vector3f(0, 0, 1));
   }
 }

@@ -4,6 +4,19 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-10-23
+
+### Fixed
+
+- Revalidate a boss target's dimension and distance before starting or chaining attacks, preventing follow-ups at a stale teleported position. Already announced crossing attacks keep their marked position.
+- Match the Aimless Colony's charge warning to its directional collision area and keep its locked heading synchronized when the body is pushed or the target moves.
+- Compact obsolete colony bag spans after explicit sorting so reduced Capacity does not leave empty pages between the two members' cargo. Ordinary transfers retain stable slot indices.
+- Correct boss phase boundaries, configuration reload behavior and locked bag slot descriptions in the English and Korean documentation.
+
+### Changed
+
+- Network protocol 24 requires matching clients and servers for synchronized charge headings; existing companion data remains compatible.
+
 ## [0.5.2] - 2026-10-23
 
 ### Changed

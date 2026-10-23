@@ -51,6 +51,162 @@ public final class ColonyPatternGameTests {
   }
 
   @GameTest(template = "empty", batch = "colony_patterns", timeoutTicks = 200)
+  public static void dashCannotDamageTargetsWhollyOutsideItsWarningLane(GameTestHelper h)
+      throws Exception {
+    for (var forward :
+        java.util.List.of(
+            new net.minecraft.world.phys.Vec3(0, 0, 1),
+            new net.minecraft.world.phys.Vec3(1, 0, 0),
+            new net.minecraft.world.phys.Vec3(1, 0, 1).normalize())) {
+      var f = new Fixture(h);
+      var side = new net.minecraft.world.phys.Vec3(-forward.z, 0, forward.x);
+      var aim = f.target(h, 7.5 + forward.x * 5, 7.5 + forward.z * 5);
+      var outside = f.target(h, 7.5 + side.x * 2.5, 7.5 + side.z * 2.5);
+      var inside = f.target(h, 7.5 + side.x, 7.5 + side.z);
+      f.boss.setTarget(aim);
+      begin(f.boss, AimlessColony.Pattern.DASH);
+      step(f, AimlessColony.Pattern.DASH.warning);
+      step(f, 1);
+      h.assertTrue(
+          outside.getHealth() == outside.getMaxHealth(),
+          "A whole target outside the marked lane stays safe for cardinal and diagonal charges");
+      h.assertTrue(
+          inside.getHealth() < inside.getMaxHealth(),
+          "A target in the body's marked footprint is still hit");
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "colony_patterns", timeoutTicks = 200)
+  public static void dashDirectionSurvivesShovesTargetChangesAndNativeDataPackets(GameTestHelper h)
+      throws Exception {
+    var f = new Fixture(h);
+    f.boss.setTarget(f.target(h, 12.5, 12.5));
+    begin(f.boss, AimlessColony.Pattern.DASH);
+    var direction = f.boss.dashDirection();
+    var replica = ModEntities.AIMLESS_COLONY.get().create(h.getLevel());
+    var buffer = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+    try {
+      new net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket(
+              f.boss.getId(), f.boss.getEntityData().getNonDefaultValues())
+          .write(buffer);
+      var decoded = new net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket(buffer);
+      replica.getEntityData().assignValues(decoded.packedItems());
+    } finally {
+      buffer.release();
+    }
+    h.assertTrue(
+        replica.dashDirection().distanceToSqr(direction) < 1E-12,
+        "A native late-tracking data packet preserves the exact charge direction");
+    f.boss.moveTo(f.area.point(9.5, 101, 7.5));
+    f.boss.setTarget(f.target(h, 2.5, 7.5));
+    step(f, AimlessColony.Pattern.DASH.warning);
+    step(f, 1);
+    var movement = f.boss.getDeltaMovement().multiply(1, 0, 1);
+    h.assertTrue(
+        f.boss.dashDirection().distanceToSqr(direction) < 1E-12
+            && movement.normalize().distanceToSqr(direction) < 1E-12,
+        "A shove and new target cannot redirect either the charge or its warning");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "colony_patterns", timeoutTicks = 200)
+  public static void dashWarningIncludesBothBodyEndsAndTracksRemainingTravel(GameTestHelper h)
+      throws Exception {
+    var f = new Fixture(h);
+    f.boss.setTarget(f.target(h, 7.5, 13.5));
+    var rear = f.target(h, 7.5, 6.0);
+    var beyondRear = f.target(h, 7.5, 5.5);
+    var front = f.target(h, 7.5, 9.0);
+    var beyondFront = f.target(h, 7.5, 9.5);
+    begin(f.boss, AimlessColony.Pattern.DASH);
+    h.assertTrue(
+        Math.abs(f.boss.dashRemainingDistance() - 7.8) < 1E-9,
+        "Warning covers the complete twelve-step travel");
+    step(f, AimlessColony.Pattern.DASH.warning);
+    step(f, 1);
+    h.assertTrue(
+        rear.getHealth() < rear.getMaxHealth()
+            && front.getHealth() < front.getMaxHealth()
+            && beyondRear.getHealth() == beyondRear.getMaxHealth()
+            && beyondFront.getHealth() == beyondFront.getMaxHealth(),
+        "The rear and front contact limits match the body extent shown by the closed warning");
+    h.assertTrue(
+        Math.abs(f.boss.dashRemainingDistance() - 11 * AimlessColony.DASH_SPEED) < 1E-9,
+        "The moving warning shrinks with the remaining duration");
+    step(f, 11);
+    h.assertTrue(
+        f.boss.dashRemainingDistance() == 0,
+        "Completed charges leave no stale forward warning distance");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "colony_patterns", timeoutTicks = 200)
+  public static void staleDistantOrCrossDimensionTargetsCannotStartOrChainAttacks(GameTestHelper h)
+      throws Exception {
+    for (boolean otherDimension : new boolean[] {false, true}) {
+      var f = new Fixture(h);
+      var original = f.target(h, 7.5, 13.5);
+      f.boss.setTarget(original);
+      begin(f.boss, AimlessColony.Pattern.PULL);
+      var followUp = AimlessColony.class.getDeclaredField("followUp");
+      followUp.setAccessible(true);
+      followUp.set(f.boss, AimlessColony.Pattern.CROSS);
+      if (otherDimension) {
+        var stale =
+            ModEntities.COMBAT_SLIME
+                .get()
+                .create(h.getLevel().getServer().getLevel(net.minecraft.world.level.Level.NETHER));
+        stale.setOwnerUUID(UUID.randomUUID());
+        stale.setTame(true);
+        stale.moveTo(original.position());
+        f.boss.setTarget(stale);
+      } else original.moveTo(f.area.point(107.5, 101, 7.5));
+      step(f, AimlessColony.Pattern.PULL.warning);
+      h.assertTrue(
+          f.boss.pattern() == AimlessColony.Pattern.IDLE,
+          "A distant or cross-dimension reference cannot create an unannounced follow-up");
+      var data = AssemblySites.get(h.getLevel());
+      var site = data.register(h.getLevel(), f.boss.blockPosition());
+      h.assertTrue(site != null && data.awaken(h.getLevel(), site), "Native encounter reserved");
+      site.state = AssemblySites.State.ACTIVE;
+      f.boss.setUUID(site.boss);
+      f.boss.bind(site);
+      f.boss.tickCount = 1;
+      var delay = AimlessColony.class.getDeclaredField("actionDelay");
+      delay.setAccessible(true);
+      delay.setInt(f.boss, 0);
+      var choose = AimlessColony.class.getDeclaredMethod("customServerAiStep");
+      choose.setAccessible(true);
+      choose.invoke(f.boss);
+      h.assertTrue(
+          f.boss.pattern() == AimlessColony.Pattern.IDLE && f.boss.getTarget() == null,
+          "Idle attack selection also rejects and clears the stale target");
+      data.reset(h.getLevel(), site);
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "colony_patterns", timeoutTicks = 200)
+  public static void committedCrossingStillFinishesAtItsOriginalMarkAfterTargetLeaves(
+      GameTestHelper h) throws Exception {
+    var f = new Fixture(h);
+    var original = f.target(h, 7.5, 7.5);
+    var lane = f.target(h, 12.5, 7.5);
+    f.boss.setTarget(original);
+    begin(f.boss, AimlessColony.Pattern.CROSS);
+    var marked = f.boss.aim();
+    original.moveTo(f.area.point(107.5, 101, 7.5));
+    step(f, AimlessColony.Pattern.CROSS.warning);
+    h.assertTrue(
+        f.boss.aim().equals(marked)
+            && lane.getHealth() < lane.getMaxHealth()
+            && original.getHealth() == original.getMaxHealth(),
+        "An already announced crossing stays at its mark rather than following a teleport");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "colony_patterns", timeoutTicks = 200)
   public static void ringLeavesCenterSafeAndOnlyDamagesAfterTheFullWarning(GameTestHelper h)
       throws Exception {
     var f = new Fixture(h);

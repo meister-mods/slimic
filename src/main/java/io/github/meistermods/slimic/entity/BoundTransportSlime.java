@@ -24,7 +24,10 @@ public final class BoundTransportSlime extends TransportSlime implements BoundCo
         slots * 2,
         () -> members == null ? java.util.List.of() : members.bags(),
         () -> members == null ? java.util.List.of() : members.spans(),
-        () -> bagRevision++);
+        () -> bagRevision++,
+        () -> {
+          if (members != null) members.compactBagSpans();
+        });
   }
 
   @Override

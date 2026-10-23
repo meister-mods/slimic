@@ -38,6 +38,11 @@ public final class ColonyMembers {
     return spans;
   }
 
+  /** A completed explicit sort may retire empty spans; ordinary transfers keep stable indices. */
+  void compactBagSpans() {
+    if (ready()) spans = bags().stream().map(SlimeBag::storageSlots).toList();
+  }
+
   public BagSlime trainingMember() {
     return members.get(0);
   }

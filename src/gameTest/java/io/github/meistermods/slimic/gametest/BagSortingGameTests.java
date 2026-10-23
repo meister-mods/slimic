@@ -211,6 +211,141 @@ public final class BagSortingGameTests {
     h.succeed();
   }
 
+  @GameTest(template = "empty", batch = "bag_sorting")
+  public static void explicitSortingCompactsRetiredColonySpansWithoutChangingVitals(
+      GameTestHelper h) {
+    for (var type :
+        List.of(ModEntities.BOUND_COMBAT_SLIME.get(), ModEntities.BOUND_TRANSPORT_SLIME.get())) {
+      var owner = h.makeMockSurvivalPlayer();
+      var colony = (io.github.meistermods.slimic.entity.BagSlime) type.create(h.getLevel());
+      colony.tame(owner);
+      ColonyTestFixtures.appearance(colony);
+      var members = ((io.github.meistermods.slimic.entity.BoundColony) colony).members();
+      var first = members.records().get(0);
+      var second = members.records().get(1);
+      SlimeStat.CAPACITY.tune(first, 128);
+      first.getBag().setStackInSlot(100, new ItemStack(Items.DIAMOND));
+      first.getBag().setStackInSlot(101, new ItemStack(Items.EMERALD));
+      second.getBag().setStackInSlot(0, new ItemStack(Items.COAL));
+      members.project();
+      SlimeStat.CAPACITY.tune(colony, 4);
+      colony.setHealth(11.5F);
+      float stamina = colony.getStamina();
+      owner.moveTo(colony.position());
+      var menu = TestMenus.create(1, owner.getInventory(), colony);
+      var before = cargo(colony.getBag());
+      h.assertTrue(menu.bagPages() > 1, "Shrunken member retains overflow spans before sorting");
+      h.assertTrue(
+          menu.clickMenuButton(owner, SlimeMenu.SORT_BAG), "Sort completes through management");
+      h.assertTrue(
+          colony.getBag().occupiedSlots().equals(List.of(0, 1, 2))
+              && colony.getBag().storageSlots() == 4
+              && menu.bagPages() == 1
+              && colony.getHealth() == 11.5F
+              && colony.getStamina() == stamina,
+          "Explicit sorting retires empty span pages without healing or changing stamina");
+      var restored = (io.github.meistermods.slimic.entity.BagSlime) type.create(h.getLevel());
+      restored.load(colony.saveWithoutId(new CompoundTag()));
+      h.assertTrue(
+          before.equals(cargo(restored.getBag()))
+              && restored.getBag().storageSlots() == 4
+              && restored.getHealth() == 11.5F,
+          "Compacted spans and exact cargo persist through native save/load");
+    }
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "bag_sorting")
+  public static void simulatedColonySortDoesNotMoveLiveMemberCargoOrSpans(GameTestHelper h) {
+    var colony = ModEntities.BOUND_COMBAT_SLIME.get().create(h.getLevel());
+    ColonyTestFixtures.appearance(colony);
+    var first = colony.members().records().get(0);
+    SlimeStat.CAPACITY.tune(first, 128);
+    first.getBag().setStackInSlot(100, new ItemStack(Items.DIAMOND));
+    colony.members().records().get(1).getBag().setStackInSlot(0, new ItemStack(Items.COAL));
+    colony.members().project();
+    SlimeStat.CAPACITY.tune(colony, 2);
+    var before = colony.members().save();
+    var simulated = colony.getBag().copyForSimulation();
+    h.assertTrue(
+        simulated.sortContents() && simulated.storageSlots() == 2,
+        "Simulation has its own compacted member spans");
+    h.assertTrue(
+        before.equals(colony.members().save()) && colony.getBag().storageSlots() == 102,
+        "Simulation changes neither live cargo nor its frozen spans");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "bag_sorting")
+  public static void sortingRetainsNativeForgeCapabilitiesAndSeparatesDifferentCharge(
+      GameTestHelper h) {
+    java.util.function.Consumer<net.minecraftforge.event.AttachCapabilitiesEvent<ItemStack>>
+        listener =
+            event -> {
+              if (event.getObject().is(Items.DIAMOND))
+                event.addCapability(
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                        "slimic_tests", "bag_charge"),
+                    new Charge());
+            };
+    net.minecraftforge.common.MinecraftForge.EVENT_BUS.addGenericListener(
+        ItemStack.class, listener);
+    try {
+      var bag = new SlimeBag(27, () -> 27, () -> {});
+      for (int i = 0; i < 3; i++) {
+        var stack = new ItemStack(Items.DIAMOND, i == 0 ? 10 : i == 1 ? 20 : 5);
+        stack
+            .getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY)
+            .orElseThrow(() -> new IllegalStateException("Test energy capability missing"))
+            .receiveEnergy(i < 2 ? 7 : 11, false);
+        bag.setStackInSlot(i * 5 + 3, stack);
+      }
+      var before = cargo(bag);
+      h.assertTrue(bag.sortContents(), "Forge capability-bearing cargo sorts normally");
+      h.assertTrue(
+          before.equals(cargo(bag)) && bag.occupiedSlots().size() == 2,
+          "Equal capability states merge; different charge remains separate with exact serialized"
+              + " data");
+      var reloaded = new SlimeBag(27, () -> 27, () -> {});
+      reloaded.deserializeNBT(bag.serializeNBT());
+      h.assertTrue(
+          before.equals(cargo(reloaded)), "Capabilities survive sorted native bag persistence");
+    } finally {
+      net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(listener);
+    }
+    h.succeed();
+  }
+
+  private static final class Charge
+      implements net.minecraftforge.common.capabilities.ICapabilitySerializable<CompoundTag> {
+    private net.minecraftforge.energy.EnergyStorage storage =
+        new net.minecraftforge.energy.EnergyStorage(100);
+    private final net.minecraftforge.common.util.LazyOptional<
+            net.minecraftforge.energy.IEnergyStorage>
+        capability = net.minecraftforge.common.util.LazyOptional.of(() -> storage);
+
+    @Override
+    public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(
+        net.minecraftforge.common.capabilities.Capability<T> cap,
+        net.minecraft.core.Direction side) {
+      return cap == net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY
+          ? capability.cast()
+          : net.minecraftforge.common.util.LazyOptional.empty();
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+      var tag = new CompoundTag();
+      tag.putInt("Charge", storage.getEnergyStored());
+      return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+      storage = new net.minecraftforge.energy.EnergyStorage(100, 100, 100, tag.getInt("Charge"));
+    }
+  }
+
   private static Map<CompoundTag, Long> cargo(SlimeBag bag) {
     var counts = new HashMap<CompoundTag, Long>();
     for (int slot : bag.occupiedSlots()) {

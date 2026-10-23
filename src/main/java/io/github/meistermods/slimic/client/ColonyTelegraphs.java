@@ -39,18 +39,15 @@ public final class ColonyTelegraphs {
                   : pattern == AimlessColony.Pattern.RING ? 8 : 7;
       Vec3 origin = boss.position().add(0, .12, 0);
       if (pattern == AimlessColony.Pattern.DASH || pattern == AimlessColony.Pattern.DASHING) {
-        Vec3 direction =
-            Vec3.atCenterOf(boss.aim()).subtract(boss.position()).multiply(1, 0, 1).normalize();
-        Vec3 side = new Vec3(-direction.z, 0, direction.x).scale(1.6);
+        Vec3 direction = boss.dashDirection();
+        double halfWidth = boss.dashHalfWidth();
+        Vec3 side = new Vec3(-direction.z, 0, direction.x).scale(halfWidth);
+        Vec3 rear = origin.subtract(direction.scale(halfWidth));
+        Vec3 front = origin.add(direction.scale(boss.dashRemainingDistance() + halfWidth));
         for (int sign : new int[] {-1, 1})
-          line(
-              pose,
-              sink,
-              origin.add(side.scale(sign)),
-              origin.add(direction.scale(10)).add(side.scale(sign)),
-              1,
-              .65F,
-              .15F);
+          line(pose, sink, rear.add(side.scale(sign)), front.add(side.scale(sign)), 1, .65F, .15F);
+        line(pose, sink, rear.subtract(side), rear.add(side), 1, .65F, .15F);
+        line(pose, sink, front.subtract(side), front.add(side), 1, .65F, .15F);
       } else if (pattern == AimlessColony.Pattern.CROSS) {
         Vec3 center = Vec3.atBottomCenterOf(boss.aim()).add(0, .12, 0);
         for (int axis = 0; axis < 2; axis++)
