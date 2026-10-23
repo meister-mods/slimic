@@ -474,7 +474,9 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
               value,
               stat == SlimeStat.MOVEMENT_SPEED
                   ? "%.3f"
-                  : stat == SlimeStat.WORK_SPEED || stat == SlimeStat.REACH ? "%.2f" : "%.0f");
+                  : stat == SlimeStat.WORK_SPEED || stat == SlimeStat.REACH
+                      ? "%.2f"
+                      : value == Math.rint(value) ? "%.0f" : "%.2f");
       graphics.drawString(font, formatted, 158 - font.width(formatted), y, 0xff9de080, false);
     }
     drawVital(

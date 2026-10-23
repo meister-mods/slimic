@@ -4,6 +4,12 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-23
+
+### Fixed
+
+- Show fractional management stats, including bonded attack and defense, without rounding them to whole numbers.
+
 ## [0.5.0] - 2026-10-23
 
 ### Added
