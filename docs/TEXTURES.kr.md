@@ -76,13 +76,13 @@ JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientS
 
 ## 월드 자재
 
-The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/assets/slimic/textures/block/world)의 불투명한 **32×32** 자재 텍스처 8종과 애니메이션 차원문 스트립 1종을 사용합니다. 돌, 벽돌, 타일, 흙, 눅눅한 잔디, 미사, 응고된 점액, 대리석과 차원문 표면입니다. 픽셀 아트 원본을 최근접 보간으로 축소했으며, 차원문은 32×32 프레임 16장을 세로로 이은 **32×512** 이미지이며 알파를 보존합니다. `.png.mcmeta`는 3틱마다 다음 프레임으로 이동하고 프레임 사이를 보간하므로 이미지와 함께 유지하세요. 눅눅한 잔디는 전용 윗면·흙에 Minecraft의 불규칙한 잔디 옆면 오버레이를 겹칩니다.
+The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/assets/slimic/textures/block/world)의 불투명한 **16×16** 자재 텍스처 8종과 애니메이션 차원문 스트립 1종을 사용합니다. 돌, 벽돌, 타일, 흙, 눅눅한 잔디, 미사, 응고된 점액, 대리석과 차원문 표면입니다. 픽셀 아트 원본을 최근접 보간으로 축소했으며, 차원문은 16×16 프레임 16장을 세로로 이은 **16×256** 이미지이며 알파를 보존합니다. `.png.mcmeta`는 3틱마다 다음 프레임으로 이동하고 프레임 사이를 보간하므로 이미지와 함께 유지하세요. 눅눅한 잔디는 전용 윗면·흙에 Minecraft의 불규칙한 잔디 옆면 오버레이를 겹칩니다.
 
 `models/block/world`의 블록 모델은 이 텍스처 및 참조하는 Minecraft 표면과 색상 인덱스 0을 조합합니다. `SlimicWorldClient`가 목록에 정의된 색상을 블록과 아이템에 적용합니다. 계단·반 블록·담장, 잘라내기 식물, 반투명 유리와 차원문은 JSON에서 Forge 렌더 유형을 지정합니다. 리소스 팩으로 충돌 범위나 월드 생성 규칙을 바꾸지 않고 표면을 교체할 수 있습니다.
 
 ## 슬라임 상자
 
-`textures/block/slime_chest.png`는 바닐라 단일 상자의 **64×64 UV 아틀라스** 배치를 따릅니다. 월드와 아이템 모델의 본체·뚜껑·걸쇠가 같은 파일을 공유합니다. 내부와 사용하지 않는 투명 영역을 유지하세요. `slime_chest_particle.png`는 파괴 입자의 표면입니다.
+`textures/block/slime_chest.png`는 바닐라 단일 상자의 **64×64 UV 아틀라스** 배치를 따릅니다. 월드와 아이템 모델의 본체·뚜껑·걸쇠가 같은 파일을 공유합니다. 여러 면을 한 장에 배치하며 표면 1/16블록당 텍셀 1개의 바닐라 밀도를 유지합니다. 내부와 사용하지 않는 투명 영역을 유지하세요. `slime_chest_particle.png`는 파괴 입자의 표면입니다.
 
 고대 명령 인장은 `assets/slimic/textures/item/ancient_command_seal.png`의 투명한 16×16 전용 텍스처를 사용합니다. 모서리를 깎은 금색 인장에 어두운 외곽선과 왼쪽 위의 밝은 테두리, 큼직한 보라색 나선 문양을 적용합니다. 모델은 한 레이어를 사용합니다. 적대 슬라임 생성 알은 바닐라 색상 적용 모델을 사용합니다.
 
