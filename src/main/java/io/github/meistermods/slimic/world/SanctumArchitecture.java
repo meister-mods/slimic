@@ -22,7 +22,7 @@ final class SanctumArchitecture {
   private final Rotation rotation;
   private final int turn, minX, maxX, minZ, maxZ, minY, maxY;
   private final IntUnaryOperator floor;
-  private final boolean furnished;
+  private final boolean furnished, expanded;
   private final Map<BlockPos, BlockState> plan = new LinkedHashMap<>();
 
   SanctumArchitecture(
@@ -31,12 +31,13 @@ final class SanctumArchitecture {
       int zone,
       BoundingBox clip,
       IntUnaryOperator floor,
-      boolean furnished) {
+      int architectureVersion) {
     this.anchor = anchor;
     this.turn = turn;
     rotation = Rotation.values()[turn];
     this.floor = floor;
-    this.furnished = furnished;
+    furnished = architectureVersion >= 2;
+    expanded = architectureVersion >= 3;
     var a =
         FallenSanctumPiece.position(
             BlockPos.ZERO, -turn, clip.minX() - anchor.getX(), 0, clip.minZ() - anchor.getZ());
@@ -598,6 +599,69 @@ final class SanctumArchitecture {
     }
   }
 
+  private void roomsAndCrossings() {
+    // Separate record rooms and stores retain two doorways each, so patrols cannot trap a visitor
+    // in a dead end. Their ceiling is the existing upper gallery, not a second disconnected floor.
+    for (int side : new int[] {-1, 1}) {
+      int inner = side * 13;
+      stone(inner, 0, 4, inner, 6, 20);
+      for (int z : new int[] {7, 15}) {
+        air(inner, 0, z, inner, 3, z + 2);
+        fill(inner, 4, z, inner, 4, z + 2, material("chiseled_slime_marble"));
+        put(
+            inner,
+            3,
+            z,
+            stairs("slime_marble_stairs", Direction.SOUTH).setValue(StairBlock.HALF, Half.TOP));
+        put(
+            inner,
+            3,
+            z + 2,
+            stairs("slime_marble_stairs", Direction.NORTH).setValue(StairBlock.HALF, Half.TOP));
+      }
+      int a = side < 0 ? -18 : 14, b = side < 0 ? -14 : 18;
+      for (int z : new int[] {4, 11, 20}) {
+        stone(a, 0, z, b, 6, z);
+        air(side < 0 ? -17 : 15, 0, z, side < 0 ? -15 : 17, 3, z);
+      }
+      // The old side posterns join a covered service passage with a clear three-wide lane.
+      fill(
+          side < 0 ? -24 : 21, 5, -7, side < 0 ? -21 : 24, 5, 25, material("slime_infused_planks"));
+      for (int z : new int[] {-7, 1, 9, 17, 25}) {
+        stone(side * 24, 0, z, side * 24, 4, z);
+        put(side * 24, 4, z, material("chiseled_slimic_stone_bricks"));
+        put(side * 23, 4, z, material("gel_lantern"));
+      }
+      put(side * 17, 0, 18, material(side < 0 ? "stone_tablet" : "tool_rack"));
+      put(side * 18, 0, 19, material(side < 0 ? "cracked_stone_tablet" : "broken_workbench"));
+      put(side * 17, 0, 5, material(side < 0 ? "relic_shard_pile" : "supply_urn"));
+    }
+    // Two bridges turn the long upper balconies into a circuit, with views into the hall below.
+    for (int z : new int[] {6, 24}) {
+      fill(-15, 7, z - 1, 15, 7, z + 1, material("slime_infused_planks"));
+      for (int edge : new int[] {z - 2, z + 2}) {
+        fill(-14, 7, edge, 14, 7, edge, material("ancient_foundation_bricks"));
+        fill(-14, 8, edge, 14, 8, edge, material("slimic_stone_bricks_slab"));
+      }
+      for (int x : new int[] {-10, -5, 5, 10}) {
+        put(
+            x,
+            6,
+            z - 1,
+            stairs("slimic_stone_bricks_stairs", Direction.SOUTH)
+                .setValue(StairBlock.HALF, Half.TOP));
+        put(
+            x,
+            6,
+            z + 1,
+            stairs("slimic_stone_bricks_stairs", Direction.NORTH)
+                .setValue(StairBlock.HALF, Half.TOP));
+      }
+      // Existing gallery rails must open at both bridge entrances.
+      air(-14, 8, z - 1, 14, 10, z + 1);
+    }
+  }
+
   boolean generate(WorldGenLevel world, TagKey<Block> terrain) {
     foundation();
     approach();
@@ -614,6 +678,7 @@ final class SanctumArchitecture {
       wardDetails();
       furnishings();
     }
+    if (expanded) roomsAndCrossings();
     // The original route and its floor profile remain continuous across all five saved pieces.
     for (int z = minZ; z <= maxZ; z++)
       air(-2, floor.applyAsInt(z), z, 2, floor.applyAsInt(z) + 3, z);

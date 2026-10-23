@@ -47,6 +47,13 @@ public final class BoundCombatSlime extends CombatSlime implements BoundColony {
         : super.getItemBySlot(slot);
   }
 
+  /** The representative's armor covers both bodies without moving either member's equipment. */
+  public ItemStack sharedArmor() {
+    return !level().isClientSide && members != null && members.ready()
+        ? members.equipment(EquipmentSlot.CHEST)
+        : super.getItemBySlot(EquipmentSlot.CHEST);
+  }
+
   @Override
   public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
     if (!level().isClientSide && members != null && members.ready())

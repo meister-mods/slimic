@@ -46,7 +46,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   public static final int FILTERS = 18, TARGET_PAGE = 19;
   public static final int FIRE_SIGNAL = 28, ROAM = 29, DIRECTION = 50, ACTIVE = 51;
   public static final int FOLLOW = 20, WAIT = 21, WORK = 22;
-  public static final int PREVIOUS_PAGE = 23, NEXT_PAGE = 24;
+  public static final int PREVIOUS_PAGE = 23, NEXT_PAGE = 24, SORT_BAG = 30;
   public static final int DELAY_DOWN = 25, DELAY_UP = 26, RIDE = 27;
   public static final int POINTS = 9,
       ACTIVITY = 10,
@@ -426,6 +426,13 @@ public final class SlimeMenu extends AbstractContainerMenu {
       int next = signaling.getDelayMinutes() + (button == DELAY_UP ? 1 : -1);
       if (next < 1 || next > 60) return false;
       signaling.setDelayMinutes(next);
+      return true;
+    }
+    if (button == SORT_BAG) {
+      if (!isBagVisible() || !(slime instanceof BagSlime carrier)) return false;
+      if (!carrier.getBag().sortContents()) return false;
+      bagPage = 0;
+      broadcastChanges();
       return true;
     }
     if (button == PREVIOUS_PAGE || button == NEXT_PAGE) {

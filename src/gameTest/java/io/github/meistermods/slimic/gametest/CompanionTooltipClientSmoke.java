@@ -21,7 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 /** Localized native tooltips for fresh and stored companions, both fonts, and optional JEI. */
 public final class CompanionTooltipClientSmoke {
-  private static final List<String> LANGUAGES = List.of("en_us", "ko_kr", "fr_fr");
+  private static final List<String> LANGUAGES = List.of("en_us", "ko_kr", "fr_fr", "en_us");
   private static final List<Map<String, Object>> report = new ArrayList<>();
   private static final List<ItemStack> samples = new ArrayList<>();
   private static int phase, language, mode, index, ticks, checks;
@@ -106,6 +106,45 @@ public final class CompanionTooltipClientSmoke {
       throw new IllegalStateException("Tooltip mutated companion data");
   }
 
+  private static void verifyAncestry(Minecraft client) {
+    var item =
+        new ItemStack(
+            io.github.meistermods.slimic.registry.ModItems.NEXT_GENERATION_MINING_SLIME.get());
+    var ancestry = new CompoundTag();
+    ancestry.putString("NormalName", "Old mining name");
+    ancestry.putString("AncientName", "Old ancient name");
+    ancestry.putString("Family", "mining");
+    var forge = new CompoundTag();
+    forge.put("NextGenAncestry", ancestry);
+    var data = new CompoundTag();
+    data.put("ForgeData", forge);
+    item.getOrCreateTag().put("SlimeData", data);
+    var normal = Component.translatable("item.slimic.mining_slime");
+    var ancient = Component.literal("Custom XXX");
+    for (int scenario = 0; scenario < 3; scenario++) {
+      if (scenario == 1) {
+        ancestry.putString("NormalNameComponent", Component.Serializer.toJson(normal));
+        ancestry.putString("AncientNameComponent", Component.Serializer.toJson(ancient));
+      } else if (scenario == 2) {
+        ancestry.putString("NormalNameComponent", "{broken json");
+        ancestry.putString("AncientNameComponent", "null");
+      }
+      var before = item.save(new CompoundTag());
+      var expected =
+          scenario == 1
+              ? Component.translatable("item.slimic.synthesis.ancestry", normal, ancient)
+                  .getString()
+              : Component.translatable(
+                      "item.slimic.synthesis.ancestry", "Old mining name", "Old ancient name")
+                  .getString();
+      var lines = item.getTooltipLines(client.player, TooltipFlag.NORMAL);
+      if (lines.stream().map(Component::getString).noneMatch(expected::equals)
+          || !item.save(new CompoundTag()).equals(before))
+        throw new IllegalStateException(
+            "Ancestry name localization/fallback changed data: " + scenario);
+    }
+  }
+
   public static boolean tick(Minecraft client) {
     if (client.getOverlay() != null) return false;
     if (++ticks > 900)
@@ -131,6 +170,12 @@ public final class CompanionTooltipClientSmoke {
     if (phase == 1) {
       if (!reload.isDone()) return false;
       reload.join();
+      if (ModList.get().isLoaded("jei")) {
+        if (!JeiClientSmoke.companionInformationReady()
+            || !JeiClientSmoke.restorationInformationReady()) return false;
+        JeiClientSmoke.localizedInformationReady();
+      }
+      verifyAncestry(client);
       prepare(client);
       index = 0;
       client.setScreen(new Sample());
@@ -180,7 +225,7 @@ public final class CompanionTooltipClientSmoke {
       Files.writeString(
           directory.resolve("tooltips.json"),
           new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(report));
-      if (checks != ModEntities.individualCompanionTypes().size() * 2 * 2 * 3 * 2)
+      if (checks != ModEntities.individualCompanionTypes().size() * 2 * 2 * LANGUAGES.size() * 2)
         throw new IllegalStateException(
             "Expected every profession, stored state, font, language, and tooltip mode");
       System.out.println(

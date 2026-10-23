@@ -224,20 +224,66 @@ public final class InventoryLayoutClientSmoke {
       verify(screen);
       shot(c, cases().get(index).name);
       screens++;
-      if (++index < cases().size()) {
-        prepare(c);
-        return false;
-      }
-      if (language++ == 0) {
-        index = 0;
-        phase = 0;
+      if (!cases().get(index).targets) {
+        var button =
+            screen.children().stream()
+                .filter(
+                    child ->
+                        child instanceof net.minecraft.client.gui.components.Button widget
+                            && widget.visible
+                            && widget
+                                .getMessage()
+                                .getString()
+                                .equals(
+                                    Component.translatable("screen.slimic.sort_bag").getString()))
+                .map(child -> (net.minecraft.client.gui.components.Button) child)
+                .findFirst()
+                .orElseThrow();
+        if (!button.active
+            || !screen.mouseClicked(
+                button.getX() + button.getWidth() / 2D, button.getY() + button.getHeight() / 2D, 0))
+          throw new IllegalStateException("Native Sort click was not accepted");
+        phase = 5;
         ticks = 0;
         return false;
       }
-      checkGold(c);
-      c.setScreen(new Icons());
-      phase = 4;
-      ticks = 0;
+      nextCase(c);
+      return false;
+    }
+    if (phase == 5) {
+      if (!(c.screen instanceof SlimeScreen screen)
+          || ticks < 10
+          || screen.getMenu().data(SlimeMenu.BAG_PAGE) != 0) return false;
+      int total = java.util.stream.IntStream.range(0, pet.getCapacity()).map(i -> i % 64 + 1).sum();
+      int equipment = screen.getMenu().slots.size() - 36 - ((BagSlime) pet).getBag().baseSlots();
+      if (screen.getMenu().getSlot(equipment).getItem().getCount() != Math.min(64, total))
+        throw new IllegalStateException("Sorted first stack did not synchronize");
+      shot(c, cases().get(index).name + "-sorted");
+      task =
+          c.getSingleplayerServer()
+              .submit(
+                  () -> {
+                    var bag = ((BagSlime) pet).getBag();
+                    int actual =
+                        bag.occupiedSlots().stream()
+                            .mapToInt(i -> bag.getStackInSlot(i).getCount())
+                            .sum();
+                    var expected =
+                        java.util.stream.IntStream.range(0, (total + 63) / 64).boxed().toList();
+                    if (actual != total || !bag.occupiedSlots().equals(expected))
+                      throw new IllegalStateException("Native Sort packet lost cargo or left gaps");
+                    var owner =
+                        c.getSingleplayerServer().getPlayerList().getPlayer(c.player.getUUID());
+                    if (owner.getInventory().getItem(9).getCount() != 12
+                        || owner.getInventory().getItem(17).getCount() != 34
+                        || owner.getInventory().getItem(27).getCount() != 56)
+                      throw new IllegalStateException("Bag sorting changed player inventory");
+                  });
+      phase = 6;
+      return false;
+    }
+    if (phase == 6) {
+      nextCase(c);
       return false;
     }
     if (ticks < 10) return false;
@@ -246,8 +292,25 @@ public final class InventoryLayoutClientSmoke {
         "SLIMIC INVENTORY LAYOUT CLIENT SMOKE PASSED: "
             + screens
             + " EN/KR synchronized screens, partial/expanded pages, locked cells, filters, widget"
-            + " bounds, full-UV flat gold badge");
+            + " bounds, native Sort clicks and cargo synchronization, full-UV flat gold badge");
     return true;
+  }
+
+  private static void nextCase(Minecraft c) {
+    if (++index < cases().size()) {
+      prepare(c);
+      return;
+    }
+    if (language++ == 0) {
+      index = 0;
+      phase = 0;
+      ticks = 0;
+      return;
+    }
+    checkGold(c);
+    c.setScreen(new Icons());
+    phase = 4;
+    ticks = 0;
   }
 
   private static void checkGold(Minecraft c) {

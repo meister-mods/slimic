@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "We followed converging gel trails to a chamber beneath new terrain in The Slimic. Lamps mark a stair mouth. $(l:world/kingdom_maps)Sanctum$() and mine supplies may hold an Assembly Clue. Use it here to mark a candidate without loading terrain."
+      "text": "Abandoned Assembly Chambers generate beneath new terrain in The Slimic. Lamps mark the entrance stair. $(l:world/kingdom_maps)Sanctum$() and mine supplies may contain an Assembly Clue. Use it in this dimension to mark a nearby candidate chamber."
     },
     {
       "type": "patchouli:text",

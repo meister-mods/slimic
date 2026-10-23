@@ -45,6 +45,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
   private final Map<Integer, Button> orders = new java.util.HashMap<>();
   private Button previousPage;
   private Button nextPage;
+  private Button sortBag;
   private String pageCounter;
   private Button directionButton;
   private Button lightButton;
@@ -69,7 +70,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     tunnelSize = null;
     applyTunnelSize = tunnelPageButton = null;
     tunnelSizeInitialized = false;
-    previousPage = nextPage = null;
+    previousPage = nextPage = sortBag = null;
     pageCounter = null;
     lightButton = null;
     policies.clear();
@@ -257,6 +258,14 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     if (menu.slime() instanceof TransportSlime)
       addOrder(SlimeMenu.WORK, menu.slime() instanceof WarehouseSlime ? "store" : "transport", 308);
     if (menu.slime() instanceof BagSlime) {
+      sortBag =
+          addRenderableWidget(
+              Button.builder(
+                      Component.translatable("screen.slimic.sort_bag"),
+                      button -> sendButton(SlimeMenu.SORT_BAG))
+                  .bounds(leftPos + 254, topPos + SlimeMenu.INVENTORY_LABEL_Y - 3, 32, 12)
+                  .tooltip(Tooltip.create(Component.translatable("screen.slimic.sort_bag.tooltip")))
+                  .build());
       previousPage =
           addRenderableWidget(
               Button.builder(Component.literal("<"), button -> sendButton(SlimeMenu.PREVIOUS_PAGE))
@@ -376,6 +385,10 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     if (directionButton != null && menu.slime() instanceof TunnelSlime tunnel)
       directionButton.setMessage(
           Component.translatable("direction.slimic." + tunnel.getTunnelDirection().getName()));
+    if (sortBag != null) {
+      sortBag.visible = menu.isBagVisible();
+      sortBag.active = menu.isSynchronized();
+    }
     if (previousPage != null) {
       previousPage.visible = nextPage.visible = menu.isBagVisible() && menu.bagPages() > 1;
       previousPage.active = menu.data(SlimeMenu.BAG_PAGE) > 0;

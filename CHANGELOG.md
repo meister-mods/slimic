@@ -4,6 +4,23 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-23
+
+### Changed
+
+- Add annular shockwaves, fixed crossing attacks and fully telegraphed follow-up sequences to the Aimless Colony while retaining encounter health, cohesion and rewards.
+- Expand newly generated Fallen Sanctums with side record rooms, armories, covered passages and two upper-gallery bridges; saved architecture and site progress remain intact.
+- Network protocol 23 requires matching 0.5.2 clients and servers for the added combat patterns and bag sorting action. Companion schema 1 and existing saved-world identities remain compatible.
+- Add a management Sort action that merges matching cargo and organizes all bag pages, including both real member bags in a colony. Equipment and player inventories remain separate.
+- Display the active armor on both Combat Slime Colony bodies, including material, leather dye and enchantment glint, while preserving the other member's stored equipment.
+- Craft a Slime Tuner with a slimeball directly above an iron ingot in a shaped vertical recipe.
+- Separate neutral guidebook instructions from slime-authored records. Rewrite ruin, royal, sanctum and assembly records as short recollections from the slimes’ perspective in English and Korean, preserving their clues and references to XXX.
+
+### Fixed
+
+- Keep JEI item information translated after changing the game language and localize the archive byline on sanctum records.
+- Preserve translated parent names in newly synthesized companion items while retaining custom names and older saved text.
+
 ## [0.5.1] - 2026-10-23
 
 ### Fixed

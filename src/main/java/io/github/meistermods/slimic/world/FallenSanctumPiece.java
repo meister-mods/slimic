@@ -31,7 +31,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     this.rotation = Math.floorMod(rotation, 4);
     this.zone = zone;
     this.approachOffset = zone == 0 ? Math.max(-7, Math.min(7, approachOffset)) : 0;
-    architectureVersion = 2;
+    architectureVersion = 3;
   }
 
   public FallenSanctumPiece(StructurePieceSerializationContext context, CompoundTag tag) {
@@ -40,7 +40,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     rotation = Math.floorMod(tag.getInt("RoyalRotation"), 4);
     zone = Math.max(0, Math.min(4, tag.getInt("Zone")));
     approachOffset = zone == 0 ? Math.max(-7, Math.min(7, tag.getInt("ApproachOffset"))) : 0;
-    architectureVersion = Math.max(0, Math.min(2, tag.getInt("ArchitectureVersion")));
+    architectureVersion = Math.max(0, Math.min(3, tag.getInt("ArchitectureVersion")));
   }
 
   public static BlockPos position(BlockPos anchor, int rotation, int x, int y, int z) {
@@ -120,7 +120,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     int start = -40 + zone * 16;
     if (architectureVersion > 0) {
       if (!new SanctumArchitecture(
-              anchor, rotation, zone, clip, this::floorLevel, architectureVersion >= 2)
+              anchor, rotation, zone, clip, this::floorLevel, architectureVersion)
           .generate(world, TERRAIN)) return;
     } else {
       // A partial upgrade may bring old chunks next to new ones. Preserve any foreign block entity

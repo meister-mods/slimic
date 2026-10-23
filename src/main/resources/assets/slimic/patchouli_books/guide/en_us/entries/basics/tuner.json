@@ -7,11 +7,11 @@
     {
       "type": "patchouli:crafting",
       "recipe": "slimic:slime_tuner",
-      "text": "Combine one iron ingot and one slimeball without a fixed shape."
+      "text": "Place one slimeball directly above one iron ingot in a vertical recipe. The recipe also fits the 2×2 inventory crafting grid."
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click within normal interaction reach to manage names, stats, orders, gear, and cargo. Stay within eight blocks and keep the tuner in either hand while using management. Shift-right-click recovers the companion, including when holding a tuner or scanner."
+      "text": "Right-click your companion to manage names, stats, orders, gear and cargo. Stay within eight blocks with the tuner in either hand. Sort merges matching stacks and organizes all bag pages without moving equipment. Shift-right-click recovers the companion, even with a tuner or scanner."
     },
     {
       "type": "patchouli:text",

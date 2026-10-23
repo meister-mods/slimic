@@ -120,6 +120,13 @@ public final class ColonyBag extends SlimeBag {
   }
 
   @Override
+  public boolean sortContents() {
+    if (!sortMemberBags(members.get())) return false;
+    changed.run();
+    return true;
+  }
+
+  @Override
   public SlimeBag copyForSimulation() {
     List<SlimeBag> copies = members.get().stream().map(SlimeBag::copyForSimulation).toList();
     List<Integer> widths = List.copyOf(spans.get());

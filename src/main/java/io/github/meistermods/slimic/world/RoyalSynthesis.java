@@ -155,6 +155,12 @@ public final class RoyalSynthesis {
       ancestry.putUUID("AncientParent", ancient);
       ancestry.putString("NormalName", inputs.get(0).getHoverName().getString());
       ancestry.putString("AncientName", inputs.get(1).getHoverName().getString());
+      ancestry.putString(
+          "NormalNameComponent",
+          net.minecraft.network.chat.Component.Serializer.toJson(inputs.get(0).getHoverName()));
+      ancestry.putString(
+          "AncientNameComponent",
+          net.minecraft.network.chat.Component.Serializer.toJson(inputs.get(1).getHoverName()));
       ancestry.putString("Family", family.id());
       ancestry.putLong("SynthesisTime", level.getGameTime());
       if (station.origin() != null) ancestry.putUUID("OriginSanctum", station.origin());

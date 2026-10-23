@@ -129,6 +129,26 @@ public final class ColonyClientSmoke {
     for (var type : List.of(ModEntities.BOUND_TRANSPORT_SLIME, ModEntities.BOUND_COMBAT_SLIME)) {
       var model = (FriendlySlime) type.get().create(client.level);
       ColonyTestFixtures.appearance(model);
+      if (model instanceof BoundCombatSlime combat) {
+        var before = combat.members().save().copy();
+        var shared = combat.sharedArmor().copy();
+        require(!shared.isEmpty(), "Representative armor exists");
+        combat.setRenderingSecondMember(true);
+        require(
+            !ItemStack.isSameItemSameTags(shared, combat.getItemBySlot(EquipmentSlot.CHEST)),
+            "Second original armor stays distinct");
+        require(
+            ItemStack.matches(shared, combat.sharedArmor()),
+            "Second body shares first armor appearance");
+        require(
+            combat.getMainHandItem().is(Items.GOLDEN_SWORD),
+            "Second hand equipment remains distinct");
+        combat.setRenderingSecondMember(false);
+        require(
+            ItemStack.matches(shared, combat.sharedArmor())
+                && before.equals(combat.members().save()),
+            "Rendering does not move or duplicate owned armor");
+      }
       model.setNoAi(true);
       portraits.add(model);
       portraitNames.add(type.getId().getPath());
@@ -411,11 +431,13 @@ public final class ColonyClientSmoke {
                         method.setAccessible(true);
                         method.invoke(
                             boss,
-                            warning == 0
-                                ? AimlessColony.Pattern.SLAM
-                                : warning == 1
-                                    ? AimlessColony.Pattern.RALLY
-                                    : AimlessColony.Pattern.DASH);
+                            switch (warning) {
+                              case 0 -> AimlessColony.Pattern.SLAM;
+                              case 1 -> AimlessColony.Pattern.RALLY;
+                              case 2 -> AimlessColony.Pattern.DASH;
+                              case 3 -> AimlessColony.Pattern.RING;
+                              default -> AimlessColony.Pattern.CROSS;
+                            });
                       } catch (ReflectiveOperationException e) {
                         throw new IllegalStateException(e);
                       }
@@ -429,11 +451,11 @@ public final class ColonyClientSmoke {
         var boss = (AimlessColony) client.level.getEntity(bossEntity);
         require(
             boss != null
-                && boss.phase() == warning + 1
+                && boss.phase() == Math.min(3, warning + 1)
                 && boss.pattern() != AimlessColony.Pattern.IDLE,
             "Real phase and telegraph synchronization with minimal particles");
         shot(client, "boss-phase-" + (warning + 1) + "-minimal-particles");
-        if (++warning < 3) {
+        if (++warning < 5) {
           phase = 10;
           ticks = 0;
           return false;
@@ -513,7 +535,7 @@ public final class ColonyClientSmoke {
         if (!resourcePacks(client)) return false;
         System.out.println(
             "SLIMIC COLONY CLIENT SMOKE PASSED: native bind/deploy/capture/unbind packets for both"
-                + " professions, exact cargo/vitals/weapon wear, EN/KR gallery and three"
+                + " professions, exact cargo/vitals/weapon wear, EN/KR gallery and five"
                 + " minimal-particle boss warnings");
         finished = true;
         return true;

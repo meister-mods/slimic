@@ -27,10 +27,12 @@ The default body has **320 health**, **six armor**, and **eight attack damage**.
 | Health | Phase | Behavior |
 | --- | --- | --- |
 | 100–70% | Cohesion | Charges, slams and small fragment releases. |
-| 70–35% | Division | Larger releases and periodic attempts to reabsorb survivors. |
-| Below 35% | Frenzy | Gathering pulls, shockwaves, the last rally and vulnerable intervals. |
+| 70–35% | Division | Larger releases, periodic reabsorption and annular shockwaves; charges can lead into a ring attack. |
+| Below 35% | Frenzy | Gathering pulls, crossed attack lanes, the last rally and vulnerable intervals; a pull can lead into a crossing attack. |
 
 A charge locks its direction after a one-second warning and can hit each victim only once during that charge. A slam marks a ring for 1.2 seconds before impact. A weak horizontal pull precedes a short shockwave; movement checks avoid unsupported or fluid-filled landing paths. The last rally warns for 2.5 seconds before attempting reabsorption. Ground outlines, sounds and action-bar messages supplement particles.
+
+From Division onward, an annular shockwave warns for **1.5 seconds** before striking between **3.5 and eight blocks** from the body. Move into the safe center or outside the outer ring. During Frenzy, a crossing attack locks onto the target’s position at the start of its **1.6-second warning**. Leave its two crossing lanes, each extending eight blocks from the center, by moving diagonally away. A charge can lead into a ring, and a gathering pull can lead into a crossing. Every follow-up receives its full warning; there is no immediate, unannounced second impact. These attacks respect line of sight and damage each target at most once per impact.
 
 The body targets survival players and owned combat companions, respects alliances and native damage cancellation, and does not break blocks. No companion profession is required. The body remains damageable throughout the fight; killing every fragment is never an invulnerability requirement.
 

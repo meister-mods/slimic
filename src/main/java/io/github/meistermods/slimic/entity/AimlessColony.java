@@ -30,7 +30,9 @@ public final class AimlessColony extends Monster {
     PULL(24),
     SPLIT(20),
     RALLY(50),
-    DASHING(12);
+    DASHING(12),
+    RING(30),
+    CROSS(32);
     public final int warning;
 
     Pattern(int warning) {
@@ -54,6 +56,8 @@ public final class AimlessColony extends Monster {
   private UUID siteId, encounter;
   private int actionDelay = 60, splitDelay = 60, rallyDelay = 300, exposureDelay, exposedTicks;
   private Vec3 dash = Vec3.ZERO;
+  private int attackCycle;
+  private Pattern followUp = Pattern.IDLE;
   private final Set<UUID> hit = new HashSet<>();
 
   public AimlessColony(EntityType<? extends AimlessColony> type, Level level) {
@@ -267,7 +271,15 @@ public final class AimlessColony extends Monster {
       begin(Pattern.SPLIT);
       splitDelay = 300;
     } else if (phase() == 3 && random.nextInt(3) == 0) begin(Pattern.PULL);
+    else if (phase() == 3 && attackCycle % 3 == 2) begin(Pattern.CROSS);
+    else if (phase() >= 2 && attackCycle % 2 == 1 && distanceToSqr(getTarget()) < 100)
+      begin(Pattern.RING);
     else begin(distanceToSqr(getTarget()) < 49 ? Pattern.SLAM : Pattern.DASH);
+    followUp =
+        phase() >= 2 && pattern() == Pattern.DASH
+            ? Pattern.RING
+            : phase() == 3 && pattern() == Pattern.PULL ? Pattern.CROSS : Pattern.IDLE;
+    attackCycle = (attackCycle + 1) % 6;
     actionDelay = phase() == 3 ? 55 : 85;
   }
 
@@ -305,10 +317,19 @@ public final class AimlessColony extends Monster {
       }
       case SLAM -> strike(5.5, 1, false);
       case PULL -> strike(4, .8, false);
+      case RING -> shapedStrike(false);
+      case CROSS -> shapedStrike(true);
       case SPLIT -> split(server, site);
       case RALLY -> absorb(server, site);
       default -> {}
     }
+    if (followUp != Pattern.IDLE && getTarget() != null && validTarget(getTarget())) {
+      Pattern next = followUp;
+      followUp = Pattern.IDLE;
+      begin(next);
+      return;
+    }
+    followUp = Pattern.IDLE;
     entityData.set(PATTERN, Pattern.IDLE.ordinal());
     entityData.set(TIMER, 0);
   }
@@ -355,6 +376,28 @@ public final class AimlessColony extends Monster {
         if (safeStep(target.position().add(direction.scale(4))))
           target.push(direction.x, .03, direction.z);
       }
+    }
+  }
+
+  /** Annular waves leave the center safe; crossed lanes leave all four diagonal sectors open. */
+  private void shapedStrike(boolean cross) {
+    Vec3 center = cross ? Vec3.atBottomCenterOf(aim()) : position();
+    for (LivingEntity target :
+        level()
+            .getEntitiesOfClass(
+                LivingEntity.class,
+                new net.minecraft.world.phys.AABB(center, center).inflate(8, 2, 8),
+                this::validTarget)) {
+      double dx = Math.abs(target.getX() - center.x), dz = Math.abs(target.getZ() - center.z);
+      double distance = dx * dx + dz * dz;
+      boolean inside =
+          cross
+              ? dx <= 8 && dz <= 8 && Math.min(dx, dz) <= 1.25
+              : distance >= 3.5 * 3.5 && distance <= 64;
+      if (!inside || hit.contains(target.getUUID()) || !hasLineOfSight(target)) continue;
+      hit.add(target.getUUID());
+      target.hurt(
+          damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE));
     }
   }
 
@@ -487,6 +530,7 @@ public final class AimlessColony extends Monster {
     super.addAdditionalSaveData(tag);
     if (siteId != null) tag.putUUID("AssemblySite", siteId);
     if (encounter != null) tag.putUUID("AssemblyEncounter", encounter);
+    tag.putInt("AttackCycle", attackCycle);
     tag.putInt("ActionDelay", actionDelay);
     tag.putInt("SplitDelay", splitDelay);
     tag.putInt("RallyDelay", rallyDelay);
@@ -500,6 +544,8 @@ public final class AimlessColony extends Monster {
     super.readAdditionalSaveData(tag);
     siteId = tag.hasUUID("AssemblySite") ? tag.getUUID("AssemblySite") : null;
     encounter = tag.hasUUID("AssemblyEncounter") ? tag.getUUID("AssemblyEncounter") : null;
+    attackCycle = Math.floorMod(tag.getInt("AttackCycle"), 6);
+    followUp = Pattern.IDLE;
     actionDelay = Math.max(20, tag.getInt("ActionDelay"));
     splitDelay = Math.max(20, tag.getInt("SplitDelay"));
     rallyDelay = Math.max(20, tag.getInt("RallyDelay"));
