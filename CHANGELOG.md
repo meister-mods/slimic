@@ -4,6 +4,22 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.9] - 2026-10-23
+
+### Fixed
+
+- Restore Next-Generation Tunnel bag/status labels without the unrelated base-companion specialization message or overlapping size controls.
+- Preserve the pending Precision Prospecting destination after a temporary movement timeout, allowing an already excavated descent to resume.
+- Recover older stranded precision saves when their missing next step is an adjacent, already cleared, safe shaft level.
+- Skip ore-free loaded chunk sections using their block palettes instead of repeatedly inspecting an entire empty survey cube. Limit each tick to 32 section checks and 1,024 candidate blocks without loading terrain.
+- Use consistent Wait, Follow, and stamina-recovery status text across professions in English and Korean. Update precision behavior in both documents and the in-game guide.
+
+### Validation
+
+- All 29 final native precision/core checks pass without optional mods; all seven stability checks pass with JEI and Patchouli. The expanded integration profile passes 193 cases. Coverage includes empty surveys, stalled and legacy descents, unsafe-recovery refusal, default-speed work, exhaustion recovery, section boundaries, live palettes, and ore filters.
+- Native English/Korean clients verify Tunnel bag and size labels, all 30 shared status keys, actual synthesis/size packets, both JEI families, all 27 companion appearances, armor, and accessory resource replacement/restoration. Google Java Format, bilingual resources, packaged assets, and the Java 17 build pass verification.
+- All 67 guide entries and 217 pages render in English, Korean, and fallback with both default and uniform fonts, with no text-layout problems.
+
 ## [0.4.8] - 2026-10-22
 
 ### Fixed

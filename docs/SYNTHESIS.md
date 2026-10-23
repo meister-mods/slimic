@@ -62,6 +62,8 @@ Prospecting never acquires new chunks. Ordinary trained detection ranges apply; 
 
 The Scanner previews the **two-by-two shaft**, detection window, and immediate planned face. Previewing alone neither surveys terrain nor reveals hidden ore positions.
 
+Ore-free chunk sections are skipped using their block palettes; loaded sections containing selected ores are inspected incrementally. Temporary movement timeouts retain the pending excavation step and retry it, including when the previous floor has already been opened. Stamina exhaustion still pauses work until recovery. Legacy saves with an adjacent, cleared, safe next shaft level can resume their existing work order.
+
 Health, maximum stamina, and capacity use ordinary Mining Slime values; **the ancient miner’s half-stamina-cost passive is inherited in every policy**. Transport and Warehouse Slimes supply tools and unload cargo where they can reach; Signaling Slimes report blocked work. Recovery, revival, portals, and redeployment preserve ordinary companion data and return it to Wait. Old Selective Ore saves retain their policy and traits but migrate to Wait; explicitly resume work before the newly destructive excavation begins.
 
 ## Configurable tunnel bores
