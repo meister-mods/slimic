@@ -14,15 +14,13 @@ Bound maps retain their destination through containers, travel, logout, and serv
 
 ## Generation and the five zones
 
-Sanctums generate in **new damp-plains chunks**, using five connected native structure pieces across an approximately 64×80 footprint. Placement defaults to **96-chunk spacing and 32-chunk separation** in the structure-set datapack. These are placement parameters, not guaranteed travel distances. Unsuitable wet or steep terrain is rejected. Existing full chunks without this structure and foreign construction or block entities prevent placement; old chunks are not regenerated. Nearby small-ruin and collapsed-mine generation reserves the sanctum footprint.
+Sanctums generate in **new damp-plains chunks**, using five connected native structure pieces across a **112×112-block** footprint. This is about 2.45 times the ground area of the earlier 64×80 castle. Placement defaults to **96-chunk spacing and 32-chunk separation** in the structure-set datapack; these are placement parameters, not guaranteed travel distances. Wet or steep terrain is rejected. Existing full chunks without this structure, foreign construction and block entities prevent placement. Nearby small ruins and collapsed mines reserve the expanded footprint.
 
-New sanctums have a dry defensive ditch and timber bridge, a twin gatehouse, crenellated curtain walls, four octagonal watchtowers, and a tall slate-roofed keep. The ward contains a damaged barracks and dry well. Inside the keep are command furniture, upper galleries, hanging lamps, and the lower vault of the deep chamber. Broad stairs on either side of the ward reach the wall walks; tower ladders and separate keep stairs give access to upper floors. Collapse damage is concentrated in the eastern wall, rear watchtower, and laboratory roof.
+The fortress has a twin gatehouse, an inner dry defensive ditch crossed by a timber bridge, crenellated curtain walls and eight watchtowers. A tall slate-roofed keep and two side wings provide **three main storeys**, with a lower vault containing the final watch. Divided courtyards, barracks, record rooms, armories, galleries and laboratory furniture distinguish the spaces. Roofs, parapets and towers form a layered silhouette rather than one enclosing box.
 
-New sanctums generated from 0.4.4 also feature faded royal standards, projecting gate trim, entrance arches, and a diamond-shaped glazed keep window. Barracks tables and supplies, a timber well windlass, watchtower furniture, upper record shelves, chain-hung chandeliers, and laboratory benches reveal the rooms’ former uses. Keep posterns open onto the inner curtain lanes and the rear tower ground rooms. Standards, shelves, and furniture are scenery rather than relays or reward containers.
+The route deliberately turns away from the old straight central passage. Staggered gates, partitions, side rooms, bridges and multiple stairs create branches, loops and dead ends. A room visible across a hall may require approaching from another floor. Upper galleries and the wings offer alternate circuits; furnishings and banners help identify places already visited. Keep track of stairs and openings, and use the survey compass as a bearing rather than a turn-by-turn route. Blocks remain breakable and the ruins can still be remodeled.
 
-**Sanctums newly generated from 0.5.2** also contain side record rooms and armories with arched doorways, plus covered service passages. Two transverse bridges connect the upper galleries into a circuit above the central hall. Existing stairs reach this upper route, while posterns lead to the inner curtain lanes. The central expedition route remains open at ground level.
-
-The castle layout applies to **sanctums newly generated from 0.4.3**, furnishings to **new sanctums from 0.4.4**, and the expanded rooms and routes to **new sanctums from 0.5.2**. Existing sanctums and previously saved unfinished structure pieces retain their original appearance. Map destinations, relay sockets, encounters, chests, and claimed reward records remain unchanged. A five-block-wide central expedition route connects all five zones.
+This larger layout applies to **sanctums newly generated from 0.5.5**. Existing castles and previously saved unfinished structure pieces retain their earlier geometry, including their original routes. Bound map destinations, relay sockets, encounters, chests and claimed reward records remain intact. The four inner chambers keep their existing progression:
 
 | Zone | Landmarks and route | Watch and progress |
 | --- | --- | --- |
@@ -30,7 +28,7 @@ The castle layout applies to **sanctums newly generated from 0.4.3**, furnishing
 | Courtyard | Ruined defenses and a mineralized miner | Shield remnants; courtyard relay remembers seal A |
 | Command gallery | Damaged command furniture and the central opening | Ancient Command Slime and escorts; gallery relay remembers seal B and grants a survey compass |
 | Synthesis laboratory | Gel crystals, basins, and a damaged synthesis apparatus | Shield watch; records explain synthesis |
-| Deep core | Descending central passage and the final command relay | Elite guardian; royal core after both chamber memories and this watch are cleared |
+| Deep core | East-side descent and the final command relay | Elite guardian; royal core after both chamber memories and this watch are cleared |
 
 Use the **gold-topped Sanctum Relay** in each chamber after clearing its watch. Seals A and B become persistent site memories as well as physical keepsakes. Losing, storing, or discarding the keepsakes does not block progression. The laboratory's ruined apparatus cannot perform synthesis; craft a new [Royal Synthesis Station](SYNTHESIS.md).
 

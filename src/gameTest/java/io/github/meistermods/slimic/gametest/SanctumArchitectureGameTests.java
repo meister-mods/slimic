@@ -19,6 +19,7 @@ import net.minecraftforge.gametest.*;
 
 @GameTestHolder(Slimic.MOD_ID)
 @PrefixGameTestTemplate(false)
+/** Regression fixtures for saved version-three castles and their older layouts. */
 public final class SanctumArchitectureGameTests {
   private static int next;
 
@@ -32,9 +33,19 @@ public final class SanctumArchitectureGameTests {
 
   private static FallenSanctumPiece piece(
       ServerLevel level, BlockPos anchor, int rotation, int zone) {
-    var piece = new FallenSanctumPiece(anchor, rotation, zone);
     var context = StructurePieceSerializationContext.fromLevel(level);
-    return new FallenSanctumPiece(context, piece.createTag(context));
+    var tag = new FallenSanctumPiece(anchor, rotation, zone).createTag(context);
+    tag.putInt("ArchitectureVersion", 3);
+    int start = -40 + zone * 16;
+    var a = at(anchor, rotation, -32, -16, start);
+    var b = at(anchor, rotation, 31, 28, start + 15);
+    tag.putIntArray(
+        "BB",
+        new int[] {
+          Math.min(a.getX(), b.getX()), a.getY(), Math.min(a.getZ(), b.getZ()),
+          Math.max(a.getX(), b.getX()), b.getY(), Math.max(a.getZ(), b.getZ())
+        });
+    return new FallenSanctumPiece(context, tag);
   }
 
   static void generate(ServerLevel level, BlockPos anchor, int rotation, boolean reverse) {
@@ -309,7 +320,7 @@ public final class SanctumArchitectureGameTests {
     var level = h.getLevel();
     var anchor = anchor();
     var context = StructurePieceSerializationContext.fromLevel(level);
-    var tag = new FallenSanctumPiece(anchor, 0, 2).createTag(context);
+    var tag = piece(level, anchor, 0, 2).createTag(context);
     tag.remove("ArchitectureVersion");
     var bounds = tag.getIntArray("BB");
     bounds[4] = anchor.getY() + 15;
@@ -340,7 +351,7 @@ public final class SanctumArchitectureGameTests {
     var context = StructurePieceSerializationContext.fromLevel(level);
     for (int version : new int[] {1, 2, 3}) {
       var anchor = anchor();
-      var tag = new FallenSanctumPiece(anchor, 0, 1).createTag(context);
+      var tag = piece(level, anchor, 0, 1).createTag(context);
       tag.putInt("ArchitectureVersion", version);
       var piece = new FallenSanctumPiece(context, tag);
       piece.postProcess(
@@ -371,13 +382,13 @@ public final class SanctumArchitectureGameTests {
   }
 
   @GameTest(template = "empty", batch = "sanctum_architecture", timeoutTicks = 600)
-  public static void savedVersionTwoKeepsOriginalGalleriesWhileNewPiecesConnectThem(
+  public static void savedVersionTwoKeepsOriginalGalleriesWhileVersionThreeConnectsThem(
       GameTestHelper h) {
     var level = h.getLevel();
     var context = StructurePieceSerializationContext.fromLevel(level);
     for (int version : new int[] {2, 3}) {
       var anchor = anchor();
-      var tag = new FallenSanctumPiece(anchor, 0, 2).createTag(context);
+      var tag = piece(level, anchor, 0, 2).createTag(context);
       tag.putInt("ArchitectureVersion", version);
       var piece = new FallenSanctumPiece(context, tag);
       piece.postProcess(

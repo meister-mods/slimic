@@ -22,7 +22,7 @@ Wild Slimes can spawn on the surface. Frogs inhabit the plains, bats inhabit cav
 
 ## Building materials
 
-The **Slimic Blocks** Creative tab has **54 entries**: 32 independent base blocks, 8 stairs, 8 slabs, and 6 walls. The ordinary Slimic companion tab retains companions and tools. Stone uses pickaxes, soil uses shovels, and infused wood uses axes. Gel Glass needs Silk Touch to drop itself. Slimic Stone normally drops Slimic Cobblestone; smelt it to recover stone.
+The **Slimic Blocks** Creative tab has **54 entries**: 32 independent base blocks, 8 stairs, 8 slabs, and 6 walls. The general Slimic tab groups companions by role and upgrade line, followed by management tools, armor, functional stations, expedition materials, records, and hostile spawn eggs. Building variants are grouped by material, with each base block followed by its stairs, slab, and wall when available. Stone uses pickaxes, soil uses shovels, and infused wood uses axes. Gel Glass needs Silk Touch to drop itself. Slimic Stone normally drops Slimic Cobblestone; smelt it to recover stone.
 
 A stonecutter processes Slimic Stone into the masonry palette. Stairs, slabs, and walls also have matching crafting recipes. Additional recipes include slime-infused native planks, slime clay, hardened gel, luminous gel, dried gel, and smelted silt glass. JEI shows the exact ingredients and outputs. Slimic Soil, Damp Grass Block, and Slime Mud can be tilled into ordinary farmland when the space above is clear; they also support ordinary plants.
 
@@ -63,11 +63,11 @@ A stonecutter processes Slimic Stone into the masonry palette. Stairs, slabs, an
 
 Stairs and slabs: Slimic Stone, Slimic Cobblestone, Slimic Stone Bricks, Mossy Slimic Stone Bricks, Slimic Tiles, Slime Marble, Black Slime Stone, and Slime-Infused Planks. Walls: Slimic Cobblestone, Mossy Slimic Cobblestone, Slimic Stone Bricks, Mossy Slimic Stone Bricks, Slimic Slate Bricks, and Slime Marble Bricks.
 
-The **Slime Restoration Station** (`slimic:command_pedestal`) appears beside the ancient seal in the main Slimic Creative tab. See [core restoration](FORGOTTEN_ORDERS.md#restore-a-remnant) for its materials and procedure.
+The **Slime Restoration Station** (`slimic:command_pedestal`) appears with the other functional stations in the main Slimic Creative tab. See [core restoration](FORGOTTEN_ORDERS.md#restore-a-remnant) for its materials and procedure.
 
 ## Decorations
 
-The separate **Slimic Decorations** Creative tab has **31 entries**. Most solid props face their placer, require a sturdy upper floor face, have matching collision shapes, and support waterlogging. Removing their support drops the prop and preserves contained water. Plants need suitable soil. Lighting follows each block's visible design; the Dormant Beacon is unlit.
+The separate **Slimic Decorations** Creative tab has **31 entries**, ordered as lights and crystals, masonry and markers, workshop remnants and furniture, then plants. Most solid props face their placer, require a sturdy upper floor face, have matching collision shapes, and support waterlogging. Removing their support drops the prop and preserves contained water. Plants need suitable soil. Lighting follows each block's visible design; the Dormant Beacon is unlit.
 
 Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. Use an actual Slime Chest for item storage and companion logistics, and an ordinary crafting table for crafting.
 

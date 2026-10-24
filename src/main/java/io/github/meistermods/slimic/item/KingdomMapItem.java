@@ -39,6 +39,10 @@ public final class KingdomMapItem extends MapItem {
     return assembly ? "SlimicAssemblyMap" : BINDING;
   }
 
+  private String messageKey(String suffix) {
+    return "message.slimic." + (assembly ? "assembly_map_" : "map_") + suffix;
+  }
+
   private boolean isBound(ItemStack stack) {
     return stack.hasTag() && stack.getTag().getCompound(bindingKey()).hasUUID("Site");
   }
@@ -61,21 +65,21 @@ public final class KingdomMapItem extends MapItem {
       double distance = Math.hypot(anchor.getX() - player.getX(), anchor.getZ() - player.getZ());
       player.displayClientMessage(
           Component.translatable(
-              distance < 64 ? "message.slimic.map_arrived" : "message.slimic.map_bound",
+              messageKey(distance < 64 ? "arrived" : "bound"),
               (int) (Math.round(distance / 32) * 32)),
           true);
       return InteractionResultHolder.success(stack);
     }
     UUID nonce = UUID.randomUUID();
     if (SEARCHING.putIfAbsent(player.getUUID(), nonce) != null) {
-      player.displayClientMessage(Component.translatable("message.slimic.map_searching"), true);
+      player.displayClientMessage(Component.translatable(messageKey("searching")), true);
       return InteractionResultHolder.success(stack);
     }
     stack.getOrCreateTag().putUUID("SlimicMapSearch", nonce);
     var level = player.serverLevel();
     var origin = player.blockPosition();
     int radius = SlimicConfig.SANCTUM_SEARCH_RADIUS.get();
-    player.displayClientMessage(Component.translatable("message.slimic.map_searching"), true);
+    player.displayClientMessage(Component.translatable(messageKey("searching")), true);
     CompletableFuture.supplyAsync(
             () -> {
               if (!assembly) return SanctumPlacement.find(level, origin, radius);
@@ -120,14 +124,14 @@ public final class KingdomMapItem extends MapItem {
                         }
                         if (candidate == null || error != null) {
                           player.displayClientMessage(
-                              Component.translatable("message.slimic.map_not_found"), true);
+                              Component.translatable(messageKey("not_found")), true);
                           return;
                         }
                         if (assembly) bindAssembly(current, level, candidate.anchor());
                         else bind(current, level, candidate);
                         player.inventoryMenu.broadcastChanges();
                         player.displayClientMessage(
-                            Component.translatable("message.slimic.map_found"), true);
+                            Component.translatable(messageKey("found")), true);
                       });
             });
     return InteractionResultHolder.consume(stack);

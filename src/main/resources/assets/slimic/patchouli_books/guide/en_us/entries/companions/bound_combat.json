@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "slimic:companion_intro",
-      "text": "Two ordinary $(l:companions/combat)Combat Slimes$() share a temporary body through $(l:world/colony_bonding)Colony Bonding$(). The colony combines their health and uses a modest cooperation attack bonus. First deployment and recovery always select Wait.",
+      "text": "Two ordinary $(l:companions/combat)Combat Slimes$() share a body through $(l:world/colony_bonding)Colony Bonding$(). Health is combined; base Attack is 60% of their combined Attack values. Initial deployment and redeployment after recovery always start in Wait.",
       "title": "Combat Slime Colony"
     },
     {
@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Damage and healing are shared without creating extra life. Activity alternates, but training and tuning use member one. Recover and unbind to restore the two original UUIDs, gear, cargo, growth and remaining energy. Group target settings begin with the first member's filters."
+      "text": "Damage and healing update both health records. Activity alternates between members. Point upgrades use member one; Creative stat edits affect both. Unbinding restores both identities, gear, cargo, growth and remaining stamina. Target settings initially copy member one."
     }
   ],
   "extra_recipe_mappings": {

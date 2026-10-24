@@ -15,11 +15,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "One representative shares one order. Its bag routes cargo into the actual two member bags. Damage and stamina use reduce their records too. Work activity alternates between members; tuning and active combat gear use the first member. Points are never pooled."
+      "text": "One representative follows one order and stores cargo in both bags. Damage and stamina use update both records. Activity alternates between members. Point upgrades and combat gear use member one; Creative stat edits affect both. Their point balances stay separate."
     },
     {
       "type": "patchouli:text",
-      "text": "Recover the colony and insert it alone, then confirm Unbind. Two safe landing spaces are required. The original identities return in Wait with remaining life, energy, gear and cargo. Cancelled spawns keep the colony. Recover a pending result at any bonding station."
+      "text": "Recover the colony and insert it alone, then confirm Unbind. Two safe landing spaces are required. The original identities return in Wait with remaining health, stamina, gear and cargo. Cancelled spawns keep the colony. Recover a pending result at any bonding station."
     }
   ],
   "extra_recipe_mappings": {

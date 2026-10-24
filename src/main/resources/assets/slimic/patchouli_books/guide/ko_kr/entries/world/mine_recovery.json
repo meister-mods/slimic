@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "오버월드로 돌아와 광산 코어를 들고 $(l:world/restoration)슬라임 복구 스테이션$()을 사용하세요. 인벤토리의 파편 1개와 슬라임볼 1개를 소비합니다. 채굴 코어는 $(l:companions/ancient_mining)고대 채굴 슬라임$(), 터널 코어는 $(l:companions/ancient_tunnel)고대 터널 슬라임$(), 폐광 수호 코어는 왕실 근위 슬라임으로 바뀝니다."
+      "text": "오버월드로 돌아와 광산 코어를 들고 $(l:world/restoration)슬라임 복원 스테이션$()을 사용하세요. 인벤토리의 파편 1개와 슬라임볼 1개를 소비합니다. 채굴 코어는 $(l:companions/ancient_mining)고대 채굴 슬라임$(), 터널 코어는 $(l:companions/ancient_tunnel)고대 터널 슬라임$(), 폐광 수호 코어는 왕실 근위 슬라임으로 바뀝니다."
     },
     {
       "type": "patchouli:text",

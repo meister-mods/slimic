@@ -308,7 +308,7 @@ Ordinary right-click rides a saddled companion while holding any item that has n
 | --- | --- | --- |
 | WASD | Steer relative to the rider's view | Fly forward/backward and strafe; forward flight follows view pitch |
 | Space | Jump | Ascend |
-| Left Ctrl | Double-speed sprint | 1.75× flight boost; rebind **Slime Sprint** in Minecraft's controls |
+| Left Ctrl | Double-speed sprint | 1.75× flight boost; rebind **Slime Boost** in Minecraft's controls |
 | No movement input | Stop | Hover |
 | Shift | Dismount | Dismount |
 

@@ -13,7 +13,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 
-/** A rotated sixteen-block-long section of one continuous royal fortress. */
+/** A rotated section of one continuous royal fortress. */
 public final class FallenSanctumPiece extends StructurePiece {
   private static final net.minecraft.tags.TagKey<Block> TERRAIN =
       net.minecraft.tags.TagKey.create(
@@ -31,7 +31,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     this.rotation = Math.floorMod(rotation, 4);
     this.zone = zone;
     this.approachOffset = zone == 0 ? Math.max(-7, Math.min(7, approachOffset)) : 0;
-    architectureVersion = 3;
+    architectureVersion = 4;
   }
 
   public FallenSanctumPiece(StructurePieceSerializationContext context, CompoundTag tag) {
@@ -40,7 +40,7 @@ public final class FallenSanctumPiece extends StructurePiece {
     rotation = Math.floorMod(tag.getInt("RoyalRotation"), 4);
     zone = Math.max(0, Math.min(4, tag.getInt("Zone")));
     approachOffset = zone == 0 ? Math.max(-7, Math.min(7, tag.getInt("ApproachOffset"))) : 0;
-    architectureVersion = Math.max(0, Math.min(3, tag.getInt("ArchitectureVersion")));
+    architectureVersion = Math.max(0, Math.min(4, tag.getInt("ArchitectureVersion")));
   }
 
   public static BlockPos position(BlockPos anchor, int rotation, int x, int y, int z) {
@@ -53,16 +53,27 @@ public final class FallenSanctumPiece extends StructurePiece {
   }
 
   private static BoundingBox box(BlockPos anchor, int rotation, int zone) {
-    int start = -40 + zone * 16;
-    BlockPos a = position(anchor, rotation, -32, -16, start),
-        b = position(anchor, rotation, 31, SanctumArchitecture.HEIGHT, start + 15);
+    int start = zone == 0 ? SanctumLabyrinthArchitecture.MIN_Z : -40 + zone * 16;
+    int end = zone == 4 ? SanctumLabyrinthArchitecture.MAX_Z : -25 + zone * 16;
+    BlockPos a = position(anchor, rotation, SanctumLabyrinthArchitecture.MIN_X, -16, start),
+        b =
+            position(
+                anchor,
+                rotation,
+                SanctumLabyrinthArchitecture.MAX_X,
+                SanctumLabyrinthArchitecture.HEIGHT,
+                end);
     return new BoundingBox(
         Math.min(a.getX(), b.getX()),
         anchor.getY() - 16,
         Math.min(a.getZ(), b.getZ()),
         Math.max(a.getX(), b.getX()),
-        anchor.getY() + SanctumArchitecture.HEIGHT,
+        anchor.getY() + SanctumLabyrinthArchitecture.HEIGHT,
         Math.max(a.getZ(), b.getZ()));
+  }
+
+  SanctumPlacement.Candidate candidate() {
+    return new SanctumPlacement.Candidate(anchor, rotation);
   }
 
   @Override
@@ -94,8 +105,13 @@ public final class FallenSanctumPiece extends StructurePiece {
   }
 
   private int floor(int z) {
-    if (z < -24)
-      return Integer.signum(approachOffset) * Math.max(0, Math.abs(approachOffset) - (z + 40) / 2);
+    if (z < -24) {
+      int progress =
+          architectureVersion >= 4
+              ? Math.max(0, (z - SanctumLabyrinthArchitecture.MIN_Z) / 2)
+              : (z + 40) / 2;
+      return Integer.signum(approachOffset) * Math.max(0, Math.abs(approachOffset) - progress);
+    }
     return z < 20 ? 0 : -Math.min(4, (z - 20) / 2);
   }
 
@@ -118,7 +134,10 @@ public final class FallenSanctumPiece extends StructurePiece {
       ChunkPos chunk,
       BlockPos pivot) {
     int start = -40 + zone * 16;
-    if (architectureVersion > 0) {
+    if (architectureVersion >= 4) {
+      if (!new SanctumLabyrinthArchitecture(anchor, rotation, zone, clip, this::floorLevel)
+          .generate(world, TERRAIN)) return;
+    } else if (architectureVersion > 0) {
       if (!new SanctumArchitecture(
               anchor, rotation, zone, clip, this::floorLevel, architectureVersion)
           .generate(world, TERRAIN)) return;
