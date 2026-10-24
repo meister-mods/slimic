@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Left Ctrl is Slime Sprint and can be rebound. Without elytra, ground sprint doubles hop speed and costs 10 stamina per second. Normal airborne flight costs 2; boosted flight is 1.75× speed and costs 15 per second."
+      "text": "Left Ctrl is Slime Boost and can be rebound. Without elytra, ground sprint doubles hop speed and costs 10 stamina per second. Normal airborne flight costs 2; boosted flight is 1.75× speed and costs 15 per second."
     },
     {
       "type": "patchouli:text",

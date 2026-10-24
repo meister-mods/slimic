@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.*;
@@ -18,10 +20,14 @@ public final class SanctumPlacement {
       ResourceKey.create(Registries.STRUCTURE_SET, SlimicWorld.id("fallen_sanctum"));
   private static final Map<StructureTemplateManager, java.lang.ref.WeakReference<ServerLevel>>
       LEVELS = new ConcurrentHashMap<>();
-  private static final Map<ServerLevel, Map<Long, Set<Long>>> LOADED_SITES =
+  private static final Map<ServerLevel, Map<Long, LoadedSite>> LOADED_SITES =
       new ConcurrentHashMap<>();
 
   public record Candidate(BlockPos anchor, int rotation) {}
+
+  private record LoadedSite(Set<Long> references, Candidate candidate) {}
+
+  private record ExistingSite(boolean generated, Candidate candidate) {}
 
   private SanctumPlacement() {}
 
@@ -52,9 +58,17 @@ public final class SanctumPlacement {
             .get(SlimicWorld.id("fallen_sanctum"));
     var start = structure == null ? null : chunk.getStartForStructure(structure);
     Set<Long> references = new HashSet<>();
-    if (start != null && start.isValid()) references.add(position);
+    Candidate candidate = null;
+    if (start != null && start.isValid()) {
+      references.add(position);
+      for (var piece : start.getPieces())
+        if (piece instanceof FallenSanctumPiece sanctum) {
+          candidate = sanctum.candidate();
+          break;
+        }
+    }
     if (structure != null) references.addAll(chunk.getReferencesForStructure(structure));
-    known.put(position, Set.copyOf(references));
+    known.put(position, new LoadedSite(Set.copyOf(references), candidate));
   }
 
   public static ServerLevel level(StructureTemplateManager manager) {
@@ -78,7 +92,9 @@ public final class SanctumPlacement {
     for (int x = rx - 1; x <= rx + 1; x++)
       for (int z = rz - 1; z <= rz + 1; z++) {
         var start = placement.getPotentialStructureChunk(level.getSeed(), x * spacing, z * spacing);
-        if (Math.abs((long) start.x - chunk.x) <= 4 && Math.abs((long) start.z - chunk.z) <= 4)
+        // The rotated castle can touch chunk +4. Leave one further chunk free of minor ruins
+        // and collapsed mines, which are both confined to their own generating chunks.
+        if (Math.abs((long) start.x - chunk.x) <= 5 && Math.abs((long) start.z - chunk.z) <= 5)
           return true;
       }
     return false;
@@ -87,8 +103,20 @@ public final class SanctumPlacement {
   public static boolean existingTerrainAllows(ServerLevel level, ChunkPos start) {
     int rotation = FallenSanctumStructure.rotation(level.getSeed(), start.toLong());
     var anchor = start.getMiddleBlockPosition(0);
-    var first = FallenSanctumPiece.position(anchor, rotation, -32, 0, -40);
-    var last = FallenSanctumPiece.position(anchor, rotation, 31, 0, 39);
+    var first =
+        FallenSanctumPiece.position(
+            anchor,
+            rotation,
+            SanctumLabyrinthArchitecture.MIN_X,
+            0,
+            SanctumLabyrinthArchitecture.MIN_Z);
+    var last =
+        FallenSanctumPiece.position(
+            anchor,
+            rotation,
+            SanctumLabyrinthArchitecture.MAX_X,
+            0,
+            SanctumLabyrinthArchitecture.MAX_Z);
     for (int x = Math.min(first.getX(), last.getX()) >> 4;
         x <= Math.max(first.getX(), last.getX()) >> 4;
         x++)
@@ -96,9 +124,9 @@ public final class SanctumPlacement {
           z <= Math.max(first.getZ(), last.getZ()) >> 4;
           z++) {
         var position = new ChunkPos(x, z);
-        var references = LOADED_SITES.getOrDefault(level, Map.of()).get(position.toLong());
-        if (references != null) {
-          if (!references.contains(start.toLong())) return false;
+        var loaded = LOADED_SITES.getOrDefault(level, Map.of()).get(position.toLong());
+        if (loaded != null) {
+          if (!loaded.references().contains(start.toLong())) return false;
           continue;
         }
         try {
@@ -123,6 +151,63 @@ public final class SanctumPlacement {
         }
       }
     return true;
+  }
+
+  static boolean withinBorder(ServerLevel level, ChunkPos chunk, int rotation) {
+    var anchor = chunk.getMiddleBlockPosition(0);
+    return level
+            .getWorldBorder()
+            .isWithinBounds(
+                FallenSanctumPiece.position(
+                    anchor,
+                    rotation,
+                    SanctumLabyrinthArchitecture.MIN_X,
+                    0,
+                    SanctumLabyrinthArchitecture.MIN_Z))
+        && level
+            .getWorldBorder()
+            .isWithinBounds(
+                FallenSanctumPiece.position(
+                    anchor,
+                    rotation,
+                    SanctumLabyrinthArchitecture.MAX_X,
+                    0,
+                    SanctumLabyrinthArchitecture.MAX_Z));
+  }
+
+  private static ExistingSite existingSite(ServerLevel level, ChunkPos position) {
+    var loaded = LOADED_SITES.getOrDefault(level, Map.of()).get(position.toLong());
+    if (loaded != null) return new ExistingSite(true, loaded.candidate());
+    try {
+      var data = level.getChunkSource().chunkMap.read(position).join();
+      if (data.isEmpty()) return new ExistingSite(false, null);
+      var tag = data.get();
+      var starts = tag.getCompound("structures").getCompound("starts");
+      var start = starts.getCompound("slimic:fallen_sanctum");
+      if (start.getString("id").equals("slimic:fallen_sanctum")
+          && start.getInt("ChunkX") == position.x
+          && start.getInt("ChunkZ") == position.z)
+        for (var child : start.getList("Children", Tag.TAG_COMPOUND)) {
+          var piece = (CompoundTag) child;
+          var anchorTag = piece.getCompound("Anchor");
+          if (!piece.getString("id").equals("slimic:fallen_sanctum")
+              || !anchorTag.contains("X", Tag.TAG_INT)
+              || !anchorTag.contains("Y", Tag.TAG_INT)
+              || !anchorTag.contains("Z", Tag.TAG_INT)
+              || !piece.contains("RoyalRotation", Tag.TAG_INT)) continue;
+          var anchor = NbtUtils.readBlockPos(anchorTag);
+          if (new ChunkPos(anchor).equals(position))
+            return new ExistingSite(
+                true, new Candidate(anchor, Math.floorMod(piece.getInt("RoyalRotation"), 4)));
+        }
+      return new ExistingSite(
+          starts.contains("slimic:fallen_sanctum", Tag.TAG_COMPOUND)
+              || tag.getString("Status").equals("minecraft:full")
+              || tag.getString("Status").equals("full"),
+          null);
+    } catch (RuntimeException unreadable) {
+      return new ExistingSite(true, null);
+    }
   }
 
   public static Candidate find(ServerLevel level, BlockPos origin, int radius) {
@@ -160,9 +245,18 @@ public final class SanctumPlacement {
     var generator = level.getChunkSource().getGenerator();
     var random = level.getChunkSource().randomState();
     for (var pos : candidates.subList(0, Math.min(128, candidates.size()))) {
+      // A saved start owns its original anchor and site identity. Never re-predict its height
+      // from the current architecture, or reject an older, smaller castle using the new bounds.
+      var existing = existingSite(level, pos);
+      if (existing.generated()) {
+        if (existing.candidate() != null
+            && level.getWorldBorder().isWithinBounds(existing.candidate().anchor()))
+          return existing.candidate();
+        continue;
+      }
       int x = pos.getMiddleBlockX(), z = pos.getMiddleBlockZ();
-      if (!level.getWorldBorder().isWithinBounds(new BlockPos(x - 48, 64, z - 48))
-          || !level.getWorldBorder().isWithinBounds(new BlockPos(x + 48, 64, z + 48))) continue;
+      int rotation = FallenSanctumStructure.rotation(level.getSeed(), pos.toLong());
+      if (!withinBorder(level, pos, rotation)) continue;
       int y = FallenSanctumStructure.floor(generator, random, level, x, z);
       if (y == Integer.MIN_VALUE) continue;
       if (!generator
@@ -171,8 +265,7 @@ public final class SanctumPlacement {
               QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z), random.sampler())
           .is(SlimicWorld.DAMP_PLAINS)) continue;
       if (!existingTerrainAllows(level, pos)) continue;
-      return new Candidate(
-          new BlockPos(x, y, z), FallenSanctumStructure.rotation(level.getSeed(), pos.toLong()));
+      return new Candidate(new BlockPos(x, y, z), rotation);
     }
     return null;
   }

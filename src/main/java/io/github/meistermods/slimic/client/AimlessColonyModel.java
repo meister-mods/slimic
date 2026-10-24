@@ -77,8 +77,8 @@ public final class AimlessColonyModel extends EntityModel<AimlessColony> {
   }
 
   public void renderShell(PoseStack pose, VertexConsumer sink, int light, int overlay) {
-    head.render(pose, sink, light, overlay, 1, 1, 1, .6F);
-    middle.render(pose, sink, light, overlay, 1, 1, 1, .6F);
-    tail.render(pose, sink, light, overlay, 1, 1, 1, .6F);
+    head.render(pose, sink, light, overlay, 1, 1, 1, .85F);
+    middle.render(pose, sink, light, overlay, 1, 1, 1, .85F);
+    tail.render(pose, sink, light, overlay, 1, 1, 1, .85F);
   }
 }

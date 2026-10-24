@@ -1,13 +1,17 @@
 package io.github.meistermods.slimic.client;
 
 import io.github.meistermods.slimic.entity.AbundanceSlime;
+import io.github.meistermods.slimic.entity.AttentionSlime;
 import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
+import io.github.meistermods.slimic.entity.CommandSlime;
+import io.github.meistermods.slimic.entity.EnderSlime;
 import io.github.meistermods.slimic.entity.FarmingSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FishingSlime;
+import io.github.meistermods.slimic.entity.GlowSlime;
 import io.github.meistermods.slimic.entity.GuardianAngelSlime;
 import io.github.meistermods.slimic.entity.HealingSlime;
 import io.github.meistermods.slimic.entity.LoggingSlime;
@@ -22,6 +26,7 @@ import io.github.meistermods.slimic.entity.TunnelSlime;
 import io.github.meistermods.slimic.entity.WarehouseSlime;
 import io.github.meistermods.slimic.menu.SlimeMenu;
 import io.github.meistermods.slimic.network.ModNetwork;
+import io.github.meistermods.slimic.registry.ModEntities;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
@@ -164,23 +169,25 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     addOrder(SlimeMenu.FOLLOW, "follow", SlimeMenu.SLOTS_X);
     addOrder(SlimeMenu.WAIT, "wait", 252);
-    if (menu.slime() instanceof io.github.meistermods.slimic.entity.GlowSlime)
+    if (menu.slime() instanceof GlowSlime)
       lightButton =
           addRenderableWidget(
               Button.builder(
                       Component.translatable("screen.slimic.light"),
                       b -> sendButton(SlimeMenu.ACTIVE))
                   .bounds(leftPos + SlimeMenu.SLOTS_X, topPos + 89, 100, 18)
+                  .tooltip(Tooltip.create(Component.translatable("item.slimic.glow_slime.tooltip")))
                   .build());
-    if (menu.slime() instanceof io.github.meistermods.slimic.entity.CommandSlime)
+    if (menu.slime() instanceof CommandSlime)
       addRenderableWidget(
           Button.builder(
                   Component.translatable("screen.slimic.roster.open"),
                   b -> sendButton(SlimeMenu.ROSTER))
               .bounds(leftPos + SlimeMenu.SLOTS_X, topPos + 89, 150, 18)
+              .tooltip(
+                  Tooltip.create(Component.translatable("item.slimic.commander_slime.tooltip")))
               .build());
-    if (menu.slime() instanceof io.github.meistermods.slimic.entity.AttentionSlime)
-      addOrder(SlimeMenu.ROAM, "roam", 308);
+    if (menu.slime() instanceof AttentionSlime) addOrder(SlimeMenu.ROAM, "roam", 308);
     if (menu.slime() instanceof MeowSlime cat) {
       addOrder(SlimeMenu.ROAM, "roam", 308);
       addRenderableWidget(
@@ -358,8 +365,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
     }
     if (!menu.isSynchronized()) return;
     name.tick();
-    if (lightButton != null
-        && menu.slime() instanceof io.github.meistermods.slimic.entity.GlowSlime glow)
+    if (lightButton != null && menu.slime() instanceof GlowSlime glow)
       lightButton.setMessage(
           Component.translatable("screen.slimic.light_" + (glow.isActive() ? "on" : "off")));
     upgrades.forEach(
@@ -702,7 +708,27 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           275,
           117,
           0xffe5e9e9);
-    } else {
+    } else if (menu.slime() instanceof GlowSlime || menu.slime() instanceof CommandSlime) {
+      graphics.drawWordWrap(
+          font,
+          Component.translatable(
+              menu.slime() instanceof GlowSlime
+                  ? "screen.slimic.glow_help"
+                  : "screen.slimic.command_help"),
+          SlimeMenu.SLOTS_X,
+          112,
+          162,
+          0xffb4c9d1);
+    } else if (menu.slime() instanceof EnderSlime) {
+      graphics.drawWordWrap(
+          font,
+          Component.translatable("screen.slimic.ender_help"),
+          SlimeMenu.SLOTS_X,
+          84,
+          162,
+          0xffb4c9d1);
+    } else if (menu.slime().getType() == ModEntities.FRIENDLY_SLIME.get()
+        || menu.slime() instanceof AttentionSlime) {
       graphics.drawWordWrap(
           font,
           Component.translatable("screen.slimic.specialize"),

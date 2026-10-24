@@ -358,8 +358,8 @@ public final class SanctumGameTests {
             var generator = level.getChunkSource().getGenerator();
             var random = level.getChunkSource().randomState();
             int min = 999, max = -999, wet = 0;
-            for (int dx : new int[] {-40, -20, 0, 20, 40})
-              for (int dz : new int[] {-40, -20, 0, 20, 40}) {
+            for (int dx : new int[] {-56, -28, 0, 28, 56})
+              for (int dz : new int[] {-56, -28, 0, 28, 56}) {
                 int y =
                     generator.getBaseHeight(
                         pos.getMiddleBlockX() + dx,
@@ -415,12 +415,17 @@ public final class SanctumGameTests {
             .registryOrThrow(Registries.STRUCTURE)
             .get(SlimicWorld.id("fallen_sanctum"));
     var chunk = new ChunkPos(candidate.anchor());
-    for (int x = chunk.x - 3; x <= chunk.x + 3; x++)
-      for (int z = chunk.z - 3; z <= chunk.z + 3; z++) level.getChunk(x, z);
     var nativeStart = level.getChunk(chunk.x, chunk.z).getStartForStructure(key);
     h.assertTrue(
         nativeStart != null && nativeStart.isValid() && nativeStart.getPieces().size() == 5,
         "Native five-piece structure start");
+    var bounds = nativeStart.getBoundingBox();
+    for (int x = bounds.minX() >> 4; x <= bounds.maxX() >> 4; x++)
+      for (int z = bounds.minZ() >> 4; z <= bounds.maxZ() >> 4; z++) level.getChunk(x, z);
+    var context =
+        net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext
+            .fromLevel(level);
+    int version = nativeStart.getPieces().get(0).createTag(context).getInt("ArchitectureVersion");
     var corpsePos =
         FallenSanctumPiece.position(candidate.anchor(), candidate.rotation(), -16, 0, -13);
     var corpse = (BrokenSlimeBlockEntity) level.getBlockEntity(corpsePos);
@@ -437,22 +442,15 @@ public final class SanctumGameTests {
           level.getBlockEntity(pos) instanceof SanctumRelayBlockEntity,
           "Zone " + zone + " relay generated at " + pos);
     }
-    for (int z = -40; z < 40; z++) {
-      int floor = ((FallenSanctumPiece) nativeStart.getPieces().get(z < -24 ? 0 : 4)).floorLevel(z);
-      var footing =
-          FallenSanctumPiece.position(candidate.anchor(), candidate.rotation(), 0, floor - 1, z);
-      h.assertTrue(
-          level.getBlockState(footing).isFaceSturdy(level, footing, Direction.UP),
-          "Continuous solid footing across room seam z=" + z);
-      for (int y = floor; y < floor + 3; y++)
-        h.assertTrue(
-            level
-                .getBlockState(
-                    FallenSanctumPiece.position(candidate.anchor(), candidate.rotation(), 0, y, z))
-                .isAir(),
-            "Open route across seam z=" + z);
-    }
-    var entry = FallenSanctumPiece.position(candidate.anchor(), candidate.rotation(), 0, 0, -40);
+    int entryZ = version >= 4 ? -56 : -40;
+    var entrancePiece = (FallenSanctumPiece) nativeStart.getPieces().get(0);
+    var entry =
+        FallenSanctumPiece.position(
+            candidate.anchor(), candidate.rotation(), 0, entrancePiece.floorLevel(entryZ), entryZ);
+    var reachable =
+        SanctumLabyrinthGameTests.walkable(level, candidate.anchor(), candidate.rotation(), entry);
+    SanctumLabyrinthGameTests.assertDevicesReachable(
+        h, level, candidate.anchor(), candidate.rotation(), reachable);
     int surface =
         level
             .getChunkSource()
@@ -464,13 +462,13 @@ public final class SanctumGameTests {
                 level,
                 level.getChunkSource().randomState());
     h.assertTrue(
-        candidate.anchor().getY()
-                + ((FallenSanctumPiece) nativeStart.getPieces().get(0)).floorLevel(-40)
-            == surface,
+        candidate.anchor().getY() + entrancePiece.floorLevel(entryZ) == surface,
         "Approach meets the original terrain without a cliff");
+    int loadedBeforeRediscovery = level.getChunkSource().getLoadedChunksCount();
     h.assertTrue(
-        SanctumPlacement.existingTerrainAllows(level, chunk),
-        "Existing native site can be found again");
+        candidate.equals(SanctumPlacement.find(level, candidate.anchor(), 1))
+            && loadedBeforeRediscovery == level.getChunkSource().getLoadedChunksCount(),
+        "The existing native site is rediscovered at its saved anchor without chunk loads");
     var placement =
         (RandomSpreadStructurePlacement)
             level

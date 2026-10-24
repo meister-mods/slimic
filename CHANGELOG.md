@@ -4,6 +4,29 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.6] - 2026-10-24
+
+### Changed
+
+- Group Creative companions by role and upgrade line, followed by management tools, armor, functional stations, expedition supplies, records, and hostile spawn eggs. Keep each building material beside its stairs, slabs, and walls, and group decorations by use.
+- Clarify English and Korean companion instructions, work interruptions, restoration materials, and reward requirements while retaining The Slimic as the dimension name.
+
+### Fixed
+
+- Remove duplicated direction suffixes from Korean survey-compass messages and distinguish cargo collection from companion recovery.
+- Give assembly clues their own search and destination messages instead of describing a Fallen Sanctum.
+- Replace basic specialization guidance on Glow, Command, and Ender Slime management screens with their own ability instructions.
+
+## [0.5.5] - 2026-10-24
+
+### Changed
+
+- Expand newly generated Fallen Sanctums to a 112×112 fortress with three main storeys, a lower vault, eight watchtowers, a twin gatehouse and furnished side wings.
+- Replace the straight expedition corridor with staggered entrances, branching rooms, cross-floor circuits, bridges and alternate stairs. Existing relay, watch and reward locations retain their progression rules.
+- Save the new fortress as architecture version 4. Existing structures and saved unfinished version 0–3 pieces keep their original layout and bounds.
+- Update the English and Korean exploration guides, in-game guidebook and slime records for the larger, winding layout.
+- Increase the Aimless Colony body opacity to 85% and unify localized terminology, retaining The Slimic as the dimension name in both languages.
+
 ## [0.5.4] - 2026-10-24
 
 ### Changed

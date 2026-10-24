@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Fallen banners mark the gallery opening. The central route leads toward the laboratory, and the sloping floor continues toward the final watch. A mineralized miner in the courtyard holds a damaged core: breaking the remains follows the existing $(l:world/mine_recovery)restoration path$()."
+      "text": "Fallen banners mark the command hall. Follow the branching passages and stairs toward the laboratory, then look for the descent to the final watch. The survey needle gives a bearing, not a route through the walls. A mineralized miner in the courtyard holds a damaged core: break the remains and follow the $(l:world/mine_recovery)restoration path$()."
     }
   ],
   "extra_recipe_mappings": {

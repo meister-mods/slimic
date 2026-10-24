@@ -31,7 +31,7 @@ The world contains **one representative entity**, rendered as two joined gel bod
 | Combat equipment | The first input member supplies the active sword, shield and armor; wear and replacements alter that member's real items. The second member's gear remains stored. |
 | Combat target filters | Initial group filters follow the first member. Group filter changes do not overwrite either member's saved individual filters. |
 | Growth | Completed activity alternates between members. Their points and investment remain individual, rather than pooled. |
-| Training and Creative tuning | Apply to the first input member's point balance. Derived colony stat edits distribute to the members; life, energy and capacity are combined values. |
+| Training and Creative tuning | Point upgrades and edits to the unspent balance use the first member. Direct colony stat edits affect both members; health, stamina, and capacity are combined values. |
 
 Each member retains its own body color and held-item appearance. Both combat bodies display the first member's active armor, including its material, dye and glint; the second member's original armor stays stored for unbinding. The representative can follow, wait, work, change dimension, receive logistics support, heal, be recovered and be revived through the common companion systems. Its one shared order concentrates capacity or survivability but cannot run two distant jobs or provide two independent attacks.
 

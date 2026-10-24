@@ -27,7 +27,7 @@ Minecraft **1.20.1**, Minecraft Forge **47.x**, Java **17**을 사용합니다.
 - [개발 가이드](docs/DEVELOPMENT.kr.md) · [English](docs/DEVELOPMENT.md)
 - [The Slimic 차원](docs/THE_SLIMIC.kr.md) · [English](docs/THE_SLIMIC.md)
 - [잊혀진 명령](docs/FORGOTTEN_ORDERS.kr.md) · [English](docs/FORGOTTEN_ORDERS.md)
-- [무너진 성체](docs/FALLEN_SANCTUM.kr.md) · [English](docs/FALLEN_SANCTUM.md)
+- [무너진 성채](docs/FALLEN_SANCTUM.kr.md) · [English](docs/FALLEN_SANCTUM.md)
 - [목적을 잃은 군체](docs/AIMLESS_COLONY.kr.md) · [English](docs/AIMLESS_COLONY.md)
 - [군체 결속](docs/COLONY_BONDING.kr.md) · [English](docs/COLONY_BONDING.md)
 - [왕실 융합](docs/SYNTHESIS.kr.md) · [English](docs/SYNTHESIS.md)

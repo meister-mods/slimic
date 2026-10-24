@@ -21,13 +21,16 @@ public final class FallenSanctumStructure extends Structure {
   public static int floor(
       ChunkGenerator generator, RandomState random, LevelHeightAccessor height, int x, int z) {
     int minimum = Integer.MAX_VALUE, maximum = Integer.MIN_VALUE;
-    for (int dx : new int[] {-40, -20, 0, 20, 40})
-      for (int dz : new int[] {-40, -20, 0, 20, 40}) {
+    // Cover every rotation of the asymmetric [-56, 55] footprint with the same 25 samples.
+    int extent = -SanctumLabyrinthArchitecture.MIN_X;
+    for (int dx : new int[] {-extent, -extent / 2, 0, extent / 2, extent})
+      for (int dz : new int[] {-extent, -extent / 2, 0, extent / 2, extent}) {
         int y =
             generator.getBaseHeight(
                 x + dx, z + dz, Heightmap.Types.WORLD_SURFACE_WG, height, random);
         if (y <= generator.getSeaLevel() + 2
-            || y + SanctumArchitecture.HEIGHT >= height.getMaxBuildHeight())
+            || y - 16 < height.getMinBuildHeight()
+            || y + SanctumLabyrinthArchitecture.HEIGHT >= height.getMaxBuildHeight())
           return Integer.MIN_VALUE;
         var column = generator.getBaseColumn(x + dx, z + dz, height, random);
         if (!column.getBlock(y - 1).getFluidState().isEmpty()) return Integer.MIN_VALUE;
@@ -42,12 +45,15 @@ public final class FallenSanctumStructure extends Structure {
     int x = context.chunkPos().getMiddleBlockX(), z = context.chunkPos().getMiddleBlockZ();
     int y = floor(context.chunkGenerator(), context.randomState(), context.heightAccessor(), x, z);
     if (y == Integer.MIN_VALUE) return Optional.empty();
+    int rotation = rotation(context.seed(), context.chunkPos().toLong());
     var level = SanctumPlacement.level(context.structureTemplateManager());
-    if (level != null && !SanctumPlacement.existingTerrainAllows(level, context.chunkPos()))
+    if (level != null
+        && (!SanctumPlacement.withinBorder(level, context.chunkPos(), rotation)
+            || !SanctumPlacement.existingTerrainAllows(level, context.chunkPos())))
       return Optional.empty();
     BlockPos anchor = new BlockPos(x, y, z);
-    int rotation = rotation(context.seed(), context.chunkPos().toLong());
-    var entrance = FallenSanctumPiece.position(anchor, rotation, 0, 0, -40);
+    var entrance =
+        FallenSanctumPiece.position(anchor, rotation, 0, 0, SanctumLabyrinthArchitecture.MIN_Z);
     int approachOffset =
         context
                 .chunkGenerator()

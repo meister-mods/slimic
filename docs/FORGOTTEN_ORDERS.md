@@ -30,9 +30,9 @@ The recovered books speak in the voices of slimes who kept supplies, pressed rec
 
 ## Restore a remnant
 
-Creative provides Guard, Transport, and Command core variants in the main Slimic tab, beside the seal and restoration station. Their tooltips identify the former role. Each newly taken core can be restored using the same materials and procedure.
+Creative provides Guard, Transport, and Command core variants in the main Slimic tab, in the restoration-material group. Their tooltips identify the former role. Each newly taken core can be restored using the same materials and procedure.
 
-The **Slime Restoration Station** is the intact pedestal found in ruins. Find it beside the seal in the main Slimic Creative tab. Right-click without a core for instructions, or look up the station in the guidebook’s **Slime restoration** entry.
+The **Slime Restoration Station** is the intact pedestal found in ruins. Find it with the functional stations in the main Slimic Creative tab. Right-click without a core for instructions, or look up the station in the guidebook’s **Slime restoration** entry.
 
 Defeating a ruin remnant yourself or with a tamed Slimic companion yields one **Damaged Ancient Slime Core** and one **Ancient Command Seal**, subject to ordinary mob-loot rules and drop events. Chest chances for one seal are 20% in workshops and depots, 35% in archives, and 50% in royal wards. Supplies and translated records provide the first restoration clues.
 
