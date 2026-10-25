@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The Slimic Blocks tab has 32 base materials, 8 stairs, 8 slabs and 6 walls. Gather them in The Slimic with suitable tools; Slimic Stone drops cobblestone without Silk Touch. Cut masonry with a stonecutter or craft shaped pieces. A hoe tills Slimic Soil, Damp Grass or Slime Mud with clear space above into farmland."
+      "text": "The Slimic Blocks tab has 32 base materials, 8 stairs, 8 slabs and 6 walls. Gather stone and soft materials in The Slimic with suitable tools; Slimic Stone drops Slimic Cobblestone without Silk Touch. Cut masonry with a stonecutter or craft shaped pieces. A hoe tills Slimic Soil, Damp Grass or Slime Mud with clear space above into farmland."
     },
     {
       "type": "patchouli:text",

@@ -6,19 +6,22 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The Aimless Colony is a boss with three phases based on remaining health. Under default settings it has 320 health, six armor and eight attack damage. Its attacks do not damage the chamber."
+      "text": "The Aimless Colony inhabits the kingdom’s assembly chambers. Its body and fragments share a bond. Its attacks leave the chamber intact.",
+      "title": "The chamber colony"
     },
     {
       "type": "patchouli:text",
-      "text": "Leave charge lanes and slam circles. From Division, ring waves leave the center safe; Frenzy adds crossed lanes aimed at a fixed position. Move diagonally out of crossings. Charges can lead to rings and pulls to crossings; each follow-up has its own warning. The last rally warns for 2.5 seconds: stop returning fragments to deny healing."
+      "text": "Watch the colony’s movements and the warnings around it. Its behavior may change during the fight; respond to the signals you see in the chamber.",
+      "title": "Read the signs"
     },
     {
       "type": "patchouli:text",
-      "text": "The body owns 100 cohesion. Each fragment borrows 12; at most six are active. A killed piece never returns its share. Cohesion of 60 or more reduces damage by 10%; at 40 or less the exposed core briefly takes 20% more. The body is always vulnerable."
+      "text": "For combat rewards, stay nearby for at least 30 seconds by default, contribute damage, healing, protection or a successful rally, and be alive nearby when the colony falls. Creative and Spectator modes do not count. Companions’ contributions count for their owner.",
+      "title": "Fight together"
     },
     {
       "type": "patchouli:crafting",
-      "text": "Stay near the chamber for at least 30 seconds and contribute damage, healing, protection or a real rally. Each slime's owner gets credit. Your first clear here grants one heart and a record; later clears grant two shards. Four shards make another heart.",
+      "text": "Your first clear of each chamber grants a Colony Heart and a record. Later clears give two Cohesion Shards.",
       "recipe": "slimic:colony_heart"
     }
   ],

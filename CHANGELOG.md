@@ -6,16 +6,22 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [0.5.7] - 2026-10-25
 
+### Added
+
+- Add thirteen crafting and smelting routes for Slimic masonry, mossy variants, carved blocks, and cracked bricks and tiles. Existing stonecutter routes remain available.
+
 ### Changed
 
 - Align English and Korean documentation, guidebook pages, item descriptions, JEI instructions, and status messages with consistent terminology and clear procedures.
 - Group translation keys by function and keep the same key order in both language files for easier comparison and maintenance.
 - Keep companion instructions factual and slime records in a simple, reflective voice. Clarify core restoration, map use, initial Wait mode, and work interruption notices.
+- Shorten JEI descriptions around acquisition, use, and essential conditions. Replace detailed advance explanations of the Aimless Colony's attacks with exploration and encounter guidance.
 
 ### Fixed
 
 - Correct outdated guidebook descriptions, Creative tab ordering in gameplay documentation, synthesis preparation instructions, and development protocol references.
 - Correct Korean particles and distinguish companion recovery, cargo collection, colony bonding, and map destinations.
+- Give seven decorations distinct recipes so wooden furnishings and luminous ornaments no longer compete for the same workbench inputs.
 
 ## [0.5.6] - 2026-10-24
 
