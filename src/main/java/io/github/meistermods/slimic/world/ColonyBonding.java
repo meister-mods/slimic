@@ -235,8 +235,7 @@ public final class ColonyBonding {
     if (binding == null
         || !binding.owner.equals(player.getUUID())
         || !(representative instanceof BoundColony colony)) return Problem.INVALID;
-    colony.members().prepareUnbind();
-    List<BagSlime> originals = colony.members().records();
+    List<BagSlime> originals = colony.members().prepareUnbind();
     List<Vec3> landings = new ArrayList<>();
     for (BagSlime member : originals) {
       Vec3 landing = landing(level, member, station.getBlockPos(), landings);

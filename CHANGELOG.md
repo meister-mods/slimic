@@ -4,6 +4,15 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.12] - 2026-10-25
+
+### Changed
+
+- Keep each colony member’s own growth-cost tier for unbinding. While bound, the colony uses the higher requirement; unbinding adds only the points actually earned together to each member’s original tier.
+- Convert unfinished activity in proportion to each member’s next-point requirement when binding and unbinding.
+- Clarify the difference between activity needed to earn a point and the one shared point spent on an upgrade. Differences in activity requirements do not grant refund points.
+- Add English and Korean examples to the colony guide and in-game guidebook, retaining point averaging, copied balances, and cap-aware upgrades.
+
 ## [0.5.11] - 2026-10-25
 
 ### Changed

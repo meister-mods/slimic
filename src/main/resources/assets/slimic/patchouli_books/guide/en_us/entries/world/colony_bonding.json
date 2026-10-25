@@ -23,7 +23,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Recover the colony, insert it alone and confirm Unbind. Two safe spaces are required. Both return in Wait with their remaining traits. The shared unused-point balance is copied to each member. Cancelled spawns keep the colony. Recover pending results at any bonding station."
+      "text": "Recover the colony, place it alone in the station and choose Unbind. Two safe spaces are needed. Both return in Wait with remaining traits and a copy of the shared points. Each resumes its own pre-binding growth tier plus points earned while bound. Remaining activity progress scales to each requirement. Cancelled spawns keep the colony; pending results remain recoverable."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A needs 224 activity for its next point; B needs 288. From zero progress, the colony needs 288 credited activity to earn one shared point. Spending it upgrades both if uncapped. After unbinding, A needs 288; B needs 352. The 64-activity gap is not refunded as points. An upgrade still costs one shared point."
     }
   ],
   "extra_recipe_mappings": {
