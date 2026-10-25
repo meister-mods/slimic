@@ -1,0 +1,20 @@
+{
+  "name": "Vuelo montado",
+  "icon": "minecraft:elytra",
+  "category": "slimic:care",
+  "sortnum": 32,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Necesita montura, élitros utilizables y al dueño como jinete. WASD dirige; avanzar sigue la inclinación de la vista. Espacio asciende y Mayús desmonta. Sin pulsar nada, se queda flotando. Mira hacia abajo y avanza para descender."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Ctrl izquierdo activa Impulso del slime; puedes reasignarlo. Sin élitros utilizables, el impulso terrestre duplica la velocidad de salto y gasta 10 de energía por segundo. El vuelo normal gasta 2; con impulso alcanza 1.75× de velocidad y gasta 15 por segundo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Volar o usar el impulso impide recuperar energía. Al agotarse, deja de ascender y baja lentamente con las alas abiertas y control limitado. Aterrizar permite recuperarla; vuelo e impulso vuelven al 25%. La gravedad normal vuelve al quitar o inutilizar las alas, o al desmontar."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "Slime de la guardia real",
+  "icon": "slimic:royal_guard_slime",
+  "category": "slimic:companions",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Combina $(item)Slime de combate + Sello ancestral de mando$() sin forma fija. Conserva identidad, propiedad, desarrollo, salud actual, equipo y carga. También puedes restaurar un núcleo de guardián ancestral en la Estación de restauración."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Su salud cuadruplica la común: 64 al inicio y +16 por punto de Salud, como el ángel guardián. Empieza en Esperar. Elige Combatir para fijar el puesto actual. Lucha dentro de Detección y vuelve al quedar libre. Elige Combatir en otro lugar para mover el puesto."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Admite espada, escudo y Armadura de slime. Al trabajar con escudo, recibe el 35% del daño de combate dirigido a un dueño o compañero aliado a cuatro bloques. Respeta visión, filtros, propiedad y protección PvP. Los guardias no transfieren daño entre sí."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Proteger cuesta al menos cuatro de energía, hasta el doble del daño interceptado, y no baja su salud de uno. Suministros, transporte, curación, avisos, órdenes de mando y portales usan los sistemas comunes. Los veteranos restaurados conservan nombres ancestrales e insignias blancas."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_guard_slime": 0
+  }
+}

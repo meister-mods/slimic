@@ -1,0 +1,28 @@
+{
+  "name": "Slime de almacén",
+  "icon": "slimic:warehouse_slime",
+  "category": "slimic:companions",
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:transport_slime",
+      "input2": "minecraft:chest#8",
+      "result": "slimic:warehouse_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime de transporte + ocho cofres normales llena una cuadrícula de 3×3. Conserva compañero y carga guardados, y empieza esperando."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Su Capacidad es ocho veces la bolsa común o cuatro la de transporte: 72 huecos al inicio y hasta 216 con desarrollo normal. No tiene equipo. Cada página de gestión muestra 27 huecos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Almacenar recoge carga solicitada y entrega suministros, guardando la carga dentro del slime. No se vacía en cofres. Otros transportistas pueden usarlo como almacén o suministro incluso en Esperar o Seguir."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:warehouse_slime": 0
+  }
+}

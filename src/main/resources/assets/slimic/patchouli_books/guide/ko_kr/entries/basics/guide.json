@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "게임 언어에 따라 한국어와 영어를 표시합니다. 다른 언어에서는 영어로 표시합니다. $(l:basics/first_steps)첫 동료$()와 $(l:basics/tuner)슬라임 조작기$()부터 읽어 보세요."
+      "text": "게임 언어에 따라 한국어·영어·일본어·스페인어를 표시합니다. 다른 언어에서는 영어로 표시합니다. $(l:basics/first_steps)첫 동료$()와 $(l:basics/tuner)슬라임 조작기$()부터 읽어 보세요."
     }
   ]
 }

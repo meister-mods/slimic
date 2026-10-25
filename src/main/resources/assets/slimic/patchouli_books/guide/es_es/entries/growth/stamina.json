@@ -1,0 +1,16 @@
+{
+  "name": "Energía y descanso",
+  "icon": "minecraft:bread",
+  "category": "slimic:growth",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Se recupera el 2% de la energía máxima por segundo: 2 con 100, 4 con 200 o 10 con 500. Una reserva mayor permite trabajar más tiempo seguido y recuperarse proporcionalmente más rápido."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La mayoría descansa tras agotarse hasta llegar al 25%: unos trece segundos desde cero a velocidad normal. Las oportunidades de recuperación dependen de la función. Vuelo e impulso tienen costes propios; véase $(l:care/flight)Vuelo montado$()."
+    }
+  ]
+}

@@ -283,13 +283,44 @@ tasks.register('verifyGuidebook') {
         def base = file('src/main/resources/assets/slimic/patchouli_books/guide')
         def paths = { String lang -> fileTree(new File(base, lang)).matching { include '**/*.json' }
                 .files.collect { new File(base, lang).toPath().relativize(it.toPath()).toString() }.toSet() }
+        def languages = ['en_us', 'ko_kr', 'ja_jp', 'es_es']
         def english = paths('en_us')
-        require(!english.empty && english == paths('ko_kr'), 'Guide locales must have identical resource paths.')
+        languages.each { lang ->
+            require(!english.empty && english == paths(lang),
+                    'Guide locales must have identical resource paths: ' + lang)
+        }
+        def languageFile = { lang -> file('src/main/resources/assets/slimic/lang/' + lang + '.json') }
+        def languageKeys = { lang -> (languageFile(lang).getText('UTF-8') =~ /(?m)^  "([^"]+)":/)
+                .collect { it[1] } }
+        def referenceStrings = parse(languageFile('en_us'))
+        def referenceKeys = languageKeys('en_us')
+        def placeholders = { String value ->
+            int next = 0
+            (value =~ /%(?:(\d+)\$)?([sd])|%%/).collect { match ->
+                match[0] == '%%' ? '%' : (match[1] ?: (++next).toString()) + ':' + match[2]
+            }.sort()
+        }
+        languages.each { lang ->
+            def strings = parse(languageFile(lang))
+            def keys = languageKeys(lang)
+            require(strings.keySet() == referenceStrings.keySet() && keys == referenceKeys
+                    && keys.size() == strings.size(),
+                    'Language files must have the same unique keys and group order: ' + lang)
+            referenceStrings.each { key, value ->
+                require(strings[key] instanceof String && !strings[key].blank,
+                        'Missing translation: ' + lang + '/' + key)
+                require(placeholders(value) == placeholders(strings[key]),
+                        'Translation arguments differ: ' + lang + '/' + key)
+            }
+            require(strings['dimension.slimic.the_slimic'] == 'The Slimic',
+                    'The dimension name must remain The Slimic: ' + lang)
+        }
         def localized = ['name', 'description', 'title', 'text', 'label'] as Set
         Closure structure
         structure = { value ->
-            if (value instanceof Map) return value.findAll { k, v -> !localized.contains(k) }
-                    .collectEntries { k, v -> [(k): structure(v)] }
+            if (value instanceof Map) return value.collectEntries { k, v ->
+                [(k): localized.contains(k) && v instanceof String ? '<localized>' : structure(v)]
+            }
             if (value instanceof List) return value.collect { structure(it) }
             value
         }
@@ -315,13 +346,16 @@ tasks.register('verifyGuidebook') {
         int pages = 0
         english.each { path ->
             def first = parse(new File(base, 'en_us/' + path))
-            def second = parse(new File(base, 'ko_kr/' + path))
-            require(structure(first) == structure(second), 'Guide locale structure differs: ' + path)
+            languages.each { lang ->
+                def translated = parse(new File(base, lang + '/' + path))
+                require(structure(first) == structure(translated),
+                        'Guide locale structure differs: ' + lang + '/' + path)
+            }
             if (!path.startsWith('entries/')) return
             require(categories.contains(first.category) && first.pages && !first.advancement,
                     'Guide entries must have a valid category and remain unlocked: ' + path)
             pages += first.pages.size()
-            ['en_us', 'ko_kr'].each { lang ->
+            languages.each { lang ->
                 def entry = parse(new File(base, lang + '/' + path))
                 require(entry.name && entry.icon, 'Missing entry name or icon: ' + path)
                 if (entry.extra_recipe_mappings) {
@@ -352,7 +386,7 @@ tasks.register('verifyGuidebook') {
                 }
             }
         }
-        ['en_us', 'ko_kr'].each { lang ->
+        languages.each { lang ->
             def strings = parse(file('src/main/resources/assets/slimic/lang/' + lang + '.json'))
             [book.name, book.landing_text, book.subtitle].each { key ->
                 require(strings[key] instanceof String && !strings[key].blank, 'Missing guide translation: ' + lang + '/' + key)
@@ -370,7 +404,7 @@ tasks.register('verifyGuidebook') {
                 }
             }
         }
-        logger.lifecycle("Guide verified: ${categories.size()} categories, ${entries.size()} entries, ${pages} pages per language; bilingual links and recipes valid.")
+        logger.lifecycle("Guide verified: ${categories.size()} categories, ${entries.size()} entries, ${pages} pages per language; ${languages.size()} languages with matching keys, arguments, links and recipes.")
     }
 }
 

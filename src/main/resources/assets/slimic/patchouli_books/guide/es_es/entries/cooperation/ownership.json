@@ -1,0 +1,24 @@
+{
+  "name": "Copropiedad",
+  "icon": "slimic:commander_slime",
+  "category": "slimic:cooperation",
+  "sortnum": 54,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Asigna copropietarios mediante un $(l:companions/commander)Slime de mando$(). Compartirlo o recogerlo mantiene al dueño original. Solo ese jugador puede cambiar copropietarios o enemigos. Dar a alguien un objeto guardado no le concede la propiedad."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los copropietarios pueden ajustar, nombrar, teñir, curar, recoger, revivir, equipar, montar, vincular y dar órdenes. Seguir usa al jugador que lo ordenó; si no está disponible, recurre a un dueño disponible. Retirar el acceso compartido tiene efecto inmediato en el servidor."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los copropietarios reciben protección del ángel guardián. Transporte, vigilancia, curación y recogida de objetos marcados entre dueños distintos requieren acceso mutuo. Una invitación unilateral no permite al invitante acceder a los almacenes del otro equipo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los compañeros en combate tratan como Hostil a un enemigo declarado. Respetan PvP del servidor, inmunidad creativa, equipos y filtros. Los copropietarios no pueden ser enemigos: compartir elimina su condición de enemigo."
+    }
+  ]
+}

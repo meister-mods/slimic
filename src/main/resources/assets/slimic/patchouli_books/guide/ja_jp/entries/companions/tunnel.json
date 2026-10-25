@@ -1,0 +1,32 @@
+{
+  "name": "トンネルスライム",
+  "icon": "slimic:tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 42,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:mining_slime",
+      "input2": "minecraft:minecart",
+      "result": "slimic:tunnel_slime",
+      "label": "組み合わせ → 1個",
+      "text": "採掘スライムと通常のトロッコ1個を組み合わせます。元の道具・バッグ・体力・成長を保ちます。待機で始まり、トロッコ形の殻を着けます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "水平方向と内壁ブロックを選び、トンネル命令を出します。チャンクではなく3×3の通路を掘り、床・天井・側面の置換可能な隙間と液体を埋めます。浸水しても高さを保ち、戻る水を繰り返し排水しません。接近が20秒進まないと経路不通を報告します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "カーソルに固体の建築ブロックを持ち、見本枠をクリックします。1個分の種類を写すだけで、手の個数は変わりません。空のカーソルで消去できます。見本か方向の変更で停止します。初期の見本は丸石です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "内壁の実物はバッグから使います。不足時は運搬役に最大64個を依頼し、保管先にもなければ止まります。見本は消費しません。ツルハシ・シャベル、等級、通常エンチャント、空バケツでの液体除去、荷物の空き、共用採掘階段の保護も必要です。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:tunnel_slime": 0
+  }
+}

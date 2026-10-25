@@ -1,0 +1,30 @@
+{
+  "name": "鉱山の復元",
+  "icon": "slimic:old_command_fragment",
+  "category": "slimic:world",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "木の枠や開いた縦穴をたどって$(l:world/collapsed_mines)崩れた鉱山$()へ入ります。鉱物化した作業者の遺骸には、表面に紫のコアが見えます。壊すと損傷したコアをちょうど1個得ます。遺骸はスライムボールで直接復活させられません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "補給チェストには遺骸1体につき古い命令の欠片1個とスライムボール1個のほか、ツルハシと丸石があります。忘れられた作業者と鉱山守護が見張っています。自分か仲間で鉱山の残存兵を倒すと、通常のドロップ規則でコア1個と欠片1個を得ます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "オーバーワールドへ戻り、鉱山のコアを持ち、持ち物に欠片とスライムボールを1個ずつ入れて$(l:world/restoration)スライム復元台$()を使います。採掘のコアは$(l:companions/ancient_mining)古代採掘スライム$()、トンネルのコアは$(l:companions/ancient_tunnel)古代トンネルスライム$()になります。鉱山守護は王室近衛になります。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "復元アイテムは新しい自分の仲間です。体力1で待機して現れるため、命令前に治療と装備を済ませましょう。各コアは保存ワールド全体で一度だけ復元できます。以前の空の遺骸にはコアがありません。自分の倒れた仲間は通常の$(l:care/revival)復活$()手順を使います。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:old_command_fragment": 2,
+    "slimic:forgotten_miner_slime_spawn_egg": 1,
+    "slimic:forgotten_tunnel_slime_spawn_egg": 1,
+    "slimic:mine_guardian_slime_spawn_egg": 1
+  }
+}

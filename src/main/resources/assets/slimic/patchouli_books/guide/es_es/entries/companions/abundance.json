@@ -1,0 +1,29 @@
+{
+  "name": "Slime de abundancia",
+  "icon": "slimic:abundance_slime",
+  "category": "slimic:companions",
+  "sortnum": 41,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "Sin forma fija",
+      "input1": "slimic:healing_slime",
+      "input2": "minecraft:bone_meal",
+      "result": "slimic:abundance_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime de curación + polvo de hueso + estrella del Nether. Conserva los datos del compañero y empieza esperando.",
+      "input3": "minecraft:nether_star"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Conserva equipo y carga, y lleva una lira dorada al lado. Elige Nutrir. Sigue curando y reviviendo, con prioridad para sus compañeros, antes de aplicar polvo de hueso a cultivos, brotes y plantas cercanos. Su zona fija de detección duplica la base común: 16 bloques al inicio. Cultivos y brotes tienen prioridad sobre la hierba."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Cada aplicación permitida cuesta dos de energía y aporta una unidad de actividad, sin gastar polvo de hueso. El azar normal puede dejar la planta igual. El terreno debe estar cargado. Curar sigue requiriendo bolas de slime. El crecimiento respeta mobGriefing y las protecciones. Los transportistas aportan bolas de slime."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:abundance_slime": 0
+  }
+}

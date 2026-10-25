@@ -1,0 +1,31 @@
+{
+  "name": "しっとりスライム",
+  "icon": "slimic:soggy_slime",
+  "category": "slimic:companions",
+  "sortnum": 18,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:soggy_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムとスライムボール1個を組み合わせます。バッグや装備はありません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。追従と自由移動では、固い地面に薄いスライムの足跡を残し、新しい足跡1個につき気力1を使います。待機で設置を止めます。自由移動は選んだ開始地点の探知範囲内で行い、主人がオフラインでも動けます。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_ball_from_slag",
+      "text": "足跡を壊すとスライムの残滓を1個得ます。残滓4個を自由に並べるとスライムボール1個になります。足跡は既存ブロックを保ち、保護規則に従います。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:soggy_slime": 0,
+    "slimic:slime_trail": 1,
+    "slimic:slime_slag": 2
+  }
+}

@@ -2,7 +2,7 @@
 
 English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
-The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 73 entries and 237 pages in each of English and Korean. Other languages use English. All entries are available immediately.
+The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 73 entries and 239 pages in each of English, Korean, Japanese, and Spanish (Spain). Other languages use English. All entries are available immediately.
 
 The Tuners and Scanner entry explains both tools and their recipes.
 

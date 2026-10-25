@@ -1,0 +1,28 @@
+{
+  "name": "ドラゴンスライム",
+  "icon": "slimic:dragon_slime",
+  "category": "slimic:companions",
+  "sortnum": 43,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:combat_slime",
+      "input2": "minecraft:dragon_head",
+      "result": "slimic:dragon_slime",
+      "label": "組み合わせ → 1個",
+      "text": "戦闘スライムとドラゴンの頭を組み合わせます。仲間のデータと装備を保ち、待機して現れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "剣・盾・鎧・バッグ・対象設定・成長を引き継ぎます。コウモリ形の翼と黒い角が目印です。剣を装備して「戦闘」を選ぶと、許可した敵へ飛び、剣で攻撃します。定期的に探知範囲内の見える相手へ炎の息を放ちます。作業速度で息の間隔が短くなります。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "炎の息は気力4を使い、攻撃力に応じたダメージと着火を与えます。近接攻撃と同じ所有権・対象設定に従い、地形には火を付けません。戦利品は戦闘バッグに入り、満杯でも戦いを止めず、運搬役が荷下ろしできます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:dragon_slime": 0
+  }
+}

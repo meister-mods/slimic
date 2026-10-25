@@ -1,0 +1,28 @@
+{
+  "name": "発光スライム",
+  "icon": "slimic:glow_slime",
+  "category": "slimic:companions",
+  "sortnum": 50,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:glowstone_dust",
+      "result": "slimic:glow_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムとグロウストーンダストを組み合わせます。発光した待機状態で現れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "松明と同じ強さの光が、気力を使わず本体についてきます。管理画面の発光は追従・待機とは別に切り替えられます。既存のブロックや液体を保ちます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "右クリックで気力10を使い、近くの開けた空間に6秒間ホタルを飛ばします。使用間隔は1秒です。一時的な光は回収できず、建築を妨げません。重なった光は、仲間かホタルがその場所を照らしている限り残ります。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:glow_slime": 0
+  }
+}

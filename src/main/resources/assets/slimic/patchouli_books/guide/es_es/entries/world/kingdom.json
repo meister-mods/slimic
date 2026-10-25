@@ -1,0 +1,24 @@
+{
+  "name": "Reliquias del reino",
+  "icon": "slimic:royal_crest",
+  "category": "slimic:world",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Los depósitos conservan guardianes, transportistas, almacenes activos y materiales de restauración. Sigue lámparas y caminos de piedra para explorar restos cercanos. Cada cofre tiene un 20% de probabilidad de guardar un sello; los libros dan pistas sobre restaurar núcleos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los archivos contienen librerías, tablillas, más guardianes y un comandante ancestral. Los registros de los slimes recuerdan el comienzo del reino y el silencio después de que XXX se fuera. Cada cofre tiene un 35% de probabilidad de contener un sello junto a suministros."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los antiguos recintos reales son más raros, con escudos, estandartes, comandante y guardias adicionales. Sus cofres contienen el registro de la última guardia y tienen un 50% de probabilidad de guardar un sello. Las ruinas aparecen en chunks nuevos sin alterar construcciones ni compañeros guardados."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Entra en The Slimic por un portal de bloques de slime y explora chunks nuevos de la superficie. Los recintos reales son ruinas raras con escudos, estandartes viejos, comandante y más guardianes. No tienen coordenadas fijas ni entrada separada."
+    }
+  ]
+}

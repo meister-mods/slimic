@@ -1,0 +1,28 @@
+{
+  "name": "治癒スライム",
+  "icon": "slimic:healing_slime",
+  "category": "slimic:companions",
+  "sortnum": 19,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:golden_carrot",
+      "result": "slimic:healing_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと金のニンジン1個を組み合わせます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。「捜索」で固定範囲内の、同じ主人か相互共有している傷ついた仲間・壊れたスライムブロックへ近づき、復活を優先します。自分も治療できます。自分の使用可能なバッグにスライムボールを補給してください。探知範囲は常に共通値の2倍、初期16ブロックです。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "治療成功1回にスライムボール1個と気力1を使い、体力を最大4回復するか体力1で復活させます。満タン・治療取消・配置不可・無効データ・個体重複では消費しません。ボール不足時は補給を依頼します。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:healing_slime": 0
+  }
+}

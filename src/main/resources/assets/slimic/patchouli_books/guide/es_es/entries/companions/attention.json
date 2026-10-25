@@ -1,0 +1,28 @@
+{
+  "name": "Slime curioso",
+  "icon": "slimic:attention_slime",
+  "category": "slimic:companions",
+  "sortnum": 53,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:redstone",
+      "result": "slimic:attention_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + polvo de redstone. Empieza esperando. No tiene bolsa ni equipo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Su Velocidad efectiva es un 50% mayor con el mismo atributo base. Vagar lo mantiene cerca de un dueño disponible. Puede sustituir al slime amistoso en especializaciones básicas: conserva mejoras y datos comunes, pero pierde su paseo curioso y la bonificación de velocidad. La nueva especialización espera."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Seguir y Esperar detienen el paseo. Sin dueño disponible, vaga por terreno cercano cargado sin cargar chunks. No pisotea cultivos. Moverse al vagar aporta actividad con el intervalo común de seguimiento; esperar no aporta desarrollo."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:attention_slime": 0
+  }
+}

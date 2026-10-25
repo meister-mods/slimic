@@ -1,0 +1,28 @@
+{
+  "name": "Mapas del reino",
+  "icon": "slimic:kingdom_map_fragment",
+  "category": "slimic:world",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Los $(l:world/collapsed_mines)cofres de minas$() nuevos contienen un Fragmento de mapa del reino. Talleres, depósitos y archivos nuevos también pueden guardarlo. Los cofres ya llenos conservan su contenido. Los tres fragmentos pueden venir de cualquier combinación de lugares."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:ancient_kingdom_map"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Usa un mapa sin marcar en The Slimic para señalar una $(l:world/fallen_sanctum)Ciudadela derruida$() cercana válida. La búsqueda no carga chunks. Si no encuentra rastros, conserva el mapa y prueba en otro lugar. Los mapas marcados mantienen el destino al viajar y reiniciar el servidor."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La marca indica un centro aproximado y tu flecha muestra la dirección relativa. Fuera de The Slimic, el mapa recuerda dónde usarlo. Combina uno marcado con mapas vacíos para copiar el destino. No necesitas mapa para entrar y las copias no reinician premios."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:kingdom_map_fragment": 0,
+    "slimic:ancient_kingdom_map": 2
+  }
+}

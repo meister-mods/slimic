@@ -1,0 +1,19 @@
+{
+  "name": "Últimas órdenes",
+  "icon": "slimic:royal_gallery_seal",
+  "category": "slimic:world",
+  "sortnum": 14,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Quedan cuatro registros en patio, galería, laboratorio y núcleo. Sus autores recuerdan un camino de suministro silencioso, órdenes contradictorias, dos compañeros ante un anillo y un guardián que aún esperaba a XXX. Léelos en los lugares que describen; el destino de XXX sigue incierto."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los estandartes caídos marcan la sala de mando. Sigue bifurcaciones y escaleras al laboratorio y busca la bajada a la última guardia. La aguja indica dirección, no un paso entre paredes. Un excavador mineralizado del patio guarda un núcleo dañado: rompe los restos y sigue la $(l:world/mine_recovery)restauración$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_gallery_seal": 0
+  }
+}

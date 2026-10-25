@@ -1,0 +1,32 @@
+{
+  "name": "Slime de túneles",
+  "icon": "slimic:tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 42,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:mining_slime",
+      "input2": "minecraft:minecart",
+      "result": "slimic:tunnel_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime de excavación + una vagoneta normal. Conserva herramientas, bolsa, salud y desarrollo. Empieza esperando y lleva un caparazón de vagoneta."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Elige dirección horizontal y bloque de revestimiento, luego Perforar. Abre un paso de 3×3 en lugar de excavar un chunk. Rellena huecos reemplazables y líquidos en suelo, techo y lados. Mantiene la altura bajo el agua y evita drenar sin fin el flujo que vuelve. Tras 20 segundos sin acercarse, avisa de ruta inaccesible."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Pulsa el hueco de plantilla con un bloque de construcción sólido en el cursor. Solo copia una muestra; no modifica la pila. Con el cursor vacío, la borra. Cambiar plantilla o dirección pausa el trabajo. La plantilla inicial es roca."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El revestimiento real sale de su bolsa. Si falta, solicita hasta 64 bloques a transportistas; si tampoco hay en almacén, sigue detenido. La plantilla nunca se consume. Siguen aplicándose pico/pala, nivel, encantamientos, cubo para líquidos, espacio de bolsa y protección de escaleras compartidas."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:tunnel_slime": 0
+  }
+}

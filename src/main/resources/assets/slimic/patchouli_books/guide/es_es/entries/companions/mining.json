@@ -1,0 +1,28 @@
+{
+  "name": "Slime de excavación",
+  "icon": "slimic:mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_pickaxe",
+      "result": "slimic:mining_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + cualquier pico. Ese pico conserva desgaste, nombre y encantamientos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando. Elige Excavar para bajar por el chunk donde fue colocado, conservando escaleras. Deja intactos madera, hojas, recipientes y bloques irrompibles. Equipa pico y pala, y lleva bloques de reparación. Bolsa llena, falta de herramientas, agotamiento o protecciones pueden pausarlo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La herramienta determina velocidad y botín normales. Ritmo de trabajo solo mejora una herramienta eficaz: un pico sigue siendo lento en tierra sin pala. No elude el nivel requerido por minerales. Véase $(l:fieldwork/fluids)Líquidos$() y $(l:cooperation/shared_quarry)Escaleras compartidas$(). Reparación usa la experiencia del mineral antes de soltar el resto."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:mining_slime": 0
+  }
+}

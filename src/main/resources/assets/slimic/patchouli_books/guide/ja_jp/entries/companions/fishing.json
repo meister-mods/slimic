@@ -1,0 +1,28 @@
+{
+  "name": "釣りスライム",
+  "icon": "slimic:fishing_slime",
+  "category": "slimic:companions",
+  "sortnum": 40,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:fishing_rod",
+      "result": "slimic:fishing_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと任意の釣竿を組み合わせます。使った竿をそのまま装備し、待機して現れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "竿のエンチャント・耐久消耗・名前・データを保ちます。「釣り」で固定範囲内の岸辺を探し、釣果をバッグに入れます。実作業5分間釣れないと別の場所を探します。入れ食いは待ち時間を、宝釣りは通常の戦利品表に影響します。宝には開けた水面が必要です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "釣果1回につき気力1を使い、竿は通常どおり消耗します。耐久力は消耗を減らし、修繕は釣りの経験値で竿を直します。作業速度で待ち時間が短くなります。バッグ満杯や竿の破損で運搬の支援を依頼します。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:fishing_slime": 0
+  }
+}

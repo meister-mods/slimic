@@ -1,0 +1,20 @@
+{
+  "name": "Llanuras húmedas",
+  "icon": "slimic:damp_grass_block",
+  "category": "slimic:world",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Slimic recuerda a una Superficie desgastada bajo una capa de gel. Las Llanuras húmedas cubren colinas, tierras bajas, cuevas y ríos. Piedra verde, suelo mojado, limo y manchas de gel forman el paisaje."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los slimes salvajes vagan por la superficie. Hay ranas en las llanuras y murciélagos bajo tierra; en la oscuridad aparecen monstruos conocidos. La dimensión tiene día y noche normales y las camas permiten fijar el punto de reaparición."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Lleva herramientas, comida, bloques y algo para marcar el portal. El gel puede hacerte rebotar y ralentizarte. Los compañeros trabajan con su equipo y suministros habituales. Llegan por el portal en Esperar: dales una orden cuando estés listo."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "Slime de Ender",
+  "icon": "slimic:ender_slime",
+  "category": "slimic:companions",
+  "sortnum": 52,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:ender_pearl",
+      "result": "slimic:ender_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + perla de ender. Empieza esperando y sin ancla."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Con energía completa y un hueco libre en el inventario principal, usa clic derecho con la mano vacía para anclarlo y recibir un Teletransportador de slimes. Vincularlo gasta toda su energía. Pueden hacerlo dueño y copropietarios. El teletransportador guarda su identidad, no coordenadas fijas."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Usa el teletransportador con clic derecho en el aire para llegar a un lugar seguro junto al compañero vivo anclado, incluso entre dimensiones. El destino debe tener toda la energía y la gasta al lograrlo. No consume perlas ni causa daño. Si falta, es inseguro o no tienes permiso, conserva la energía."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Un slime de Ender anclado mantiene activo un chunk de destino, incluso tras reinicios. El límite predeterminado es ocho por dueño original. Seguir quita el ancla; recogerlo o su caída libera el chunk. Un compañero anclado restaurado se ancla en su nueva posición."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Descansar recupera el 2% de energía máxima por segundo: recargar por completo tarda unos 50 segundos con cualquier máximo. Compartirlo o recogerlo mantiene al dueño original. Restaurar uno anclado guardado requiere un cupo libre; si no lo hay, conserva su objeto o bloque de slime caído."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ender_slime": 0,
+    "slimic:slime_teleporter": 1
+  }
+}

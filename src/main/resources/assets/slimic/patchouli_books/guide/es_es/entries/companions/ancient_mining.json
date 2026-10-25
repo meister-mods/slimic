@@ -1,0 +1,23 @@
+{
+  "name": "Slime de excavación ancestral",
+  "icon": "slimic:ancient_mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 24,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Restaura el núcleo de un cadáver de cantera o de un slime de excavación olvidado mediante la $(l:world/mine_recovery)recuperación minera$(). No tiene receta. El objeto muestra un núcleo con borde morado sobre una placa dorada; el compañero lleva casco y un emblema ancestral blanco."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Prioriza minerales visibles con etiqueta Forge en la capa activa de la cantera. Moverse, excavar, drenar y reforzar cuestan la mitad de energía. La ventaja no revela depósitos lejanos ni salta capas. Detección y Alcance siguen limitando el trabajo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Usa los controles del $(l:companions/mining)Slime de excavación$(): pico, pala, bolsa, orden Excavar, cubo y material de pared. Los slimes de transporte y almacén lo descargan y suministran herramientas, cubos y roca. Respeta las escaleras compartidas. Recogerlo, cruzar portales o invocarlo por primera vez activa Esperar."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_mining_slime": 0
+  }
+}

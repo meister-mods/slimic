@@ -1,0 +1,20 @@
+{
+  "name": "Talleres abandonados",
+  "icon": "slimic:broken_workbench",
+  "category": "slimic:world",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Talleres, depósitos, caminos rotos, archivos y recintos reales quedan por las llanuras. Las ruinas ocupadas recién generadas albergan slimes ancestrales que aún cumplen órdenes olvidadas."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los cofres normales contienen suministros, registros escritos y Sellos ancestrales de mando. Los libros explican la $(l:world/restoration)restauración de núcleos$(). Archivos y recintos reales guardan otros relatos propios."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Tu equipo de transporte puede usar los Cofres de slimes. Abrir uno elimina su vínculo ancestral. Los habitantes de ruinas son criaturas hostiles del reino: evalúa a los guardianes antes de instalarte."
+    }
+  ]
+}

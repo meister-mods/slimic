@@ -1,0 +1,28 @@
+{
+  "name": "古代王国の地図",
+  "icon": "slimic:kingdom_map_fragment",
+  "category": "slimic:world",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "新しい$(l:world/collapsed_mines)鉱山の補給チェスト$()には、破れた王国地図の欠片が1個入ります。新しい作業場・補給所・記録庫にも入ることがあります。すでに中身のあるチェストは変えません。どの場所の組み合わせでも、欠片を3個集めれば使えます。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:ancient_kingdom_map"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "未記録の地図をThe Slimicで使うと、近くの有効な$(l:world/fallen_sanctum)崩れた聖砦$()を記録します。探索でチャンクは読み込みません。見つからなければ地図を保ち、別の場所で試せます。記録済みの目的地は移動やサーバー再起動でも変わりません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "地図の印はおよその中心、プレイヤーの矢印は相対的な向きを示します。The Slimicの外では使える場所を案内します。記録した地図に白紙の地図を組み合わせると目的地を写せます。入場に地図は不要で、複製しても場所の報酬は戻りません。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:kingdom_map_fragment": 0,
+    "slimic:ancient_kingdom_map": 2
+  }
+}

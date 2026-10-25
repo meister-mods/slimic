@@ -1,0 +1,28 @@
+{
+  "name": "伐採スライム",
+  "icon": "slimic:lumberjack_slime",
+  "category": "slimic:companions",
+  "sortnum": 16,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_axe",
+      "result": "slimic:lumberjack_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと任意の斧を組み合わせます。使った斧の耐久消耗とエンチャントを保ちます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。「伐採」で固定の開始地点の周囲を作業します。探知範囲は共通値の2倍、初期16ブロックです。木を切る前に、対応する苗木を自分のバッグへ入れてください。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "切り株ごとに苗木を確保してから、つながった自然の木を切り、植え直します。2×2の幹には対応する苗木4個が必要です。確保した苗木は荷下ろしできません。止まったままなら$(l:fieldwork/forests)木と苗木$()を確認してください。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:lumberjack_slime": 0
+  }
+}

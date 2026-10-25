@@ -1,0 +1,21 @@
+{
+  "name": "ガイドの使い方",
+  "icon": "minecraft:book",
+  "category": "slimic:basics",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:guide_book",
+      "text": "本1冊とスライムボール1個で作れます。配置は自由で、2×2のクラフト枠でも作成できます。Patchouliの導入が必要です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "分類を開くか検索を使ってください。アイコンには通常のアイテム説明があり、リンクから関連項目へ進めます。全項目を最初から読め、進捗の達成は不要です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "本文はゲームの言語に合わせ、英語・韓国語・日本語・スペイン語に対応します。その他の言語では英語を表示します。$(l:basics/first_steps)最初の一歩$()と$(l:basics/tuner)スライム調整器$()も参照してください。"
+    }
+  ]
+}

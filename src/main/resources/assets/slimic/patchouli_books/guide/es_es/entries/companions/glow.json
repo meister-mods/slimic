@@ -1,0 +1,28 @@
+{
+  "name": "Slime luminoso",
+  "icon": "slimic:glow_slime",
+  "category": "slimic:companions",
+  "sortnum": 50,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:glowstone_dust",
+      "result": "slimic:glow_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + polvo de piedra luminosa. Empieza en Esperar con la luz encendida."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Su luz tiene la intensidad de una antorcha y lo sigue sin gastar energía. Activa o desactiva Luz en la gestión, independientemente de Seguir y Esperar. Respeta bloques y líquidos existentes."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Con clic derecho gasta 10 de energía para crear luciérnagas en el aire cercano durante seis segundos, con un intervalo de un segundo. Su luz temporal no se recoge ni impide construir. Las luces superpuestas siguen activas mientras algún compañero o efecto ilumine el lugar."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:glow_slime": 0
+  }
+}

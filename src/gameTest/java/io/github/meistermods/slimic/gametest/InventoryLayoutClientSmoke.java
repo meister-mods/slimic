@@ -25,6 +25,8 @@ import net.minecraft.world.phys.AABB;
  * Real synchronized bag pages, widget collision checks, and full-texture flat gold badge rendering.
  */
 public final class InventoryLayoutClientSmoke {
+  private static final List<String> LANGUAGES = List.of("en_us", "ko_kr", "ja_jp", "es_es");
+
   private record Case(
       String name,
       EntityType<? extends FriendlySlime> type,
@@ -55,7 +57,7 @@ public final class InventoryLayoutClientSmoke {
   private static FriendlySlime pet;
 
   private static String locale() {
-    return language == 0 ? "en_us" : "ko_kr";
+    return LANGUAGES.get(Math.min(language, LANGUAGES.size() - 1));
   }
 
   private static void shot(Minecraft c, String name) {
@@ -131,6 +133,15 @@ public final class InventoryLayoutClientSmoke {
   private static void verify(SlimeScreen screen) {
     var menu = screen.getMenu();
     var sample = cases().get(index);
+    LocalizedWidgetChecks.record(
+        Minecraft.getInstance(), screen, "inventory/" + locale() + "/" + sample.name, 368, 240);
+    for (var child : screen.children())
+      if (child instanceof AbstractWidget widget
+          && widget.visible
+          && (widget.getMessage().getString().contains(".slimic.")
+              || widget.getMessage().getString().contains("Format error:")))
+        throw new IllegalStateException(
+            "Untranslated inventory widget: " + locale() + " / " + widget.getMessage());
     var origins = new HashSet<String>();
     int active = 0;
     int left = (screen.width - 368) / 2, top = (screen.height - 240) / 2;
@@ -176,6 +187,7 @@ public final class InventoryLayoutClientSmoke {
           "Inventory client timeout at phase " + phase + " case " + index);
     if (phase == 0) {
       c.options.guiScale().set(2);
+      c.options.forceUnicodeFont().set(false);
       org.lwjgl.glfw.GLFW.glfwSetWindowSize(c.getWindow().getWindow(), 1280, 900);
       c.resizeDisplay();
       c.getLanguageManager().setSelected(locale());
@@ -288,11 +300,16 @@ public final class InventoryLayoutClientSmoke {
     }
     if (ticks < 10) return false;
     shot(c, "flat-gold-badge");
+    LocalizedWidgetChecks.finish(c, "inventory");
+    if (screens != cases().size() * LANGUAGES.size())
+      throw new IllegalStateException(
+          "Every inventory case must render in each supported language");
     System.out.println(
         "SLIMIC INVENTORY LAYOUT CLIENT SMOKE PASSED: "
             + screens
-            + " EN/KR synchronized screens, partial/expanded pages, locked cells, filters, widget"
-            + " bounds, native Sort clicks and cargo synchronization, full-UV flat gold badge");
+            + " EN/KR/JA/ES synchronized screens, partial/expanded pages, locked cells, filters,"
+            + " widget bounds, native Sort clicks and cargo synchronization, full-UV flat gold"
+            + " badge");
     return true;
   }
 
@@ -301,7 +318,7 @@ public final class InventoryLayoutClientSmoke {
       prepare(c);
       return;
     }
-    if (language++ == 0) {
+    if (++language < LANGUAGES.size()) {
       index = 0;
       phase = 0;
       ticks = 0;

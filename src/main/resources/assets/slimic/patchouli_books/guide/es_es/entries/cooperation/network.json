@@ -1,0 +1,20 @@
+{
+  "name": "Almacén y reparto",
+  "icon": "slimic:warehouse_slime",
+  "category": "slimic:cooperation",
+  "sortnum": 22,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Trabajadores y transportistas cooperan con el mismo dueño original o con acceso mutuo entre dueños. Mantén trabajadores y almacenes en la zona fija del transportista. Los traslados necesitan terreno cargado, ruta, Alcance y visión. Caminar no mueve el centro de la zona."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los transportistas prefieren slimes de almacén válidos del mismo dueño o con acceso mutuo a los Cofres de slimes. Omiten almacenes llenos o inadecuados; una entrega parcial conserva el resto en la bolsa. Si todos están llenos, no tiran nada."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Un slime de almacén no se usa a sí mismo como destino y no crea ciclos automáticos de carga entre almacenes. Los trabajadores pausados manualmente no emiten solicitudes."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Órdenes y dueños",
+  "icon": "minecraft:compass",
+  "category": "slimic:basics",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Seguir acompaña al dueño; Esperar pausa el trabajo habitual. Todo compañero nuevo, recogido o revivido empieza en Esperar, también al especializarse por primera vez. Al cargar el mundo se conserva la orden guardada."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Excavación usa Excavar; transporte, Transportar; aviso, Vigilar; combate y dragón, Combatir; limpieza, Limpiar; cultivo, Cultivar; tala, Talar. Curación usa Buscar; almacén, Almacenar; pesca, Pescar; abundancia, Nutrir; túneles, Perforar. Los slimes húmedos, miau y curiosos pueden Vagar. La activación miau es independiente."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El dueño original y los copropietarios pueden gestionar o recoger al compañero. Entregar su objeto a otro jugador no cambia la propiedad. Trabajadores, sanadores y transportistas cooperan si comparten dueño o sus dueños se han concedido acceso mutuo."
+    }
+  ]
+}

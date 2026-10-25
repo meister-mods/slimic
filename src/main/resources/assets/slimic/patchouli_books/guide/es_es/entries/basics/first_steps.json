@@ -1,0 +1,21 @@
+{
+  "name": "Primeros pasos",
+  "icon": "slimic:friendly_slime",
+  "category": "slimic:basics",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:friendly_slime",
+      "text": "Rodea una arena de almas o tierra de almas con ocho bolas de slime en una mesa de trabajo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Usa el objeto sobre un bloque o una fuente de agua para invocar un compañero domesticado. Se consume en Supervivencia. En Creativo, un objeto recién fabricado es reutilizable. El nombre puesto en un yunque pasa al slime. Su descripción indica su función y cómo invocarlo o recogerlo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Fabrica un $(l:basics/tuner)Ajustador de slimes$() para gestionarlo. Todo compañero nuevo empieza en Esperar. Elige Seguir o una orden de trabajo para que actúe. El slime curioso puede sustituir al amistoso en especializaciones básicas: conserva las mejoras, pero pierde su conducta curiosa."
+    }
+  ]
+}

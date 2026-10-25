@@ -1,0 +1,28 @@
+{
+  "name": "Slime de transporte",
+  "icon": "slimic:transport_slime",
+  "category": "slimic:companions",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:chest",
+      "result": "slimic:transport_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + un cofre normal. El Cofre de slimes no sirve como ingrediente."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando; elige Transportar. Usa una zona fija centrada donde se colocó y solicitudes del mismo dueño o con acceso mutuo. Recoge carga solicitada, la lleva a almacenes y entrega herramientas o materiales. No tiene huecos de equipo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Su Capacidad siempre duplica una bolsa normal con los mismos atributos: 18 huecos, +6 por mejora y hasta 54 con desarrollo normal. Pasar de 27 abre otra página; usa las flechas. Los $(l:cooperation/network)slimes de almacén$() tienen prioridad sobre los Cofres de slimes."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:transport_slime": 0
+  }
+}

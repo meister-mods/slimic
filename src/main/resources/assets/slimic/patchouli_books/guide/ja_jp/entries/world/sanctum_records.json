@@ -1,0 +1,19 @@
+{
+  "name": "最後の命令",
+  "icon": "slimic:royal_gallery_seal",
+  "category": "slimic:world",
+  "sortnum": 14,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "中庭・回廊・研究所・コアには4つの記録が残ります。書き手は静かな補給路、矛盾した命令、輪に近づく2匹、まだXXXを待つ守護者を覚えています。記された場所のそばで読んでみましょう。XXXの行方はまだ定かではありません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "倒れた旗が指揮の広間を示します。分かれた通路と階段で研究所へ進み、最後の見張り場への下り道を探してください。測量の針は方角を示すもので、壁を抜ける道ではありません。中庭の鉱物化した採掘個体には損傷コアがあります。遺骸を壊して$(l:world/mine_recovery)復元の手順$()をたどってください。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_gallery_seal": 0
+  }
+}

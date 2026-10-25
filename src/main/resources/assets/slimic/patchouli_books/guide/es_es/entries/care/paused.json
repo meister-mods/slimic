@@ -1,0 +1,20 @@
+{
+  "name": "Trabajo detenido",
+  "icon": "minecraft:barrier",
+  "category": "slimic:care",
+  "sortnum": 33,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Comprueba la orden de trabajo, el dueño y que la zona esté cargada. Esperar y Seguir pausan el trabajo. Lee el estado: bolsa llena, herramienta ausente o insuficiente, material faltante, agotamiento, almacén no disponible o ruta inaccesible."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Vacía la carga o proporciona un almacén o Cofre de slimes. Pon la herramienta, semilla, brote, cubo vacío o roca solicitados en la bolsa adecuada. El cubo no sustituye la roca para paredes. Abre una ruta y despeja el puesto de trabajo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Excavar, cultivar, talar y colocar senderos respetan mobGriefing y las protecciones de Forge. Requieren terreno cargado, Alcance y visión. Los atributos o suministros no eluden una prohibición. Un $(l:companions/herald)Slime de aviso$() puede informar de bloqueos persistentes."
+    }
+  ]
+}

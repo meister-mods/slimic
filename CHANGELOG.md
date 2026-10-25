@@ -4,6 +4,18 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.13] - 2026-10-25
+
+### Added
+
+- Add Japanese and Spanish translations for items, companions, screens, status messages, JEI information, and slime records.
+- Translate all seven categories, 73 entries, and 239 pages of the in-game companion guide into both languages. Unsupported languages continue to use English.
+
+### Changed
+
+- Validate matching language keys, formatting arguments, companion names, guide structures, links, and recipes across all four supported languages.
+- Extend client checks to Japanese and Spanish guidebook pages, localized search, and records.
+
 ## [0.5.12] - 2026-10-25
 
 ### Changed

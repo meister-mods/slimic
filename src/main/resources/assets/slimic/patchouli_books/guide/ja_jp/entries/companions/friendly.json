@@ -1,0 +1,20 @@
+{
+  "name": "なかよしスライム",
+  "icon": "slimic:friendly_slime",
+  "category": "slimic:companions",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:friendly_slime",
+      "text": "スライムボール8個とソウルサンドかソウルソイル1個で、最初の仲間を作れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "なかよしスライムは待機で始まります。管理画面で追従を選び、能力値や名前を設定しましょう。回収してから特化でき、最初の特化も特性を保った待機状態です。$(br2)最小サイズの野生スライムに金のリンゴ1個を与えると、自分のなかよしスライム1体に変わり、待機します。Shift＋右クリックで回収できます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:friendly_slime": 0
+  }
+}

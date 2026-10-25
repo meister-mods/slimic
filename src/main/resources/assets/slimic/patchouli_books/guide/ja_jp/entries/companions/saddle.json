@@ -1,0 +1,28 @@
+{
+  "name": "騎乗スライム",
+  "icon": "slimic:saddle_slime",
+  "category": "slimic:companions",
+  "sortnum": 14,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:saddle",
+      "result": "slimic:saddle_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと鞍1個を組み合わせます。使った鞍を最初に装備します。クリエイティブの初期個体は未装備です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。主所有者と共有相手が装備・騎乗できます。3枠は鞍・エリトラ・スライムの鎧用で、荷物用バッグはありません。装備を持って右クリックすると空き枠に入れられ、調整器からも管理できます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "鞍のある仲間を右クリックすると乗れます。Shiftで降り、Shift＋右クリックで回収します。装備した鞍と翼は見た目にも現れます。操縦と気力は$(l:care/flight)騎乗飛行$()を参照してください。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:saddle_slime": 0
+  }
+}

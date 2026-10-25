@@ -1,0 +1,31 @@
+{
+  "name": "Slime húmedo",
+  "icon": "slimic:soggy_slime",
+  "category": "slimic:companions",
+  "sortnum": 18,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:soggy_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + una bola de slime. No tiene bolsa ni equipo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando. Seguir o Vagar coloca rastros finos de slime sobre suelo sólido; cada rastro nuevo cuesta uno de energía. Esperar detiene la colocación. Vagar lo mantiene dentro de Detección alrededor del origen elegido, sin necesitar al dueño conectado."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_ball_from_slag",
+      "text": "Rompe un rastro para obtener una escoria de slime. Cuatro escorias crean una bola de slime sin forma fija. Los rastros respetan bloques existentes y protecciones."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:soggy_slime": 0,
+    "slimic:slime_trail": 1,
+    "slimic:slime_slag": 2
+  }
+}

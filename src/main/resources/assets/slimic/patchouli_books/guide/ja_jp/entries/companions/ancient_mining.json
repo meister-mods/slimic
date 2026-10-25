@@ -1,0 +1,23 @@
+{
+  "name": "古代採掘スライム",
+  "icon": "slimic:ancient_mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 24,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "採掘場の遺骸か忘れられた採掘スライムのコアを、$(l:world/mine_recovery)鉱山の復元$()で復元します。クラフトでは作れません。召喚アイテムは金の板に紫縁のコアがあり、本体は兜と白い古代の紋章を着けています。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "現在の採掘層で見えるForgeタグの鉱石を優先し、移動・採掘・排水・補強の気力消費は通常の半分です。遠くの鉱床を見つけたり、作業層を飛ばしたりはしません。探知範囲と到達距離の制限も受けます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "通常の$(l:companions/mining)採掘スライム$()と同じく、ツルハシ・シャベル・バッグ・採掘命令・バケツ・壁用物資を使います。運搬と倉庫が荷物を回収し、道具・バケツ・丸石を補給します。共用階段を保護します。回収後、ポータル移動後、初配置では待機します。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_mining_slime": 0
+  }
+}

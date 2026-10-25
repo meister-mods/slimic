@@ -82,4 +82,4 @@ The station saves the parents, recipient and result before consuming the inputs.
 
 A committed result belongs to its recipient even if its original station is broken. Use **Recover pending result** at any working Royal Synthesis Station. An undelivered result remains available until it can be saved with your inventory. Retrying does not duplicate a result already delivered. Keep space available and retry after resolving storage errors. Technical details are in the [development guide](DEVELOPMENT.md#sanctum-and-synthesis-data).
 
-JEI displays a dedicated station synthesis category when installed. Patchouli includes the station recipe, preparation, point inheritance, policies, and sanctum path in English and Korean. Neither optional mod is required for synthesis.
+JEI displays a dedicated station synthesis category when installed. Patchouli includes the station recipe, preparation, point inheritance, policies, and sanctum path in all four supported languages. Neither optional mod is required for synthesis.

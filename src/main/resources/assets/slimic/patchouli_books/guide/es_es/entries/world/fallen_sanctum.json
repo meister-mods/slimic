@@ -1,0 +1,29 @@
+{
+  "name": "Ciudadela derruida",
+  "icon": "slimic:royal_courtyard_seal",
+  "category": "slimic:world",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Tras la puerta de torres gemelas hay un laberinto de patios, salas y pasos cubiertos. Torre principal y alas tienen tres plantas sobre una bóveda inferior. Escaleras y puentes forman recorridos y vueltas entre pisos. Usa estandartes y muebles para reconocer lugares."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Restos reales con escudo defienden las salas. El comandante de la galería alerta a aliados cercanos; el guardián de élite profundo llama un refuerzo al perder media salud. Permanecen cerca de su puesto. Derrota a la guardia de cada sala y usa su relé de remate dorado."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El relé del patio registra el sello A. El de la galería registra el B y entrega una Brújula real de exploración. Úsala cerca para orientarte hacia dentro. Perder o guardar sellos no borra los recuerdos de las salas. Pacífico permite avanzar sin combate. Deja huecos para premios. Si falla el guardado, resuelve el problema de almacenamiento y repite en el mismo relé."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Ambos recuerdos y la guardia profunda desbloquean un Núcleo de síntesis real compartido por ciudadela. Otros jugadores pueden buscar otra para conseguir otro núcleo. Romper o reponer un relé no lo reinicia. Puedes desmontar o reformar las ruinas. $(l:world/royal_synthesis)Crea una estación de síntesis$() al volver."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_courtyard_seal": 0,
+    "slimic:royal_survey_compass": 2,
+    "slimic:sanctum_relay": 1
+  }
+}

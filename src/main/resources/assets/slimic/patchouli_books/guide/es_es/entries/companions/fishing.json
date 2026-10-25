@@ -1,0 +1,28 @@
+{
+  "name": "Slime de pesca",
+  "icon": "slimic:fishing_slime",
+  "category": "slimic:companions",
+  "sortnum": 40,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:fishing_rod",
+      "result": "slimic:fishing_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + cualquier caña de pescar. Equipa esa caña y empieza esperando."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La caña conserva encantamientos, desgaste, nombre y datos. Elige Pescar para buscar una orilla en su zona fija. Guarda las capturas en la bolsa. Tras cinco minutos de trabajo activo sin capturar nada, busca otro lugar. Atracción acorta la espera; Suerte marina afecta al botín normal. Los tesoros requieren aguas abiertas."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Cada captura cuesta uno de energía y desgasta normalmente la caña. Irrompibilidad reduce el desgaste; Reparación usa la experiencia de pesca para arreglarla. Ritmo de trabajo acorta la espera. La bolsa llena y cañas rotas solicitan transporte."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:fishing_slime": 0
+  }
+}

@@ -31,6 +31,8 @@ import net.minecraftforge.network.NetworkHooks;
 
 /** Real station packets, stored deployment, unbinding and localized native colony rendering. */
 public final class ColonyClientSmoke {
+  private static final List<String> LANGUAGES = List.of("en_us", "ko_kr", "ja_jp", "es_es");
+  private static boolean jeiLanguagesStarted;
   private static int phase, ticks, locale, family, warning;
   private static CompletableFuture<?> action;
   private static volatile int representative, bossEntity;
@@ -77,7 +79,7 @@ public final class ColonyClientSmoke {
       Path out = client.gameDirectory.toPath().resolve("colony-audit");
       Files.createDirectories(out);
       try (var image = Screenshot.takeScreenshot(client.getMainRenderTarget())) {
-        image.writeToFile(out.resolve((locale == 0 ? "en_us-" : "ko_kr-") + name + ".png"));
+        image.writeToFile(out.resolve(LANGUAGES.get(locale) + "-" + name + ".png"));
       }
     } catch (java.io.IOException e) {
       throw new IllegalStateException(e);
@@ -191,8 +193,8 @@ public final class ColonyClientSmoke {
       if (phase == 0) {
         client.options.guiScale().set(3);
         client.options.forceUnicodeFont().set(false);
-        client.options.languageCode = "en_us";
-        client.getLanguageManager().setSelected("en_us");
+        client.options.languageCode = LANGUAGES.get(locale);
+        client.getLanguageManager().setSelected(LANGUAGES.get(locale));
         action = client.reloadResourcePacks();
         phase = 1;
         return false;
@@ -238,6 +240,12 @@ public final class ColonyClientSmoke {
         require(
             menu.previewValue(2) == 32 && menu.previewValue(3) == (family == 0 ? 36 : 18),
             "Actual combined preview through numeric packets");
+        LocalizedWidgetChecks.record(
+            client,
+            client.screen,
+            "colony/" + LANGUAGES.get(locale) + "/" + family + "/bind",
+            320,
+            240);
         shot(client, family == 0 ? "transport-ready" : "combat-ready");
         client.gameMode.handleInventoryButtonClick(menu.containerId, ColonyBondingMenu.BIND);
         phase = 3;
@@ -324,6 +332,12 @@ public final class ColonyClientSmoke {
             || !(client.player.containerMenu instanceof ColonyBondingMenu menu)
             || menu.problem() != ColonyBonding.Problem.READY_UNBIND) return false;
         if (++ticks < 8) return false;
+        LocalizedWidgetChecks.record(
+            client,
+            client.screen,
+            "colony/" + LANGUAGES.get(locale) + "/" + family + "/unbind",
+            320,
+            240);
         shot(client, family == 0 ? "transport-unbind" : "combat-unbind");
         client.gameMode.handleInventoryButtonClick(menu.containerId, ColonyBondingMenu.UNBIND);
         phase = 7;
@@ -367,12 +381,24 @@ public final class ColonyClientSmoke {
       }
       if (phase == 8) {
         client.player.closeContainer();
-        if (family++ == 0) {
-          locale = 1;
-          client.options.languageCode = "ko_kr";
-          client.getLanguageManager().setSelected("ko_kr");
+        if (++family < 2) {
+          action = client.getSingleplayerServer().submit(() -> inputs(client));
+          phase = 2;
+          ticks = 0;
+          return false;
+        }
+        family = 0;
+        if (++locale < LANGUAGES.size()) {
+          client.options.languageCode = LANGUAGES.get(locale);
+          client.getLanguageManager().setSelected(LANGUAGES.get(locale));
           action = client.reloadResourcePacks();
           phase = 9;
+          return false;
+        }
+        locale = LANGUAGES.size() - 1;
+        if (Boolean.getBoolean("slimic.colonyLanguageOnly")) {
+          phase = 12;
+          ticks = 0;
           return false;
         }
         action =
@@ -508,6 +534,14 @@ public final class ColonyClientSmoke {
         return false;
       }
       if (phase == 12) {
+        if (!jeiLanguagesStarted) {
+          jeiLanguagesStarted = true;
+          locale = 0;
+          client.options.languageCode = LANGUAGES.get(locale);
+          client.getLanguageManager().setSelected(LANGUAGES.get(locale));
+          action = client.reloadResourcePacks();
+          return false;
+        }
         if (net.minecraftforge.fml.ModList.get().isLoaded("jei")) {
           var runtime = JeiClientSmoke.runtime();
           if (runtime == null) return false;
@@ -553,24 +587,27 @@ public final class ColonyClientSmoke {
           shot(client, "jei-bonding");
         }
         client.setScreen(null);
-        if (locale == 1) {
-          locale = 0;
-          client.options.languageCode = "en_us";
-          client.getLanguageManager().setSelected("en_us");
+        if (++locale < LANGUAGES.size()) {
+          client.options.languageCode = LANGUAGES.get(locale);
+          client.getLanguageManager().setSelected(LANGUAGES.get(locale));
           action = client.reloadResourcePacks();
           phase = 12;
           ticks = 0;
           return false;
         }
+        locale = LANGUAGES.size() - 1;
+        LocalizedWidgetChecks.finish(client, "colony");
         phase = 14;
         return false;
       }
       if (phase == 14) {
-        if (!resourcePacks(client)) return false;
+        if (!Boolean.getBoolean("slimic.colonyLanguageOnly") && !resourcePacks(client))
+          return false;
         System.out.println(
             "SLIMIC COLONY CLIENT SMOKE PASSED: native bind/deploy/capture/unbind packets for both"
-                + " professions, exact cargo/vitals/weapon wear, EN/KR gallery and seven"
-                + " minimal-particle boss warnings");
+                + " professions, exact cargo/vitals/weapon wear, EN/KR/JA/ES station/gallery/JEI;"
+                + " encounter and resource-pack checks="
+                + !Boolean.getBoolean("slimic.colonyLanguageOnly"));
         finished = true;
         return true;
       }

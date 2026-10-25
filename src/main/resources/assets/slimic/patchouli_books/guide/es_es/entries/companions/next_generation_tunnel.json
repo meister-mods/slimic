@@ -1,0 +1,28 @@
+{
+  "name": "Slime de túneles avanzado",
+  "icon": "slimic:next_generation_tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 27,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "title": "Slime de túneles avanzado",
+      "text": "La $(l:world/royal_synthesis)síntesis real$() une un slime de túneles normal y otro ancestral para crear este perforador compacto. Empieza en Esperar. Lo distinguen su pequeña vagoneta, gafas y emblema de calibre. El desarrollo parental verificado vuelve como puntos sin gastar."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Abre Sección en el ajustador. Introduce un lado positivo n y pulsa Aplicar: 1 hace 1×1, 2 hace 2×2 y 5 hace 5×5. Por defecto, 3×3. Cambiar tamaño o dirección activa Esperar; ordena Perforar aparte. Todo el hueco y revestimiento deben caber en la altura y borde del mundo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Desde la entrada trabaja una cara de n×n con alcance ampliado, bloque a bloque. Termina la cara y repara suelo, techo y lados antes de avanzar. La plantilla no se consume; los bloques salen de su bolsa. El terreno descargado pausa el trabajo. Los obstáculos nuevos provocan otra revisión de la cara."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Conserva el gasto de energía a la mitad y la rapidez adicional del 50% en mampostería ancestral. Siguen aplicándose herramientas, niveles, cubos, bolsa y protecciones. Los slimes de $(l:companions/transport)transporte$() y almacén lo abastecen; los de aviso informan de pausas. Recogerlo conserva tamaño y progreso; vuelve en Esperar."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:next_generation_tunnel_slime": 0
+  }
+}

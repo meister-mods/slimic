@@ -1,0 +1,20 @@
+{
+  "name": "Entrar en The Slimic",
+  "icon": "minecraft:slime_block",
+  "category": "slimic:world",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Construye un marco vertical de bloques de slime normales en la Superficie. Admite las medidas de un portal del Nether: interior de 2–21 bloques de ancho y 3–21 de alto. El marco exterior mínimo mide 4×5. Las esquinas son opcionales."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Con una bola de slime, haz clic derecho en una cara del marco orientada al hueco interior. En Supervivencia gasta una bola. Entra para viajar a The Slimic. Los portales cercanos existentes sirven de salida; si no hay, crea un marco y plataforma seguros."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los portales unen la Superficie y The Slimic con escala de coordenadas 1:1. Desmonta antes de entrar. En el punto de llegada queda un portal de vuelta. Romper un bloque necesario del marco lo cierra; repara el marco y actívalo otra vez."
+    }
+  ]
+}

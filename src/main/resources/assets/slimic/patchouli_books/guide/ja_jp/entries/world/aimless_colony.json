@@ -1,0 +1,36 @@
+{
+  "name": "目的を失った群体",
+  "icon": "slimic:colony_heart",
+  "category": "slimic:world",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "目的を失った群体は王国の集会場に棲んでいます。不揃いなゲルの塊の間から目と金色のコアが見えます。本体と分体は結び付き、攻撃で集会場の地形を壊しません。",
+      "title": "集会場の群体"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "群体の動きと周囲の予兆を観察してください。戦いの途中で行動が変わることもあります。現場に現れる合図を見て対応しましょう。",
+      "title": "予兆を読む"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "戦闘報酬には、初期設定で30秒以上近くに滞在し、ダメージ・治療・保護・集合成功のいずれかで貢献し、群体が倒れるとき近くで生存している必要があります。クリエイティブとスペクテイターは対象外です。仲間の貢献は主人に数えます。",
+      "title": "仲間と戦う"
+    },
+    {
+      "type": "patchouli:crafting",
+      "text": "各集会場の初攻略では群体の心臓と記録を、再攻略では結束の欠片2個を得ます。",
+      "recipe": "slimic:colony_heart"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:colony_heart": 0,
+    "slimic:cohesion_shard": 3,
+    "slimic:aimless_colony_spawn_egg": 0,
+    "slimic:attack_colony_fragment_spawn_egg": 2,
+    "slimic:cohesion_colony_fragment_spawn_egg": 2,
+    "slimic:returning_colony_fragment_spawn_egg": 2
+  }
+}

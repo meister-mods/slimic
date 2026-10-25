@@ -1,0 +1,29 @@
+{
+  "name": "Armadura de slime",
+  "icon": "slimic:slime_armor",
+  "category": "slimic:care",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "minecraft:iron_chestplate",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:slime_armor",
+      "label": "Combinar → resultado",
+      "text": "Un peto + una bola de slime. El peto de hierro es un ejemplo: todos los petos admitidos conservan material y datos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Equipa la armadura en un slime de combate, dragón, de monta o de la guardia real. Los petos normales sirven de ingrediente, no se equipan directamente. Conserva atributos, durabilidad, encantamientos, nombres y color del cuero. No admite cascos, pantalones ni botas."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_armor": 0,
+    "slimic:leather_slime_armor": 0,
+    "slimic:chainmail_slime_armor": 0,
+    "slimic:golden_slime_armor": 0,
+    "slimic:diamond_slime_armor": 0,
+    "slimic:netherite_slime_armor": 0
+  }
+}

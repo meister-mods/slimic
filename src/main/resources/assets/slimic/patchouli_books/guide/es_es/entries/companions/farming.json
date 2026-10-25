@@ -1,0 +1,28 @@
+{
+  "name": "Slime de cultivo",
+  "icon": "slimic:farmer_slime",
+  "category": "slimic:companions",
+  "sortnum": 15,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_hoe",
+      "result": "slimic:farmer_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + cualquier azada. Equipa la herramienta original con sus datos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando. Cultivar registra tierra de cultivo cargada alrededor de su posición actual. Su radio duplica la base común: 16 bloques al inicio. Pon semillas o cultivos en la bolsa. Para registrar terreno nuevo, elige Esperar y luego Cultivar."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Cosecha cultivos maduros, replanta desde su bolsa y restaura suelo registrado con la azada. No pisotea cultivos. La bolsa llena o herramientas rotas solicitan ayuda. Véase $(l:fieldwork/farmland)Parcelas registradas$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:farmer_slime": 0
+  }
+}

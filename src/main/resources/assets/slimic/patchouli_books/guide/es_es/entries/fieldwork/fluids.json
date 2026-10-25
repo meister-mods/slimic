@@ -1,0 +1,20 @@
+{
+  "name": "Agua y lava",
+  "icon": "minecraft:water_bucket",
+  "category": "slimic:fieldwork",
+  "sortnum": 25,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "El slime de excavación necesita un cubo vacío en su propia bolsa para quitar agua o lava. Un cubo del jugador o de un cofre cercano no basta. Si falta, pausa el trabajo y solicita entrega a un transportista."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El cubo no se llena ni se consume. Quita líquidos en áreas horizontales de hasta 3×3, priorizando esquinas de fuentes expuestas. Cada celda quitada cuesta uno de energía. Los bloques anegados conservan bloque y contenido."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La capa drenada activa impide regenerar fuentes, para que una piscina infinita no reponga la misma celda sin fin. Sigue necesitando Alcance, visión y permisos. Las entradas laterales usan $(l:fieldwork/walls)refuerzo de paredes$()."
+    }
+  ]
+}

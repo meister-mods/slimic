@@ -1,0 +1,52 @@
+{
+  "components": [
+    {
+      "type": "patchouli:header",
+      "text": "#title",
+      "x": -1,
+      "y": 0
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input1",
+      "x": 27,
+      "y": 28,
+      "framed": true
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input2",
+      "x": 71,
+      "y": 28,
+      "framed": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "+",
+      "x": 54,
+      "y": 32
+    },
+    {
+      "type": "patchouli:text",
+      "text": "#label",
+      "x": 4,
+      "y": 50,
+      "max_width": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#result",
+      "x": 50,
+      "y": 68,
+      "framed": true,
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "#text",
+      "x": 0,
+      "y": 96,
+      "max_width": 116
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "倉庫スライム",
+  "icon": "slimic:warehouse_slime",
+  "category": "slimic:companions",
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:transport_slime",
+      "input2": "minecraft:chest#8",
+      "result": "slimic:warehouse_slime",
+      "label": "組み合わせ → 1個",
+      "text": "3×3の作業台で運搬スライムを通常のチェスト8個で囲みます。保存した仲間と荷物を保ち、待機して現れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "積載量は共通バッグの8倍、運搬バッグの4倍です。初期72枠、通常強化では216枠までです。装備枠はありません。管理画面は1ページに27枠を表示します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "「保管」で作業者の依頼した荷物を引き取り、物資を配送し、荷物は自分の中に保管します。チェストへ自分の荷物を出しません。待機・追従中でも、他の運搬役は保管先や補給元として利用できます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:warehouse_slime": 0
+  }
+}

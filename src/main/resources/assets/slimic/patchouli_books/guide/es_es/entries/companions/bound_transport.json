@@ -1,0 +1,24 @@
+{
+  "name": "Colonia de transporte",
+  "icon": "slimic:bound_transport_slime",
+  "category": "slimic:companions",
+  "sortnum": 28,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "Dos $(l:companions/transport)slimes de transporte$() normales forman una colonia mediante la $(l:world/colony_bonding)unión de colonia$(). Un cordón visible une sus cuerpos móviles. Ambos conservan su identidad. Toda invocación nueva o tras recogerlos empieza en Esperar.",
+      "title": "Colonia de transporte"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los cuerpos se mueven por separado dentro del alcance del cordón y se reparten recogida, descarga y suministro. Comparten una bolsa y una orden. Su Capacidad es la suma real de ambos, incluidas sus bonificaciones normales de transporte."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Ambos abren la gestión; Esperar detiene a los dos. Comparten salud y energía. Los puntos iniciales son su media redondeada abajo. Un punto mejora a cada miembro sin tope. El desarrollo va a mitad mientras algún atributo de función admita mejorar a ambos; si no, es normal. Recógelos y sepáralos: vuelven en Esperar con sus rasgos y una copia del saldo cada uno."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_transport_slime": 0
+  }
+}

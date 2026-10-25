@@ -1,0 +1,28 @@
+{
+  "name": "通知スライム",
+  "icon": "slimic:herald_slime",
+  "category": "slimic:companions",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:firework_rocket",
+      "result": "slimic:herald_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと任意のロケット花火を組み合わせます。デザインをすべて保存し、待機して現れます。クリエイティブの初期花火は白い小玉です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "「監視」で同じ主人か相互共有している作業者を見守ります。設定時間だけ連続で停止すると無害な花火を上げ、オンラインの所有者へ種類・名前・原因を知らせます。停止中は10秒ごとに通知を繰り返します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待ち時間は1～60分で、初期設定は5分です。手動の停止や作業完了は数えません。右クリックで手動の合図を送り、花火を使うと保存デザインを変えます。治療・染色・洗浄・調整器・探査器を優先します。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:herald_slime": 0
+  }
+}

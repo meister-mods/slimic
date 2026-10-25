@@ -1,0 +1,28 @@
+{
+  "name": "にゃんにゃんスライム",
+  "icon": "slimic:meow_slime",
+  "category": "slimic:companions",
+  "sortnum": 44,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:cod",
+      "result": "slimic:meow_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと任意の生魚を組み合わせます。能力有効・待機で始まります。焼き魚は使えません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "生鱈・生鮭・熱帯魚・フグを使えます。猫の頭が目印です。有効中は猫と同じ6ブロックの回避行動で近くのクリーパーを遠ざけます。能力と移動は別々です。有効・無効を変えても待機・自由移動は変わらず、その逆も同様です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "共通の能力値、名前、染色、治療、所有権、回収を使えます。バッグや装備はありません。通常の回避行動なので、点火済みのクリーパーの爆発を必ず防げるわけではありません。回収しても能力の有効状態は保ちますが、再配置では待機します。歩かせるには自由移動を選び直してください。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:meow_slime": 0
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Salud y colores",
+  "icon": "minecraft:lime_dye",
+  "category": "slimic:care",
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Usa una bola de slime con clic derecho en un compañero herido propio para curar hasta cuatro puntos de salud. En Supervivencia solo se consume si lo cura. Si ya tiene toda la salud o se cancela la curación, conservas la bola."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Usa un tinte con clic derecho para cambiar el color del cuerpo. El equipo conserva sus colores. Un cubo con agua quita el tinte: en Supervivencia devuelve un cubo vacío solo si lo lava. Mayús y clic derecho sigue dando prioridad a recogerlo."
+    }
+  ]
+}

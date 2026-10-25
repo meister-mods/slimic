@@ -1,0 +1,28 @@
+{
+  "name": "Slime de curación",
+  "icon": "slimic:healing_slime",
+  "category": "slimic:companions",
+  "sortnum": 19,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:golden_carrot",
+      "result": "slimic:healing_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + una zanahoria dorada."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando; elige Buscar. Se acerca a compañeros heridos y bloques de slime caído del mismo dueño o con acceso mutuo en su zona fija, con prioridad para revivir. También se cura a sí mismo. Pon bolas de slime en su propia bolsa utilizable. Su Detección siempre duplica la común: 16 bloques al inicio."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Cada tratamiento logrado cuesta una bola de slime y uno de energía: cura hasta cuatro de salud o revive con uno. Salud completa, curación cancelada, espacio bloqueado, datos no válidos o identidad duplicada no gastan nada. Si faltan bolas, solicita suministro."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:healing_slime": 0
+  }
+}

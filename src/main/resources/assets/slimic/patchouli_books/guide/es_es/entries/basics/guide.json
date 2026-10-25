@@ -1,0 +1,21 @@
+{
+  "name": "Uso de la guía",
+  "icon": "minecraft:book",
+  "category": "slimic:basics",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:guide_book",
+      "text": "Combina un libro y una bola de slime sin forma fija. Basta la cuadrícula de 2×2. Requiere Patchouli."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Explora las categorías o usa la búsqueda. Los iconos muestran descripciones y los enlaces abren entradas relacionadas. Todo está disponible desde el principio, sin avances previos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El texto sigue el idioma del juego: inglés, coreano, japonés o español. Los demás usan inglés. Consulta $(l:basics/first_steps)Primeros pasos$() y $(l:basics/tuner)Ajustadores y explorador$()."
+    }
+  ]
+}

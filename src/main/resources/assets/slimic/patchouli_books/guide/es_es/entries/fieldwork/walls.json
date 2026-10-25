@@ -1,0 +1,20 @@
+{
+  "name": "Paredes y soportes",
+  "icon": "minecraft:cobblestone",
+  "category": "slimic:fieldwork",
+  "sortnum": 26,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "El excavador sella entradas laterales de líquido y huecos subterráneos de al menos 2×2 de ancho y alto. Las paredes bordean el chunk de trabajo y respetan las escaleras de dos bloques de ancho. Deja abierto el aire libre sobre la entrada."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Cada celda de pared consume una roca de su bolsa y uno de energía. Si falta roca, se detiene; el transporte aporta hasta una pila. La pared no necesita cubo, pero quitar el líquido restante sí."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los peldaños ausentes usan materiales admitidos como roca, piedra, tierra o pizarra profunda. La colocación respeta bloques protegidos y entidades. Una reparación inaccesible se pausa sin gastar material."
+    }
+  ]
+}
