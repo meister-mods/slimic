@@ -211,9 +211,19 @@ public final class SanctumPlacementGameTests {
       GameTestHelper h) {
     var level = level(h);
     SanctumPlacement.Candidate candidate = null;
-    for (int attempt = 0; candidate == null && attempt < 4; attempt++)
-      candidate = find(h, level, new BlockPos(960000, 90, -960000 - attempt * 16384), 512);
-    h.assertTrue(candidate != null, "The fixture has a fresh natural castle candidate");
+    // Sample independent regions in both axes; one narrow strip can contain no suitable plains.
+    // Keep every search bounded and outside the loaded legacy/native fixtures.
+    for (int attempt = 0; candidate == null && attempt < 16; attempt++) {
+      var origin =
+          new BlockPos(960000 + (attempt % 4) * 32768, 90, -960000 - (attempt / 4) * 32768);
+      h.assertTrue(
+          level.getWorldBorder().isWithinBounds(origin),
+          "The fresh-candidate search begins inside the restored world border");
+      candidate = find(h, level, origin, 512);
+    }
+    h.assertTrue(
+        candidate != null,
+        "The fixture has a fresh natural castle candidate for seed=" + level.getSeed());
     var anchor = candidate.anchor();
     var chunk = new ChunkPos(anchor);
     h.assertTrue(

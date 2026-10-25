@@ -25,7 +25,7 @@ public final class SlimeTunerItem extends Item {
         || player.isSpectator()
         || !target.isAlive()
         || !target.canManage(player)
-        || player.distanceToSqr(target) > 64) return InteractionResult.FAIL;
+        || !target.isWithinManagementRange(player, 64)) return InteractionResult.FAIL;
     if (player instanceof ServerPlayer server)
       NetworkHooks.openScreen(
           server,

@@ -4,6 +4,50 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.11] - 2026-10-25
+
+### Changed
+
+- Give bound Transport and Combat Slime Colonies one shared pool of unused stat points, starting at the two members’ arithmetic mean rounded down. Spending one point upgrades the chosen stat for each member below its cap, without resetting existing investments. Capped members remain unchanged; if both are capped, no point is spent.
+- Halve colony activity growth while any stat used by the role can still upgrade both members together. Otherwise use the normal rate, including continued point storage at full caps. Keep the ordinary point-cost formula and preserve unfinished half units through saving and unbinding.
+- Copy the remaining shared point balance to each original member when unbinding.
+- Apply Creative unused-point edits to the shared pool. Direct stat editing retains the existing colony aggregation rules.
+- Update the English and Korean documentation, guidebook entries, and bonding screen explanation for shared training and unbinding.
+
+### Fixed
+
+- Apply only edited Creative stat fields, preserving member stat differences and existing capacities when changing only unused points. Preserve odd Combat colony capacities and split Transport capacity in whole multiplier units.
+- Reject colony capacities whose combined storage cannot be represented before changing any values, preventing oversized bags from becoming unreadable after saving.
+
+## [0.5.10] - 2026-10-25
+
+### Changed
+
+- Give the Transport Slime Colony two separate moving bodies joined by a visible cord. Each body can collect cargo, deposit shared cargo, or deliver supplies while the other handles a different request.
+- Coordinate worker requests and reserve fetched supplies so the second body cannot send an active delivery back to storage. Both bodies share the existing inventory, command, health, stamina, and growth records.
+- Allow either body to open the colony's management tools or recover the entire colony, with the same ownership and interaction-distance checks. Wait stops both bodies; recovered colonies still return in Wait.
+- Preserve existing member identities, stored cargo, and bonding data. The second body is recreated from the representative on loaded, safe terrain and has no separate saved inventory or summon item.
+- Keep the combat colony's paired armor appearance unchanged. Update the English and Korean guides, guidebook entries, and transport colony description.
+- Require matching network protocol 26 clients and servers for the linked body and its synchronized connection.
+
+## [0.5.9] - 2026-10-25
+
+### Fixed
+
+- Reject recovery while a companion is still being admitted, preventing reentrant spawn callbacks from creating a second stored copy. Remove recovered or transferred originals before dropping their leads so item callbacks cannot recover them again.
+- Preserve the original companion when cross-dimension gathering is canceled. Commit the move only after the destination copy passes admission, ownership, and landing checks.
+- Release combat targets that have moved to another dimension, including targets pursued by Dragon Slimes.
+- Report the actual missing pickaxe or shovel for ordinary and next-generation Tunnel Slimes.
+- Respect world borders and block interaction permissions when repairing quarry stairs, including changes made during placement callbacks.
+- Pause field work at unloaded terrain boundaries so harvesting and planting do not load neighboring chunks through block updates; resume when the surrounding terrain is available.
+- Bound Scanner display geometry for very large Creative detection ranges and distant registered farms while preserving the actual stats and work data.
+- Keep the Saddle Slime's previous command when a mount event is canceled.
+- Charge Dragon Slime breath stamina and award activity when a hit reduces absorption hearts, even if normal health is unchanged. Canceled damage still has no cost.
+- Reject harmful contact blocks at companion and Ender teleporter landing positions, including hazards introduced by teleport callbacks.
+- Keep sanctum reward receipts in the saved player state so interrupted world acknowledgements cannot issue consumed rewards again. Preserve reward and colony recovery receipts when the player respawns.
+- Preserve companions when admission of a dropped recovery item is canceled during collapse.
+- Correct stale network protocol references in the Korean development guide.
+
 ## [0.5.8] - 2026-10-25
 
 ### Changed

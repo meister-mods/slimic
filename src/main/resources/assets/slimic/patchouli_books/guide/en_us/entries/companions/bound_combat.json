@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Damage and healing update both health records. Activity alternates between members. Point upgrades use member one; Creative stat edits affect both. Unbinding restores both identities, gear, cargo, growth and remaining stamina. Target settings initially copy member one."
+      "text": "Damage and healing update both records. Unused points start at their mean rounded down. One point upgrades each uncapped member. Growth is half rate while any role stat can upgrade both; otherwise normal. Unbinding restores both identities and traits and copies the point balance to each. Target settings initially copy member one."
     }
   ],
   "extra_recipe_mappings": {

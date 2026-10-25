@@ -116,6 +116,13 @@ public final class SanctumSites extends SavedData {
     }
     if (!delivery.owner.equals(player.getUUID()) || delivery.delivered)
       return GrantResult.UNAVAILABLE;
+    String received = "SanctumReward_" + delivery.receipt;
+    if (player.getPersistentData().getBoolean(received)) {
+      delivery.delivered = true;
+      setDirty();
+      DurableWorldData.flush(player.serverLevel(), "slimic_sanctum_sites", this);
+      return GrantResult.DELIVERED;
+    }
     var missing = new ArrayList<ItemStack>();
     for (int i = 0; i < delivery.items.size(); i++) {
       boolean present = false;
@@ -133,7 +140,13 @@ public final class SanctumSites extends SavedData {
     }
     long free = player.getInventory().items.stream().filter(ItemStack::isEmpty).count();
     if (free < missing.size()) return GrantResult.OUTPUT_FULL;
-    if (!DurableWorldData.givePlayerItems(player, missing)) return GrantResult.STORAGE_ERROR;
+    // Save the receipt with the items so using a reward cannot erase proof of delivery when
+    // the final world acknowledgement is interrupted.
+    player.getPersistentData().putBoolean(received, true);
+    if (!DurableWorldData.givePlayerItems(player, missing)) {
+      player.getPersistentData().remove(received);
+      return GrantResult.STORAGE_ERROR;
+    }
     delivery.delivered = true;
     setDirty();
     DurableWorldData.flush(player.serverLevel(), "slimic_sanctum_sites", this);

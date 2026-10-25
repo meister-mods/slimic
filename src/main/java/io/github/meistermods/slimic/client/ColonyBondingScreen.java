@@ -156,7 +156,13 @@ public final class ColonyBondingScreen extends AbstractContainerScreen<ColonyBon
               .getCompound("SlimeData")
               .getCompound("ColonyMembers")
               .getList("Members", Tag.TAG_COMPOUND);
-      for (int i = 0; i < Math.min(2, list.size()); i++) result.add(list.getCompound(i));
+      for (int i = 0; i < Math.min(2, list.size()); i++) result.add(list.getCompound(i).copy());
+      if (result.size() == 2) {
+        long firstPoints = Math.max(0, result.get(0).getLong("StatPoints"));
+        long secondPoints = Math.max(0, result.get(1).getLong("StatPoints"));
+        long shared = firstPoints / 2 + secondPoints / 2 + (firstPoints % 2 + secondPoints % 2) / 2;
+        for (CompoundTag record : result) record.putLong("StatPoints", shared);
+      }
     } else
       for (int i = 0; i < 2; i++) {
         ItemStack item = menu.getSlot(i).getItem();

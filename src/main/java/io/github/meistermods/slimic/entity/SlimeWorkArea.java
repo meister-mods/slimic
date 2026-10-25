@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 /** A small, read-only snapshot; requesting a preview never surveys or loads terrain. */
 public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
   public static final int MAX_SHAPES = 8;
+  public static final double MAX_DIAMETER = 65536;
 
   public record Shape(AABB bounds, boolean radial, boolean next) {
     public Shape {
@@ -19,7 +20,9 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
           })
         if (!Double.isFinite(value) || Math.abs(value) > 30_100_000)
           throw new IllegalArgumentException("Invalid work-area coordinate");
-      if (bounds.getXsize() > 65536 || bounds.getYsize() > 65536 || bounds.getZsize() > 65536)
+      if (bounds.getXsize() > MAX_DIAMETER
+          || bounds.getYsize() > MAX_DIAMETER
+          || bounds.getZsize() > MAX_DIAMETER)
         throw new IllegalArgumentException("Oversized work area");
     }
   }
@@ -30,7 +33,10 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
   }
 
   private static Shape range(Vec3 center, double radius) {
-    return new Shape(new AABB(center, center).inflate(Math.max(0, radius)), true, false);
+    // Creative values remain unrestricted; only the display fits its bounded packet format.
+    // Leave a small margin for coordinate rounding near the world's edge.
+    double displayed = Math.min((MAX_DIAMETER - .001) * .5, Math.max(0, radius));
+    return new Shape(new AABB(center, center).inflate(displayed), true, false);
   }
 
   private static AABB tunnelPlane(TunnelSlime tunnel, BlockPos front) {
@@ -136,11 +142,17 @@ public record SlimeWorkArea(boolean planned, List<Shape> shapes) {
     } else if (slime instanceof FieldSlime field) {
       BlockPos center = field.getPreviewWorkHome();
       if (slime instanceof FarmingSlime && !slime.isWorking()) center = slime.blockPosition();
-      shapes.add(range(Vec3.atCenterOf(center), radius));
+      var displayed = range(Vec3.atCenterOf(center), radius);
+      shapes.add(displayed);
       if (slime instanceof FarmingSlime farming && slime.isWorking()) {
         AABB plots = null;
         for (var plot : farming.getFarmPlots())
           plots = plots == null ? new AABB(plot) : plots.minmax(new AABB(plot));
+        if (plots != null
+            && (plots.getXsize() > MAX_DIAMETER
+                || plots.getYsize() > MAX_DIAMETER
+                || plots.getZsize() > MAX_DIAMETER))
+          plots = plots.intersects(displayed.bounds()) ? plots.intersect(displayed.bounds()) : null;
         if (plots != null) shapes.add(new Shape(plots, false, true));
       }
       if (slime.isWorking() && field.getWorkTarget() != null)

@@ -6,16 +6,16 @@
   "pages": [
     {
       "type": "slimic:companion_intro",
-      "text": "Two ordinary $(l:companions/transport)Transport Slimes$() can share a temporary body through $(l:world/colony_bonding)Colony Bonding$(). Their original identities stay within it. Newly deployed and restored colonies start in Wait.",
+      "text": "Two ordinary $(l:companions/transport)Transport Slimes$() form a colony through $(l:world/colony_bonding)Colony Bonding$(). A visible cord links their two moving bodies. Both retain their identities. New and recovered deployments start in Wait.",
       "title": "Transport Slime Colony"
     },
     {
       "type": "patchouli:text",
-      "text": "The colony uses one movement and transport order. Its carrying capacity is exactly the sum of both members' real capacities. The ordinary Transport capacity bonus is already included. It collects cargo and brings tools or work supplies through the ordinary logistics network."
+      "text": "The bodies move separately within the cord’s reach and divide cargo collection, unloading and supply deliveries. They share one bag and order. Capacity is the sum of both members’ real capacities, including their ordinary Transport bonuses."
     },
     {
       "type": "patchouli:text",
-      "text": "Every transfer changes real member bags. Remaining health and stamina follow the members when separated. Growth is individual. Recover it, then use a bonding station to restore both original slimes nearby in Wait. It cannot operate in two distant places at once."
+      "text": "Either body opens management; Wait stops both. Health and stamina are shared. Unused points start at their mean rounded down. One point upgrades each uncapped member. Growth is half rate while any role stat can upgrade both; otherwise normal. Recover and unbind to return both in Wait with their traits, each receiving the shared point balance."
     }
   ],
   "extra_recipe_mappings": {

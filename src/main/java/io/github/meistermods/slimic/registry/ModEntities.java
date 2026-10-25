@@ -47,9 +47,22 @@ public final class ModEntities {
                   EntityType.Builder.of(
                           io.github.meistermods.slimic.entity.BoundTransportSlime::new,
                           MobCategory.CREATURE)
-                      .sized(1.55F, 1.04F)
+                      .sized(1.04F, 1.04F)
                       .clientTrackingRange(10)
                       .build("slimic:bound_transport_slime"));
+  public static final RegistryObject<
+          EntityType<io.github.meistermods.slimic.entity.TransportColonyBody>>
+      TRANSPORT_COLONY_BODY =
+          ENTITY_TYPES.register(
+              "transport_colony_body",
+              () ->
+                  EntityType.Builder.of(
+                          io.github.meistermods.slimic.entity.TransportColonyBody::new,
+                          MobCategory.MISC)
+                      .sized(1.04F, 1.04F)
+                      .clientTrackingRange(10)
+                      .noSave()
+                      .build("slimic:transport_colony_body"));
   public static final RegistryObject<
           EntityType<io.github.meistermods.slimic.entity.BoundCombatSlime>>
       BOUND_COMBAT_SLIME =
@@ -353,10 +366,13 @@ public final class ModEntities {
 
   private ModEntities() {}
 
-  /** Companion-only catalogs exclude hostile remnants, which have no summon-item contract. */
+  /** Companion catalogs exclude hostile remnants and transient bodies without a summon item. */
   public static java.util.Collection<RegistryObject<EntityType<?>>> companionTypes() {
     return ENTITY_TYPES.getEntries().stream()
-        .filter(entry -> entry.get().getCategory() != MobCategory.MONSTER)
+        .filter(
+            entry ->
+                entry.get().getCategory() != MobCategory.MONSTER
+                    && !entry.getId().equals(TRANSPORT_COLONY_BODY.getId()))
         .toList();
   }
 
@@ -393,6 +409,13 @@ public final class ModEntities {
   @SubscribeEvent
   public static void registerAttributes(EntityAttributeCreationEvent event) {
     event.put(BOUND_TRANSPORT_SLIME.get(), FriendlySlime.createAttributes().build());
+    event.put(
+        TRANSPORT_COLONY_BODY.get(),
+        net.minecraft.world.entity.Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 16)
+            .add(Attributes.MOVEMENT_SPEED, .3)
+            .add(Attributes.FOLLOW_RANGE, 32)
+            .build());
     event.put(BOUND_COMBAT_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(
         AIMLESS_COLONY.get(),

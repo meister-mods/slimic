@@ -232,8 +232,8 @@ public final class ColonyBondingData extends SavedData {
     }
     acknowledgeStored(player.serverLevel(), slime.getUUID());
     CompanionRegistry.get(player.serverLevel()).mark(slime, CompanionRegistry.Location.ITEM);
-    slime.dropLeash(true, true);
     slime.discard();
+    slime.dropLeash(true, true);
     player.inventoryMenu.broadcastChanges();
     return net.minecraft.world.InteractionResult.CONSUME;
   }

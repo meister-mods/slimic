@@ -261,8 +261,19 @@ public abstract class FieldSlime extends BagSlime {
     return player;
   }
 
+  private static boolean loadedForMutation(ServerLevel level, BlockPos pos) {
+    if (!level.hasChunkAt(pos)) return false;
+    // Native break/place notifications read adjacent cells, even for a remotely reached crop.
+    for (var direction : Direction.Plane.HORIZONTAL) {
+      var neighbor = pos.relative(direction);
+      if (level.getChunkSource().getChunkNow(neighbor.getX() >> 4, neighbor.getZ() >> 4) == null)
+        return false;
+    }
+    return true;
+  }
+
   protected final boolean permitted(ServerLevel level, BlockPos pos) {
-    return level.hasChunkAt(pos)
+    return loadedForMutation(level, pos)
         && inArea(pos)
         && level.getWorldBorder().isWithinBounds(pos)
         && level.mayInteract(worker(level), pos);

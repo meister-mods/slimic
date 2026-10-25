@@ -975,6 +975,13 @@ public class MiningSlime extends BagSlime {
     for (BlockPos floor : quarry.floorsAt(quarry.layer())) {
       BlockState previous = server.getBlockState(floor);
       if (previous.isCollisionShapeFullBlock(server, floor) && !previous.hasBlockEntity()) continue;
+      var player = worker(server);
+      if (!server.getWorldBorder().isWithinBounds(floor) || !server.mayInteract(player, floor)) {
+        travelBlocked = true;
+        status = Status.UNREACHABLE;
+        getNavigation().stop();
+        return false;
+      }
       if (!previous.canBeReplaced() || previous.hasBlockEntity()) {
         travelBlocked = true;
         status = Status.UNREACHABLE;
@@ -1053,9 +1060,10 @@ public class MiningSlime extends BagSlime {
         status = Status.UNREACHABLE;
         return false;
       }
-      var player = worker(server);
       if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)
-          || !canContinueWork(player)) {
+          || !canContinueWork(player)
+          || !server.getWorldBorder().isWithinBounds(floor)
+          || !server.mayInteract(player, floor)) {
         snapshot.restore(true, false);
         travelBlocked = true;
         status = Status.UNREACHABLE;

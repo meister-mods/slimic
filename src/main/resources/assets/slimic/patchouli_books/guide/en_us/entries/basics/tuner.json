@@ -24,7 +24,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click your companion with a Slime Scanner to preview its current or planned work area for 15 seconds. Hold the scanner in either hand to keep it visible. Cyan marks range; gold marks the next section or registered plots. Scanning does not start work. Shift-right-click recovers the companion."
+      "text": "Right-click your companion with a Slime Scanner to preview its work area for 15 seconds. Keep a scanner in either hand. Cyan marks range; gold marks the next section or registered plots. Very large Creative ranges are clipped for display; stats stay unchanged. Scanning does not start work."
     }
   ],
   "extra_recipe_mappings": {

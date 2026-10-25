@@ -1,6 +1,7 @@
 package io.github.meistermods.slimic.menu;
 
 import io.github.meistermods.slimic.entity.BagSlime;
+import io.github.meistermods.slimic.entity.BoundColony;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.SlimeStat;
 import io.github.meistermods.slimic.registry.ModItems;
@@ -90,7 +91,7 @@ public final class CreativeSlimeTunerMenu extends AbstractContainerMenu {
             || (slime.isAlive()
                 && !slime.isRemoved()
                 && player.level() == slime.level()
-                && player.distanceToSqr(slime) <= 256));
+                && slime.isWithinManagementRange(player, 256)));
   }
 
   public boolean apply(Player player, double[] values, float health, float stamina, long points) {
@@ -107,11 +108,20 @@ public final class CreativeSlimeTunerMenu extends AbstractContainerMenu {
         points > 32767
             || health > SlimeStat.HEALTH.maxTunedValue()
             || stamina > SlimeStat.STAMINA.maxTunedValue();
+    boolean[] changed = new boolean[SlimeStat.values().length];
     for (SlimeStat stat : SlimeStat.values()) {
       if (!stat.acceptsTunedValue(values[stat.ordinal()])) return false;
       warning |= !stat.isRecommendedValue(values[stat.ordinal()]);
+      changed[stat.ordinal()] = Double.compare(stat.tunerValue(slime), values[stat.ordinal()]) != 0;
     }
-    if (slime instanceof BagSlime bag) {
+    var colony = BoundColony.ready(slime);
+    if (changed[SlimeStat.CAPACITY.ordinal()]
+        && colony != null
+        && !colony.canTuneCapacity(values[SlimeStat.CAPACITY.ordinal()])) {
+      result = 4;
+      return false;
+    }
+    if (changed[SlimeStat.CAPACITY.ordinal()] && slime instanceof BagSlime bag) {
       int capacity = (int) (values[SlimeStat.CAPACITY.ordinal()] * slime.capacityMultiplier());
       for (int slot : bag.getBag().occupiedSlots())
         if (slot >= capacity && !bag.getBag().getStackInSlot(slot).isEmpty()) {
@@ -119,7 +129,8 @@ public final class CreativeSlimeTunerMenu extends AbstractContainerMenu {
           return false;
         }
     }
-    for (SlimeStat stat : SlimeStat.values()) stat.tune(slime, values[stat.ordinal()]);
+    for (SlimeStat stat : SlimeStat.values())
+      if (changed[stat.ordinal()]) stat.tune(slime, values[stat.ordinal()]);
     slime.setTunedVitals(health, stamina, points);
     result = warning ? 2 : 1;
     return true;

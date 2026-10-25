@@ -108,11 +108,12 @@ public final class DragonSlime extends CombatSlime {
     // A direct flame ray cannot hit an allied bystander or ignite protected terrain.
     var fire = new SmallFireball(server, this, direction.x, direction.y, direction.z);
     float health = victim.getHealth();
+    float absorption = victim.getAbsorptionAmount();
     boolean hit =
         victim.hurt(
             damageSources().fireball(fire, this),
             (float) Math.max(2, SlimeStat.ATTACK.value(this)));
-    if (hit && victim.getHealth() < health) {
+    if (hit && (victim.getHealth() < health || victim.getAbsorptionAmount() < absorption)) {
       if (victim.isAlive()) victim.setSecondsOnFire(4);
       spendStamina(4);
       recordCompletedWork();

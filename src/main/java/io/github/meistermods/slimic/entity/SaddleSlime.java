@@ -143,10 +143,11 @@ public final class SaddleSlime extends FriendlySlime {
         || isVehicle()
         || player.isPassenger()) return false;
     if (level().isClientSide) return true;
+    if (!player.startRiding(this)) return false;
     setWaiting(false);
     getNavigation().stop();
     clearRiderInput();
-    return player.startRiding(this);
+    return true;
   }
 
   @Override

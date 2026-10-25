@@ -219,6 +219,11 @@ public class TunnelSlime extends MiningSlime {
             : Status.FOLLOWING;
   }
 
+  @Override
+  public int getRequiredToolSlot() {
+    return requiredTool;
+  }
+
   private int materialSlot() {
     for (int i : getBag().occupiedSlots())
       if (!getLiningTemplate().isEmpty()

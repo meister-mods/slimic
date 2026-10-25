@@ -195,15 +195,17 @@ public final class CreativeSlimeTunerScreen
     graphics.drawWordWrap(
         font, Component.translatable("screen.slimic.tuner_help"), 192, 106, 156, 0xffb4c9d1);
     String status =
-        menu.result() == 3
-            ? "screen.slimic.capacity_occupied"
-            : !validInput() && loaded
-                ? "screen.slimic.invalid_tuning"
-                : menu.result() == 2
-                    ? "screen.slimic.tuned_recommended_warning"
-                    : beyondRecommendations()
-                        ? "screen.slimic.recommended_warning"
-                        : menu.result() == 1 ? "screen.slimic.tuned" : null;
+        menu.result() == 4
+            ? "screen.slimic.capacity_unrepresentable"
+            : menu.result() == 3
+                ? "screen.slimic.capacity_occupied"
+                : !validInput() && loaded
+                    ? "screen.slimic.invalid_tuning"
+                    : menu.result() == 2
+                        ? "screen.slimic.tuned_recommended_warning"
+                        : beyondRecommendations()
+                            ? "screen.slimic.recommended_warning"
+                            : menu.result() == 1 ? "screen.slimic.tuned" : null;
     if (status != null)
       graphics.drawWordWrap(font, Component.translatable(status), 10, 208, 338, 0xffffd77e);
   }

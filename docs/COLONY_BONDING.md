@@ -18,7 +18,11 @@ The screen shows both names, current health and stamina, unused individual point
 
 ## Operate the colony
 
-The colony acts as **one companion**, shown as two joined gel bodies. It retains both original companions, which cannot be deployed separately while bound. The representative has one movement and work order. New deployment and recovered deployment select **Wait**; ordinary world reloads preserve an existing explicit order.
+The colony is managed as **one companion** and retains both original members. They cannot be deployed separately while bound. New deployment and recovered deployment select **Wait**; ordinary world reloads preserve an existing explicit order.
+
+A **Transport Slime Colony** has two moving bodies joined by a visible cord. They share one bag and order, but can collect cargo, unload and deliver supplies separately within the cord’s reach. They coordinate their jobs so they do not reserve the same worker or supply item twice. Interacting with either body manages the whole colony; Wait stops both. A Combat Slime Colony continues to move and fight as one joined body.
+
+The shared unused-point balance starts at the **arithmetic mean of both members’ balances, rounded down**. For example, 2 and 5 unused points become a shared balance of 3. Their existing stat investments remain separate.
 
 | Property | Behavior |
 | --- | --- |
@@ -31,18 +35,21 @@ The colony acts as **one companion**, shown as two joined gel bodies. It retains
 | Attack base | 60% of the combined individual attack values, before the active weapon's native effects. |
 | Combat equipment | The first input member supplies the active sword, shield and armor; wear and replacements alter that member's real items. The second member's gear remains stored. |
 | Combat target filters | Initial group filters follow the first member. Group filter changes do not overwrite either member's saved individual filters. |
-| Growth | Completed activity alternates between members. Their points and investment remain individual, rather than pooled. |
-| Training and Creative tuning | Point upgrades and edits to the unspent balance use the first member. Direct colony stat edits affect both members; health, stamina, and capacity are combined values. |
+| Growth | Activity counts at half rate while any stat used by the role can still be upgraded for both members. Once no such stat remains, it counts at the normal rate, including when all stats are capped. The point-cost formula stays unchanged, and earned points join the shared pool. |
+| Point upgrades | One shared point raises the selected stat by one step for each member below its cap. If only one can improve, only that member is upgraded; a capped member stays unchanged. If both are capped, no point is spent. Existing investments are not reset. |
+| Creative tuning | Editing unused points changes only the shared pool and preserves unchanged stats and capacities. Direct stat edits still affect both members using the existing colony stat rules; health, stamina, and capacity are totals. |
 
-Each member retains its own body color and held-item appearance. Both combat bodies display the first member's active armor, including its material, dye and glint; the second member's original armor stays stored for unbinding. The representative can follow, wait, work, change dimension, receive logistics support, heal, be recovered and be revived through the common companion systems. Its one shared order concentrates capacity or survivability but cannot run two distant jobs or provide two independent attacks.
+Reaching a cap on one stat does not restore full growth while another role stat still allows both members to improve. When both can upgrade the chosen stat, they receive the same increment and retain their prior difference.
 
-Recovering or separating a colony does not restore its members’ health or stamina. Rename the representative independently if desired; original member names are preserved for unbinding. Dyeing or washing the colony updates member one. When unbound, status effects, absorption health, fire, freezing and the shared body’s air supply transfer once to member one, retaining their remaining amount and duration. Temporary bonus health survives recovery and unbinding. To train the other member directly, unbind and either manage it normally or put it first when binding again.
+Each member retains its own body color and held-item appearance. Both combat bodies display the first member's active armor, including its material, dye and glint; the second member's original armor stays stored for unbinding. The representative can follow, wait, work, change dimension, receive logistics support, heal, be recovered and be revived through the common companion systems. Transport bodies remain within a limited distance of each other and use the same health and stamina. Combat colonies do not gain a second independent attack.
+
+Recovering or separating a colony does not restore its members’ health or stamina. Rename the representative independently if desired; original member names are preserved for unbinding. Dyeing or washing the colony updates member one. When unbound, status effects, absorption health, fire, freezing and the colony’s air supply transfer once to member one, retaining their remaining amount and duration. Temporary bonus health survives recovery and unbinding.
 
 ## Unbind safely
 
 Recover the colony, place it **alone in the first station slot**, inspect both records and confirm **Unbind**. The station needs two nearby loaded landing spaces with solid floors, sufficient collision clearance and no fluids. Blocked space, cancelled admission or failed pre-commit storage keeps the colony available.
 
-On success, the original **two companions** return nearby in **Wait**, retaining their remaining health, stamina, equipment, cargo, ownership, individual growth and profession settings. The representative is retired. Copied pre-binding items and old colony items cannot deploy duplicate identities.
+On success, the original **two companions** return nearby in **Wait**, retaining their remaining health, stamina, equipment, cargo, ownership, invested upgrades and profession settings. The remaining shared balance is copied to each member: a colony with 3 unused points returns two companions with 3 unused points each. The representative is retired. Copied pre-binding items and old colony items cannot deploy duplicate identities.
 
 If the colony collapses, the common broken-companion system preserves its member records. A slimeball revival restores the representative with **one total health**, shared across the members. It does not restore two full-health companions. Recover and unbind it after revival when safe.
 
