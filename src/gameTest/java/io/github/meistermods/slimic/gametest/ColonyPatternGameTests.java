@@ -61,8 +61,10 @@ public final class ColonyPatternGameTests {
       var f = new Fixture(h);
       var side = new net.minecraft.world.phys.Vec3(-forward.z, 0, forward.x);
       var aim = f.target(h, 7.5 + forward.x * 5, 7.5 + forward.z * 5);
-      var outside = f.target(h, 7.5 + side.x * 2.5, 7.5 + side.z * 2.5);
-      var inside = f.target(h, 7.5 + side.x, 7.5 + side.z);
+      double halfWidth = f.boss.getBbWidth() * .5;
+      double outsideDistance = halfWidth + aim.getBbWidth() + .1;
+      var outside = f.target(h, 7.5 + side.x * outsideDistance, 7.5 + side.z * outsideDistance);
+      var inside = f.target(h, 7.5 + side.x * (halfWidth - .1), 7.5 + side.z * (halfWidth - .1));
       f.boss.setTarget(aim);
       begin(f.boss, AimlessColony.Pattern.DASH);
       step(f, AimlessColony.Pattern.DASH.warning);
@@ -115,10 +117,11 @@ public final class ColonyPatternGameTests {
       throws Exception {
     var f = new Fixture(h);
     f.boss.setTarget(f.target(h, 7.5, 13.5));
-    var rear = f.target(h, 7.5, 6.0);
-    var beyondRear = f.target(h, 7.5, 5.5);
-    var front = f.target(h, 7.5, 9.0);
-    var beyondFront = f.target(h, 7.5, 9.5);
+    double halfWidth = f.boss.getBbWidth() * .5;
+    var rear = f.target(h, 7.5, 7.5 - halfWidth + .1);
+    var beyondRear = f.target(h, 7.5, 7.5 - halfWidth - .1);
+    var front = f.target(h, 7.5, 7.5 + halfWidth - .1);
+    var beyondFront = f.target(h, 7.5, 7.5 + halfWidth + .1);
     begin(f.boss, AimlessColony.Pattern.DASH);
     h.assertTrue(
         Math.abs(f.boss.dashRemainingDistance() - 7.8) < 1E-9,

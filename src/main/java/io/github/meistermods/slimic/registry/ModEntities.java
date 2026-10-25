@@ -70,7 +70,7 @@ public final class ModEntities {
                   EntityType.Builder.of(
                           io.github.meistermods.slimic.entity.AimlessColony::new,
                           MobCategory.MONSTER)
-                      .sized(3.2F, 2.4F)
+                      .sized(3.6F, 3.0F)
                       .clientTrackingRange(12)
                       .build("slimic:aimless_colony"));
   public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.ColonyFragment>>

@@ -12,8 +12,8 @@
 
 | 파일 | 표시 요소 |
 | --- | --- |
-| `mining.png` | 채굴·터널·고대 채굴·고대 터널·차세대 채굴 슬라임의 노란 안전모, 챙, 앞쪽 발광 램프. |
-| `prospecting_goggles.png` | 차세대 채굴 슬라임의 안전 안경 테·렌즈·끈. 64×64픽셀입니다. |
+| `mining.png` | 채굴·터널·고대 채굴·고대 터널·차세대 채굴·차세대 터널 슬라임의 노란 안전모, 챙, 앞쪽 발광 램프. |
+| `prospecting_goggles.png` | 차세대 채굴·차세대 터널 슬라임의 안전 안경 테·렌즈·끈. 64×64픽셀입니다. |
 | `transport.png` | 운반·창고 슬라임의 나무 가방과 갈색 끈. |
 | `farmer.png` | 농사 슬라임의 밀짚모자, 챙, 가죽 띠. |
 | `lumberjack.png` | 벌목 슬라임의 가죽 모자와 챙. |
@@ -25,7 +25,7 @@
 | `soggy.png` | 초록 점액 방울. |
 | `fishing.png` | 낮게 내려온 파란 멜빵 바지, 끈, 금색 단추. |
 | `abundance.png` | 옆에 든 황금 리라, 상아색 현, 초록 월계관. |
-| `tunnel.png` | 금속 광산 수레와 어두운 바퀴. |
+| `tunnel.png` | 금속 마인카트 외장과 어두운 바퀴. |
 | `dragon.png` | 보라색 날개막과 어두운 뿔. |
 | `commander.png` | 검은 콧수염, 나무 지휘봉, 금색 봉 끝. |
 | `guardian_halo.png` | 빛나는 황금 고리. |
@@ -43,7 +43,7 @@
 
 [`texture-layouts.json`](texture-layouts.json)에 각 아틀라스의 모델 클래스와 직육면체 영역을 정리합니다. `uv`는 직육면체 영역 왼쪽 위의 논리 좌표이며, `size`는 모델 단위의 너비·높이·깊이입니다. `cube`는 해당 모델 부품 안에서 1부터 세는 직육면체 순번입니다. 반복되는 리라 현과 좌우 드래곤 날개는 각각 같은 UV 영역을 공유합니다.
 
-시작점이 `(u, v)`, 크기가 `(w, h, d)`인 직육면체의 두 수평 면은 `(u+d, v, w, d)`와 `(u+d+w, v, w, d)`를 차지합니다. 네 수직 면은 `v+d`에서 시작하는 한 줄에 깊이 `d`, 너비 `w`, 깊이 `d`, 너비 `w` 순서로 놓이며 높이는 `h`입니다. 기본 PNG에서 영역을 찾으려면 이 좌표에 4를 곱합니다. 소수 크기를 사용하는 얇은 부품은 가장자리의 불투명 여백을 유지합니다.
+시작점이 `(u, v)`, 크기가 `(w, h, d)`인 직육면체의 두 수평 면은 `(u+d, v, w, d)`와 `(u+d+w, v, w, d)`를 차지합니다. 네 수직 면은 `v+d`에서 시작하는 한 줄에 깊이 `d`, 너비 `w`, 깊이 `d`, 너비 `w` 순서로 놓이며 높이는 `h`입니다. 256×256 아틀라스에서는 이 좌표에 4를 곱하고, 64×64 안경 아틀라스에서는 그대로 사용합니다. 소수 크기를 사용하는 얇은 부품은 가장자리의 불투명 여백을 유지합니다.
 
 표면 수정은 **F3+T**로 리소스를 다시 불러오면 반영됩니다. UV 배치·입체 형태·부착 위치를 바꿀 때는 해당 클라이언트 모델도 수정합니다. 채굴 램프와 수호 고리의 최대 밝기, 가죽 염색, 갑옷 마법 부여 광택은 렌더링 시 적용합니다.
 
@@ -70,7 +70,7 @@ JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -Pcl
 JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
-클라이언트 스모크 검증에 `-Dslimic.accessoryTexturesOnly=true`를 지정하면 불러온 PNG 크기와 Minecraft 모델의 실제 UV가 가리키는 면의 불투명도를 확인합니다. 이어서 스물일곱 직업과 갑옷 외형 8종의 앞뒤 모습을 촬영하며, 가죽 염색·몸체 염색·마법 부여 광택·장착 도구·날개를 포함합니다. 임시 512×512 리소스 팩 교체와 원래 256×256 GPU 텍스처 복원도 확인합니다. `-Dslimic.textureReloadCycles=100`을 추가하면 교체·복원 주기를 반복해 장시간 재로딩을 검사합니다. 기존 `-Dslimic.inventoryLayoutOnly=true` 검증은 동기화된 한·영 관리 화면 배치를 확인합니다. 이 옵션들은 개발 클라이언트의 설정된 실행 폴더에 `slimic-smoke`라는 월드가 미리 준비되어 있어야 합니다. 검증 중 인벤토리와 게임 모드를 바꾸므로 전용 검사 월드를 사용합니다.
+클라이언트 스모크 검증에 `-Dslimic.accessoryTexturesOnly=true`를 지정하면 불러온 PNG 크기와 Minecraft 모델의 실제 UV가 가리키는 면의 불투명도를 확인합니다. 이어서 모든 일반·군체 동료와 갑옷 외형 8종의 앞뒤 모습을 촬영하며, 가죽 염색·몸체 염색·마법 부여 광택·장착 도구·날개를 포함합니다. 임시 512×512 리소스 팩 교체와 원래 256×256 GPU 텍스처 복원도 확인합니다. `-Dslimic.textureReloadCycles=100`을 추가하면 교체·복원 주기를 반복해 장시간 재로딩을 검사합니다. 기존 `-Dslimic.inventoryLayoutOnly=true` 검증은 동기화된 한·영 관리 화면 배치를 확인합니다. 이 옵션들은 개발 클라이언트의 설정된 실행 폴더에 `slimic-smoke`라는 월드가 미리 준비되어 있어야 합니다. 검증 중 인벤토리와 게임 모드를 바꾸므로 전용 검사 월드를 사용합니다.
 
 시각 검증은 번역된 자재 탭, 간결한 장식 툴팁, 모든 월드 모델, 상자 아틀라스와 개폐, 바닐라 잔디 경계, 실제 GPU 아틀라스의 차원문 애니메이션 갱신을 확인합니다.
 
@@ -92,14 +92,18 @@ The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/asset
 
 왕실 유물은 `textures/item`의 투명한 **16×16** PNG를 사용합니다. `kingdom_map_fragment`, `ancient_kingdom_map`, `royal_survey_compass`, `royal_courtyard_seal`, `royal_gallery_seal`, `royal_synthesis_core`는 제한된 팔레트와 서로 다른 윤곽·문양으로 구분합니다. 측량침의 아이템 모델 32종은 바닐라 나침반 속성으로 그림을 회전합니다.
 
-차세대 채굴 소환 아이템은 공통 슬라임 바탕과 전용 `next_generation_mining_crest` 문장을 사용합니다. 채굴모의 왕실 융합 코어 문양은 헤드 랜턴을 피한 옆면에 표시합니다. 안전 안경은 전용 64×64 `prospecting_goggles` UV 아틀라스의 짙은 금속·철·청록 유리·가죽 영역을 사용합니다. 테는 불투명하며 렌즈는 얼굴 위에 반투명으로 표시합니다. 몸체와 부착 장비는 일반 동료의 75%로 함께 렌더링합니다. 길들인 고대 동료의 머리 표식은 계속 하얀색입니다. 융합 장치와 성채 중계대 모델은 왕실 아이템 그림과 금·석재 표면을 결합합니다. 결속한 왕국 지도를 손에 들면 바닐라 지도 데이터·플레이어 표식·지도 렌더러를 사용합니다.
+차세대 채굴 소환 아이템은 공통 슬라임 바탕과 전용 `next_generation_mining_crest` 문장을 사용합니다. 채굴모의 왕실 융합 코어 문양은 헤드 랜턴을 피한 옆면에 표시합니다. 안전 안경은 전용 64×64 `prospecting_goggles` UV 아틀라스의 짙은 금속·철·청록 유리·가죽 영역을 사용합니다. 테는 불투명하며 렌즈는 얼굴 위에 반투명으로 표시합니다. 몸체와 부착 장비는 일반 동료의 75%로 함께 렌더링합니다. 길들인 고대 동료의 머리 표식은 계속 하얀색입니다. 융합 장치와 성채 중계대 모델은 왕실 아이템 그림과 금·석재 표면을 결합합니다. 목적지를 기록한 왕국 지도를 손에 들면 바닐라 지도 데이터·플레이어 표식·지도 렌더러를 사용합니다.
 
 차세대 터널 슬라임은 작은 채굴모·안전 안경과 좁은 수레를 사용하고 소환 아이템은 공통 금 블록 판을 상속합니다. 전용 투명 16×16 `next_generation_tunnel_crest` 문장은 청록색 정사각형 굴을 둘러싼 은색 측정 도구와 초록 왕실 표식을 표현하며 불투명 색상은 최대 12색입니다.
 
 ## 집합실과 군체 에셋
 
-새 재료·기록 아이콘은 `textures/item`의 `colony_heart`, `cohesion_shard`, `assembly_clue`, `last_rally_record`, `endless_assembly_record`이며 기본 **16×16** PNG입니다. 결속 소환 아이템 둘은 `slime_summon_base`를 유지하고, 각각 16×16 `bound_transport_slime_crest`, `bound_combat_slime_crest` 문장을 얹습니다. `textures/block/colony_bonding_top.png`는 별도의 16×16 장치 표면입니다.
+재료·기록 아이콘은 `textures/item`의 `colony_heart`, `cohesion_shard`, `assembly_clue`, `last_rally_record`, `endless_assembly_record`이며 기본 **16×16** PNG입니다. 결속 소환 아이템 둘은 `slime_summon_base`를 유지하고, 각각 16×16 `bound_transport_slime_crest`, `bound_combat_slime_crest` 문장을 얹습니다. `textures/block/colony_bonding_top.png`는 별도의 16×16 장치 표면입니다.
 
-보스는 **64×64** 논리 아틀라스인 `textures/entity/aimless_colony.png`를 사용합니다. 오른쪽 아래 8×8 영역이 내부 금색 핵의 표면이며, 모델은 불투명한 핵을 별도로 그린 뒤 반투명 초록 외피를 혼합합니다. **64×32** 분체 피부 셋 `colony_fragment_attack`, `colony_fragment_cohesion`, `colony_fragment_returning`은 각각 주황·보라·청록 계열입니다. 금색 핵의 형태도 서로 달라 역할을 구별할 수 있습니다. 결속 동료의 붙어 있는 몸 둘은 기존 역할 모델과 실제 구성원의 몸 색·손 장비를 재사용합니다. 전투 군체의 두 몸에는 첫 구성원의 실제 갑옷 아틀라스·염색·마법 부여 광택을 함께 표시하며, 둘째의 보관된 갑옷은 바꾸지 않습니다.
+보스는 불규칙한 초록 점액 무늬를 담은 기본 **64×64** 아틀라스 `textures/entity/aimless_colony.png`를 사용합니다. 겹친 직육면체 덩어리 8개가 비대칭 몸체를 이루며, 어긋난 눈 5개와 드러난 금색 핵 5개가 각 덩어리와 함께 움직입니다. 몸체 UV는 x=0–47, y=0–39 안에 있습니다. 눈 큐브는 (49, 1)에서 시작하고 정면은 x=50–52, y=2–4를 사용합니다. 3×3×3 핵 큐브는 (48, 52)에서 시작해 x=48–59, y=52–57을 사용합니다. 불투명한 눈과 핵을 먼저 그린 뒤 **불투명도 85%** 외피를 혼합합니다. 개별 맥동, 기어가는 파동과 공격 자세에도 각진 실루엣을 유지합니다.
+
+**64×32** 분체 피부 셋 `colony_fragment_attack`, `colony_fragment_cohesion`, `colony_fragment_returning`은 각각 주황·보라·청록 계열입니다. 금색 핵의 형태도 서로 달라 역할을 구별할 수 있습니다.
+
+결속 동료의 붙어 있는 몸 둘은 기존 역할 모델과 실제 구성원의 몸 색·손 장비를 재사용합니다. 전투 군체의 두 몸에는 첫 구성원의 실제 갑옷 아틀라스·염색·마법 부여 광택을 함께 표시하며, 둘째의 보관된 갑옷은 바꾸지 않습니다.
 
 리소스 팩은 같은 경로와 비례 해상도로 교체할 수 있습니다. 보스의 핵 영역과 기본 슬라임 UV 영역을 유지하세요. 공격 바닥 윤곽선·소리·경고 문구·핵 노출 조명은 동적으로 렌더링합니다.

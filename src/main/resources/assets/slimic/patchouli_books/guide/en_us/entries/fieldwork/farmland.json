@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The farmer harvests mature crops and replants the same crop from its bag. Registered soil can be tilled back after reverting to supported dirt. Air, stone, or other non-soil removes a plot; Wait, then Farm registers it again."
+      "text": "The Farming Slime harvests mature crops and replants the same crop from its bag. Registered soil can be tilled back after reverting to supported dirt. Air, stone, or other non-soil removes a plot; Wait, then Farm registers it again."
     },
     {
       "type": "patchouli:text",

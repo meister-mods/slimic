@@ -39,14 +39,14 @@ Use the item on a block or water source, like a spawn egg. A newly crafted item 
 
 An anvil name on the item becomes the slime's custom name.
 
-The player who first summons a fresh item is its primary owner. In this guide, an owner can also mean a player granted shared access through a [Command Slime](#shared-owners-and-enemies); shared access does not replace the primary owner.
+The player who first summons a fresh item is its primary owner. In this guide, an owner can also mean a player granted shared access through a [Command Slime](#shared-owners-and-enemies); shared access does not replace the primary owner. Rules for same-owner companions refer to the primary owner.
 
 | Action | Result |
 | --- | --- |
-| Owner uses a Slime Tuner on the slime | Open the management screen for stats, upgrades, naming, equipment, inventory, and orders. |
-| Owner right-clicks with a Slime Scanner | Preview the current or planned work area for 15 seconds. |
-| Owner Shift-right-clicks | Recover the slime into an inventory item. |
-| Use a recovered item on a block or water source | Release the same companion in Wait with its saved traits. |
+| Owner uses a Slime Tuner on the slime | Opens the management screen for stats, upgrades, naming, equipment, inventory, and orders. |
+| Owner right-clicks with a Slime Scanner | Previews the current or planned work area for 15 seconds. |
+| Owner Shift-right-clicks | Recovers the slime into an inventory item. |
+| Use a recovered item on a block or water source | Releases the same companion in Wait with its saved traits. |
 
 All newly created companions start in **Wait**, including Friendly and Saddle Slimes, Creative defaults, and first specialization of a stored companion. Start Mine, Haul, Watch, Fight, Clean, Farm, Chop, Search, Store, Fish, Nurture, or Tunnel explicitly in management. Select Follow or Roam for Soggy Slime trails, or Follow for guardian movement. Recovered companions also start in Wait; choose a command explicitly to resume movement or work. Missing job data defaults to Wait.
 
@@ -95,6 +95,8 @@ Every summoning item shows its own profession summary, followed by shared releas
 
 Use a **Slime Tuner** on an owned slime to open its management screen. The name field sets a visible name above the slime, like a name tag. Follow and Wait buttons change its order. Mining slimes have a Mine button, separate pickaxe and shovel slots, and a bag. Transport slimes have a Haul button and a larger bag, with no equipment slot.
 
+The Stamina stat sets maximum stamina; current stamina is the resource spent on work and abilities.
+
 | Stat | Initial value | Per point | Purpose |
 | --- | --- | --- | --- |
 | Health | 16 | +4 | Maximum health; upgrading does not refill current health. |
@@ -119,7 +121,7 @@ All companions can earn one unit per 100 ticks (five seconds) of actual horizont
 
 The world's `serverconfig/slimic-server.toml` configures `transportActivityPerDelivery` (default 4, range 1–64), `followingActivityIntervalTicks`, and `monitoringActivityIntervalTicks` (both default 100, range 20–1,200). Existing points and activity are retained.
 
-Stats have different roles. Health, Defense, and Movement Speed benefit every companion. Attack affects Combat, Dragon, and Guardian Angel Slimes; Work Speed, Capacity, Stamina, and Reach serve mining, transport, combat, cleaning, farming, logging, healing, warehouse, fishing, abundance, tunnel, and dragon slimes. Guardian Angel Slimes also use Work Speed, Stamina, and Reach for their abilities. Soggy slimes use Work Speed and Stamina for trail production. Stamina also powers normal mounted flight, ground or air sprinting, firefly bursts, gathering, and Ender abilities. Detection Range serves those workers, signaling slime monitoring, guardian beams, and the Soggy Slime roaming area. Friendly slimes retain all investments when specialized. Upgrade tooltips identify stats outside the current specialization.
+Stats have different roles. Health, Defense, and Movement Speed benefit every companion. Attack affects Combat, Dragon, and Guardian Angel Slimes; Work Speed, Capacity, Stamina, and Reach serve mining, transport, combat, cleaning, farming, logging, healing, warehouse, fishing, abundance, tunnel, and dragon slimes. Guardian Angel Slimes also use Work Speed, Stamina, and Reach for their abilities. Soggy slimes use Work Speed and Stamina for trail production. Current stamina also powers normal mounted flight, ground or air sprinting, firefly bursts, gathering, and Ender abilities. Detection Range serves those workers, signaling slime monitoring, guardian beams, and the Soggy Slime roaming area. Friendly slimes retain all investments when specialized. Upgrade tooltips identify stats outside the current specialization.
 
 Stamina recovers at **2% of maximum per second** during recovery: 2 at 100 maximum, 4 at 200, and 10 at 500. Workers using exhaustion rest resume at 25%, taking about 13 seconds from zero regardless of maximum, subject to tick timing. Larger stamina pools support longer work bursts and proportionally higher recovery. Recovery opportunities still depend on the job.
 
@@ -131,7 +133,7 @@ A full working bag issues a cargo-pickup request. A worker missing its required 
 
 Existing activity is recalculated against the current thresholds when a companion is loaded. Newly earned points are granted and remaining activity is retained; existing points and stat investments remain intact. For example, 200 activity at the first tier becomes two points and 72 remaining activity. Subsequent recovery does not grant those points again.
 
-The Slimic Creative tab groups all twenty-seven companion items first, followed by Slime Trail and Slime Slag; six core variants, the Ancient Command Seal, Old Command Fragment, and Slime Restoration Station; six hostile spawn eggs; Slime Chest and Broken Slime Block; six armor materials; the Slime Tuners and Slime Scanner. Patchouli adds the guidebook. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime. Royal exploration adds kingdom-map fragments, the bound map, survey compass, two seals, synthesis core, Royal Synthesis Station, and Sanctum Relay alongside these materials.
+The main Slimic Creative tab places all twenty-seven companion items first, grouped by role and upgrade line. Management tools, armor, functional stations, exploration clues and restoration materials, records, and hostile spawn eggs follow. Patchouli adds the guidebook. Unbound Slime Teleporters do not appear in the tab; obtain a bound teleporter by linking an Ender Slime.
 
 ## Mining slimes
 
@@ -145,7 +147,7 @@ The quarry reserves a two-block-wide staircase around the chunk perimeter, with 
 
 Mining Slimes in the same chunk share the staircase layout, including new workers starting at different heights. Registered staircase protection remains in world data after builders wait, are recovered, unload, or leave the world; miners with different owners also preserve it. Existing saved work records retain their earlier staircase layouts alongside the shared layout. A repair that would fill another staircase's headroom pauses as unreachable.
 
-Mining stays within the chunk and does not load neighbouring chunks. Air, logs, leaves, axe- or hoe-mineable blocks, block entities, and unbreakable blocks are skipped as ordinary mining targets. Water and lava are handled separately before ordinary blocks in the current layer. An unbreakable floor sealed by the reserved staircase, or the bottom of the dimension completes the quarry. Protected containers or other obstructions can prevent access and may require manual clearance. Block breaking and support placement respect Forge events and `mobGriefing`.
+Mining stays within the chunk and does not load neighbouring chunks. Air, logs, leaves, axe- or hoe-mineable blocks, block entities, and unbreakable blocks are skipped as ordinary mining targets. Water and lava are handled separately before ordinary blocks in the current layer. The quarry completes at the dimension’s bottom or at a solid layer made entirely of unbreakable blocks and reserved staircase floors. Protected containers or other obstructions can prevent access and may require manual clearance. Block breaking and support placement respect Forge events and `mobGriefing`.
 
 When the current quarry layer contains water or lava, a miner without an **empty bucket in its own bag** stops and requests one. A bucket in a nearby chest or the player's inventory does not directly enable removal. Transport slimes can fetch one from a warehouse or Slime Chest and place it in the miner's bag; mining resumes automatically. If the bag is full, cargo is unloaded first. Each successful removal costs one stamina and grants one activity unit. The bucket is neither consumed nor filled, including for lava. Waterlogged blocks retain their block and inventory while their water is removed. Removal respects Reach, sight, Forge protection events, and `mobGriefing`.
 
@@ -322,7 +324,7 @@ Hostile mobs with native target-goal AI, including zombies, skeletons, and spide
 
 A fallen companion leaves a **Broken Slime Block** at its position. The block stores the same UUID, owner, specialization, name, dye, stat investments, points, activity, remaining stamina, equipment, cargo, and applicable work plans. The owner can right-click it with one slimeball to revive it in **Wait** with **1 health**. Survival consumes one ball only after successful revival; Creative consumes none. Clear enough space for the companion before reviving. Blocked placement, an existing matching UUID, or invalid stored data leaves the block and ball intact.
 
-Breaking the block yields a single recovery block item carrying its stored companion; place it again to revive. A collapsed companion does not separately drop its retained equipment or cargo. Existing solid blocks and containers are preserved: if the death position cannot accept the block, a recovery block item is left there instead. The recovery item resists fire, and the placed block resists explosions. Breaking a stored recovery block in Creative also returns its companion item.
+Breaking the block yields a single recovery block item carrying its stored companion; place it again to revive. A collapsed companion does not separately drop its retained equipment or cargo. Existing solid blocks and containers are preserved: if the death position cannot accept the block, a recovery block item is left there instead. The recovery item resists fire, and the placed block resists explosions. Breaking a stored recovery block in Creative also returns the block item with its stored companion.
 
 ## Farming slimes
 
@@ -330,7 +332,7 @@ Craft a Friendly Slime summoning item with **any hoe**, without a fixed shape, t
 
 New farming summons wait. Give the **Farm** order in management to survey loaded farmland around its current position. Detection Range is always twice the common base: 16 blocks initially and two more per ordinary upgrade. After registration, the plot list stays fixed while working. To include later farmland, select **Wait**, then **Farm** again. Follow or Wait stops work.
 
-The slime harvests mature wheat, carrots, potatoes, beetroot, and compatible crop blocks, stores the drops in its ordinary nine-slot starting bag, and replants the same crop using seeds or produce from that bag. Empty plots accept suitable bag seeds. Planting consumes matching bag stock, which harvest drops can replenish. Use management to supply any shortage. Successful harvesting, planting, and soil restoration each award one activity unit and consume one stamina. Work Speed changes the interval between actions.
+The slime harvests mature wheat, carrots, potatoes, beetroot, and compatible crop blocks, stores the drops in its ordinary nine-slot starting bag, and replants the same crop using seeds or produce from that bag. Empty plots accept suitable seeds or plantable produce from the bag. Planting consumes matching bag stock, which harvest drops can replenish. Use management to supply any shortage. Successful harvesting, planting, and soil restoration each award one activity unit and consume one stamina. Work Speed changes the interval between actions.
 
 Registered farmland that reverts to dirt, grass, a dirt path, coarse dirt, or rooted dirt is restored with the equipped hoe when the space above is clear. Soil requiring two tilling stages takes two actions. A registered block observed as air, stone, or any other non-soil block is removed from the plot list; select Wait, then Farm to register it again. Unregistered dirt is left alone. Farming slimes cannot trample farmland, including while following or waiting.
 
@@ -380,7 +382,7 @@ Removing a tree clears its obsolete sapling requirement. Unreachable or pickup-p
 
 Craft a **Friendly Slime** item with a **slimeball**, without a fixed shape, to make a **Soggy Slime**. Stored companion traits are retained. Its summon item shares the common base with a Slime Slag crest; the companion carries three slime droplets on its head and sheds water droplets. It has no bag or equipment slots.
 
-While following or roaming and standing on solid ground, it leaves a one-sixteenth-block-high **Slime Trail** in empty space beneath itself. Wait suspends trail placement. Each placed trail costs one stamina and grants one activity unit; existing blocks and trails are preserved. Work Speed shortens the placement interval from ten ticks, while Stamina increases the available stamina. Stamina recovers at the common rate when trail production pauses. Placement respects Forge permissions and `mobGriefing`, without loading neighbouring chunks.
+While following or roaming and standing on solid ground, it leaves a one-sixteenth-block-high **Slime Trail** in empty space beneath itself. Wait suspends trail placement. Each placed trail costs one stamina and grants one activity unit; existing blocks and trails are preserved. Work Speed shortens the placement interval from ten ticks, while the Stamina stat increases maximum stamina. Current stamina recovers at the common rate when trail production pauses. Placement respects Forge permissions and `mobGriefing`, without loading neighbouring chunks.
 
 Break a trail to obtain **one Slime Slag**. Shovels break it faster. Craft **four Slime Slag** without a fixed shape into **one slimeball**. Removing the supporting ground also drops the trail's slag. Health, stats, owner, dye, growth, and remaining trail timers survive saving and recovery.
 
@@ -442,7 +444,7 @@ Management provides a horizontal direction selector and one **lining template** 
 
 The worker clears a **3×3 horizontal passage** in the chosen direction and fills replaceable holes or fluids in its floor, ceiling, and sides using real matching blocks from its own bag. It preserves existing solid walls. Missing material stops work and requests up to 64 matching blocks from nearby transport or warehouse supply. If storage has none, it remains stopped. A full bag requests unloading.
 
-Mining uses the original pickaxe/shovel, native breaking time, tool tiers, enchantments and protection events. Fluid removal requires one empty bucket in its own bag without consuming or filling it. Protected shared quarry stairs, containers, logs, leaves, and unbreakable blocks stop the bore. Work never excavates a whole chunk or acquires unloaded chunks. Moving the recovered slime away from its route reanchors the bore.
+Mining uses the original pickaxe/shovel, native breaking time, tool tiers, enchantments and protection events. Fluid removal requires one empty bucket in its own bag without consuming or filling it. Protected shared quarry stairs, containers, logs, leaves, and unbreakable blocks stop the bore. Work never excavates a whole chunk or loads previously unloaded chunks. Moving the recovered slime away from its route reanchors the bore.
 
 In flooded passages, the slime holds the tunnel height instead of floating away. It avoids repeatedly draining the same returning flow while clearing the current face. Resting and waiting for supplies suspend forward movement. If it cannot get closer to a work position for 20 seconds, it reports an unreachable route so a Signaling Slime can signal the blockage.
 
@@ -498,7 +500,7 @@ Combine a Friendly Slime with an **ender pearl**. It initially waits without a f
 
 Hold the bound teleporter and right-click in the air to reach a safe space beside that living, pinned companion, including across dimensions. Prepare a dry, unobstructed landing space on a solid floor near the anchor. The destination must again have full stamina; successful travel consumes it all. Teleporting dismounts the player and leaves the mount behind. There is no pearl consumption or teleport damage. Missing, unsafe, unpinned, or unauthorized destinations fail without charging stamina. Teleport events and dimension travel protection remain effective. Primary and shared owners may use the token. It records companion identity, so moving that same companion updates its destination.
 
-Follow releases the anchor. Recovery and collapse release its chunk; ordinary save/restart retains valid pinned chunk tickets. A restored pinned companion anchors at its new release location. If the owner’s other pinned endpoints already fill the limit, release or revival waits for a free slot and preserves the stored item or broken block. Stored or broken companions cannot serve as destinations. At the common 2%-per-second recovery rate, full recharge takes about **50 seconds**; increasing maximum stamina also increases recovery and does not shorten the full-charge interval.
+Follow releases the anchor. Recovery and collapse release its chunk; ordinary save/restart retains valid pinned chunk tickets. A pinned companion released from its item anchors at the new location. If the owner’s other pinned endpoints already fill the limit, release or revival waits for a free slot and preserves the stored item or broken block. Stored or broken companions cannot serve as destinations. At the common 2%-per-second recovery rate, full recharge takes about **50 seconds**; increasing maximum stamina also increases recovery and does not shorten the full-charge interval.
 
 ## Attention slimes
 
@@ -512,7 +514,7 @@ An Attention Slime item may replace the Friendly Slime in all sixteen basic spec
 
 Hold a **Slime Scanner** and right-click an owned or shared companion. Normal entity-interaction reach applies, with an eight-block server limit. The preview is visible only to the requester for 15 seconds and clears when the scanner is put away, the companion disappears, or the dimension changes. Cyan outlines show the current or planned range; gold outlines show the next quarry layer or tunnel face, registered farmland bounds, or the selected work position. Tunnel previews show the next eight sections. Search spheres use each profession’s effective Detection Range. Previews do not start jobs, inspect unloaded terrain, or load chunks. Companions without a work area show a short notice instead.
 
-When a Signaling Slime launches an automatic blocked-work signal, the worker’s online primary and shared owners also receive a chat message containing its type, custom name if present, and concrete cause. Missing pickaxes, shovels, hoes, axes, rods, swords, seeds, saplings, buckets, cobblestone, slimeballs, and lining materials are distinguished from full bags, storage problems, exhaustion, unreachable destinations, and disabled world changes. Messages follow the existing signal delay and ten-second repeat interval. Manual signals and ordinary Wait do not issue blocked-work messages.
+When a Signaling Slime launches an automatic blocked-work signal, the worker’s online primary and shared owners also receive a chat message containing its type, custom name if present, and concrete cause. Missing pickaxes, shovels, hoes, axes, rods, swords, planting materials, saplings, buckets, cobblestone, slimeballs, and lining materials are distinguished from full bags, storage problems, exhaustion, unreachable destinations, and disabled world changes. Messages follow the existing signal delay and ten-second repeat interval. Manual signals and ordinary Wait do not issue blocked-work messages.
 
 ## The Slimic
 

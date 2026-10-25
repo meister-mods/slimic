@@ -1,13 +1,18 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "slimic:luminous_slime"
-    },
-    {
-      "item": "minecraft:stick"
-    }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " N ",
+    "NLN",
+    " N "
   ],
+  "key": {
+    "N": {
+      "item": "minecraft:iron_nugget"
+    },
+    "L": {
+      "item": "slimic:luminous_slime"
+    }
+  },
   "result": {
     "item": "slimic:gel_lantern",
     "count": 1

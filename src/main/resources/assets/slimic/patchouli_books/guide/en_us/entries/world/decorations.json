@@ -5,16 +5,17 @@
   "sortnum": 3,
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "The Slimic Decorations tab holds 31 props and plants. Pedestals, pillars, tablets, urns, furniture, crystals, lights, and weathered markers give settlements their own history. Their recipes use local stone, infused wood, gel, or familiar plants."
+      "type": "patchouli:crafting",
+      "recipe": "slimic:world/gel_lantern",
+      "text": "Four iron nuggets surround Luminous Slime. Four small crystal clusters in a 2×2 square make one large cluster."
     },
     {
       "type": "patchouli:text",
-      "text": "Most solid props face the player when placed, need a firm floor, and can hold water. Their shapes match their visible parts. Gel Lanterns, Ancient Braziers, crystals, and Glowing Blooms provide light; a Dormant Beacon remains unlit."
+      "text": "The Slimic Decorations tab holds 31 props and plants. Wood-and-stick furniture uses distinct patterns; an Old Slime Banner also needs green wool. Recraft one Abandoned Crate into a Broken Crate. Most solid props face you, need a firm floor and can hold water. Their shapes match the visible parts."
     },
     {
       "type": "patchouli:text",
-      "text": "Crates, urns, racks, benches, basins, and broken workbenches are decorations. Use a real Slime Chest for companion logistics and an ordinary crafting table for crafting. Roots, tufts, caps, and blooms can grow as placed decorations on suitable damp soil."
+      "text": "Crates, urns, racks, benches, basins and broken workbenches are decorative. Use Slime Chests for cargo and crafting tables for recipes. Gel Lanterns, Ancient Braziers, crystals and Glowing Blooms give light; Dormant Beacons do not. Plant roots, tufts, caps and blooms on suitable damp soil."
     }
   ],
   "extra_recipe_mappings": {

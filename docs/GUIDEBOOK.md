@@ -4,9 +4,9 @@ English | [한국어](GUIDEBOOK.kr.md) · [Gameplay](GAMEPLAY.md)
 
 The **Slimic Companion Guide** is available with optional Patchouli. Craft one book and one slimeball without a fixed arrangement. Its seven categories contain 73 entries and 237 pages in each of English and Korean. Other languages use English. All entries are available immediately.
 
-The Slime Tuners entry also includes the Slime Scanner recipe and controls.
+The Tuners and Scanner entry explains both tools and their recipes.
 
-Ordinary entries explain features and controls. Slime records appear as separate narrative passages, retaining each writer’s observations, recollections and references to `XXX`.
+Ordinary entries explain features and controls. Slime records appear as separate narrative passages. Their authors recall what they saw and experienced, including their memories of `XXX`.
 
 The world category also includes **Ancient Kingdom Maps**, **Fallen Sanctum**, **The Last Orders**, **Royal Synthesis**, **Royal Watch**, and **Sealed Laboratory**. Growth adds **Inherited Growth**, and companions add **Next-Generation Mining Slime** and **Next-Generation Tunnel Slime**. See [Fallen Sanctum](FALLEN_SANCTUM.md) and [Royal synthesis](SYNTHESIS.md) for the web versions.
 
@@ -18,7 +18,7 @@ The links below open the corresponding web instructions. Item diagrams show spec
 | --- | --- |
 | Using this guide | [In-game guidebook](GAMEPLAY.md#in-game-guidebook) |
 | First steps | [Crafting a Friendly Slime](GAMEPLAY.md#crafting-a-friendly-slime) |
-| Slime Tuners | [Slime Tuners](GAMEPLAY.md#slime-tuners) |
+| Tuners and Scanner | [Slime Tuners](GAMEPLAY.md#slime-tuners) |
 | Orders and ownership | [Work orders and support requests](GAMEPLAY.md#work-orders-and-support-requests) |
 | Recovery and travel | [Recovery and preserved traits](GAMEPLAY.md#recovery-and-preserved-traits) |
 
@@ -116,4 +116,11 @@ The links below open the corresponding web instructions. Item diagrams show spec
 
 ## Assembly and colony entries
 
-Assembly Chambers, The Aimless Colony, Colony Bonding, Assembly Observations, Transport Slime Colony and Combat Slime Colony are included. See [assembly encounters](AIMLESS_COLONY.md) and [Colony Bonding](COLONY_BONDING.md) for web instructions.
+| Entry | Web guide |
+| --- | --- |
+| Assembly Chambers | [Finding an assembly chamber](AIMLESS_COLONY.md#finding-an-assembly-chamber) |
+| The Aimless Colony | [Combat](AIMLESS_COLONY.md#combat) |
+| Colony Bonding | [Bind two companions](COLONY_BONDING.md#bind-two-companions) |
+| Assembly Observations | [Assembly records](AIMLESS_COLONY.md#finding-an-assembly-chamber) |
+| Transport Slime Colony | [Operate the colony](COLONY_BONDING.md#operate-the-colony) |
+| Combat Slime Colony | [Operate the colony](COLONY_BONDING.md#operate-the-colony) |

@@ -11,7 +11,7 @@ public final class AimlessColonyRenderer extends MobRenderer<AimlessColony, Aiml
       ResourceLocation.fromNamespaceAndPath("slimic", "textures/entity/aimless_colony.png");
 
   public AimlessColonyRenderer(EntityRendererProvider.Context context) {
-    super(context, new AimlessColonyModel(context.bakeLayer(AimlessColonyModel.BODY)), 1.4F);
+    super(context, new AimlessColonyModel(context.bakeLayer(AimlessColonyModel.BODY)), 1.7F);
     addLayer(
         new net.minecraft.client.renderer.entity.layers.RenderLayer<>(this) {
           @Override
@@ -32,7 +32,7 @@ public final class AimlessColonyRenderer extends MobRenderer<AimlessColony, Aiml
                       pose,
                       buffers.getBuffer(RenderType.entityTranslucentCull(TEXTURE)),
                       light,
-                      net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
+                      LivingEntityRenderer.getOverlayCoords(entity, 0));
           }
         });
   }

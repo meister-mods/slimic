@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Combine a $(item)Combat Slime + Ancient Command Seal$() without a fixed arrangement. Identity, ownership, growth, current health, gear, and cargo remain. Restoring an Ancient Guard core at a pedestal offers a second route."
+      "text": "Combine a $(item)Combat Slime + Ancient Command Seal$() without a fixed arrangement. Identity, ownership, growth, current health, gear, and cargo remain. Restoring an Ancient Guard core at a Slime Restoration Station offers a second route."
     },
     {
       "type": "patchouli:text",
@@ -18,7 +18,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Protection costs at least four stamina, up to twice the intercepted damage, and cannot take health below one. Tool supply, hauling, healing, Herald reports, Command orders, and portal travel use the existing companion systems. Restored veterans retain ancient names and white ancient insignia."
+      "text": "Protection costs at least four stamina, up to twice the intercepted damage, and cannot take health below one. Tool supply, hauling, healing, Signaling alerts, Command orders, and portal travel use the existing companion systems. Restored veterans retain ancient names and white ancient insignia."
     }
   ],
   "extra_recipe_mappings": {

@@ -12,8 +12,8 @@ Most accessory atlases are **256×256 pixels**, mapped to a **64×64 logical UV 
 
 | File | Visible elements |
 | --- | --- |
-| `mining.png` | Yellow helmet, brim, and luminous front lamp; shared by Mining, Tunnel, Ancient Mining, Ancient Tunnel, and Next-Generation Mining Slimes. |
-| `prospecting_goggles.png` | Next-Generation Mining Slime safety-goggle frames, lenses, and straps; 64×64 pixels. |
+| `mining.png` | Yellow helmet, brim, and luminous front lamp; shared by Mining, Tunnel, Ancient Mining, Ancient Tunnel, Next-Generation Mining, and Next-Generation Tunnel Slimes. |
+| `prospecting_goggles.png` | Next-Generation Mining and Next-Generation Tunnel Slime safety-goggle frames, lenses, and straps; 64×64 pixels. |
 | `transport.png` | Wooden pack and brown straps; shared by Transport and Warehouse Slimes. |
 | `farmer.png` | Straw hat, brim, and leather band for Farming Slimes. |
 | `lumberjack.png` | Leather cap and brim for Logging Slimes. |
@@ -43,7 +43,7 @@ All six armor atlases share their UV coordinates and equipped silhouette. The ex
 
 [`texture-layouts.json`](texture-layouts.json) lists every accessory atlas, its model class, and its cuboid regions. `uv` is the cuboid's top-left logical coordinate; `size` contains width, height, and depth in model units. `cube` numbers the cuboids within a named model part, starting at one. Repeated lyre strings and mirrored dragon wings share their respective UV regions.
 
-For a cuboid with origin `(u, v)` and size `(w, h, d)`, the two horizontal faces occupy `(u+d, v, w, d)` and `(u+d+w, v, w, d)`. The four vertical faces form a row at `v+d`, with widths `d`, `w`, `d`, and `w`, and height `h`. Multiply these coordinates by four to locate the regions in the default PNG. Fractional model dimensions are intentional; retain the opaque padding around their edges.
+For a cuboid with origin `(u, v)` and size `(w, h, d)`, the two horizontal faces occupy `(u+d, v, w, d)` and `(u+d+w, v, w, d)`. The four vertical faces form a row at `v+d`, with widths `d`, `w`, `d`, and `w`, and height `h`. For a 256×256 atlas, multiply these coordinates by four; for the 64×64 goggles atlas, use them directly. Fractional model dimensions are intentional; retain the opaque padding around their edges.
 
 Surface changes follow a resource reload with **F3+T**. Changing the UV layout, volume, or attachment position also requires updating the corresponding client model. The mining lamp and guardian halo retain their full-bright lighting; leather dye and armor enchantment glint remain dynamic.
 
@@ -70,7 +70,7 @@ JAVA_TOOL_OPTIONS="-Dslimic.companionTooltipsOnly=true" ./gradlew runClient -Pcl
 JAVA_TOOL_OPTIONS="-Dslimic.visualPolishOnly=true" ./gradlew runClient -PclientSmoke=true
 ```
 
-The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all twenty-seven professions and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
+The client smoke suite accepts `-Dslimic.accessoryTexturesOnly=true`. It checks loaded PNG dimensions and opaque surface coverage using Minecraft's baked UVs, then captures front and rear portraits of all ordinary and colony companion types and eight armor variants, including dyed leather, a dyed body, enchantment glint, equipped tools, and wings. It also checks a temporary 512×512 resource-pack override and restoration of the original 256×256 GPU texture. `-Dslimic.textureReloadCycles=100` repeats that override/restore cycle for a longer reload check. The existing `-Dslimic.inventoryLayoutOnly=true` check verifies synchronized English and Korean management layouts. These options require a prepared world named `slimic-smoke` in the development client’s configured run directory. They modify the test inventory and game mode; use a dedicated fixture.
 
 The visual-polish check covers localized material tabs, minimal decoration tooltips, all world models, the chest atlas and lid motion, native grass fringes, and actual portal animation updates in the GPU atlas.
 
@@ -92,14 +92,18 @@ Ancient Mining and Ancient Tunnel summon models inherit the shared flat Gold Blo
 
 The royal relics use transparent **16×16** item PNGs with a limited palette under `textures/item`: `kingdom_map_fragment`, `ancient_kingdom_map`, `royal_survey_compass`, `royal_courtyard_seal`, `royal_gallery_seal`, and `royal_synthesis_core`. Each has its own silhouette or emblem. The thirty-two survey-compass item variants rotate its sprite using Minecraft’s compass property.
 
-The Next-Generation Mining Slime summon item keeps the shared slime base and a distinct `next_generation_mining_crest` badge. Its mining helmet carries the Royal Synthesis Core emblem on the side, clear of the headlamp. Safety goggles use the dedicated 64×64 `prospecting_goggles` UV atlas with charcoal, iron, cyan glass, and leather regions. Frames remain opaque while lenses blend over the face. The body and all attached equipment render at 75% of ordinary companion size. Existing tamed ancient head insignia remain white. Station and relay block models combine royal item artwork with gold and stone surfaces. A bound kingdom map uses native map data, player decorations, and the map renderer when held.
+The Next-Generation Mining Slime summon item keeps the shared slime base and a distinct `next_generation_mining_crest` badge. Its mining helmet carries the Royal Synthesis Core emblem on the side, clear of the headlamp. Safety goggles use the dedicated 64×64 `prospecting_goggles` UV atlas with charcoal, iron, cyan glass, and leather regions. Frames remain opaque while lenses blend over the face. The body and all attached equipment render at 75% of ordinary companion size. Existing tamed ancient head insignia remain white. Station and relay block models combine royal item artwork with gold and stone surfaces. A kingdom map with a recorded destination uses native map data, player decorations, and the map renderer when held.
 
 Next-Generation Tunnel Slimes share the compact mining helmet and goggles, use a narrow cart, and inherit the common Gold Block summon plate. Their dedicated transparent 16×16 `next_generation_tunnel_crest` sprite depicts a silver caliper around a teal square tunnel, with an emerald royal detail. The sprite uses at most twelve opaque colors.
 
 ## Assembly and colony assets
 
-New material and record icons use native **16×16** PNGs: `colony_heart`, `cohesion_shard`, `assembly_clue`, `last_rally_record` and `endless_assembly_record` under `textures/item`. The two bound summon items retain `slime_summon_base` and use their own 16×16 `bound_transport_slime_crest` and `bound_combat_slime_crest` overlays. `textures/block/colony_bonding_top.png` is a separate 16×16 station surface.
+Material and record icons use native **16×16** PNGs: `colony_heart`, `cohesion_shard`, `assembly_clue`, `last_rally_record` and `endless_assembly_record` under `textures/item`. The two bound summon items retain `slime_summon_base` and use their own 16×16 `bound_transport_slime_crest` and `bound_combat_slime_crest` overlays. `textures/block/colony_bonding_top.png` is a separate 16×16 station surface.
 
-The boss uses `textures/entity/aimless_colony.png`, a **64×64** logical atlas. Its bottom-right 8×8 field supplies the internal gold cores. The model renders opaque cores in a separate pass before blending the translucent green shell. Three **64×32** fragment skins, `colony_fragment_attack`, `colony_fragment_cohesion` and `colony_fragment_returning`, use orange, violet and teal respectively; distinct gold core shapes also distinguish roles. The two joined companion bodies reuse profession models, actual member dye colors and held items. Both combat bodies use the first member's active armor atlas, dye and enchantment glint; rendering does not replace the second member's stored armor.
+The boss uses `textures/entity/aimless_colony.png`, a native **64×64** atlas with irregular green gel patches. Eight overlapping cuboid lobes form its asymmetrical body; five offset eyes and five exposed gold cores move with their lobes. Body UVs stay within x=0–47, y=0–39. Eye cubes start at (49, 1), with the forward face at x=50–52, y=2–4; 3×3×3 core cubes start at (48, 52), using x=48–59, y=52–57. Opaque eyes and cores render before the **85% opacity** shell. Individual pulses, crawling waves and attack poses retain the block-shaped silhouette.
+
+Three **64×32** fragment skins, `colony_fragment_attack`, `colony_fragment_cohesion` and `colony_fragment_returning`, use orange, violet and teal respectively; distinct gold core shapes also distinguish roles.
+
+The two joined companion bodies reuse profession models, actual member dye colors and held items. Both combat bodies use the first member's active armor atlas, dye and enchantment glint; rendering does not replace the second member's stored armor.
 
 Resource packs may replace these files at the same paths and proportional resolutions. Keep the boss's core field and native slime UV regions aligned. Ground attack outlines, sounds, warning messages and exposed-core lighting are dynamic render behavior.

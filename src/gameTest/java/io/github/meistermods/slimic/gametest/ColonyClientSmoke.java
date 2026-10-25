@@ -37,6 +37,7 @@ public final class ColonyClientSmoke {
   private static volatile UUID[] parents;
   private static volatile UUID colonyId;
   private static volatile Vec3 warnedDashDirection;
+  private static volatile Vec3 warnedAttackOrigin;
   private static BlockPos origin;
   private static final List<Mob> portraits = new ArrayList<>();
   private static final List<String> portraitNames = new ArrayList<>();
@@ -425,7 +426,7 @@ public final class ColonyClientSmoke {
                       var boss = (AimlessColony) level(client).getEntity(bossEntity);
                       boss.setHealth(
                           boss.getMaxHealth() * (warning == 0 ? 1 : warning == 1 ? .6F : .3F));
-                      if (warning == 2) boss.setTarget(actor(client));
+                      if (warning >= 2) boss.setTarget(actor(client));
                       try {
                         var method =
                             AimlessColony.class.getDeclaredMethod(
@@ -438,9 +439,12 @@ public final class ColonyClientSmoke {
                               case 1 -> AimlessColony.Pattern.RALLY;
                               case 2 -> AimlessColony.Pattern.DASH;
                               case 3 -> AimlessColony.Pattern.RING;
-                              default -> AimlessColony.Pattern.CROSS;
+                              case 4 -> AimlessColony.Pattern.CROSS;
+                              case 5 -> AimlessColony.Pattern.SWEEP;
+                              default -> AimlessColony.Pattern.ERUPTION;
                             });
-                        if (warning == 2) {
+                        if (warning == 2 || warning >= 5) {
+                          warnedAttackOrigin = boss.attackOrigin();
                           warnedDashDirection = boss.dashDirection();
                           Vec3 shove =
                               new Vec3(-warnedDashDirection.z, 0, warnedDashDirection.x).scale(2);
@@ -463,17 +467,29 @@ public final class ColonyClientSmoke {
                 && boss.phase() == Math.min(3, warning + 1)
                 && boss.pattern() != AimlessColony.Pattern.IDLE,
             "Real phase and telegraph synchronization with minimal particles");
-        if (warning == 2) {
+        if (warning == 2 || warning >= 5) {
           require(
               warnedDashDirection != null
                   && boss.dashDirection().distanceToSqr(warnedDashDirection) < 1.0e-10,
-              "Native tracking packets preserve the charge heading after a sideways shove");
+              "Native tracking packets preserve the announced heading after a sideways shove");
           require(
               boss.dashRemainingDistance() >= 0 && boss.dashHalfWidth() == boss.getBbWidth() * .5,
               "The native telegraph uses the shared footprint and remaining travel");
         }
+        if (warning >= 5) {
+          require(
+              warnedAttackOrigin != null
+                  && boss.attackOrigin().distanceToSqr(warnedAttackOrigin) < 1.0e-10,
+              "Native tracking preserves the marked origin after a shove");
+          require(
+              warning == 5
+                  ? boss.pattern() == AimlessColony.Pattern.SWEEP
+                  : boss.pattern() == AimlessColony.Pattern.ERUPTION
+                      && boss.eruptionCenters().size() == 5,
+              "New attack warnings reach a real client");
+        }
         shot(client, "boss-phase-" + (warning + 1) + "-minimal-particles");
-        if (++warning < 5) {
+        if (++warning < 7) {
           phase = 10;
           ticks = 0;
           return false;
@@ -553,7 +569,7 @@ public final class ColonyClientSmoke {
         if (!resourcePacks(client)) return false;
         System.out.println(
             "SLIMIC COLONY CLIENT SMOKE PASSED: native bind/deploy/capture/unbind packets for both"
-                + " professions, exact cargo/vitals/weapon wear, EN/KR gallery and five"
+                + " professions, exact cargo/vitals/weapon wear, EN/KR gallery and seven"
                 + " minimal-particle boss warnings");
         finished = true;
         return true;

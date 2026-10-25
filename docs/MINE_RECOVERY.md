@@ -35,9 +35,9 @@ Defeating a mine remnant yourself or with a tamed Slimic companion yields one ro
 3. Right-click the station. It consumes both materials once and replaces the core in your hand with the restored companion item. The same cost applies in Creative.
 4. Release the companion in a clear place. It has **one health and the Wait order**. Heal it, provide equipment and supplies, and explicitly start work.
 
-Each core's identity can be redeemed once across the entire saved world. A failed attempt preserves the core and materials. Restoration creates a new UUID and owner; it retains limited veteran Endurance training and a name when present. Tamed ancient companions have a **white head insignia**. Hostile remnants retain purple insignia.
+Each core's identity can be redeemed once across the entire saved world. A failed attempt preserves the core and materials. Restoration creates a new UUID and makes the restoring player the primary owner. The companion retains inherited Stamina training and a saved name when present. Tamed ancient companions have a **white head insignia**. Hostile remnants retain purple insignia.
 
-The main Slimic Creative tab contains both new companions, all three hostile spawn eggs, command fragments, and three mining core variants beside the existing restoration materials. Core variants taken from Creative receive independent identities when used. JEI supplies acquisition instructions; these ancient work professions have no crafting recipe.
+The main Slimic Creative tab contains both ancient work companions, the three mine-remnant spawn eggs, command fragments, and three mine-core variants. The cores appear with the other restoration materials. Core variants taken from Creative receive independent identities when used. JEI supplies acquisition instructions; these ancient work professions have no crafting recipe.
 
 With JEI installed, open a core’s uses or a companion’s recipes to view the **Slime Restoration** category. All six core roles show one matching seal or command fragment, one slimeball, and the resulting companion. The station is a reusable catalyst. Mine entries state the Overworld requirement and all entries show the one-health Wait state and invested training.
 
@@ -45,17 +45,17 @@ With JEI installed, open a core’s uses or a companion’s recipes to view the 
 
 Uses the ordinary [Mining Slime](GAMEPLAY.md#mining-slimes) equipment, Mine order, quarry plan, stairs, fluid handling, and wall reinforcement. It prioritizes visible Forge-tagged ores **within the active layer** and spends half the normal stamina on work and movement. It does not reveal distant deposits, skip layers, bypass unsuitable tools, or change item drops.
 
-Its summon item shares the common base and uses a mining-core crest with an amethyst frame. The helmet, held tools, and white ancient insignia remain visible when the body is dyed.
+Its summon item uses the shared flat gold-block badge with a mining-core icon and purple border. The companion’s helmet, held tools, and white ancient insignia remain visible when its body is dyed.
 
 ## Ancient Tunnel Slime
 
 Uses the ordinary [Tunnel Slime](GAMEPLAY.md#tunnel-slimes) direction, 3×3 bore, bucket, bag, and nonconsumable lining template. It spends half the normal stamina on work and movement. Effective tools break blocks in `slimic:ancient_masonry` 50% faster: Slimic Stone, Slimic Cobblestone, Slimic Stone Bricks, Chiseled Slimic Stone Bricks, Ancient Foundation, and Ancient Foundation Bricks. The bonus does not apply to ineffective tools or insufficient mining tiers.
 
-Lining and reinforcement consume actual materials. This slime cannot pass through solid rubble or ignore webs; clear the approach before work. Its summon crest uses a tunnel core and amethyst frame; the helmet, cart, and white ancient insignia distinguish the restored worker.
+Lining and reinforcement consume actual materials. This slime cannot pass through solid rubble or ignore webs; clear the approach before work. Its summon item uses the shared flat gold-block badge with a tunnel-core icon and purple border. The companion wears a helmet, minecart shell, and white ancient insignia.
 
 ## Cooperation and preservation
 
-Transport and Warehouse Slimes recognize both new workers through the existing Mining and Tunnel contracts. They unload full bags and supply missing tools, buckets, wall cobblestone, or lining materials. Signaling Slimes report their named work stoppages; healing, shared ownership, Command gathering, scanners, growth, recovery, and portals follow ordinary companion rules.
+Transport and Warehouse Slimes support ancient workers through the same requests as ordinary Mining and Tunnel Slimes. They unload full bags and supply missing tools, buckets, wall cobblestone, or lining materials. Signaling Slimes report their named work stoppages; healing, shared ownership, Command gathering, scanners, growth, recovery, and portals follow ordinary companion rules.
 
 Every new or released companion starts in Wait. Recovery preserves health, stamina, stats, tools, cargo, identity, and work data; ordinary world reload retains a saved work order. Ancient and ordinary miners cooperate on shared stairs, and tunnel lining cannot overwrite protected quarry steps.
 
@@ -66,4 +66,4 @@ Station recipe (workbench):
 | Redstone | Gold ingot | Redstone |
 | Stone Bricks | Stone Bricks | Stone Bricks |
 
-Restoration distributes 12–28 invested upgrade points among stats used by the profession, using the core’s identity to fix its random roll. This total includes inherited Endurance training and follows ordinary upgrade effects and level caps. Points are already invested and count toward future growth costs. Recovery, release, portal travel, and saving preserve the allocation without rerolling or stacking it. All newly restored ancient roles, including ruin guards, carriers, and command slimes, use this rule; already restored companions and crafting specialization keep their existing training.
+Restoration distributes 12–28 invested upgrade points among stats used by the profession, using the core’s identity to fix its random roll. This total includes inherited Stamina training and follows ordinary upgrade effects and level caps. Points are already invested and count toward future growth costs. Recovery, release, portal travel, and saving preserve the allocation without rerolling or stacking it. All newly restored ancient roles, including ruin guards, carriers, and command slimes, use this rule; already restored companions and crafting specialization keep their existing training.

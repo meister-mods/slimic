@@ -11,7 +11,7 @@
       "input2": "minecraft:firework_rocket",
       "result": "slimic:herald_slime",
       "label": "조합 → 결과 1개",
-      "text": "친근한 슬라임 + 아무 폭죽 로켓. 폭죽 디자인 전체를 유지합니다. 크리에이티브 기본 폭죽은 하얀 작은 구형입니다."
+      "text": "친근한 슬라임 + 아무 폭죽 로켓. 폭죽 디자인을 유지하며 처음에는 대기합니다. 크리에이티브 기본 폭죽은 하얀 작은 구형입니다."
     },
     {
       "type": "patchouli:text",

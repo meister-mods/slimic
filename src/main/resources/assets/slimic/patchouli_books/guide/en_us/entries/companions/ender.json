@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "With full stamina and an empty inventory slot, right-click it with an empty hand to pin it and receive a Slime Teleporter. Linking spends all its stamina. Primary and shared owners may link it. The teleporter keeps the companion identity rather than a fixed coordinate."
+      "text": "With full stamina and an empty main-inventory slot, right-click it with an empty hand to pin it and receive a Slime Teleporter. Linking spends all its stamina. Primary and shared owners may link it. The teleporter keeps the companion identity rather than a fixed coordinate."
     },
     {
       "type": "patchouli:text",

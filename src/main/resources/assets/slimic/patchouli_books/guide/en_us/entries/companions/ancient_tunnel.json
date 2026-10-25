@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Restore a tunnel corpse’s core, or one recovered from a Forgotten Tunnel Slime, through $(l:world/mine_recovery)mine recovery$(). No crafting recipe exists. Its purple-framed tunnel-core crest, helmet, cart, and ancient insignia identify it."
+      "text": "Restore cores from tunnel corpses or Forgotten Tunnel Slimes through $(l:world/mine_recovery)mine recovery$(). It starts in Wait and cannot be crafted. Its summon item shows a purple-edged core on a gold plate. The slime wears a helmet, cart and white crest."
     },
     {
       "type": "patchouli:text",

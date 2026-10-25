@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The $(l:world/fallen_sanctum)sanctum$() reuses ancient royal remnants with different assignments. Shield remnants raise their shields against visible nearby threats. Wardens defend rooms rather than roaming the kingdom. Their watch belongs to the site, so returning does not create another army."
+      "text": "Ancient royal remnants in the $(l:world/fallen_sanctum)sanctum$() have different assignments. Shield remnants raise their shields against visible nearby threats. Wardens defend rooms rather than roaming the kingdom. Their watch belongs to the site, so returning does not create another army."
     },
     {
       "type": "patchouli:text",

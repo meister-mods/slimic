@@ -6,15 +6,15 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The Slimic Blocks tab contains 32 base materials plus 8 stairs, 8 slabs, and 6 walls. Gather natural stone, slate, soil, silt, clay, mud, and gel in The Slimic. Use the matching pickaxe or shovel; Slimic Stone drops Slimic Cobblestone without Silk Touch."
+      "text": "The Slimic Blocks tab has 32 base materials, 8 stairs, 8 slabs and 6 walls. Gather stone and soft materials in The Slimic with suitable tools; Slimic Stone drops Slimic Cobblestone without Silk Touch. Cut masonry with a stonecutter or craft shaped pieces. A hoe tills Slimic Soil, Damp Grass or Slime Mud with clear space above into farmland."
     },
     {
       "type": "patchouli:text",
-      "text": "A stonecutter turns Slimic Stone into decorative masonry. Matching stair, slab, and wall recipes also work in a crafting table. Smelt Slimic Cobblestone back into stone, fire silt into Gel Glass, or dry congealed slime in a furnace."
+      "text": "Craft 2×2 squares of Slimic Stone, Ancient Foundation, Slime Marble or Slimic Slate into matching bricks. Pale or black stone makes polished stone; stone bricks make tiles. Four blocks yield four. Add vines or a moss block for mossy cobblestone or bricks. Stack two stone-brick or marble slabs vertically for one chiseled block."
     },
     {
       "type": "patchouli:text",
-      "text": "Mix native planks with a slimeball for Slime-Infused Planks. Clay and a slimeball make Slimic Clay; congealed slime and a clay ball make Hardened Slime. A hoe tills Slimic Soil, Damp Grass, or Slime Mud with clear space above into ordinary farmland."
+      "text": "Smelt Slimic Cobblestone into Slimic Stone, stone bricks or tiles into cracked forms, Slime Silt into Gel Glass, and Congealed Slime into Dried Slime. Mix planks or clay with a slimeball for infused planks or Slimic Clay. Congealed Slime and a clay ball make Hardened Slime."
     }
   ],
   "extra_recipe_mappings": {

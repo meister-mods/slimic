@@ -2,10 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "slimic:slime_infused_planks"
-    },
-    {
-      "item": "minecraft:stick"
+      "item": "slimic:abandoned_crate"
     }
   ],
   "result": {

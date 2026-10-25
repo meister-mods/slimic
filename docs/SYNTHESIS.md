@@ -9,38 +9,38 @@ Royal synthesis consumes two recovered companions to create one new companion. I
 Obtain a **Royal Synthesis Core** from a Fallen Sanctum's deep relay. Craft a **Royal Synthesis Station** using this pattern:
 
 ```text
-Gold ingot | Royal Synthesis Core | Gold ingot
-Redstone   | Ancient Command Seal | Redstone
-Stone brick| Stone brick          | Stone brick
+Gold ingot    | Royal Synthesis Core | Gold ingot
+Redstone dust | Ancient Command Seal | Redstone dust
+Stone bricks  | Stone bricks         | Stone bricks
 ```
 
-The core is consumed when crafting; the placed station is reusable. It is separate from `slimic:command_pedestal`, the existing Slime Restoration Station. The laboratory apparatus is ruined; craft a working station with the core. The core's origin is carried into the crafted station and its children's ancestry.
+The core is consumed when crafting; the placed station is reusable. It serves a different purpose from the Slime Restoration Station. The laboratory apparatus is ruined; craft a working station with the core. The core's origin is carried into the crafted station and its children's ancestry.
 
 Each synthesis consumes **four slimeballs and two Old Command Fragments**. An Ancient Command Seal is a different item used to craft the station; it does not replace the two fragments.
 
 ## Preparing and confirming
 
-1. Recover one ordinary Mining Slime and one Ancient Mining Slime. Both must be living stored companions with valid identities.
+1. Recover one ordinary companion and one ancient companion from the same supported family: Mining or Tunnel. Both must be alive when recovered and have valid saved identities.
 2. Be the **primary owner of both parents**. Shared management alone does not authorize synthesis. A live parent or conflicting identity record is rejected.
 3. Empty every equipment slot and both bags, including spare tools and other stored items. Refusals identify the parent and occupied location. Items remain in their original slots. A crafting pickaxe still stored in a newly specialized mining item also counts as equipment: deploy the parent, remove the tool, and recover it again. Unknown external inventory attachments are refused rather than consumed.
 4. Insert the parents and reagents in the station. Read the point preview and status. Preview consumes nothing.
 5. Keep one free inventory slot and confirm. The server revalidates ownership, contents, parent identity, materials, and growth history before committing. Both parents are consumed exactly once.
 
-The result has a **new UUID**, primary owner, and companion record. It starts in **Wait**, with no inherited custom name, equipment, cargo, or invested levels. Choose a name using a Slime Tuner. Its item preserves the parents' display names and UUIDs, family, synthesis game time, and known origin sanctum as ancestry; advanced tooltips expose identity details.
+The result is a **new companion owned by you**. It starts in **Wait**, with no inherited custom name, equipment, cargo, or invested levels. Choose a name using a Slime Tuner. Its item preserves the parents' display names and UUIDs, family, synthesis game time, and known origin sanctum as ancestry; advanced tooltips expose identity details.
 
 ## Growth refund
 
-All verified **earned points** from both parents return as unused points. This includes already invested levels and unused balances. It does not sum final attribute values, profession multipliers, ancient passives, or equipment effects. Formal ancient restoration training counts when it is represented by the normal growth record.
+All verified **earned points** from both parents return as unused points. This includes already invested levels and unused balances. It does not sum final attribute values, profession multipliers, ancient passives, or equipment effects. Points invested when an ancient companion is restored also count when recorded as ordinary growth.
 
 | Parent | Invested | Unused | Earned total |
 | --- | ---: | ---: | ---: |
-| Ordinary miner | 21 | 4 | 25 |
-| Ancient miner | 16 | 2 | 18 |
+| Ordinary Mining Slime | 21 | 4 | 25 |
+| Ancient Mining Slime | 16 | 2 | 18 |
 | New child | 0 | **43** | **43** |
 
-The next point costs `min(4096, 32 + earned × 64)` activity units, including inherited growth. At 43 inherited points it costs 2,784. Normal per-stat training limits remain unchanged. Extra points remain unused after those limits are reached; there is no hidden training-cap refund reduction.
+The next point costs `min(4096, 32 + earned × 64)` activity units, including inherited growth. At 43 inherited points it costs 2,784. Normal per-stat training limits remain unchanged. Extra points remain unspent after those limits are reached; training limits do not reduce the inherited total.
 
-Whole balances use nonnegative signed 64-bit storage and exact menu synchronization. An unrepresentable sum is rejected with both original inputs preserved. Creative-edited values do not become inherited points. Older 0.3.x companions qualify when invested levels plus unused points match the saved earned-point history; uncertain histories are preserved and explicitly refused.
+The preview shows the exact point balance. If the combined balance exceeds the supported numeric range, synthesis is refused and both parents are preserved. A parent whose base stats have been edited in Creative mode cannot be used for synthesis; those edits are not converted into inherited points. Older 0.3.x companions qualify when invested levels plus unused points match the saved earned-point history; uncertain histories are preserved and explicitly refused.
 
 ## Mining policies
 
@@ -64,7 +64,7 @@ The Scanner previews the **two-by-two shaft**, detection window, and immediate p
 
 Ore-free chunk sections are skipped using their block palettes; loaded sections containing selected ores are inspected incrementally. Temporary movement timeouts retain the pending excavation step and retry it, including when the previous floor has already been opened. Stamina exhaustion still pauses work until recovery. Legacy saves with an adjacent, cleared, safe next shaft level can resume their existing work order.
 
-Health, maximum stamina, and capacity use ordinary Mining Slime values; **the ancient miner’s half-stamina-cost passive is inherited in every policy**. Transport and Warehouse Slimes supply tools and unload cargo where they can reach; Signaling Slimes report blocked work. Recovery, revival, portals, and redeployment preserve ordinary companion data and return it to Wait. Old Selective Ore saves retain their policy and traits but migrate to Wait; explicitly resume work before the newly destructive excavation begins.
+Health, maximum stamina, and capacity use ordinary Mining Slime values; **the ancient miner’s half-stamina-cost passive is inherited in every policy**. Transport and Warehouse Slimes supply tools and unload cargo where they can reach; Signaling Slimes report blocked work. Recovery, revival, Slime portals, and redeployment preserve ordinary companion data and return it to Wait. Old Selective Ore saves retain their policy and traits but migrate to Wait; explicitly resume work before the newly destructive excavation begins.
 
 ## Configurable tunnel bores
 
@@ -74,12 +74,12 @@ Open **Slime Tuner → Bore size**, enter a positive integer **n**, and Apply. I
 
 The compact 0.78-block body and narrow cart fit a 1×1 bore. From its entrance it extends work reach across the active face, excavates individual blocks with native tool time and wear, repairs the floor, roof, and sides, and then physically advances. Odd and even widths preserve the same centerline. A larger bore increases total excavation and material needs. It surveys at most 128 cells per tick and performs one completed block action per tick, without loading missing chunks. Lining cells are calculated as needed. If a new block obstructs forward movement after the final scan, it checks the face again and resumes excavation.
 
-The lining template remains a nonconsumable reference; actual building blocks, tools, and an empty bucket come from the bag. Transport and Warehouse Slimes provide the same supply and cargo services, while Signaling Slimes report blocked work. Tier requirements, container protection, shared quarry stairs, Forge permissions, and `mobGriefing` still apply. It inherits half stamina costs and a 1.5× work multiplier on ancient masonry. Size, direction, template, face progress, and drained-fluid cells persist in saves; recovered deployment starts in Wait.
+The lining template is a reference and is not consumed. Keep matching building blocks and an empty bucket in the bag, and equip the required pickaxe and shovel. Spare tools in the bag can fill empty equipment slots. Transport and Warehouse Slimes provide the same supply and cargo services, while Signaling Slimes report blocked work. Tier requirements, container protection, shared quarry stairs, Forge permissions, and `mobGriefing` still apply. It inherits half stamina costs and a 1.5× work multiplier on ancient masonry. Size, direction, template, face progress, and drained-fluid cells persist in saves; recovered deployment starts in Wait.
 
 ## Interrupted transactions
 
-The shared saved-world transaction ledger records the parent UUIDs, before and after inputs, result identity, recipient, and delivery receipt before the inputs are consumed. A stale station image is reconciled with the committed record. Repeated confirmation, another station, or copied parent items cannot reuse consumed parents. External mods may cancel the pre-commit event.
+The station saves the parents, recipient and result before consuming the inputs. Completed synthesis remains recorded after a restart, so repeated confirmation, another station or copied parent items cannot reuse consumed parents. A mod that cancels synthesis before confirmation leaves the inputs unchanged.
 
-A committed result belongs to its recipient even if its original station is broken. Use **Recover pending result** at any working Royal Synthesis Station. A new result stays reserved until the player save succeeds; a receipt already present in inventory is checkpointed rather than duplicated. Keep space available and retry after resolving storage errors.
+A committed result belongs to its recipient even if its original station is broken. Use **Recover pending result** at any working Royal Synthesis Station. An undelivered result remains available until it can be saved with your inventory. Retrying does not duplicate a result already delivered. Keep space available and retry after resolving storage errors. Technical details are in the [development guide](DEVELOPMENT.md#sanctum-and-synthesis-data).
 
 JEI displays a dedicated station synthesis category when installed. Patchouli includes the station recipe, preparation, point inheritance, policies, and sanctum path in English and Korean. Neither optional mod is required for synthesis.

@@ -12,7 +12,7 @@ Build a team of companions to gather resources, move supplies, care for crops an
 
 Companions grow through activity and stat upgrades. Name and manage them with a Slime Tuner, then recover them as items with their saved traits. A Creative Slime Tuner allows direct stat editing. Optional JEI integration provides recipes and companion information, while Patchouli adds an in-game guidebook.
 
-Explore **The Slimic**, a damp world of gel-covered terrain and abandoned workshops, recover ancient cores from collapsed mines, restore new companions, follow kingdom maps into a fallen royal sanctuary, and combine experienced miners into a new generation. Face the remnants of an endless assembly and temporarily bind matching companions into reversible colonies. Its distinctive materials and ruin decorations also support building.
+Explore **The Slimic**, a damp world of gel-covered terrain and abandoned workshops, recover ancient cores from collapsed mines, restore new companions, follow kingdom maps into the Fallen Sanctum, and combine experienced miners into a new generation. Face the remnants of an endless assembly and temporarily bind matching companions into reversible colonies. The dimension's distinctive materials and ruin decorations also support building.
 
 Slimic is in early development within the `0.5.x` series.
 
