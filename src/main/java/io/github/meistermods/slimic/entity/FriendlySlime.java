@@ -79,6 +79,7 @@ public class FriendlySlime extends TamableAnimal {
   private long growthEarned;
   private boolean growthTrusted = true;
   private int activityProgress;
+  private int activityHalf;
   private int earnedPoints;
   private float stamina = 100.0F;
   public float squish;
@@ -202,6 +203,10 @@ public class FriendlySlime extends TamableAnimal {
 
   @Override
   public boolean isAlliedTo(Entity other) {
+    if (other instanceof TransportColonyBody body) {
+      other = body.getColony();
+      if (other == null) return false;
+    }
     if (other instanceof Player player && canManage(player)) return true;
     var primary = super.getOwner();
     if (primary != null && primary.isAlliedTo(other)) return true;
@@ -370,19 +375,19 @@ public class FriendlySlime extends TamableAnimal {
 
   public int getStatLevel(SlimeStat stat) {
     var colony = BoundColony.ready(this);
-    if (colony != null) return colony.trainingMember().getStatLevel(stat);
+    if (colony != null) return colony.statLevel(stat);
     return entityData.get(STAT_LEVELS).getInt(stat.key());
   }
 
   public long getStatPoints() {
     var colony = BoundColony.ready(this);
-    if (colony != null) return colony.trainingMember().getStatPoints();
+    if (colony != null) return colony.statPoints();
     return statPoints;
   }
 
   public long getGrowthEarned() {
     var colony = BoundColony.ready(this);
-    if (colony != null) return colony.trainingMember().getGrowthEarned();
+    if (colony != null) return colony.growthEarned();
     return growthEarned;
   }
 
@@ -406,14 +411,43 @@ public class FriendlySlime extends TamableAnimal {
 
   public int getActivityProgress() {
     var colony = BoundColony.ready(this);
-    if (colony != null) return colony.trainingMember().getActivityProgress();
+    if (colony != null) return colony.activityProgress();
     return activityProgress;
   }
 
   public int getNextPointCost() {
     var colony = BoundColony.ready(this);
-    if (colony != null) return colony.trainingMember().getNextPointCost();
-    return (int) Math.min(MAX_POINT_COST, 32L + earnedPoints * 64L);
+    if (colony != null) return colony.nextPointCost();
+    return pointCost(earnedPoints);
+  }
+
+  static int pointCost(int earned) {
+    return (int) Math.min(MAX_POINT_COST, 32L + earned * 64L);
+  }
+
+  final int growthCostLevel() {
+    return earnedPoints;
+  }
+
+  final int activityHalfUnits() {
+    return (int) Math.min(MAX_POINT_COST * 2L - 1, activityProgress * 2L + activityHalf);
+  }
+
+  /** Reconcile a legitimate shared balance without making edited growth trustworthy. */
+  final void setColonyGrowth(long points, int halfUnits, int costLevel, boolean sourceTrusted) {
+    long invested = java.util.Arrays.stream(SlimeStat.values()).mapToLong(this::getStatLevel).sum();
+    boolean trusted = sourceTrusted && hasTrustedGrowth() && points <= Long.MAX_VALUE - invested;
+    statPoints = points;
+    activityProgress = halfUnits / 2;
+    activityHalf = halfUnits % 2;
+    earnedPoints = costLevel;
+    if (trusted) growthEarned = invested + points;
+    growthTrusted = trusted;
+  }
+
+  /** The client needs the same common upgrade limit as the server. */
+  final void setColonyStatLevels(CompoundTag levels) {
+    entityData.set(STAT_LEVELS, levels);
   }
 
   public float getStamina() {
@@ -536,8 +570,12 @@ public class FriendlySlime extends TamableAnimal {
     getNavigation().stop();
   }
 
+  public boolean isWithinManagementRange(Player player, double squaredRange) {
+    return player.level() == level() && player.distanceToSqr(this) <= squaredRange;
+  }
+
   public boolean rename(Player player, String name) {
-    if (!canManage(player) || !isAlive() || player.distanceToSqr(this) > 64.0D) return false;
+    if (!canManage(player) || !isAlive() || !isWithinManagementRange(player, 64.0D)) return false;
     String clean = SharedConstants.filterText(name).strip();
     if (clean.codePointCount(0, clean.length()) > 32) {
       clean = clean.substring(0, clean.offsetByCodePoints(0, 32));
@@ -560,6 +598,7 @@ public class FriendlySlime extends TamableAnimal {
     tag.putLong("GrowthEarned", growthEarned);
     tag.putBoolean("GrowthTrusted", hasTrustedGrowth());
     tag.putInt("ActivityProgress", activityProgress);
+    tag.putInt("ActivityHalf", activityHalf);
     tag.putInt("EarnedPoints", earnedPoints);
     tag.putFloat("Stamina", stamina);
     tag.put("TunedStats", entityData.get(TUNED_STATS).copy());
@@ -640,6 +679,7 @@ public class FriendlySlime extends TamableAnimal {
     // Older saves can contain more activity than the reduced threshold. Pay the
     // earned points before retaining the remainder rather than truncating it.
     activityProgress = Mth.clamp(tag.getInt("ActivityProgress"), 0, MAX_POINT_COST - 1);
+    activityHalf = Mth.clamp(tag.getInt("ActivityHalf"), 0, 1);
     settleActivity();
     stamina =
         tag.contains("Stamina") && Float.isFinite(tag.getFloat("Stamina"))
@@ -826,7 +866,11 @@ public class FriendlySlime extends TamableAnimal {
   }
 
   public InteractionResult capture(Player player) {
-    if (!isAlive() || isRemoved() || player.isSpectator() || !canManage(player)) {
+    if (isPendingSpawn()
+        || !isAlive()
+        || isRemoved()
+        || player.isSpectator()
+        || !canManage(player)) {
       return InteractionResult.FAIL;
     }
     if (level().isClientSide) {
@@ -845,10 +889,11 @@ public class FriendlySlime extends TamableAnimal {
     // Inventory.add can discard items when a Creative inventory is full.
     player.getInventory().setItem(slot, captured);
     player.getInventory().setChanged();
-    dropLeash(true, true);
-    gameEvent(GameEvent.ENTITY_INTERACT, player);
     CompanionRegistry.get(level().getServer()).mark(this, CompanionRegistry.Location.ITEM);
     discard();
+    // A returned lead can run item-admission callbacks; the original is already retired.
+    dropLeash(true, true);
+    gameEvent(GameEvent.ENTITY_INTERACT, player);
     player.displayClientMessage(
         Component.translatable("message.slimic.friendly_slime.captured"), true);
     return InteractionResult.CONSUME;

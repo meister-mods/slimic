@@ -116,7 +116,7 @@ public final class FriendlySlimeInteractions {
         && !(mob instanceof AimlessColony)
         && !(mob instanceof ColonyFragment)
         && !(mob instanceof Creeper)
-        && !(mob instanceof EnderMan))
+        && !(mob instanceof EnderMan)) {
       mob.targetSelector.addGoal(
           3,
           new NearestAttackableTargetGoal<>(
@@ -128,6 +128,21 @@ public final class FriendlySlimeInteractions {
               slime ->
                   slime.isAlive()
                       && (mob.getType() != EntityType.SLIME || mob.getLastHurtByMob() == slime)));
+      mob.targetSelector.addGoal(
+          3,
+          new NearestAttackableTargetGoal<>(
+              mob,
+              TransportColonyBody.class,
+              10,
+              true,
+              false,
+              candidate ->
+                  candidate instanceof TransportColonyBody body
+                      && body.getColony() != null
+                      && (mob.getType() != EntityType.SLIME
+                          || mob.getLastHurtByMob() == body
+                          || mob.getLastHurtByMob() == body.getColony())));
+    }
   }
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -143,7 +158,12 @@ public final class FriendlySlimeInteractions {
           event.setCanceled(true);
           return;
         }
-        BrokenSlimeBlock.preserve(slime);
+        if (!BrokenSlimeBlock.preserve(slime)) {
+          slime.setHealth(1);
+          CompanionRegistry.get(level).observe(slime);
+          event.setCanceled(true);
+          return;
+        }
         if (bonding.controlled(slime.getUUID())) {
           try {
             level.save(null, true, false);
@@ -154,6 +174,14 @@ public final class FriendlySlimeInteractions {
           }
         }
       }
+      event.setCanceled(true);
+    }
+  }
+
+  @SubscribeEvent(priority = EventPriority.LOWEST)
+  public static void interactWithTransportBody(PlayerInteractEvent.EntityInteract event) {
+    if (event.getTarget() instanceof TransportColonyBody body) {
+      event.setCancellationResult(body.interactWithColony(event.getEntity(), event.getHand()));
       event.setCanceled(true);
     }
   }

@@ -11,15 +11,19 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Before recovery, clear effects, fire, freezing and absorption, and let both companions regain full air. Put their items in the two slots, review their records and choose Bind. Gear and cargo may stay. Their identities and growth remain separate."
+      "text": "Before recovery, clear effects, fire, freezing and absorption, and let both companions regain full air. Put their items in the two slots, review their records and choose Bind. Gear, cargo, identities and invested stats remain. Neither recovery nor unbinding restores health or stamina."
     },
     {
       "type": "patchouli:text",
-      "text": "One representative follows one order and stores cargo in both bags. Damage and stamina use update both records. Activity alternates between members. Point upgrades and combat gear use member one; Creative stat edits affect both. Their point balances stay separate."
+      "text": "One order and bag serve the colony. Transport bodies divide nearby jobs; Combat bodies move together. Damage and stamina use update both records. Member one supplies combat gear and receives remaining effects and absorption on unbinding. Creative point edits change the pool; stat edits keep the existing rules."
     },
     {
       "type": "patchouli:text",
-      "text": "Recover the colony and insert it alone, then confirm Unbind. Two safe landing spaces are required. The original identities return in Wait with remaining health, stamina, gear and cargo. Cancelled spawns keep the colony. Recover a pending result at any bonding station."
+      "text": "Unused points start at the mean rounded down. One point raises the chosen stat for each uncapped member; capped members stay unchanged. Both capped means no cost. Growth is half rate while any stat used by the role can still upgrade both members; otherwise normal rate. The point-cost formula is unchanged."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recover the colony, insert it alone and confirm Unbind. Two safe spaces are required. Both return in Wait with their remaining traits. The shared unused-point balance is copied to each member. Cancelled spawns keep the colony. Recover pending results at any bonding station."
     }
   ],
   "extra_recipe_mappings": {

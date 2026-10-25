@@ -262,8 +262,8 @@ public final class SlimicPortalTravel {
       return null;
     }
     // Keep the original until admission succeeds, including Forge spawn callbacks.
-    source.dropLeash(true, true);
     source.remove(Entity.RemovalReason.CHANGED_DIMENSION);
+    source.dropLeash(true, true);
     origin.resetEmptyTime();
     target.resetEmptyTime();
     return pet;

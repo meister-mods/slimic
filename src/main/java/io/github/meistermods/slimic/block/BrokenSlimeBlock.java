@@ -61,7 +61,7 @@ public final class BrokenSlimeBlock extends BaseEntityBlock {
     return new BrokenSlimeBlockEntity(pos, state);
   }
 
-  public static void preserve(FriendlySlime slime) {
+  public static boolean preserve(FriendlySlime slime) {
     Level level = slime.level();
     ItemStack stored = FriendlySlimeItem.fromSlime(slime);
     BlockPos pos =
@@ -77,16 +77,37 @@ public final class BrokenSlimeBlock extends BaseEntityBlock {
       broken.setSlime(stored);
     } else {
       // Never overwrite a solid block or container when a companion collapses inside it.
-      var recovery = slime.spawnAtLocation(recoveryItem(stored));
-      if (recovery != null && recovery.getY() < level.getMinBuildHeight())
-        recovery.setPos(recovery.getX(), level.getMinBuildHeight() + .5, recovery.getZ());
+      var recovery =
+          new net.minecraft.world.entity.item.ItemEntity(
+              level,
+              slime.getX(),
+              Math.max(slime.getY(), level.getMinBuildHeight() + .5),
+              slime.getZ(),
+              recoveryItem(stored));
+      recovery.setDefaultPickUpDelay();
+      if (!level.addFreshEntity(recovery) || recovery.isRemoved()) {
+        recovery.discard();
+        // A controlled colony already has an authoritative damaged fallback at its station.
+        // Ordinary companions must remain alive when their only recovery item is rejected.
+        var bonding = io.github.meistermods.slimic.world.ColonyBondingData.get((ServerLevel) level);
+        var fallback = bonding.recovery().get(slime.getUUID());
+        var data =
+            fallback != null && fallback.hasTag()
+                ? fallback.getTag().getCompound("SlimeData")
+                : new CompoundTag();
+        if (!data.hasUUID("UUID")
+            || !slime.getUUID().equals(data.getUUID("UUID"))
+            || data.getFloat("Health") > 0
+            || !bonding.mayRestore(data)) return false;
+      }
     }
     io.github.meistermods.slimic.entity.CompanionRegistry.get(level.getServer())
         .mark(slime, io.github.meistermods.slimic.entity.CompanionRegistry.Location.BROKEN);
     slime.ejectPassengers();
+    slime.discard();
     slime.dropLeash(true, true);
     slime.playSound(SoundEvents.SLIME_DEATH, .6F, 1);
-    slime.discard();
+    return true;
   }
 
   public static ItemStack recoveryItem(ItemStack stored) {

@@ -5,11 +5,14 @@ import io.github.meistermods.slimic.Slimic;
 import io.github.meistermods.slimic.block.SanctumRelayBlockEntity;
 import io.github.meistermods.slimic.registry.ModBlocks;
 import io.github.meistermods.slimic.registry.ModItems;
+import io.github.meistermods.slimic.world.DurableWorldData;
 import io.github.meistermods.slimic.world.SanctumSites;
 import java.nio.file.*;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +28,11 @@ public final class SanctumDeliveryGameTests {
     private Component last;
 
     Receiver(ServerLevel level) {
-      super(level, new GameProfile(UUID.randomUUID(), "DeliveryRetry"));
+      this(level, UUID.randomUUID());
+    }
+
+    Receiver(ServerLevel level, UUID id) {
+      super(level, new GameProfile(id, "DeliveryRetry"));
     }
 
     @Override
@@ -241,6 +248,60 @@ public final class SanctumDeliveryGameTests {
                 + chest.getItem(0).getCount()
             == 1,
         "There is one physical core across player and chest");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty", batch = "sanctum_delivery")
+  public static void consumedCoreStaysDeliveredAfterFailedWorldAcknowledgementAndReload(
+      GameTestHelper h) throws Exception {
+    var f = fixture(h);
+    var rewards = List.of(new ItemStack(ModItems.ROYAL_SYNTHESIS_CORE.get()));
+    var firstFault = playerFault(f);
+    try {
+      h.assertTrue(
+          f.ledger.grantResult(f.owner, f.site, 4, rewards)
+              == SanctumSites.GrantResult.STORAGE_ERROR,
+          "A durable reservation exists before its player delivery succeeds");
+    } finally {
+      Files.delete(firstFault);
+    }
+    var root = f.level.getServer().getWorldPath(LevelResource.ROOT);
+    var worldFault = root.resolve("data/slimic_sanctum_sites.pending");
+    CompoundTag staleWorld, persistedPlayer;
+    Files.createDirectory(worldFault);
+    try {
+      h.assertTrue(
+          f.ledger.grantResult(f.owner, f.site, 4, rewards) == SanctumSites.GrantResult.DELIVERED
+              && f.owner.getInventory().countItem(ModItems.ROYAL_SYNTHESIS_CORE.get()) == 1,
+          "The player receives one core despite failure of the final world acknowledgement");
+      staleWorld =
+          NbtIo.readCompressed(root.resolve("data/slimic_sanctum_sites.dat").toFile())
+              .getCompound("data");
+      h.assertTrue(
+          !SanctumSites.load(staleWorld).find(f.site.id).deliveries.get(4).delivered,
+          "The actual disk ledger still contains the unacknowledged delivery");
+      f.owner.getInventory().clearContent();
+      h.assertTrue(
+          DurableWorldData.savePlayer(f.owner),
+          "Using the core is checkpointed independently of the unavailable world acknowledgement");
+      persistedPlayer =
+          NbtIo.readCompressed(
+              root.resolve("playerdata").resolve(f.owner.getStringUUID() + ".dat").toFile());
+    } finally {
+      Files.delete(worldFault);
+    }
+    var restored = new Receiver(f.level, f.owner.getUUID());
+    restored.load(persistedPlayer);
+    var reloaded = SanctumSites.load(staleWorld);
+    var reloadedSite = reloaded.find(f.site.id);
+    h.assertTrue(
+        restored.getInventory().isEmpty(), "Reloaded player has already consumed the core");
+    h.assertTrue(
+        reloaded.grantResult(restored, reloadedSite, 4, rewards)
+                == SanctumSites.GrantResult.DELIVERED
+            && reloadedSite.deliveries.get(4).delivered
+            && restored.getInventory().isEmpty(),
+        "A persisted player receipt acknowledges the old world reservation without another core");
     h.succeed();
   }
 }

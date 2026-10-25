@@ -124,19 +124,23 @@ public class CombatSlime extends BagSlime {
   }
 
   public static CombatTarget targetKind(LivingEntity target) {
+    if (target instanceof TransportColonyBody body && body.getColony() != null)
+      return CombatTarget.TAMED;
     if (target instanceof Player) return CombatTarget.PLAYERS;
     if ((target instanceof TamableAnimal tame && tame.isTame())
         || (target instanceof AbstractHorse horse && horse.isTamed())) return CombatTarget.TAMED;
     if (target instanceof Creeper) return CombatTarget.CREEPERS;
     if (target instanceof EnderMan enderman
-        && enderman.getTarget() instanceof FriendlySlime companion
-        && companion.isAlive()) return CombatTarget.HOSTILE;
+        && ((enderman.getTarget() instanceof FriendlySlime companion && companion.isAlive())
+            || (enderman.getTarget() instanceof TransportColonyBody body
+                && body.getColony() != null))) return CombatTarget.HOSTILE;
     if (target instanceof NeutralMob) return CombatTarget.NEUTRAL;
     return target instanceof Enemy ? CombatTarget.HOSTILE : CombatTarget.PASSIVE;
   }
 
   public boolean mayAttack(LivingEntity candidate) {
     if (candidate == this
+        || candidate.level() != level()
         || !candidate.isAlive()
         || candidate.isSpectator()
         || !canAttack(candidate)

@@ -5,13 +5,12 @@ import net.minecraft.nbt.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 
-/** Two unspawned native records own their inventories, growth and identity while bound. */
+/** Two unspawned native records preserve identity and cargo with mirrored shared growth. */
 public final class ColonyMembers {
   private final FriendlySlime representative;
   private final List<BagSlime> members = new ArrayList<>(2);
   private boolean projecting;
   private float health, energy, extraLife;
-  private int nextWorker;
   private List<Integer> spans = List.of();
 
   public ColonyMembers(FriendlySlime representative) {
@@ -55,7 +54,7 @@ public final class ColonyMembers {
 
   public void load(CompoundTag tag) {
     members.clear();
-    if (tag.contains("Schema") && tag.getInt("Schema") != 1) return;
+    if (tag.contains("Schema") && tag.getInt("Schema") != 1 && tag.getInt("Schema") != 2) return;
     ListTag entries = tag.getList("Members", Tag.TAG_COMPOUND);
     if (entries.size() != 2) return;
     var expected =
@@ -93,7 +92,7 @@ public final class ColonyMembers {
       members.clear();
       return;
     }
-    nextWorker = Math.floorMod(tag.getInt("NextWorker"), 2);
+    normalizeGrowth();
     extraLife =
         Float.isFinite(tag.getFloat("ExtraLife")) ? Math.max(0, tag.getFloat("ExtraLife")) : 0;
     representative.setOwnerUUID(owner);
@@ -107,8 +106,7 @@ public final class ColonyMembers {
   public CompoundTag save() {
     syncVitals();
     CompoundTag tag = new CompoundTag();
-    tag.putInt("Schema", 1);
-    tag.putInt("NextWorker", nextWorker);
+    tag.putInt("Schema", 2);
     tag.putFloat("ExtraLife", extraLife);
     if (spans.size() == 2) {
       tag.putInt("FirstSpan", spans.get(0));
@@ -130,6 +128,9 @@ public final class ColonyMembers {
     try {
       for (BagSlime member : members)
         member.setTunedVitals(member.getHealth(), member.getStamina(), member.getStatPoints());
+      CompoundTag levels = new CompoundTag();
+      for (SlimeStat stat : SlimeStat.values()) levels.putInt(stat.key(), statLevel(stat));
+      representative.setColonyStatLevels(levels);
       for (SlimeStat stat : SlimeStat.values()) {
         double a = stat.value(members.get(0)), b = stat.value(members.get(1));
         double value =
@@ -198,6 +199,7 @@ public final class ColonyMembers {
   /** New effects belong to the shared body; transfer them once, with their remaining duration. */
   public void prepareUnbind() {
     syncVitals();
+    normalizeGrowth();
     BagSlime first = trainingMember();
     for (var effect : representative.getActiveEffects())
       first.addEffect(new net.minecraft.world.effect.MobEffectInstance(effect));
@@ -229,59 +231,149 @@ public final class ColonyMembers {
     }
   }
 
+  private static long average(long first, long second) {
+    return first / 2 + second / 2 + (first % 2 + second % 2) / 2;
+  }
+
+  public int statLevel(SlimeStat stat) {
+    return Math.min(members.get(0).getStatLevel(stat), members.get(1).getStatLevel(stat));
+  }
+
+  public long statPoints() {
+    return average(members.get(0).getStatPoints(), members.get(1).getStatPoints());
+  }
+
+  public long growthEarned() {
+    return average(members.get(0).getGrowthEarned(), members.get(1).getGrowthEarned());
+  }
+
+  private int activityHalfUnits() {
+    return (members.get(0).activityHalfUnits() + members.get(1).activityHalfUnits()) / 2;
+  }
+
+  public int activityProgress() {
+    return activityHalfUnits() / 2;
+  }
+
+  private int growthCostLevel() {
+    return Math.max(members.get(0).growthCostLevel(), members.get(1).growthCostLevel());
+  }
+
+  public int nextPointCost() {
+    return FriendlySlime.pointCost(growthCostLevel());
+  }
+
+  private boolean trustedGrowth() {
+    return members.stream().allMatch(FriendlySlime::hasTrustedGrowth);
+  }
+
+  private void setGrowth(long points, int halfUnits, int costLevel, boolean trusted) {
+    for (BagSlime member : members) member.setColonyGrowth(points, halfUnits, costLevel, trusted);
+  }
+
+  private void normalizeGrowth() {
+    setGrowth(statPoints(), activityHalfUnits(), growthCostLevel(), trustedGrowth());
+  }
+
+  private boolean canTrainTogether() {
+    return Arrays.stream(SlimeStat.values())
+        .anyMatch(
+            stat ->
+                stat.isUsedBy(representative)
+                    && members.stream()
+                        .allMatch(member -> member.getStatLevel(stat) < stat.maxLevel()));
+  }
+
   public void activity(int units) {
+    if (!ready() || representative.level().isClientSide || units <= 0) return;
     syncVitals();
-    members.get(nextWorker).recordCompletedWork(units);
-    nextWorker = 1 - nextWorker;
+    long points = statPoints();
+    int halfUnits = activityHalfUnits() + Math.min(units, 64) * (canTrainTogether() ? 1 : 2);
+    int costLevel = growthCostLevel();
+    boolean trusted = trustedGrowth();
+    long limit = Long.MAX_VALUE;
+    if (trusted)
+      for (BagSlime member : members) {
+        long invested = Arrays.stream(SlimeStat.values()).mapToLong(member::getStatLevel).sum();
+        limit = Math.min(limit, Long.MAX_VALUE - invested);
+      }
+    while (halfUnits / 2 >= FriendlySlime.pointCost(costLevel) && points < limit) {
+      halfUnits -= FriendlySlime.pointCost(costLevel) * 2;
+      costLevel = Math.min(1_000_000, costLevel + 1);
+      points++;
+    }
+    // Match the native stored progress range when an edited balance cannot accept more points.
+    halfUnits = Math.min(halfUnits, FriendlySlime.pointCost(1_000_000) * 2 - 1);
+    setGrowth(points, halfUnits, costLevel, trusted);
   }
 
   public boolean upgrade(SlimeStat stat) {
+    if (!ready()
+        || representative.level().isClientSide
+        || statPoints() <= 0
+        || statLevel(stat) >= stat.maxLevel()) return false;
+    if (stat == SlimeStat.CAPACITY) {
+      long slots = 0;
+      for (BagSlime member : members)
+        slots +=
+            Math.max(
+                member.getBag().storageSlots(),
+                Math.min(
+                    Integer.MAX_VALUE,
+                    (long) member.getCapacity()
+                        + (member.getStatLevel(stat) < stat.maxLevel()
+                            ? 3L * member.capacityMultiplier()
+                            : 0)));
+      if (slots > Integer.MAX_VALUE) return false;
+    }
     syncVitals();
-    if (stat == SlimeStat.CAPACITY
-        && (long)
-                    Math.max(
-                        trainingMember().getBag().storageSlots(),
-                        Math.min(
-                            Integer.MAX_VALUE,
-                            (long) trainingMember().getCapacity()
-                                + 3L * trainingMember().capacityMultiplier()))
-                + members.get(1).getBag().storageSlots()
-            > Integer.MAX_VALUE) return false;
-    boolean success = trainingMember().upgradeStat(stat);
-    if (success) project();
-    return success;
+    normalizeGrowth();
+    long remaining = statPoints() - 1;
+    int halfUnits = activityHalfUnits(), costLevel = growthCostLevel();
+    boolean trusted = trustedGrowth();
+    for (BagSlime member : members)
+      if (member.getStatLevel(stat) < stat.maxLevel()) member.upgradeStat(stat);
+    setGrowth(remaining, halfUnits, costLevel, trusted);
+    project();
+    return true;
+  }
+
+  private double[] capacityParts(double value) {
+    if (!ready() || !SlimeStat.CAPACITY.acceptsTunedValue(value) || value > Integer.MAX_VALUE)
+      return null;
+    int multiplier = members.get(0).capacityMultiplier();
+    long total = Math.max(2, (long) Math.floor(value / multiplier));
+    double[] parts = {(total + 1) / 2, total / 2};
+    long slots = 0;
+    for (int i = 0; i < members.size(); i++) {
+      var occupied = members.get(i).getBag().occupiedSlots();
+      slots +=
+          Math.max(
+              (long) parts[i] * multiplier,
+              occupied.isEmpty() ? 0L : (long) occupied.get(occupied.size() - 1) + 1);
+    }
+    return slots <= Integer.MAX_VALUE ? parts : null;
+  }
+
+  public boolean canTuneCapacity(double value) {
+    return capacityParts(value) != null;
   }
 
   public void tune(SlimeStat stat, double value) {
+    double[] capacity = stat == SlimeStat.CAPACITY ? capacityParts(value) : null;
+    if (stat == SlimeStat.CAPACITY && capacity == null)
+      throw new IllegalArgumentException("Unrepresentable combined bag");
     syncVitals();
     double each =
         switch (stat) {
-          case HEALTH, STAMINA, CAPACITY -> value / 2;
+          case HEALTH, STAMINA -> value / 2;
           case ATTACK -> value / 1.2;
           default -> value;
         };
-    if (stat == SlimeStat.CAPACITY) each = Math.max(1, Math.floor(each));
-    if (stat == SlimeStat.CAPACITY) {
-      long slots = 0;
-      for (BagSlime member : members) {
-        long capacity =
-            Math.min(
-                Integer.MAX_VALUE,
-                (long) Math.max(1, Math.floor(each / member.capacityMultiplier()))
-                    * member.capacityMultiplier());
-        var occupied = member.getBag().occupiedSlots();
-        slots +=
-            Math.max(
-                capacity, occupied.isEmpty() ? 0L : (long) occupied.get(occupied.size() - 1) + 1);
-      }
-      if (slots > Integer.MAX_VALUE)
-        throw new IllegalArgumentException("Unrepresentable combined bag");
-    }
-    for (BagSlime member : members) {
-      double tuned =
-          stat == SlimeStat.CAPACITY ? Math.floor(each / member.capacityMultiplier()) : each;
-      stat.tune(member, Math.max(stat.minTunedValue(), tuned));
-    }
+    for (int i = 0; i < members.size(); i++)
+      stat.tune(
+          members.get(i),
+          Math.max(stat.minTunedValue(), stat == SlimeStat.CAPACITY ? capacity[i] : each));
     project();
   }
 
@@ -289,8 +381,12 @@ public final class ColonyMembers {
     syncVitals();
     changeLife(net.minecraft.util.Mth.clamp(life, 0, representative.getMaxHealth()) - health);
     distribute(stamina - energy, false);
-    BagSlime first = trainingMember();
-    first.setTunedVitals(first.getHealth(), first.getStamina(), points);
+    long balance = Math.max(0, points);
+    setGrowth(
+        balance,
+        activityHalfUnits(),
+        growthCostLevel(),
+        balance == statPoints() && trustedGrowth());
     project();
   }
 

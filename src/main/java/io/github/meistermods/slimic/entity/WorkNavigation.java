@@ -1,9 +1,11 @@
 package io.github.meistermods.slimic.entity;
 
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
@@ -14,16 +16,25 @@ class WorkNavigation extends GroundPathNavigation {
   private static final int MAX_WORK_NODES = 4096;
   private PathFinder loadedFinder;
   private BlockPos workTarget;
+  private final BooleanSupplier workMode;
 
   WorkNavigation(FriendlySlime slime, Level level) {
-    super(slime, level);
+    this(
+        slime,
+        level,
+        () ->
+            slime.isWorking()
+                || (slime.hasTunedStat(SlimeStat.DETECTION_RANGE)
+                    && SlimeStat.DETECTION_RANGE.value(slime) > 1024));
+  }
+
+  WorkNavigation(Mob mob, Level level, BooleanSupplier workMode) {
+    super(mob, level);
+    this.workMode = workMode;
   }
 
   private boolean working() {
-    return level instanceof ServerLevel
-        && (((FriendlySlime) mob).isWorking()
-            || (((FriendlySlime) mob).hasTunedStat(SlimeStat.DETECTION_RANGE)
-                && SlimeStat.DETECTION_RANGE.value((FriendlySlime) mob) > 1024));
+    return level instanceof ServerLevel && workMode.getAsBoolean();
   }
 
   @Override

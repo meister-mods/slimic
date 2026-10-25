@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The first point costs 32 activity. Each earned point adds 64 to the next cost, capped at 4,096. Successful work earns activity. Fireflies, Ender linking and arrivals, and each gathered companion also earn one unit. Failed actions, idle time, and order changes earn none."
+      "text": "The first point costs 32 activity. Each earned point adds 64 to the next cost, capped at 4,096. Successful work earns activity. Fireflies, Ender linking and arrivals, and each gathered companion also earn one unit. Failed actions, idle time, and order changes earn none. $(l:world/colony_bonding)Bound colonies$() count half activity while any role stat can upgrade both members; otherwise they use the normal rate."
     },
     {
       "type": "patchouli:text",

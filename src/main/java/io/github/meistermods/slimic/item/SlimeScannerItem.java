@@ -34,7 +34,7 @@ public final class SlimeScannerItem extends Item {
         || !target.isAlive()
         || target.level() != player.level()
         || !target.canManage(player)
-        || player.distanceToSqr(target) > 64) return InteractionResult.FAIL;
+        || !target.isWithinManagementRange(player, 64)) return InteractionResult.FAIL;
     if (player instanceof ServerPlayer server) {
       var area = SlimeWorkArea.of(target);
       ModNetwork.CHANNEL.send(

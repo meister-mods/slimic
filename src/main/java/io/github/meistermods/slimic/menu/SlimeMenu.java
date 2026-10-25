@@ -337,7 +337,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
         && !slime.isRemoved()
         && player.level() == slime.level()
         && slime.canManage(player)
-        && player.distanceToSqr(slime) <= 64.0;
+        && slime.isWithinManagementRange(player, 64.0);
   }
 
   public boolean setTunnelSize(Player player, int size) {

@@ -1,16 +1,17 @@
 package io.github.meistermods.slimic.entity;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.core.*;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.*;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 
 public final class CompanionTeleport {
@@ -28,10 +29,27 @@ public final class CompanionTeleport {
             BlockPos.containing(box.minX, box.minY - 1, box.minZ),
             BlockPos.containing(box.maxX, box.maxY, box.maxZ)))
       if (!level.hasChunkAt(p)) return false;
+    // Inspect actual contact cells, including the surface under the feet. Touching the outer
+    // boundary of a neighboring cell does not put that cell inside the body.
+    for (var p :
+        BlockPos.betweenClosed(
+            BlockPos.containing(box.minX + .001, box.minY - .001, box.minZ + .001),
+            BlockPos.containing(box.maxX - .001, box.maxY - .001, box.maxZ - .001)))
+      if (harmful(level.getBlockState(p))) return false;
     var floor = BlockPos.containing(point).below();
-    return level.getBlockState(floor).isFaceSturdy(level, floor, Direction.UP)
+    return !harmful(level.getBlockState(floor))
+        && level.getBlockState(floor).isFaceSturdy(level, floor, Direction.UP)
         && level.noCollision(entity, box)
         && !level.containsAnyLiquid(box);
+  }
+
+  private static boolean harmful(BlockState state) {
+    return WalkNodeEvaluator.isBurningBlock(state)
+        || state.is(Blocks.CACTUS)
+        || state.is(Blocks.SWEET_BERRY_BUSH)
+        || state.is(Blocks.WITHER_ROSE)
+        || state.is(Blocks.POWDER_SNOW)
+        || state.is(Blocks.POINTED_DRIPSTONE);
   }
 
   @Nullable
@@ -82,6 +100,7 @@ public final class CompanionTeleport {
     Predicate<FriendlySlime> valid =
         pet ->
             pet.isAlive()
+                && !pet.isPendingSpawn()
                 && !pet.isRemoved()
                 && !pet.isVehicle()
                 && !pet.isPassenger()
@@ -100,38 +119,73 @@ public final class CompanionTeleport {
       slime.teleportTo(target.x, target.y, target.z);
       moved = slime;
     } else {
-      Entity result =
-          slime.changeDimension(
-              level,
-              new ITeleporter() {
-                @Override
-                public Entity placeEntity(
-                    Entity entity,
-                    ServerLevel origin,
-                    ServerLevel destination,
-                    float yaw,
-                    Function<Boolean, Entity> reposition) {
-                  return reposition.apply(false);
-                }
-
-                @Override
-                public PortalInfo getPortalInfo(
-                    Entity entity,
-                    ServerLevel destination,
-                    Function<ServerLevel, PortalInfo> fallback) {
-                  return valid.test(slime) && safe(destination, slime, target)
-                      ? new PortalInfo(target, Vec3.ZERO, entity.getYRot(), entity.getXRot())
-                      : null;
-                }
-              });
-      if (!(result instanceof FriendlySlime companion)) return null;
-      moved = companion;
+      moved = transfer(slime, level, target, valid, authorized);
+      if (moved == null) return null;
     }
     pause(moved);
     moved.onReleased();
     pause(moved);
     CompanionRegistry.get(level.getServer()).observe(moved);
     return moved;
+  }
+
+  @Nullable
+  private static FriendlySlime transfer(
+      FriendlySlime source,
+      ServerLevel destination,
+      Vec3 target,
+      Predicate<FriendlySlime> validSource,
+      Predicate<FriendlySlime> authorized) {
+    if (!(source.level() instanceof ServerLevel origin)
+        || !net.minecraftforge.common.ForgeHooks.onTravelToDimension(
+            source, destination.dimension())
+        || source.level() != origin
+        || !validSource.test(source)
+        || !safe(destination, source, target)
+        || destination.getEntity(source.getUUID()) != null) return null;
+    var snapshot = source.saveWithoutId(new CompoundTag());
+    var created = source.getType().create(destination);
+    if (!(created instanceof FriendlySlime copy)) return null;
+    copy.restoreFrom(source);
+    copy.moveTo(target.x, target.y, target.z, source.getYRot(), source.getXRot());
+    copy.dropLeash(false, false);
+    pause(copy);
+    boolean committed = false;
+    copy.setPendingSpawn(true);
+    try {
+      if (!destination.addFreshEntity(copy)
+          || !copy.isAddedToWorld()
+          || !copy.isAlive()
+          || copy.isRemoved()
+          || copy.level() != destination
+          || !copy.getUUID().equals(source.getUUID())
+          || !java.util.Objects.equals(copy.getOwnerUUID(), source.getOwnerUUID())
+          || copy.isVehicle()
+          || copy.isPassenger()
+          || !authorized.test(copy)
+          || copy.position().distanceToSqr(target) > .01
+          || !safe(destination, copy, target)
+          || source.level() != origin
+          || !validSource.test(source)
+          || !snapshot.equals(source.saveWithoutId(new CompoundTag()))) return null;
+      // Native changeDimension removes the source even if a destination join event vetoes its
+      // copy. Commit only after admission, authorization and the untouched source agree.
+      source.remove(Entity.RemovalReason.CHANGED_DIMENSION);
+      committed = true;
+      copy.setPendingSpawn(false);
+      source.dropLeash(true, true);
+      origin.resetEmptyTime();
+      destination.resetEmptyTime();
+      return copy;
+    } finally {
+      if (!committed) {
+        if (copy.isAddedToWorld() && copy.isRemoved()) copy.revive();
+        copy.discard();
+        if (source.isAlive() && source.level() instanceof ServerLevel current)
+          CompanionRegistry.get(current).observe(source);
+      }
+      copy.setPendingSpawn(false);
+    }
   }
 
   public static boolean player(

@@ -104,6 +104,6 @@ The boss uses `textures/entity/aimless_colony.png`, a native **64×64** atlas wi
 
 Three **64×32** fragment skins, `colony_fragment_attack`, `colony_fragment_cohesion` and `colony_fragment_returning`, use orange, violet and teal respectively; distinct gold core shapes also distinguish roles.
 
-The two joined companion bodies reuse profession models, actual member dye colors and held items. Both combat bodies use the first member's active armor atlas, dye and enchantment glint; rendering does not replace the second member's stored armor.
+Transport colonies render two independently moving bodies at their actual world positions. Each retains its member's dye color and ancient markings and reuses the transport pack model. A gently sagging cord uses Minecraft's leash rendering with interpolated endpoint positions and lighting. Combat colonies retain their overlapping bodies and individual held items. Both combat bodies use the first member's active armor atlas, dye and enchantment glint; rendering does not replace the second member's stored armor.
 
 Resource packs may replace these files at the same paths and proportional resolutions. Keep the boss's core field and native slime UV regions aligned. Ground attack outlines, sounds, warning messages and exposed-core lighting are dynamic render behavior.

@@ -320,16 +320,16 @@ public final class SanctumGameTests {
     int before = level.getChunkSource().getLoadedChunksCount();
     var forced = Set.copyOf(level.getForcedChunks());
     long start = System.nanoTime();
-    var candidate =
-        SanctumPlacement.find(
-            level, new BlockPos(0, 90, Integer.getInteger("slimic.sanctumTestOriginZ", 0)), 512);
+    SanctumPlacement.Candidate candidate = null;
     int originZ = Integer.getInteger("slimic.sanctumTestOriginZ", 0);
-    for (int attempt = 1; candidate == null && attempt <= 4; attempt++) {
-      int direction = originZ < 0 ? -1 : 1;
+    int direction = originZ < 0 ? -1 : 1;
+    // Independent bounded regions avoid relying on suitable plains within one narrow strip.
+    for (int attempt = 0; candidate == null && attempt < 16; attempt++)
       candidate =
           SanctumPlacement.find(
-              level, new BlockPos(0, 90, originZ + direction * attempt * 16384), 512);
-    }
+              level,
+              new BlockPos((attempt % 4) * 32768, 90, originZ + direction * (attempt / 4) * 32768),
+              512);
     h.assertTrue(
         before == level.getChunkSource().getLoadedChunksCount()
             && forced.equals(level.getForcedChunks()),
