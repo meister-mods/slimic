@@ -5,12 +5,14 @@ import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.world.*;
 import java.util.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.*;
 import net.minecraft.server.level.*;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -18,8 +20,14 @@ import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 
 /** A broken assembly order given a single body. Its fragments borrow conserved encounter mass. */
 public final class AimlessColony extends Monster {
@@ -32,7 +40,9 @@ public final class AimlessColony extends Monster {
     RALLY(50),
     DASHING(12),
     RING(30),
-    CROSS(32);
+    CROSS(32),
+    SWEEP(32),
+    ERUPTION(40);
     public final int warning;
 
     Pattern(int warning) {
@@ -41,6 +51,12 @@ public final class AimlessColony extends Monster {
   }
 
   public static final double DASH_SPEED = .65;
+  public static final double SWEEP_RADIUS = 8;
+  public static final double SWEEP_HALF_ANGLE = Math.toRadians(70);
+  public static final double SWEEP_VERTICAL_REACH = 2.5;
+  public static final double ERUPTION_RADIUS = 1.6;
+  public static final double ERUPTION_SPACING = 3.5;
+  public static final double ERUPTION_VERTICAL_REACH = 2.5;
 
   private static final EntityDataAccessor<Integer> PATTERN =
       SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.INT);
@@ -61,6 +77,9 @@ public final class AimlessColony extends Monster {
   private int actionDelay = 60, splitDelay = 60, rallyDelay = 300, exposureDelay, exposedTicks;
   private int attackCycle;
   private Pattern followUp = Pattern.IDLE;
+  private Pattern lastAttack = Pattern.IDLE;
+  private int movementTicks, flankDirection = 1;
+  private boolean returningHome;
   private final Set<UUID> hit = new HashSet<>();
 
   public AimlessColony(EntityType<? extends AimlessColony> type, Level level) {
@@ -146,6 +165,39 @@ public final class AimlessColony extends Monster {
     return Math.abs(forward) <= dashHalfWidth() && Math.abs(side) <= dashHalfWidth();
   }
 
+  /** New attack warnings and damage share a fixed origin throughout the attack. */
+  public Vec3 attackOrigin() {
+    return Vec3.atBottomCenterOf(aim());
+  }
+
+  public boolean inSweepFootprint(Vec3 point) {
+    Vec3 offset = point.subtract(attackOrigin());
+    double distance = Math.sqrt(offset.x * offset.x + offset.z * offset.z);
+    return Math.abs(offset.y) <= SWEEP_VERTICAL_REACH
+        && distance <= SWEEP_RADIUS
+        && offset.dot(dashDirection()) >= distance * Math.cos(SWEEP_HALF_ANGLE);
+  }
+
+  public List<Vec3> eruptionCenters() {
+    Vec3 origin = attackOrigin(), forward = dashDirection().scale(ERUPTION_SPACING);
+    Vec3 side = new Vec3(-forward.z, 0, forward.x);
+    return List.of(
+        origin,
+        origin.add(forward),
+        origin.subtract(forward),
+        origin.add(side),
+        origin.subtract(side));
+  }
+
+  public boolean inEruptionFootprint(Vec3 point) {
+    if (Math.abs(point.y - attackOrigin().y) > ERUPTION_VERTICAL_REACH) return false;
+    for (Vec3 center : eruptionCenters()) {
+      double dx = point.x - center.x, dz = point.z - center.z;
+      if (dx * dx + dz * dz <= ERUPTION_RADIUS * ERUPTION_RADIUS) return true;
+    }
+    return false;
+  }
+
   public UUID siteId() {
     return siteId;
   }
@@ -214,12 +266,17 @@ public final class AimlessColony extends Monster {
     entityData.set(TIMER, pattern.warning);
     navigation.stop();
     hit.clear();
+    if (pattern != Pattern.IDLE && pattern != Pattern.DASHING) lastAttack = pattern;
     if (getTarget() != null) entityData.set(AIM, getTarget().blockPosition());
-    if (pattern == Pattern.DASH || pattern == Pattern.DASHING) {
+    if (pattern == Pattern.DASH
+        || pattern == Pattern.DASHING
+        || pattern == Pattern.SWEEP
+        || pattern == Pattern.ERUPTION) {
       Vec3 direction = Vec3.atCenterOf(aim()).subtract(position()).multiply(1, 0, 1);
       direction = direction.lengthSqr() < .01 ? new Vec3(0, 0, 1) : direction.normalize();
       entityData.set(DASH_DIRECTION, direction.toVector3f());
     }
+    if (pattern == Pattern.SWEEP) entityData.set(AIM, blockPosition());
     playSound(
         pattern == Pattern.RALLY ? SoundEvents.BEACON_POWER_SELECT : SoundEvents.SLIME_SQUISH,
         1.5F,
@@ -279,7 +336,6 @@ public final class AimlessColony extends Monster {
         return;
       }
       if (blockPosition().distSqr(site.anchor) > 44D * 44) {
-        navigation.moveTo(site.anchor.getX() + .5, site.anchor.getY(), site.anchor.getZ() + .5, 1);
         setTarget(null);
       } else {
         LivingEntity nearest =
@@ -298,33 +354,89 @@ public final class AimlessColony extends Monster {
       patternStep(server, site);
       return;
     }
-    if (!canUseAttackTarget()) {
+    moveBetweenAttacks(site);
+    if (returningHome || !canUseAttackTarget()) {
       setTarget(null);
       return;
     }
-    if (tickCount % 10 == 0) navigation.moveTo(getTarget(), .8);
     if (--actionDelay > 0) return;
     if (site.cohesion.count() > 0
         && rallyDelay == 0
+        && lastAttack != Pattern.RALLY
         && (phase() >= 2 || getHealth() < getMaxHealth() * .9)) {
       begin(Pattern.RALLY);
       rallyDelay = 300;
     } else if (splitDelay == 0
+        && lastAttack != Pattern.SPLIT
         && site.cohesion.free() >= 12
         && site.cohesion.count() < SlimicConfig.COLONY_FRAGMENTS.get()) {
       begin(Pattern.SPLIT);
       splitDelay = 300;
-    } else if (phase() == 3 && random.nextInt(3) == 0) begin(Pattern.PULL);
-    else if (phase() == 3 && attackCycle % 3 == 2) begin(Pattern.CROSS);
-    else if (phase() >= 2 && attackCycle % 2 == 1 && distanceToSqr(getTarget()) < 100)
-      begin(Pattern.RING);
-    else begin(distanceToSqr(getTarget()) < 49 ? Pattern.SLAM : Pattern.DASH);
+    } else begin(chooseAttack());
     followUp =
         phase() >= 2 && pattern() == Pattern.DASH
             ? Pattern.RING
             : phase() == 3 && pattern() == Pattern.PULL ? Pattern.CROSS : Pattern.IDLE;
     attackCycle = (attackCycle + 1) % 6;
     actionDelay = phase() == 3 ? 55 : 85;
+  }
+
+  private Pattern chooseAttack() {
+    double distance = distanceToSqr(getTarget());
+    List<Pattern> choices = new ArrayList<>();
+    if (distance < 49) choices.addAll(List.of(Pattern.SLAM, Pattern.SWEEP, Pattern.SWEEP));
+    else if (distance < 100) choices.addAll(List.of(Pattern.DASH, Pattern.SWEEP, Pattern.ERUPTION));
+    else choices.addAll(List.of(Pattern.DASH, Pattern.ERUPTION, Pattern.ERUPTION));
+    if (phase() >= 2) {
+      choices.add(Pattern.ERUPTION);
+      if (distance < 100) choices.add(Pattern.RING);
+    }
+    if (phase() == 3) {
+      choices.add(Pattern.CROSS);
+      if (distance < 81) choices.add(Pattern.PULL);
+    }
+    choices.removeIf(pattern -> pattern == lastAttack);
+    return choices.get(random.nextInt(choices.size()));
+  }
+
+  /** Short, bounded steps let the body approach, circle, or give space without acquiring chunks. */
+  private void moveBetweenAttacks(AssemblySites.Site site) {
+    navigation.stop();
+    Vec3 home = Vec3.atBottomCenterOf(site.anchor);
+    double homeDistance = position().distanceToSqr(home);
+    returningHome = homeDistance > (returningHome ? 8 * 8 : 38 * 38);
+    if (!returningHome && !canUseAttackTarget()) {
+      setDeltaMovement(0, getDeltaMovement().y, 0);
+      return;
+    }
+    Vec3 toward =
+        (returningHome ? home : getTarget().position()).subtract(position()).multiply(1, 0, 1);
+    if (toward.lengthSqr() < .01) {
+      setDeltaMovement(0, getDeltaMovement().y, 0);
+      return;
+    }
+    if (--movementTicks <= 0) {
+      movementTicks = 24 + random.nextInt(25);
+      flankDirection = random.nextBoolean() ? 1 : -1;
+    }
+    double distance = toward.length();
+    Vec3 forward = toward.normalize();
+    Vec3 side = new Vec3(-forward.z, 0, forward.x).scale(flankDirection);
+    double approach = returningHome || distance > 10 ? 1 : distance < 4 ? -.55 : .2;
+    Vec3 desired = forward.scale(approach).add(side.scale(returningHome ? 0 : .65)).normalize();
+    double speed = getAttributeValue(Attributes.MOVEMENT_SPEED) * .8;
+    for (double angle : new double[] {0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2}) {
+      Vec3 step = desired.yRot((float) angle).scale(speed);
+      Vec3 next = position().add(step);
+      if (next.distanceToSqr(home) > 44 * 44
+          && next.distanceToSqr(home) >= position().distanceToSqr(home)) continue;
+      if (safeStep(next)) {
+        setDeltaMovement(step.x, getDeltaMovement().y, step.z);
+        if (canUseAttackTarget()) getLookControl().setLookAt(getTarget(), 25, 25);
+        return;
+      }
+    }
+    setDeltaMovement(0, getDeltaMovement().y, 0);
   }
 
   private void patternStep(ServerLevel server, AssemblySites.Site site) {
@@ -336,7 +448,10 @@ public final class AimlessColony extends Monster {
       Vec3 dash = dashDirection();
       if (safeStep(position().add(dash.scale(DASH_SPEED))))
         setDeltaMovement(dash.x * DASH_SPEED, getDeltaMovement().y, dash.z * DASH_SPEED);
-      else entityData.set(TIMER, 0);
+      else {
+        entityData.set(TIMER, 0);
+        setDeltaMovement(0, getDeltaMovement().y, 0);
+      }
       strike(1.2, 1, true);
     } else {
       setDeltaMovement(getDeltaMovement().multiply(.25, 1, .25));
@@ -364,11 +479,17 @@ public final class AimlessColony extends Monster {
       case PULL -> strike(4, .8, false);
       case RING -> shapedStrike(false);
       case CROSS -> shapedStrike(true);
+      case SWEEP -> fixedStrike(server, false);
+      case ERUPTION -> fixedStrike(server, true);
       case SPLIT -> split(server, site);
       case RALLY -> absorb(server, site);
       default -> {}
     }
-    if (followUp != Pattern.IDLE && canUseAttackTarget()) {
+    if (followUp != Pattern.IDLE
+        && canUseAttackTarget()
+        && !returningHome
+        && (site == null
+            || position().distanceToSqr(Vec3.atBottomCenterOf(site.anchor)) <= 38 * 38)) {
       Pattern next = followUp;
       followUp = Pattern.IDLE;
       begin(next);
@@ -380,13 +501,60 @@ public final class AimlessColony extends Monster {
   }
 
   private boolean safeStep(Vec3 position) {
-    BlockPos feet = BlockPos.containing(position);
-    return level().hasChunkAt(feet)
-        && level().getFluidState(feet).isEmpty()
-        && level().getFluidState(feet.below()).isEmpty()
-        && level()
-            .getBlockState(feet.below())
-            .isFaceSturdy(level(), feet.below(), net.minecraft.core.Direction.UP);
+    return safeStep(this, position);
+  }
+
+  private boolean safeStep(Entity mover, Vec3 position) {
+    if (!(level() instanceof ServerLevel server) || mover.level() != level()) return false;
+    AABB box = mover.getBoundingBox().move(position.subtract(mover.position())).deflate(1.0E-5);
+    if (box.minY < level().getMinBuildHeight()
+        || box.maxY > level().getMaxBuildHeight()
+        || !level().getWorldBorder().isWithinBounds(box)) return false;
+    LoadedBlockView blocks = new LoadedBlockView(server);
+    int minX = Mth.floor(box.minX), maxX = Mth.floor(box.maxX);
+    int minZ = Mth.floor(box.minZ), maxZ = Mth.floor(box.maxZ);
+    int groundY = Mth.floor(box.minY - .125);
+    // Include adjacent blocks because fences and other collision shapes can extend beyond a cell.
+    for (int cx = (minX - 1) >> 4; cx <= (maxX + 1) >> 4; cx++)
+      for (int cz = (minZ - 1) >> 4; cz <= (maxZ + 1) >> 4; cz++)
+        if (blocks.chunk(cx, cz) == null) return false;
+    for (int x = minX; x <= maxX; x++)
+      for (int z = minZ; z <= maxZ; z++) {
+        BlockPos floor = new BlockPos(x, groundY, z);
+        if (!blocks.getFluidState(floor).isEmpty()
+            || !blocks.getBlockState(floor).isFaceSturdy(blocks, floor, Direction.UP)) return false;
+      }
+    var occupied = Shapes.create(box);
+    var context = CollisionContext.of(mover);
+    for (BlockPos pos :
+        BlockPos.betweenClosed(
+            minX - 1, groundY, minZ - 1, maxX + 1, Mth.floor(box.maxY) + 1, maxZ + 1)) {
+      if (!blocks.getFluidState(pos).isEmpty() && box.intersects(new AABB(pos))) return false;
+      var collision = blocks.getBlockState(pos).getCollisionShape(blocks, pos, context);
+      if (!collision.isEmpty()
+          && Shapes.joinIsNotEmpty(
+              occupied, collision.move(pos.getX(), pos.getY(), pos.getZ()), BooleanOp.AND))
+        return false;
+    }
+    for (var collision : level().getEntityCollisions(mover, box))
+      if (Shapes.joinIsNotEmpty(occupied, collision, BooleanOp.AND)) return false;
+    return true;
+  }
+
+  @Override
+  public boolean hasLineOfSight(Entity target) {
+    return target.level() == level()
+        && distanceToSqr(target) < 128 * 128
+        && LoadedBlockView.clip(
+                    level(),
+                    new ClipContext(
+                        getEyePosition(),
+                        target.getEyePosition(),
+                        ClipContext.Block.COLLIDER,
+                        ClipContext.Fluid.NONE,
+                        this))
+                .getType()
+            == HitResult.Type.MISS;
   }
 
   private void pull() {
@@ -394,10 +562,10 @@ public final class AimlessColony extends Monster {
         level()
             .getEntitiesOfClass(
                 LivingEntity.class, getBoundingBox().inflate(7, 2, 7), this::validTarget)) {
+      if (!hasLineOfSight(target)) continue;
       Vec3 direction =
           position().subtract(target.position()).multiply(1, 0, 1).normalize().scale(.07);
-      if (safeStep(target.position().add(direction.scale(5)))
-          && level().noCollision(target, target.getBoundingBox().move(direction.scale(5)))) {
+      if (safeStep(target, target.position().add(direction.scale(5)))) {
         target.push(direction.x, 0, direction.z);
         if (target instanceof FriendlySlime slime) slime.getNavigation().stop();
       }
@@ -420,10 +588,42 @@ public final class AimlessColony extends Monster {
           (float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * scale))) {
         Vec3 direction =
             target.position().subtract(position()).multiply(1, 0, 1).normalize().scale(.08);
-        if (safeStep(target.position().add(direction.scale(4))))
+        if (safeStep(target, target.position().add(direction.scale(4))))
           target.push(direction.x, .03, direction.z);
       }
     }
+  }
+
+  private void fixedStrike(ServerLevel server, boolean eruption) {
+    Vec3 origin = attackOrigin();
+    double radius = eruption ? ERUPTION_SPACING + ERUPTION_RADIUS : SWEEP_RADIUS;
+    double vertical = eruption ? ERUPTION_VERTICAL_REACH : SWEEP_VERTICAL_REACH;
+    for (LivingEntity target :
+        server.getEntitiesOfClass(
+            LivingEntity.class,
+            new AABB(origin, origin).inflate(radius, vertical, radius),
+            this::validTarget)) {
+      boolean inside =
+          eruption ? inEruptionFootprint(target.position()) : inSweepFootprint(target.position());
+      if (!inside || hit.contains(target.getUUID()) || !hasLineOfSight(target)) continue;
+      hit.add(target.getUUID());
+      target.hurt(
+          damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE));
+    }
+    for (Vec3 point : eruption ? eruptionCenters() : List.of(origin)) {
+      if (!server.hasChunkAt(BlockPos.containing(point))) continue;
+      server.sendParticles(
+          ParticleTypes.ITEM_SLIME,
+          point.x,
+          point.y + .2,
+          point.z,
+          eruption ? 18 : 30,
+          eruption ? ERUPTION_RADIUS * .5 : 1.5,
+          eruption ? .8 : .2,
+          eruption ? ERUPTION_RADIUS * .5 : 1.5,
+          .08);
+    }
+    playSound(SoundEvents.SLIME_ATTACK, 1.7F, eruption ? .6F : .8F);
   }
 
   /** Annular waves leave the center safe; crossed lanes leave all four diagonal sectors open. */
@@ -477,6 +677,11 @@ public final class AimlessColony extends Monster {
           getZ() + Math.sin(angle) * 2.7,
           getYRot(),
           0);
+      if (!safeStep(fragment, fragment.position())) {
+        fragment.discard();
+        AssemblySites.get(level).changeMass(level, site, pool -> pool.cancel(id, sequence[0]));
+        continue;
+      }
       net.minecraftforge.event.ForgeEventFactory.onFinalizeSpawn(
           fragment,
           level,
@@ -492,7 +697,7 @@ public final class AimlessColony extends Monster {
               && fragment.belongsTo(this)
               && isAlive()
               && site.active(encounter, getUUID())
-              && level.noCollision(fragment)
+              && safeStep(fragment, fragment.position())
               && level.addFreshEntity(fragment)
               && fragment.isAddedToWorld()
               && fragment.isAlive()
@@ -578,6 +783,8 @@ public final class AimlessColony extends Monster {
     if (siteId != null) tag.putUUID("AssemblySite", siteId);
     if (encounter != null) tag.putUUID("AssemblyEncounter", encounter);
     tag.putInt("AttackCycle", attackCycle);
+    tag.putString("LastAttack", lastAttack.name());
+    tag.putBoolean("ReturningHome", returningHome);
     tag.putInt("ActionDelay", actionDelay);
     tag.putInt("SplitDelay", splitDelay);
     tag.putInt("RallyDelay", rallyDelay);
@@ -593,6 +800,16 @@ public final class AimlessColony extends Monster {
     encounter = tag.hasUUID("AssemblyEncounter") ? tag.getUUID("AssemblyEncounter") : null;
     attackCycle = Math.floorMod(tag.getInt("AttackCycle"), 6);
     followUp = Pattern.IDLE;
+    try {
+      lastAttack = Pattern.valueOf(tag.getString("LastAttack"));
+    } catch (IllegalArgumentException ignored) {
+      lastAttack = Pattern.IDLE;
+    }
+    returningHome = tag.getBoolean("ReturningHome");
+    movementTicks = 0;
+    hit.clear();
+    navigation.stop();
+    setDeltaMovement(Vec3.ZERO);
     actionDelay = Math.max(20, tag.getInt("ActionDelay"));
     splitDelay = Math.max(20, tag.getInt("SplitDelay"));
     rallyDelay = Math.max(20, tag.getInt("RallyDelay"));
@@ -600,6 +817,7 @@ public final class AimlessColony extends Monster {
     exposedTicks = Math.max(0, Math.min(100, tag.getInt("ExposedTicks")));
     entityData.set(PATTERN, 0);
     entityData.set(TIMER, 0);
+    entityData.set(AIM, blockPosition());
     entityData.set(DASH_DIRECTION, new org.joml.Vector3f(0, 0, 1));
   }
 }

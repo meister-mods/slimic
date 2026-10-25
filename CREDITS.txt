@@ -101,3 +101,6 @@ The torn and reconstructed kingdom maps, Royal Survey Compass, courtyard and
 gallery seals, Royal Synthesis Core, and next-generation mining crest use
 artwork created for Slimic and exported as transparent 16x16 sprites. Royal
 station models combine these sprites with referenced Minecraft materials.
+
+The Aimless Colony uses original AI-generated gel, eye, and gold-core artwork,
+exported to a native 64x64 entity atlas for its asymmetric cuboid model.

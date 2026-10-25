@@ -48,6 +48,36 @@ public final class ColonyTelegraphs {
           line(pose, sink, rear.add(side.scale(sign)), front.add(side.scale(sign)), 1, .65F, .15F);
         line(pose, sink, rear.subtract(side), rear.add(side), 1, .65F, .15F);
         line(pose, sink, front.subtract(side), front.add(side), 1, .65F, .15F);
+      } else if (pattern == AimlessColony.Pattern.SWEEP) {
+        Vec3 center = boss.attackOrigin().add(0, .12, 0);
+        Vec3 direction = boss.dashDirection();
+        double angle = Math.atan2(direction.z, direction.x);
+        double from = angle - AimlessColony.SWEEP_HALF_ANGLE;
+        double to = angle + AimlessColony.SWEEP_HALF_ANGLE;
+        double reach = AimlessColony.SWEEP_RADIUS;
+        arc(pose, sink, center, reach, from, to, 40, 1, .5F, .18F);
+        line(pose, sink, center, radial(center, reach, from), 1, .5F, .18F);
+        line(pose, sink, center, radial(center, reach, to), 1, .5F, .18F);
+      } else if (pattern == AimlessColony.Pattern.ERUPTION) {
+        float progress =
+            1
+                - net.minecraft.util.Mth.clamp(
+                    (boss.patternTicks() - event.getPartialTick()) / pattern.warning, 0, 1);
+        for (Vec3 point : boss.eruptionCenters()) {
+          Vec3 center = point.add(0, .12, 0);
+          circle(pose, sink, center, AimlessColony.ERUPTION_RADIUS, .9F, .65F, .2F);
+          for (int side = 0; side < 4; side++) {
+            Vec3 edge = radial(center, AimlessColony.ERUPTION_RADIUS, side * Math.PI / 2);
+            line(
+                pose,
+                sink,
+                edge,
+                edge.add(0, .3 + progress * (AimlessColony.ERUPTION_VERTICAL_REACH - .3), 0),
+                .9F,
+                .65F,
+                .2F);
+          }
+        }
       } else if (pattern == AimlessColony.Pattern.CROSS) {
         Vec3 center = Vec3.atBottomCenterOf(boss.aim()).add(0, .12, 0);
         for (int axis = 0; axis < 2; axis++)
@@ -77,16 +107,28 @@ public final class ColonyTelegraphs {
       float r,
       float g,
       float blue) {
-    for (int segment = 0; segment < 64; segment++) {
-      double a = segment * Math.PI / 32, b = (segment + 1) * Math.PI / 32;
-      line(
-          pose,
-          sink,
-          origin.add(Math.cos(a) * radius, 0, Math.sin(a) * radius),
-          origin.add(Math.cos(b) * radius, 0, Math.sin(b) * radius),
-          r,
-          g,
-          blue);
+    arc(pose, sink, origin, radius, 0, Math.PI * 2, 64, r, g, blue);
+  }
+
+  private static Vec3 radial(Vec3 origin, double radius, double angle) {
+    return origin.add(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+  }
+
+  private static void arc(
+      PoseStack pose,
+      VertexConsumer sink,
+      Vec3 origin,
+      double radius,
+      double from,
+      double to,
+      int segments,
+      float r,
+      float g,
+      float blue) {
+    for (int segment = 0; segment < segments; segment++) {
+      double a = from + (to - from) * segment / segments;
+      double b = from + (to - from) * (segment + 1) / segments;
+      line(pose, sink, radial(origin, radius, a), radial(origin, radius, b), r, g, blue);
     }
   }
 

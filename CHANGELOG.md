@@ -4,6 +4,21 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.8] - 2026-10-25
+
+### Changed
+
+- Enlarge the Aimless Colony with eight uneven body lobes, offset eyes, exposed gold cores, and a new pixel-art skin. Add crawling waves and attack-specific compression while retaining the readable, mostly opaque shell.
+- Diversify its attacks and movement with marked sweeps, clustered eruptions, distance-aware attack selection, and short approach, circling, and retreat steps.
+- Require matching network protocol 25 clients and servers for the expanded attack set. Existing encounter identities, companion records, cohesion, and rewards remain compatible.
+- Update the English and Korean guides and texture documentation without revealing a detailed encounter walkthrough.
+
+### Fixed
+
+- Check the entire moving body and its supporting ground against obstacles, fluids, borders, and unloaded terrain. Apply the same landing checks to new fragments and forced movement.
+- Prevent the colony from pulling targets through walls, and clear unfinished attacks and movement when loading a saved boss.
+- Keep a displaced colony returning toward the chamber interior instead of stopping at its outer edge.
+
 ## [0.5.7] - 2026-10-25
 
 ### Added

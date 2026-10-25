@@ -2,65 +2,165 @@ package io.github.meistermods.slimic.client;
 
 import com.mojang.blaze3d.vertex.*;
 import io.github.meistermods.slimic.entity.AimlessColony;
+import java.util.ArrayList;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.*;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
+/** Overlapping cuboid lobes share a skin, while their eyes and exposed cores stay opaque. */
 public final class AimlessColonyModel extends EntityModel<AimlessColony> {
   public static final ModelLayerLocation BODY =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath("slimic", "aimless_colony"), "body");
-  private final ModelPart head, middle, tail, cores;
+  private static final String[] LOBES = {
+    "middle", "head", "crown", "left", "right", "tail", "front_sprawl", "rear_sprawl"
+  };
+  private final ModelPart[] shells = new ModelPart[LOBES.length];
+  private final ModelPart[] features = new ModelPart[LOBES.length];
+  private final ModelPart[] cores = new ModelPart[LOBES.length];
+  private final ModelPart[][] eyes = new ModelPart[LOBES.length][];
   private boolean exposed;
 
   public AimlessColonyModel(ModelPart root) {
-    head = root.getChild("head");
-    middle = root.getChild("middle");
-    tail = root.getChild("tail");
-    cores = root.getChild("cores");
+    for (int i = 0; i < LOBES.length; i++) {
+      shells[i] = root.getChild("shell").getChild(LOBES[i]);
+      ModelPart feature = features[i] = root.getChild("features").getChild(LOBES[i]);
+      cores[i] = feature.hasChild("core") ? feature.getChild("core") : null;
+      var lobeEyes = new ArrayList<ModelPart>();
+      for (String name : new String[] {"eye_left", "eye_right", "eye_tail"})
+        if (feature.hasChild(name)) lobeEyes.add(feature.getChild(name));
+      eyes[i] = lobeEyes.toArray(ModelPart[]::new);
+    }
   }
 
   public static LayerDefinition bodyLayer() {
     MeshDefinition mesh = new MeshDefinition();
-    PartDefinition root = mesh.getRoot();
-    root.addOrReplaceChild(
-        "cores",
-        CubeListBuilder.create()
-            .texOffs(56, 56)
-            .addBox(-3, 18, -6, 2, 2, 2)
-            .addBox(2, 19, -1, 2, 2, 2)
-            .addBox(-1, 20, 5, 2, 2, 2),
-        PartPose.ZERO);
-    root.addOrReplaceChild(
-        "head",
-        CubeListBuilder.create().texOffs(0, 0).addBox(-5, -9, -7, 10, 9, 9),
-        PartPose.offset(0, 24, -5));
-    root.addOrReplaceChild(
-        "middle",
-        CubeListBuilder.create().texOffs(0, 12).addBox(-6, -8, -7, 12, 8, 14),
-        PartPose.offset(0, 24, 0));
-    root.addOrReplaceChild(
-        "tail",
-        CubeListBuilder.create().texOffs(0, 6).addBox(-4, -6, -3, 8, 6, 10),
-        PartPose.offset(0, 24, 6));
+    PartDefinition shell =
+        mesh.getRoot().addOrReplaceChild("shell", CubeListBuilder.create(), PartPose.ZERO);
+    PartDefinition features =
+        mesh.getRoot().addOrReplaceChild("features", CubeListBuilder.create(), PartPose.ZERO);
+    // Skin UVs remain inside x=0..47, y=0..39 of the shared 64x64 atlas.
+    lobe(shell, features, "middle", 0, 0, -6, -10, -6, 12, 10, 12, 0, 0);
+    lobe(shell, features, "head", 0, 4, -5, -12, -5, 10, 12, 8, -1, -6);
+    lobe(shell, features, "crown", 0, 12, -3, -13, -4, 7, 5, 7, 1, -1);
+    lobe(shell, features, "left", 0, 16, -3, -8, -4, 6, 8, 9, -5, 0);
+    lobe(shell, features, "right", 12, 6, -2, -9, -4, 5, 9, 9, 5, 1);
+    lobe(shell, features, "tail", 0, 8, -4, -7, -3, 8, 7, 8, -1, 6);
+    lobe(shell, features, "front_sprawl", 0, 20, -2, -5, -3, 5, 5, 6, 5, -5);
+    lobe(shell, features, "rear_sprawl", 16, 20, -2, -4, -3, 5, 4, 7, -5, 6);
+
+    eye(features.getChild("head"), "eye_left", -3.2F, -9.5F, -5.45F, 0, -.10F);
+    eye(features.getChild("head"), "eye_right", 2.8F, -6.5F, -5.45F, 0, .16F);
+    eye(features.getChild("left"), "eye_left", -3.45F, -5.5F, -1, Mth.HALF_PI, -.13F);
+    eye(features.getChild("right"), "eye_right", 3.45F, -6, 1.8F, -Mth.HALF_PI, .08F);
+    eye(features.getChild("tail"), "eye_tail", -1.5F, -4.5F, 5.45F, Mth.PI, -.12F);
+    core(features.getChild("head"), -1, -10, -4.4F, .08F, .08F);
+    core(features.getChild("crown"), 3.4F, -11.2F, 0, -.12F, -.10F);
+    core(features.getChild("left"), -2.1F, -4.8F, 3.2F, .13F, .07F);
+    core(features.getChild("right"), 1.8F, -6.3F, 1.2F, -.10F, -.08F);
+    core(features.getChild("tail"), .5F, -6.1F, 3.5F, .08F, -.10F);
     return LayerDefinition.create(mesh, 64, 64);
+  }
+
+  private static void lobe(
+      PartDefinition shell,
+      PartDefinition features,
+      String name,
+      int u,
+      int v,
+      float x,
+      float y,
+      float z,
+      float width,
+      float height,
+      float depth,
+      float pivotX,
+      float pivotZ) {
+    PartPose pose = PartPose.offset(pivotX, 24, pivotZ);
+    shell.addOrReplaceChild(
+        name, CubeListBuilder.create().texOffs(u, v).addBox(x, y, z, width, height, depth), pose);
+    features.addOrReplaceChild(name, CubeListBuilder.create(), pose);
+  }
+
+  private static void eye(
+      PartDefinition lobe, String name, float x, float y, float z, float yaw, float roll) {
+    // The forward eye face samples x=50..52, y=2..4; no procedural color patches.
+    lobe.addOrReplaceChild(
+        name,
+        CubeListBuilder.create().texOffs(49, 1).addBox(-1.5F, -1.5F, -.5F, 3, 3, 1),
+        PartPose.offsetAndRotation(x, y, z, 0, yaw, roll));
+  }
+
+  private static void core(PartDefinition lobe, float x, float y, float z, float yaw, float roll) {
+    // Five command cores use the six 3x3 faces in x=48..59, y=52..57.
+    lobe.addOrReplaceChild(
+        "core",
+        CubeListBuilder.create().texOffs(48, 52).addBox(-1.5F, -1.5F, -1.5F, 3, 3, 3),
+        PartPose.offsetAndRotation(x, y, z, 0, yaw, roll));
   }
 
   @Override
   public void setupAnim(
       AimlessColony slime, float swing, float amount, float age, float yaw, float pitch) {
     exposed = slime.exposed();
-    float pulse = slime.pattern() == AimlessColony.Pattern.SPLIT ? .12F : .035F;
-    float wave = Mth.sin(age * .14F);
-    head.xScale = 1 + wave * pulse;
-    head.yScale = 1 - wave * pulse;
-    middle.xScale = 1 - wave * pulse;
-    middle.yScale = 1 + wave * pulse;
-    tail.xRot = Mth.sin(age * .1F + 1) * .04F;
-    tail.zRot = Mth.sin(age * .1F) * .06F;
-    head.yRot = yaw * .003F;
+    var pattern = slime.pattern();
+    float partial = Mth.clamp(age - slime.tickCount, 0, 1);
+    float warning =
+        pattern.warning == 0
+            ? 0
+            : 1 - Mth.clamp((slime.patternTicks() - partial) / pattern.warning, 0, 1);
+    float moving = Mth.clamp((float) slime.getDeltaMovement().horizontalDistance() * 5, 0, 1);
+    float compression =
+        switch (pattern) {
+          case DASH, ERUPTION -> warning * .25F;
+          case SPLIT -> .10F + Mth.sin(age * .32F) * .06F;
+          case PULL -> warning * .15F;
+          case RALLY -> .06F + Mth.sin(age * .18F) * .035F;
+          default -> 0;
+        };
+    for (int i = 0; i < shells.length; i++) {
+      ModelPart shell = shells[i], feature = features[i];
+      shell.resetPose();
+      float wave = Mth.sin(age * .075F - i * .72F);
+      float drag = Mth.sin(age * .11F - i * .8F);
+      shell.xScale = 1 + wave * .035F + compression * .5F;
+      shell.yScale = 1 - wave * .04F - compression;
+      shell.zScale = 1 + compression * .35F;
+      shell.x += Mth.cos(age * .055F + i) * .12F;
+      shell.z += drag * (.06F + moving * .3F);
+      shell.zRot += wave * (.008F + moving * .016F);
+      if (pattern == AimlessColony.Pattern.DASHING) {
+        shell.yScale *= .82F;
+        shell.zScale *= 1.12F;
+      } else if (pattern == AimlessColony.Pattern.SLAM) {
+        shell.yScale += warning * (i < 3 ? .22F : -.08F);
+        shell.xScale += warning * .04F;
+      } else if (pattern == AimlessColony.Pattern.SWEEP) {
+        shell.yRot += warning * .16F * (i % 2 == 0 ? 1 : -1);
+        shell.zRot += warning * .035F;
+      } else if (pattern == AimlessColony.Pattern.RING) {
+        shell.xScale += warning * .10F;
+        shell.zScale += warning * .10F;
+      } else if (pattern == AimlessColony.Pattern.CROSS) {
+        shell.yScale += warning * .10F;
+        shell.x += Mth.sin(age * .24F + i) * warning * .1F;
+      }
+      if (i == 1) shell.yRot += Mth.clamp(yaw * .002F, -.10F, .10F);
+      feature.copyFrom(shell);
+      if (cores[i] != null) {
+        ModelPart core = cores[i];
+        core.resetPose();
+        float pulse = (exposed ? .08F : .025F) * (1 + Mth.sin(age * .22F + i));
+        core.xScale = core.yScale = core.zScale = 1 + pulse;
+        core.yRot += Mth.sin(age * .065F + i) * .10F;
+      }
+      for (ModelPart eye : eyes[i]) {
+        eye.resetPose();
+        eye.yScale = Math.floorMod(slime.tickCount + i * 17, 113) < 3 ? .18F : 1;
+      }
+    }
   }
 
   @Override
@@ -73,12 +173,11 @@ public final class AimlessColonyModel extends EntityModel<AimlessColony> {
       float g,
       float b,
       float alpha) {
-    cores.render(pose, sink, exposed ? 15728880 : light, overlay, r, g, b, alpha);
+    for (ModelPart feature : features)
+      feature.render(pose, sink, exposed ? 15728880 : light, overlay, r, g, b, alpha);
   }
 
   public void renderShell(PoseStack pose, VertexConsumer sink, int light, int overlay) {
-    head.render(pose, sink, light, overlay, 1, 1, 1, .85F);
-    middle.render(pose, sink, light, overlay, 1, 1, 1, .85F);
-    tail.render(pose, sink, light, overlay, 1, 1, 1, .85F);
+    for (ModelPart shell : shells) shell.render(pose, sink, light, overlay, 1, 1, 1, .85F);
   }
 }

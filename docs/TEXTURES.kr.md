@@ -100,6 +100,10 @@ The Slimic은 [`assets/slimic/textures/block/world`](../src/main/resources/asset
 
 재료·기록 아이콘은 `textures/item`의 `colony_heart`, `cohesion_shard`, `assembly_clue`, `last_rally_record`, `endless_assembly_record`이며 기본 **16×16** PNG입니다. 결속 소환 아이템 둘은 `slime_summon_base`를 유지하고, 각각 16×16 `bound_transport_slime_crest`, `bound_combat_slime_crest` 문장을 얹습니다. `textures/block/colony_bonding_top.png`는 별도의 16×16 장치 표면입니다.
 
-보스는 **64×64** 논리 아틀라스인 `textures/entity/aimless_colony.png`를 사용합니다. 오른쪽 아래 8×8 영역이 내부 금색 핵의 표면이며, 모델은 불투명한 핵을 별도로 그린 뒤 반투명 초록 외피를 혼합합니다. **64×32** 분체 피부 셋 `colony_fragment_attack`, `colony_fragment_cohesion`, `colony_fragment_returning`은 각각 주황·보라·청록 계열입니다. 금색 핵의 형태도 서로 달라 역할을 구별할 수 있습니다. 결속 동료의 붙어 있는 몸 둘은 기존 역할 모델과 실제 구성원의 몸 색·손 장비를 재사용합니다. 전투 군체의 두 몸에는 첫 구성원의 실제 갑옷 아틀라스·염색·마법 부여 광택을 함께 표시하며, 둘째의 보관된 갑옷은 바꾸지 않습니다.
+보스는 불규칙한 초록 점액 무늬를 담은 기본 **64×64** 아틀라스 `textures/entity/aimless_colony.png`를 사용합니다. 겹친 직육면체 덩어리 8개가 비대칭 몸체를 이루며, 어긋난 눈 5개와 드러난 금색 핵 5개가 각 덩어리와 함께 움직입니다. 몸체 UV는 x=0–47, y=0–39 안에 있습니다. 눈 큐브는 (49, 1)에서 시작하고 정면은 x=50–52, y=2–4를 사용합니다. 3×3×3 핵 큐브는 (48, 52)에서 시작해 x=48–59, y=52–57을 사용합니다. 불투명한 눈과 핵을 먼저 그린 뒤 **불투명도 85%** 외피를 혼합합니다. 개별 맥동, 기어가는 파동과 공격 자세에도 각진 실루엣을 유지합니다.
+
+**64×32** 분체 피부 셋 `colony_fragment_attack`, `colony_fragment_cohesion`, `colony_fragment_returning`은 각각 주황·보라·청록 계열입니다. 금색 핵의 형태도 서로 달라 역할을 구별할 수 있습니다.
+
+결속 동료의 붙어 있는 몸 둘은 기존 역할 모델과 실제 구성원의 몸 색·손 장비를 재사용합니다. 전투 군체의 두 몸에는 첫 구성원의 실제 갑옷 아틀라스·염색·마법 부여 광택을 함께 표시하며, 둘째의 보관된 갑옷은 바꾸지 않습니다.
 
 리소스 팩은 같은 경로와 비례 해상도로 교체할 수 있습니다. 보스의 핵 영역과 기본 슬라임 UV 영역을 유지하세요. 공격 바닥 윤곽선·소리·경고 문구·핵 노출 조명은 동적으로 렌더링합니다.
