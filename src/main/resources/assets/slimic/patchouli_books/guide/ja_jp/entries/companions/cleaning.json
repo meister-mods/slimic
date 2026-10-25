@@ -1,0 +1,28 @@
+{
+  "name": "清掃スライム",
+  "icon": "slimic:cleaning_slime",
+  "category": "slimic:companions",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:rotten_flesh",
+      "result": "slimic:cleaning_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと腐った肉1個を組み合わせます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。「清掃」で固定の球状範囲に落ちた対象アイテムを集め、回収に成功するたび開始地点へ戻ります。探知範囲は共通値の5倍、初期40ブロックです。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "拾えるまでの待ち時間、所有権、バッグの空き、保護に従います。満杯なら荷下ろしを依頼します。1個のアイテムで3分間足止めされると別の対象を探し、なければ同じアイテムを再試行します。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:cleaning_slime": 0
+  }
+}

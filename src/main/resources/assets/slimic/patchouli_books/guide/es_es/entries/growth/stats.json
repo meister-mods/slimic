@@ -1,0 +1,28 @@
+{
+  "name": "Nueve atributos",
+  "icon": "minecraft:experience_bottle",
+  "category": "slimic:growth",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Salud empieza en 16 y suma 4 por punto; mejorarla no cura. Ataque empieza en 2 y suma 1: sirve para combate, espada y aliento del dragón, y rayos del ángel guardián. Defensa empieza en 0 y suma 1 con las reglas normales de armadura."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Velocidad empieza en 0.30 y suma 0.015 por punto. Acorta pausas entre saltos y escala el vuelo montado; la velocidad de despegue terrestre es fija. Ritmo de trabajo empieza en 1× y suma 0.1×, afectando intervalos y excavación con herramienta eficaz."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Capacidad común empieza en 9 huecos y suma 3 por punto, hasta 27. Transporte siempre tiene el doble; almacén, ocho veces. Capacidad admite seis mejoras y los demás atributos, veinte."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Energía empieza en 100 y suma 20 por punto. Alcance empieza en 3 bloques y suma 0.25. Detección empieza en 8 y suma 1; cultivo, tala, curación y abundancia la multiplican por 2, y limpieza por 5."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La gestión marca atributos sin uso en la función actual. Las inversiones se conservan al especializar un slime amistoso. Ángel guardián y guardia real tienen cuatro veces la salud común; el curioso, 1.5 veces la velocidad con el mismo atributo base."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "戦闘スライム群体",
+  "icon": "slimic:bound_combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "通常の$(l:companions/combat)戦闘スライム$()2体が$(l:world/colony_bonding)群体の結束$()で体を共有します。体力は合計、基礎攻撃力は両者の合計の60%です。初配置も回収後の再配置も、常に待機で始まります。",
+      "title": "戦闘スライム群体"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "武器・盾・鎧は耐久消耗も含めて1体目のものを使います。その鎧の素材・染色・光沢を両方の体に表示します。2体目の元の装備は解除まで保存されます。それぞれの体色と手に持つアイテムの見た目は保ちます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "被害と回復は両方の記録に反映します。未使用ポイントは平均の切り捨てで始まり、1ポイントで上限未満の各構成員を強化します。役割の能力値を両者とも強化できる間は半速成長、それ以外は通常です。解除で両者の個体と特性を戻し、残高をそれぞれに写します。対象設定は最初に1体目から引き継ぎます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_combat_slime": 0
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "農耕スライム",
+  "icon": "slimic:farmer_slime",
+  "category": "slimic:companions",
+  "sortnum": 15,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_hoe",
+      "result": "slimic:farmer_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと任意のクワを組み合わせます。元の道具をデータごと装備します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。「農耕」で現在地周辺の読込済み農地を調べます。範囲は共通値の2倍、初期16ブロックです。種か作物をバッグに入れてください。新しい農地は一度待機し、農耕を選び直して登録します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "育った作物を収穫し、自分のバッグから植え直し、クワで登録済みの土を修復します。農地を踏み荒らしません。満杯や道具破損で支援を依頼します。$(l:fieldwork/farmland)登録した農地$()も参照してください。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:farmer_slime": 0
+  }
+}

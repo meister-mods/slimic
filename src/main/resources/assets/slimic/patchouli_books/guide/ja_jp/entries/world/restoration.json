@@ -1,0 +1,34 @@
+{
+  "name": "スライムの復元",
+  "icon": "slimic:command_pedestal",
+  "category": "slimic:world",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "遺跡の守護・運搬・指揮スライムは、印章で復元するコアを残します。$(l:world/mine_recovery)鉱山のコア$()は壊した遺骸や残存兵から得て、印章の代わりに命令の欠片を使います。復元は新しい仲間を作る方法で、自分の倒れた仲間は通常どおり復活させます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "コアを持って$(item)スライム復元台$()を右クリックします。持ち物にスライムボール1個と触媒1個を用意します。遺跡のコアには印章、鉱山のコアには古い命令の欠片を使います。鉱山はオーバーワールド限定です。材料を一度消費し、コアが召喚アイテムになります。無傷の台を遺跡で探すか、掲載レシピで作れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "守護は$(l:companions/royal_guard)王室近衛$()、運搬役は$(l:companions/transport)運搬$()、指揮役は$(l:companions/commander)指揮スライム$()になります。新しい個体識別と自分の所有権を持ち、体力1の待機状態で現れます。指揮の集団ごとの配置上限は通常どおりです。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "古代の名前と白い紋章が残ります。有用な能力値に、持久力の訓練を含む12～28回の強化を持ちます。強化内容はコアごとに保存・回収しても固定で、復元は一度だけです。戦闘スライムに印章を組み合わせる方法では、代わりにその仲間の成長を正確に保ちます。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:world/command_pedestal",
+      "text": "作業台で作れます。ひび割れた台は復元に使えません。JEIのスライム復元カテゴリに全6レシピを表示します。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:command_pedestal": 1,
+    "slimic:damaged_ancient_slime_core": 1,
+    "slimic:ancient_command_seal": 1
+  }
+}

@@ -21,7 +21,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 /** Localized native tooltips for fresh and stored companions, both fonts, and optional JEI. */
 public final class CompanionTooltipClientSmoke {
-  private static final List<String> LANGUAGES = List.of("en_us", "ko_kr", "fr_fr", "en_us");
+  private static final List<String> LANGUAGES =
+      List.of("en_us", "ko_kr", "ja_jp", "es_es", "fr_fr", "en_us");
   private static final List<Map<String, Object>> report = new ArrayList<>();
   private static final List<ItemStack> samples = new ArrayList<>();
   private static int phase, language, mode, index, ticks, checks;
@@ -231,8 +232,8 @@ public final class CompanionTooltipClientSmoke {
       System.out.println(
           "SLIMIC COMPANION TOOLTIP CLIENT SMOKE PASSED: "
               + checks
-              + " fresh/stored NORMAL/ADVANCED tooltips;"
-              + " EN/KR/fallback; default/Unicode fonts; native bounds and exact data; JEI="
+              + " fresh/stored NORMAL/ADVANCED tooltips; EN/KR/JA/ES/fallback/EN-return;"
+              + " default/Unicode fonts; native bounds and exact data; JEI="
               + ModList.get().isLoaded("jei"));
       return true;
     } catch (java.io.IOException e) {

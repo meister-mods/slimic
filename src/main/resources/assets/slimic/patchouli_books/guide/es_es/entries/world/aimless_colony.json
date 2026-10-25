@@ -1,0 +1,36 @@
+{
+  "name": "La colonia sin rumbo",
+  "icon": "slimic:colony_heart",
+  "category": "slimic:world",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "La colonia sin rumbo habita las cámaras de reunión del reino. Entre sus masas irregulares de gel asoman ojos y núcleos dorados. El cuerpo y sus fragmentos comparten un vínculo. Sus ataques dejan intacta la cámara.",
+      "title": "La colonia"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Observa sus movimientos y las señales a su alrededor. Su conducta puede cambiar durante la lucha; responde a lo que veas en la cámara.",
+      "title": "Observa las señales"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Para recibir recompensas, permanece cerca al menos 30 segundos por defecto, aporta daño, curación, protección o una reunión lograda, y sigue vivo cerca al caer la colonia. Creativo y Espectador no cuentan. La contribución de los compañeros cuenta para su dueño.",
+      "title": "Luchar juntos"
+    },
+    {
+      "type": "patchouli:crafting",
+      "text": "Tu primera victoria en cada cámara entrega un Corazón de colonia y un registro. Las siguientes dan dos Fragmentos de cohesión.",
+      "recipe": "slimic:colony_heart"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:colony_heart": 0,
+    "slimic:cohesion_shard": 3,
+    "slimic:aimless_colony_spawn_egg": 0,
+    "slimic:attack_colony_fragment_spawn_egg": 2,
+    "slimic:cohesion_colony_fragment_spawn_egg": 2,
+    "slimic:returning_colony_fragment_spawn_egg": 2
+  }
+}

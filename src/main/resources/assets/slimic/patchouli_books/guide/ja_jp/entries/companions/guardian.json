@@ -1,0 +1,29 @@
+{
+  "name": "守護天使スライム",
+  "icon": "slimic:guardian_angel_slime",
+  "category": "slimic:companions",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:nether_star",
+      "input3": "minecraft:totem_of_undying",
+      "result": "slimic:guardian_angel_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムにネザースターと不死のトーテムを組み合わせます。使ったトーテムが最初の予備になります。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。追従では主人について飛びます。待機中でも自分や近くの主人を守れます。反撃の光線は攻撃力・作業速度・到達距離・気力を使い、遠くの敵を探して攻めることはありません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "体力は共通値の4倍で、初期64、体力1ポイントにつき16増えます。予備枠には同じトーテムを最大64個入れられます。16ブロック以内の主人の致命傷を、1体がトーテム1個で防ぎます。主人が手に持つトーテムが先に働きます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:guardian_angel_slime": 0
+  }
+}

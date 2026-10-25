@@ -1,0 +1,29 @@
+{
+  "name": "Órdenes olvidadas",
+  "icon": "slimic:ancient_command_seal",
+  "category": "slimic:world",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Guardianes ancestrales, transportistas olvidados y slimes de mando ancestrales siguen ligados a ruinas nuevas de The Slimic. Los guardianes patrullan y atacan a jugadores y compañeros. Excluyen Creativo, Espectador y otros restos del reino."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los transportistas se defienden al recibir ataques y mueven objetos entre los dos Cofres de slimes de su ruina. Abrir un cofre elimina su vínculo de transporte ancestral. Los slimes de mando alertan a guardianes de la misma ruina ante intrusos cercanos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La persecución acaba a 24 bloques del centro de la ruina. Al salir de ese límite, el enemigo vuelve. Derrotarlo tú o con un compañero garantiza un núcleo y un sello, sujeto a las reglas y eventos de botín normales."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Salud / ataque / armadura base: guardián 64 / 8 / 8; transporte 48 / 6 / 6; mando 96 / 12 / 12. Creativo ofrece huevos para cada función. Los aparecidos por huevo no tienen dueño; el transporte necesita los depósitos vinculados de su ruina."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_guard_slime_spawn_egg": 3,
+    "slimic:forgotten_transport_slime_spawn_egg": 3,
+    "slimic:ancient_commander_slime_spawn_egg": 3
+  }
+}

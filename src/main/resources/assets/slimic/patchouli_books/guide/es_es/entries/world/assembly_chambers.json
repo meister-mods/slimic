@@ -1,0 +1,28 @@
+{
+  "name": "Cámaras de reunión",
+  "icon": "slimic:assembly_clue",
+  "category": "slimic:world",
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Las cámaras de reunión abandonadas aparecen bajo terreno nuevo de The Slimic. Las lámparas señalan la escalera de entrada. Los suministros de $(l:world/fallen_sanctum)ciudadelas$() y minas pueden contener una Pista de la reunión. Úsala en esta dimensión para marcar una posible cámara cercana."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La pista no es una llave. Usa el Núcleo de reunión para iniciar un despertar de dos segundos. El primer intento y los reintentos tras fallar son gratis. La escalera sigue abierta; retirarse durante un minuto con el encuentro cargado lo reinicia."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Tras vencer, el mismo altar pide ocho bolas de slime y dos Fragmentos de mando antiguo, pasado un día. El servidor puede cambiar estos costes. Cada participante recoge su recompensa personal en un núcleo; si tiene el inventario lleno, queda pendiente."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "En Pacífico no despierta la colonia. Ocho Fragmentos de mando antiguo y 32 bolas de slime desbloquean una vez tu primera recompensa de esa cámara. Un núcleo repuesto en el altar original restaura el acceso; cualquier núcleo de reunión entrega recompensas personales pendientes."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:assembly_clue": 0,
+    "slimic:assembly_core": 1
+  }
+}

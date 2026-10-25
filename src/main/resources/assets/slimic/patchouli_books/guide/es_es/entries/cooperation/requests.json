@@ -1,0 +1,20 @@
+{
+  "name": "Herramientas y carga",
+  "icon": "minecraft:bucket",
+  "category": "slimic:cooperation",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Una bolsa llena solicita descarga. Una herramienta ausente solicita un repuesto compatible con sus datos intactos. Cultivo usa azadas; tala, hachas; excavación, picos y palas; combate, espadas. Los transportistas no suministran semillas ni brotes."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Drenar solicita un cubo vacío. Reforzar paredes pide hasta 64 de roca; curar, hasta 64 bolas de slime. El suministro depende de existencias y espacio útil: primero hay que descargar las bolsas llenas. Pesca solicita cañas; túneles, hasta 64 bloques del revestimiento elegido."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los transportistas revisan la solicitud antes de entregar, evitando que dos la llenen de más. Seguir y Esperar retiran solicitudes. Los $(l:companions/herald)slimes de aviso$() informan de bloqueos continuos; reintentar por sí solo no reinicia su duración."
+    }
+  ]
+}

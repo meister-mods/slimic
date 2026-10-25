@@ -1,0 +1,28 @@
+{
+  "name": "王室融合",
+  "icon": "slimic:royal_synthesis_station",
+  "category": "slimic:world",
+  "sortnum": 15,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:royal_synthesis_station"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "王室融合コア1個、金インゴット2個、レッドストーンダスト2個、古代の命令印章1個、石レンガ3個で繰り返し使える台を作ります。材料は聖砦で得られます。壊れた研究室の装置では融合できません。別の$(l:world/restoration)スライム復元台$()は引き続きコアの復元に使います。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "同じ系統の通常・古代の採掘スライムかトンネルスライムを回収します。両者の主所有者であることと、装備・バッグが空であることが必要です。スライムボール4個と古い命令の欠片2個を加えます。結果は次世代採掘か$(l:companions/next_generation_tunnel)トンネルスライム$()です。次世代の親は再利用できません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "確認表示を読んでから確定してください。両親は消費され、子は新しい個体として待機で始まります。調整器で名前を付けられます。確認できる成長は$(l:growth/inheritance)ポイントに戻します$()。受け渡しが中断した場合は、動作する王室融合台のどこでも保留結果を回収できます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_synthesis_station": 0,
+    "slimic:royal_synthesis_core": 1
+  }
+}

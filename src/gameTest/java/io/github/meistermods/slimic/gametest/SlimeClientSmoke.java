@@ -63,6 +63,12 @@ public final class SlimeClientSmoke {
     if (!Boolean.getBoolean("slimic.clientSmoke") || event.phase != TickEvent.Phase.END) return;
     Minecraft client = Minecraft.getInstance();
     int timeout = 3600;
+    if (Boolean.getBoolean("slimic.guidebookOnly")) timeout = 12000;
+    if (Boolean.getBoolean("slimic.companionTooltipsOnly")) timeout = 9600;
+    if (Boolean.getBoolean("slimic.ancientRecordsOnly")
+        || Boolean.getBoolean("slimic.inventoryLayoutOnly")
+        || Boolean.getBoolean("slimic.colonyOnly")
+        || Boolean.getBoolean("slimic.colonyLanguageOnly")) timeout = 7200;
     if (Boolean.getBoolean("slimic.workAreaOnly")) timeout = WorkAreaClientSmoke.maximumTicks();
     if (Boolean.getBoolean("slimic.accessoryTexturesOnly"))
       timeout +=
@@ -108,7 +114,8 @@ public final class SlimeClientSmoke {
       if (TransportColonyClientSmoke.tick(client)) client.stop();
       return;
     }
-    if (Boolean.getBoolean("slimic.colonyOnly")) {
+    if (Boolean.getBoolean("slimic.colonyOnly")
+        || Boolean.getBoolean("slimic.colonyLanguageOnly")) {
       if (ColonyClientSmoke.tick(client)) client.stop();
       return;
     }

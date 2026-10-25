@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Book text follows the game language: English or Korean, with English fallback for other languages. See $(l:basics/first_steps)First steps$() and $(l:basics/tuner)Slime Tuner$()."
+      "text": "Book text follows the game language: English, Korean, Japanese, or Spanish, with English fallback for other languages. See $(l:basics/first_steps)First steps$() and $(l:basics/tuner)Slime Tuner$()."
     }
   ]
 }

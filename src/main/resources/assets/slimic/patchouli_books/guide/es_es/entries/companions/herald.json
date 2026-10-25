@@ -1,0 +1,28 @@
+{
+  "name": "Slime de aviso",
+  "icon": "slimic:herald_slime",
+  "category": "slimic:companions",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:firework_rocket",
+      "result": "slimic:herald_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + cualquier cohete de fuegos artificiales. Conserva el diseño completo y empieza en Esperar. En Creativo usa por defecto una bola pequeña blanca."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Elige Vigilar para observar trabajadores del mismo dueño o con acceso mutuo. Tras el tiempo de bloqueo continuo elegido, lanza un fuego artificial inocuo y avisa a los dueños conectados del trabajador con su tipo, nombre y causa. Mientras siga bloqueado, repite cada diez segundos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La demora va de 1 a 60 minutos; por defecto, cinco. Las pausas manuales y trabajos terminados no cuentan. Clic derecho lanza una señal manual; aplicar un cohete cambia el diseño guardado. Curar, teñir, lavar, ajustar y explorar tienen prioridad."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:herald_slime": 0
+  }
+}

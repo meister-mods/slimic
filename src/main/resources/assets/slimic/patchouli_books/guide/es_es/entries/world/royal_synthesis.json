@@ -1,0 +1,28 @@
+{
+  "name": "Síntesis real",
+  "icon": "slimic:royal_synthesis_station",
+  "category": "slimic:world",
+  "sortnum": 15,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:royal_synthesis_station"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Un Núcleo de síntesis real, dos lingotes de oro, dos polvos de redstone, un Sello ancestral de mando y tres ladrillos de piedra crean una estación reutilizable. La ciudadela ofrece estos materiales. Su aparato arruinado no sintetiza. La $(l:world/restoration)Estación de restauración$() sigue restaurando núcleos por separado."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recoge dos slimes de excavación o de túneles: uno normal y otro ancestral del mismo tipo. Debes ser dueño original de ambos. Vacía equipo y bolsas. Añade cuatro bolas de slime y dos Fragmentos de mando antiguo. Obtendrás un slime de excavación o de $(l:companions/next_generation_tunnel)túneles avanzado$(). Los avanzados no sirven de progenitores."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Revisa la vista previa antes de confirmar. Se consumen ambos progenitores; el nuevo tiene otra identidad y empieza esperando. Nómbralo con el ajustador. El desarrollo verificado se $(l:growth/inheritance)devuelve$(). Si se interrumpe la entrega, recoge el resultado pendiente en cualquier Estación de síntesis real operativa."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:royal_synthesis_station": 0,
+    "slimic:royal_synthesis_core": 1
+  }
+}

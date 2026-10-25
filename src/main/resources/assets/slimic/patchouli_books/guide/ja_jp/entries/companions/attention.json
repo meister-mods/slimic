@@ -1,0 +1,28 @@
+{
+  "name": "注目スライム",
+  "icon": "slimic:attention_slime",
+  "category": "slimic:companions",
+  "sortnum": 53,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:redstone",
+      "result": "slimic:attention_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムとレッドストーンダストを組み合わせます。待機して現れ、バッグや装備枠はありません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "同じ基礎能力値なら移動速度が50%高くなります。「自由移動」で利用可能な主人の近くを動き回ります。基本の特化レシピでは、なかよしスライムの代わりに使えます。強化済み能力値と共通データを保ち、注目の自由移動と速度補正は失います。新しい役割も待機で始まります。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "追従と待機で自由移動を止めます。主人がいない場合は周囲の読込済み空間を歩き、チャンクを読み込みません。農地を踏み荒らしません。実際に自由移動すると共通の追従間隔で活動を得ますが、待機では成長しません。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:attention_slime": 0
+  }
+}

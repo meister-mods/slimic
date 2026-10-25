@@ -1,0 +1,29 @@
+{
+  "name": "スライムの鎧",
+  "icon": "slimic:slime_armor",
+  "category": "slimic:care",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "minecraft:iron_chestplate",
+      "input2": "minecraft:slime_ball",
+      "result": "slimic:slime_armor",
+      "label": "組み合わせ → 1個",
+      "text": "チェストプレート1個とスライムボール1個を組み合わせます。表示の鉄製は一例で、対応するすべてのチェストプレートが素材とデータを保持します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "戦闘・ドラゴン・騎乗・王室近衛スライムに装備できます。通常のチェストプレートは材料で、直接は装備しません。変換時に防御性能、耐久値、エンチャント、名前、革の色を保持します。ヘルメット・レギンス・ブーツは使えません。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_armor": 0,
+    "slimic:leather_slime_armor": 0,
+    "slimic:chainmail_slime_armor": 0,
+    "slimic:golden_slime_armor": 0,
+    "slimic:diamond_slime_armor": 0,
+    "slimic:netherite_slime_armor": 0
+  }
+}

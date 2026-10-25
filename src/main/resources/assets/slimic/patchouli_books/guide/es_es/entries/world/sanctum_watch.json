@@ -1,0 +1,20 @@
+{
+  "name": "Guardia real",
+  "icon": "slimic:royal_gallery_seal",
+  "category": "slimic:world",
+  "sortnum": 16,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Los restos reales de la $(l:world/fallen_sanctum)ciudadela$() tienen funciones distintas. Los que llevan escudo lo alzan ante amenazas visibles cercanas. Los guardianes defienden salas, no recorren el reino. Su guardia pertenece al lugar: volver no crea otro ejército."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Un comandante de galería llama a aliados cercanos de la misma ruina. El guardián de élite profundo tiene 160 de salud base y llama un refuerzo con escudo al perder la mitad. Vence con tus armas o compañeros de combate; se aplican las reglas normales de alianza y protección."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "En Pacífico, usa relés sin combatir. Los recuerdos del patio y galería quedan guardados aunque pierdas los sellos físicos. El relé final requiere ambos; su único núcleo real corresponde al lugar entero. Cambiar dificultad o reponer un relé no repone el núcleo reclamado."
+    }
+  ]
+}

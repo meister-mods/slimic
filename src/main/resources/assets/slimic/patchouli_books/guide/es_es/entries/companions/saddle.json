@@ -1,0 +1,28 @@
+{
+  "name": "Slime de monta",
+  "icon": "slimic:saddle_slime",
+  "category": "slimic:companions",
+  "sortnum": 14,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:saddle",
+      "result": "slimic:saddle_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + una montura. Esa montura es su primer equipo. En Creativo empieza sin equipar."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando. Dueño y copropietarios pueden equiparlo y montarlo. Tiene tres huecos: montura, élitros y Armadura de slime; no tiene bolsa. Usa clic derecho con equipo para llenar un hueco vacío, o utiliza el ajustador."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Haz clic derecho en un compañero ensillado para montarlo. Mayús desmonta; Mayús y clic derecho lo recoge. Montura y alas equipadas son visibles. Consulta $(l:care/flight)Vuelo montado$() para dirección y energía."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:saddle_slime": 0
+  }
+}

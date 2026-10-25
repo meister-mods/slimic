@@ -1,0 +1,20 @@
+{
+  "name": "Escaleras comunes",
+  "icon": "minecraft:cobblestone",
+  "category": "slimic:cooperation",
+  "sortnum": 24,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Los excavadores que empiezan en un mismo chunk comparten el trazado de escalera, aunque estén a distinta altura. Respetan suelos registrados por compañeros, incluso de otro dueño. Los nuevos no excavan esas escaleras como terreno normal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La protección queda guardada en el mundo aunque su constructor espere, sea recogido, se descargue o abandone el mundo. Los registros existentes conservan también trazados anteriores. Una reparación se pausa si taparía el espacio sobre otra escalera."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Mantén bloques de reparación en sus bolsas. Un peldaño compartido ausente consume un bloque colocado. Si compiten por el mismo bloque, solo obtiene botín quien lo rompe. El jugador sigue excavando con las reglas normales."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "豊穣スライム",
+  "icon": "slimic:abundance_slime",
+  "category": "slimic:companions",
+  "sortnum": 41,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "不定形レシピ",
+      "input1": "slimic:healing_slime",
+      "input2": "minecraft:bone_meal",
+      "result": "slimic:abundance_slime",
+      "label": "組み合わせ → 1個",
+      "text": "治癒スライムに骨粉とネザースターを組み合わせます。仲間のデータを保持し、待機して現れます。",
+      "input3": "minecraft:nether_star"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "装備と荷物を保ち、体の横に金のリラを持ちます。「育成」を選んでください。治療と復活を引き継ぎ、仲間を優先してから成長可能な作物・苗木・植物に通常の骨粉効果を与えます。固定の探知範囲は共通値の2倍、初期16ブロックです。草より作物と苗木を優先します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "許可された成長処理1回につき気力2を使い、活動1を得ます。骨粉アイテムは使いません。通常の確率判定により成長しない場合もあります。周囲の地形は読込済みである必要があります。治療にはスライムボールを使い、運搬役が補給できます。成長はmobGriefingと保護イベントに従います。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:abundance_slime": 0
+  }
+}

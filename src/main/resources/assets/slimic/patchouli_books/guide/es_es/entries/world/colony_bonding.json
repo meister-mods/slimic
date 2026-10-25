@@ -1,0 +1,36 @@
+{
+  "name": "Unión de colonia",
+  "icon": "slimic:colony_bonding_station",
+  "category": "slimic:world",
+  "sortnum": 22,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "text": "Fabrica la estación con un corazón, dos lingotes de hierro, tres bolas de slime y tres ladrillos de piedra. Une dos slimes de transporte normales o dos de combate normales. Debes ser dueño original de ambos. No admite otros tipos ni variantes superiores.",
+      "recipe": "slimic:colony_bonding_station"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Antes de recogerlos, quita efectos, fuego, congelación y absorción, y deja que ambos recuperen todo el aire. Pon sus objetos en los dos huecos, revisa sus datos y elige Unir. Conservan equipo, carga, identidad y mejoras. Recogerlos o separarlos no repone salud ni energía."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "La colonia comparte orden y bolsa. Los cuerpos de transporte se reparten tareas cercanas; los de combate se mueven juntos. Daño y gasto de energía actualizan ambos registros. El primero aporta equipo de combate y recibe efectos y absorción restantes al separarse. Editar puntos en Creativo cambia el saldo; los atributos mantienen sus reglas."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los puntos sin usar parten de la media redondeada abajo. Un punto mejora el atributo elegido de cada miembro sin tope; el que llegó al tope no cambia. Si ambos llegaron, no cobra. El desarrollo va a mitad mientras algún atributo útil admita mejorar a ambos; si no, es normal. La fórmula de coste por punto no cambia."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recoge la colonia, ponla sola en la estación y elige Separar. Necesita dos espacios seguros. Ambos vuelven esperando con sus rasgos y una copia del saldo. Cada uno retoma su etapa previa más los puntos ganados unidos. El progreso restante se adapta a cada requisito. Una aparición cancelada conserva la colonia; los resultados pendientes se pueden recuperar."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A necesita 224 de actividad para otro punto; B, 288. Desde cero, la colonia necesita 288 de actividad acreditada para ganar un punto común. Gastarlo mejora a ambos si no tienen tope. Al separarlos, A necesita 288; B, 352. La diferencia de 64 de actividad no se devuelve en puntos. Cada mejora sigue costando un punto común."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:colony_bonding_station": 0
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Slime miau",
+  "icon": "slimic:meow_slime",
+  "category": "slimic:companions",
+  "sortnum": 44,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:cod",
+      "result": "slimic:meow_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + cualquier pescado crudo. Empieza Activo y en Esperar; el pescado cocinado no sirve."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Admite bacalao crudo, salmón crudo, pez tropical y pez globo. Su cabeza de gato lo distingue. Mientras está activo, los creepers cercanos usan la evasión de seis bloques de los gatos. Activación y movimiento son independientes: Activo/Inactivo no cambia Esperar/Vagar, ni cambiar movimiento altera la activación."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Conserva atributos, nombre, tinte, curación, propiedad y recogida normales. No tiene bolsa ni equipo. La evasión no garantiza frenar a un creeper ya encendido. Conserva la activación al recogerlo, pero vuelve en Esperar: elige Vagar otra vez para que pasee."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:meow_slime": 0
+  }
+}

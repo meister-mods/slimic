@@ -1,0 +1,34 @@
+{
+  "name": "Restauración",
+  "icon": "slimic:command_pedestal",
+  "category": "slimic:world",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Guardianes, transportistas y slimes de mando de ruinas dejan núcleos que se restauran con sellos. Los $(l:world/mine_recovery)núcleos mineros$() vienen de cadáveres rotos o enemigos mineros y usan fragmentos de mando. Restaurar crea un compañero nuevo; tus propios caídos usan la reanimación habitual."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Sostén un núcleo y haz clic derecho en una $(item)Estación de restauración$(). Lleva una bola de slime y un catalizador: sello para ruinas o Fragmento de mando antiguo para minas. Los mineros requieren la Superficie. Los materiales se gastan una vez y el núcleo pasa a objeto de invocación. Busca una estación intacta o fabrica una con la receta de esta entrada."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los guardianes se vuelven $(l:companions/royal_guard)guardias reales$(); los transportistas, $(l:companions/transport)slimes de transporte$(); y los de mando, $(l:companions/commander)slimes de mando$(). Reciben identidad nueva, tu propiedad y empiezan esperando con uno de salud. Sigue vigente el límite de mando por grupo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Conservan nombres ancestrales e insignias blancas. Sus atributos útiles reciben 12–28 mejoras invertidas, incluido entrenamiento de Energía. Cada núcleo conserva su resultado al guardar y recoger, y se restaura una vez. En cambio, fabricar un slime de combate con un sello conserva su desarrollo exacto."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:world/command_pedestal",
+      "text": "Fabrícala en una mesa de trabajo; las estaciones agrietadas no restauran núcleos. La categoría Restauración de slimes de JEI muestra las seis recetas."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:command_pedestal": 1,
+    "slimic:damaged_ancient_slime_core": 1,
+    "slimic:ancient_command_seal": 1
+  }
+}

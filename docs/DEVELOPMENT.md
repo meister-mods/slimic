@@ -22,7 +22,7 @@ The runnable artifact is `build/libs/slimic-1.20.1-<version>.jar`. The `-sources
 | `./gradlew runServer` | Launch a local development server. |
 | `./gradlew runGameTestServer` | Run the dedicated Forge GameTest server. |
 | `./gradlew runData` | Run configured data generators. |
-| `./gradlew verifyGuidebook` | Check bilingual guide resources, links, recipes, and optional conditions. |
+| `./gradlew verifyGuidebook` | Check language keys, arguments, and guide resources, links, recipes, and optional conditions in all four languages. |
 
 GameTests run in `build/game-test-server`, separate from the normal development world under `run`. Their Java sources and fixtures live in `src/gameTest` and are excluded from release artifacts. The build compiles the GameTests; `runGameTestServer` executes them.
 
@@ -52,7 +52,7 @@ Working slime types are named for their activity. Use action names such as Minin
 | Signaling Slime | 파발 슬라임 |
 | Command Slime | 지휘 슬라임 |
 
-Use the same full type name for the summon item, entity, guide entry, and documentation. Modifiers precede the activity: Ancient Mining Slime and Next-Generation Mining Slime. Wrap long guide headings instead of abbreviating the type. Individual companion names and story titles are distinct from type names. `verifyGuidebook` checks the item, entity, and entry labels in both languages.
+Use the same full type name for the summon item, entity, guide entry, and documentation. Modifiers precede the activity: Ancient Mining Slime and Next-Generation Mining Slime. Wrap long guide headings instead of abbreviating the type. Individual companion names and story titles are distinct from type names. `verifyGuidebook` checks the item, entity, and entry labels in all four supported languages.
 
 Java implementation names follow the same convention: `FarmingSlime`, `LoggingSlime`, `SignalingSlime`, and `CommandSlime`. Registry constants, menus, packets, and recipe kinds use the corresponding action names. Persisted registry IDs, resource paths, NBT keys, and server configuration keys remain stable so existing worlds, stored companions, equipment, and recipes continue to load. Ancient core roles use explicit saved names through `Role.savedName()` and `Role.fromSavedName()`; Java enum names do not define the save format.
 
@@ -148,11 +148,11 @@ Ordinary guide entries use neutral explanations and direct instructions. Slime r
 
 Development runs use optional runtime dependency Patchouli `1.20.1-84.1-FORGE`. Disable it with `-PenablePatchouli=false`, independently of `-PenableJei=false`. Common game logic has no Patchouli Java API dependency, and the release JAR does not bundle the library.
 
-The definition is `data/slimic/patchouli_books/guide/book.json`; contents live in `assets/slimic/patchouli_books/guide/{en_us,ko_kr}`. The guide uses the [Patchouli resource book format](https://vazkiimods.github.io/Patchouli/docs/reference/book-json/). Locale folders translate the body; `i18n` stays disabled so literal percentages are not interpreted as translation format strings. The standard language files translate the book name, landing text, and subtitle. Book `version` is `0` so the localized subtitle appears instead of an edition number.
+The definition is `data/slimic/patchouli_books/guide/book.json`; contents live in `assets/slimic/patchouli_books/guide/{en_us,ko_kr,ja_jp,es_es}`. The guide uses the [Patchouli resource book format](https://vazkiimods.github.io/Patchouli/docs/reference/book-json/). Locale folders translate the body; `i18n` stays disabled so literal percentages are not interpreted as translation format strings. The standard language files translate the book name, landing text, and subtitle. Book `version` is `0` so the localized subtitle appears instead of an edition number.
 
 The one-book, one-slimeball recipe and its recipe-book unlock share a `forge:mod_loaded` condition. Dynamic companion recipes retain their normal ingredients and saved data; the guide displays them through shared item diagrams. Ordinary recipes use native crafting pages.
 
-`verifyGuidebook` checks matching locale paths and page structures, categories, templates, internal links, recipe references, and optional conditions; `check` and `build` include it.
+`verifyGuidebook` checks matching language keys, group order, formatting arguments, locale paths, and page structures in all four languages, as well as categories, templates, internal links, recipe references, and optional conditions; `check` and `build` include it.
 
 For native validation, create a test world named `slimic-smoke` in the normal development client, save and quit, then copy `run/saves/slimic-smoke` to `build/guidebook-client/saves/slimic-smoke`. Run `./gradlew runClient -PclientSmoke=true -PguidebookSmoke=true`. The separate world checks Survival 2×2 crafting, consumption, unlocks, Creative placement, language/resource reloads, every page, text bounds, item lookups, links, and localized search. It changes the copied player inventory and game mode.
 
@@ -174,7 +174,7 @@ Summoning items share the `slime_summon_base` model and Friendly Slime texture. 
 Profession accessories use dedicated `textures/entity/accessories/*.png` atlases; management, tuner, roster, and slot surfaces use `textures/gui/*.png`. Shapes and animations stay in the client models. See [Texture editing](TEXTURES.md) for file assignments, UV coordinates, resource-pack replacement, and native appearance checks.
 
 
-`FriendlySlimeItem` adds one profession description using the concrete item's `<description_id>.tooltip` key for every specialization. Shared hints distinguish fresh summoning from stored restoration. Subclasses add only item-specific state such as an initial pickaxe; they do not repeat the profession summary. English and Korean provide descriptions for every ordinary and colony companion. The native `slimic.companionTooltipsOnly` client check covers fresh/stored stacks, normal/advanced tooltips, both fonts, language fallback, native screen bounds, and immutable saved data. JEI information retains translatable components and resolves the current language when opened, including after a language reload. New Royal Synthesis results also retain parent-name components: default names follow the current language, while custom names remain literal. Missing or malformed optional components fall back to the previously stored name strings.
+`FriendlySlimeItem` adds one profession description using the concrete item's `<description_id>.tooltip` key for every specialization. Shared hints distinguish fresh summoning from stored restoration. Subclasses add only item-specific state such as an initial pickaxe; they do not repeat the profession summary. English, Korean, Japanese, and Spanish provide descriptions for every ordinary and colony companion. The native `slimic.companionTooltipsOnly` client check covers fresh/stored stacks, normal/advanced tooltips, both fonts, all four supported languages, language fallback, native screen bounds, and immutable saved data. JEI information retains translatable components and resolves the current language when opened, including after a language reload. New Royal Synthesis results also retain parent-name components: default names follow the current language, while custom names remain literal. Missing or malformed optional components fall back to the previously stored name strings.
 
 ## Work-state restoration
 
@@ -298,11 +298,11 @@ Guardian retaliation also recognizes damage absorbed by temporary absorption hea
 
 Use present-tense factual explanations for behavior and imperative verbs for player procedures. UI labels use short nouns or actions; status messages name the current state and, when blocked, its cause. Tooltips state the item's use and essential conditions. Guides explain controls and mechanics in a neutral voice. Slime records use simple first-person recollections of concrete events and clues, with `XXX` retained; their authors do not describe hidden game systems.
 
-Keep English and Korean meanings parallel and use official item and companion names. The dimension is **The Slimic** in every language. In Korean, **회수** returns a companion to an item, **수거** collects cargo, **복원** restores an ancient core to a companion, and **결속** joins two companions into a colony. Describe a map as recording or displaying a destination. Technical recovery of saved data and repair of terrain must identify what is being restored.
+Keep meanings parallel across the four supported in-game languages and the English/Korean documentation and use official item and companion names. The dimension is **The Slimic** in every language. In Korean, **회수** returns a companion to an item, **수거** collects cargo, **복원** restores an ancient core to a companion, and **결속** joins two companions into a colony. Describe a map as recording or displaying a destination. Technical recovery of saved data and repair of terrain must identify what is being restored.
 
 Preserve translation keys, format placeholders and their argument mappings, links, and the distinction between labels and complete sentences. Check text in the actual screen or book page: a correct translation must also fit its buttons, tooltips and available line width. Historical changelog entries retain the behavior of their release.
 
-Keep `en_us.json` and `ko_kr.json` as one file per language. Group keys by their first dot-separated component in this order: `itemGroup, key, dimension, biome, structure, block, item, entity, stat, direction, ore, target, equipment, policy, screen, roster, status, message, synthesis, bonding, jei, book, lore, record, name`. Within each group, sort the complete keys lexicographically. Separate groups with a blank line and keep identical key order in both languages. Reordering must preserve every key, value and format placeholder.
+Keep `en_us.json`, `ko_kr.json`, `ja_jp.json`, and `es_es.json` as one file per language. Group keys by their first dot-separated component in this order: `itemGroup, key, dimension, biome, structure, block, item, entity, stat, direction, ore, target, equipment, policy, screen, roster, status, message, synthesis, bonding, jei, book, lore, record, name`. Within each group, sort the complete keys lexicographically. Separate groups with a blank line and keep identical key order in all four languages. Reordering must preserve every key, value and format placeholder.
 
 ## UI text and terminology
 
@@ -310,7 +310,7 @@ Screens and gameplay guides share the stat names Health, Attack, Defense, Moveme
 
 Follow and Wait are owner-selected orders. Resource shortages and other impediments are described as blocked work. Farming and logging messages identify their own tasks. Keep status text brief, action guidance direct, and button labels short. Use the game's localized names for vanilla ingredients.
 
-Copy changes retain translation keys and persistent data identifiers. Check matching English/Korean keys, formatting placeholders, and document links, then inspect wrapping, button widths, and help panels in the client.
+Copy changes retain translation keys and persistent data identifiers. Check matching keys across all supported languages, formatting placeholders, and document links, then inspect wrapping, button widths, and help panels in the client.
 
 ## Quarry lining and free roaming
 
@@ -443,7 +443,7 @@ If a collapsed companion cannot place its broken block and its recovery item is 
 
 Companion portal travel inserts and validates the destination copy before removing the original. Spawn vetoes or changed source state discard the copy and preserve the original; removal hooks release source lights, rally tickets, and anchor tickets. Player travel resolves a safe landing before native transfer. A temporary listener runs at the lowest Forge event priority and rechecks permissions and landing safety before the native API sends a respawn packet or removes the player. Slime portals and Ender travel share this player guard.
 
-World GameTests cover geometry, protection rollback, item use, saved exits, all companion professions, tools, loot, and waterlogging. Client checks include models, tinting, the separate Creative tabs, dimension travel, translated records, and bilingual guidebook rendering. See [The Slimic](THE_SLIMIC.md).
+World GameTests cover geometry, protection rollback, item use, saved exits, all companion professions, tools, loot, and waterlogging. Client checks include models, tinting, the separate Creative tabs, dimension travel, translated records, and guidebook rendering in all four supported languages and English fallback. See [The Slimic](THE_SLIMIC.md).
 
 ## Forgotten Orders
 

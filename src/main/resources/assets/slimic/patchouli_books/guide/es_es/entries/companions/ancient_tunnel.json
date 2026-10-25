@@ -1,0 +1,23 @@
+{
+  "name": "Slime de túneles ancestral",
+  "icon": "slimic:ancient_tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 25,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Restaura núcleos de cadáveres de túnel o slimes de túneles olvidados mediante la $(l:world/mine_recovery)recuperación minera$(). Empieza en Esperar y no se fabrica. El objeto muestra un núcleo con borde morado sobre una placa dorada. El slime lleva casco, vagoneta y emblema blanco."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Trabajar y moverse cuestan la mitad de energía. Con herramienta eficaz excava un 50% más rápido piedra y mampostería ancestrales Slimic etiquetadas: piedra, roca, ladrillos de piedra, ladrillos cincelados y cimientos ancestrales. No se aplica con herramientas inadecuadas o de nivel insuficiente."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Usa la dirección y plantilla de revestimiento reutilizable del $(l:companions/tunnel)Slime de túneles$(). El revestimiento consume materiales reales de su bolsa, respeta escaleras de cantera y se detiene sin suministros. Recibe transporte normal. Despeja antes telarañas y cadáveres: no atraviesa escombros sólidos."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_tunnel_slime": 0
+  }
+}

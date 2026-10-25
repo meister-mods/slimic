@@ -1,0 +1,23 @@
+{
+  "name": "Compañeros caídos",
+  "icon": "slimic:broken_slime",
+  "category": "slimic:care",
+  "sortnum": 31,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Un compañero caído deja un bloque de slime caído con su identidad y rasgos guardados, incluido equipo y carga. Si el lugar está ocupado, deja el bloque como objeto sin sustituir el bloque existente."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El dueño puede usar una bola de slime en el bloque para revivirlo en Esperar con $(bold)un punto de salud$(). Despeja espacio antes. Revivirlo consume una bola en Supervivencia. Si no cabe, sus datos no son válidos o su identidad ya está cargada, todo se conserva."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Romper el bloque de recuperación entrega un bloque objeto con el compañero guardado. Un $(l:companions/healing)Slime de curación$() también puede revivir bloques del mismo dueño o de dueños con acceso mutuo usando sus bolas de slime, y curar después al compañero."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:broken_slime": 0
+  }
+}

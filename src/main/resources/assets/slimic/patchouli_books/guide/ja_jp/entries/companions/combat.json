@@ -1,0 +1,32 @@
+{
+  "name": "戦闘スライム",
+  "icon": "slimic:combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_sword",
+      "result": "slimic:combat_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと任意の剣を組み合わせます。使った剣をそのまま装備して現れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。「戦闘」を選び、剣・盾・$(l:care/armor)スライムの鎧$()を装備します。バッグは共通の積載量です。通常の近接攻撃・盾の規則に従い、命中1回につき気力1を使います。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "対象設定には6つの分類があります。初期状態で有効なのは敵対的だけで、中立・友好的・プレイヤー・飼育モブ・クリーパーは無効です。主人と味方は除外します。敵指定のプレイヤーはPvP保護の下で敵対的として扱います。生きた仲間を狙うエンダーマンも、敵対が終わるまで同様です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "バニラのスライムは、自分を攻撃した仲間だけを狙います。戦闘・ドラゴンスライムは敵対的の設定が有効なら先に攻撃できます。倒した相手の戦利品を回収します。バッグが満杯でも戦いを止めず、戦闘命令を保ったまま運搬役が回収できます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:combat_slime": 0
+  }
+}

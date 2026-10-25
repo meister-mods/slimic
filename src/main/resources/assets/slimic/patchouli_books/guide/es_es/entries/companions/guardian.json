@@ -1,0 +1,29 @@
+{
+  "name": "Slime ángel guardián",
+  "icon": "slimic:guardian_angel_slime",
+  "category": "slimic:companions",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "slimic:combination_three",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:nether_star",
+      "input3": "minecraft:totem_of_undying",
+      "result": "slimic:guardian_angel_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + estrella del Nether + tótem de inmortalidad. Ese mismo tótem pasa a su reserva inicial."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando. Con Seguir vuela tras su dueño. Puede defenderse o defender al dueño cercano incluso esperando. Sus rayos de respuesta usan Ataque, Ritmo de trabajo, Alcance y energía; no buscan enemigos lejanos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Su salud cuadruplica la común: 64 al inicio y +16 por punto de Salud. La reserva admite hasta 64 tótems iguales. Un guardián puede gastar uno para salvar al dueño de daño letal a 16 bloques; los tótems que el jugador sostiene actúan primero."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:guardian_angel_slime": 0
+  }
+}

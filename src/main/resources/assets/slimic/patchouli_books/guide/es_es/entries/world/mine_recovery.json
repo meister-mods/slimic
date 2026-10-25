@@ -1,0 +1,30 @@
+{
+  "name": "Recuperación minera",
+  "icon": "slimic:old_command_fragment",
+  "category": "slimic:world",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Sigue marcos de madera o un pozo abierto hasta una $(l:world/collapsed_mines)mina derrumbada$(). Los trabajadores mineralizados muestran un núcleo morado en la cara. Rompe un cadáver para obtener exactamente un núcleo dañado. Las bolas de slime no lo reviven directamente."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los cofres de suministros contienen un Fragmento de mando antiguo y una bola de slime por cadáver, un pico y roca. Trabajadores olvidados y un guardián de mina siguen vigilando. Derrotar un resto minero tú o con un compañero da un núcleo y un fragmento según las reglas normales de botín."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Vuelve a la Superficie. Sostén un núcleo minero y usa una $(l:world/restoration)Estación de restauración$() con un fragmento y una bola de slime en el inventario. Excavación produce un $(l:companions/ancient_mining)Slime de excavación ancestral$(); túneles, un $(l:companions/ancient_tunnel)Slime de túneles ancestral$(). Los guardianes de mina se vuelven guardias reales."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El objeto restaurado invoca un compañero nuevo de tu propiedad. Empieza esperando con uno de salud: cúralo y equípalo antes de trabajar. Cada núcleo se restaura una vez en el mundo guardado. Los restos antiguos vacíos no tienen núcleo. Tus propios caídos conservan la $(l:care/revival)reanimación$() normal."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:old_command_fragment": 2,
+    "slimic:forgotten_miner_slime_spawn_egg": 1,
+    "slimic:forgotten_tunnel_slime_spawn_egg": 1,
+    "slimic:mine_guardian_slime_spawn_egg": 1
+  }
+}

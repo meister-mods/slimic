@@ -1,0 +1,20 @@
+{
+  "name": "Obtener puntos",
+  "icon": "minecraft:emerald",
+  "category": "slimic:growth",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "El primer punto cuesta 32 de actividad. Cada punto ganado añade 64 al siguiente coste, hasta 4,096. Trabajar con éxito aporta actividad; luciérnagas, vínculos y llegadas de Ender, y cada compañero reunido aportan uno. Fallos, inactividad y cambios de orden no aportan. Las $(l:world/colony_bonding)colonias unidas$() cuentan la mitad mientras algún atributo de función admita mejorar a ambos; si no, cuentan lo normal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Las entregas y recogidas de carga de almacén logradas suelen aportar cuatro unidades por pila movida. Buscar suministros o recoger carga con un transportista no aporta. Curar y revivir con éxito aportan una unidad; salvar con un tótem de ángel guardián, cuatro."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El movimiento horizontal al seguir, montar, vagar como slime curioso o huir aporta por defecto uno cada 100 ticks en movimiento. Los slimes de aviso ganan lo mismo vigilando trabajadores activos o bloqueados. Recibir daño enemigo o bloquear con escudo aporta hasta uno por segundo; daño del dueño o ambiental no aporta."
+    }
+  ]
+}

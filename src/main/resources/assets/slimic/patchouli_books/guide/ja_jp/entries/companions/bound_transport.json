@@ -1,0 +1,24 @@
+{
+  "name": "運搬スライム群体",
+  "icon": "slimic:bound_transport_slime",
+  "category": "slimic:companions",
+  "sortnum": 28,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "通常の$(l:companions/transport)運搬スライム$()2体を$(l:world/colony_bonding)群体の結束$()でつなぎます。別々に動く体を、見えるひもが結びます。両者の個体識別を保ち、新規・回収後とも待機で配置されます。",
+      "title": "運搬スライム群体"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "ひもの届く範囲で別々に移動し、荷物回収・荷下ろし・物資配送を分担します。バッグと命令は1つを共有します。積載量は通常の運搬補正も含め、両構成員の実際の容量を合計します。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "どちらの体からも管理でき、待機は両者を止めます。体力と気力も共有します。未使用ポイントは平均を切り捨て、1ポイントで上限未満の各構成員を強化します。役割の能力値を両者とも強化できる間は半速成長、それ以外は通常です。回収して解除すると、両者は特性と共有残高をそれぞれ保ち、待機で戻ります。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_transport_slime": 0
+  }
+}

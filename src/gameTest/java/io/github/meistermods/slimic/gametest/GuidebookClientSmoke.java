@@ -21,7 +21,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class GuidebookClientSmoke {
   private static final ResourceLocation BOOK =
       ResourceLocation.fromNamespaceAndPath("slimic", "guide");
-  private static final List<String> LANGUAGES = List.of("en_us", "ko_kr", "fr_fr");
+  private static final List<String> LANGUAGES =
+      List.of("en_us", "ko_kr", "ja_jp", "es_es", "fr_fr");
   private static final List<Map<String, Object>> measurements = new ArrayList<>();
   private static final List<String> problems = new ArrayList<>();
   private static final Set<Supplier<Boolean>> links =
@@ -313,7 +314,7 @@ public final class GuidebookClientSmoke {
             .getClass()
             .getMethod("displayBookGui", ResourceLocation.class, ResourceLocation.class, int.class)
             .invoke(client, BOOK, null, 0);
-        String expected = language == 1 ? "슬라임 동료 안내서" : "Slimic Companion Guide";
+        String expected = Component.translatable("book.slimic.guide.name").getString();
         if (!c.player.getMainHandItem().getHoverName().getString().equals(expected))
           throw new IllegalStateException(
               "Incorrect guide language: " + c.player.getMainHandItem().getHoverName());
@@ -438,8 +439,8 @@ public final class GuidebookClientSmoke {
         if (!problems.isEmpty())
           throw new IllegalStateException("Guide layout issues: " + problems);
         System.out.println(
-            "SLIMIC GUIDEBOOK CLIENT SMOKE PASSED: native opening, Creative tab, EN/KR/fallback"
-                + " reload, every page and diagram");
+            "SLIMIC GUIDEBOOK CLIENT SMOKE PASSED: native opening, Creative tab,"
+                + " EN/KO/JA/ES/fallback reload, every page and diagram");
         phase = 8;
         return true;
       }

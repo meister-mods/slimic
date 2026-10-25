@@ -18,7 +18,7 @@ With [Patchouli](https://vazkiimods.github.io/Patchouli/) installed, craft one *
 
 For multiplayer guidebook use, install the Minecraft 1.20.1 Forge version of Patchouli on both client and server.
 
-The guide contains English and Korean instructions for all twenty-seven companions, orders, stats, equipment, cooperation, work sites, and recovery. Other languages fall back to English. All entries are available immediately. Patchouli is optional; Slimic and these web guides remain usable without it. JEI is independent of the guidebook.
+The guide contains English, Korean, Japanese, and Spanish (Spain) instructions for all twenty-seven companions, orders, stats, equipment, cooperation, work sites, and recovery. Other languages fall back to English. All entries are available immediately. Patchouli is optional; Slimic and these web guides remain usable without it. JEI is independent of the guidebook.
 
 ## Crafting a Friendly Slime
 

@@ -63,4 +63,4 @@ Binding saves both members and the recoverable colony before clearing the statio
 
 The [development guide](DEVELOPMENT.md#assembly-and-colony-persistence) describes the saved records and transaction checks.
 
-Use **Recover** at any Colony Bonding Station for pending delivery or a recoverable interrupted transition. Keep inventory space for the result. A full inventory does not erase the record. JEI lists the two binding and two unbinding operations; Patchouli provides the process in both languages. Neither optional mod is required to use the station.
+Use **Recover** at any Colony Bonding Station for pending delivery or a recoverable interrupted transition. Keep inventory space for the result. A full inventory does not erase the record. JEI lists the two binding and two unbinding operations; Patchouli provides the process in all four supported languages. Neither optional mod is required to use the station.

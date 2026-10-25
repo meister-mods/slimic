@@ -1,0 +1,28 @@
+{
+  "name": "Slime de limpieza",
+  "icon": "slimic:cleaning_slime",
+  "category": "slimic:companions",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:rotten_flesh",
+      "result": "slimic:cleaning_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + una carne podrida."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando; elige Limpiar. Recoge objetos válidos del suelo en una esfera fija y vuelve al origen después de cada recogida. Su Detección es cinco veces la base común: 40 bloques al inicio."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Respeta demoras de recogida, propiedad, espacio de bolsa y protecciones. Una bolsa llena solicita descarga. Tras tres minutos atascado en un objeto, prueba otro válido; si no hay otro, vuelve a intentarlo."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:cleaning_slime": 0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Viaje de compañeros",
+  "icon": "slimic:slime_scanner",
+  "category": "slimic:world",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Los compañeros pueden cruzar portales de slime sin estar montados. Conservan identidad, dueño, salud, energía, mejoras, equipo y carga. Todos llegan en Esperar, así que un trabajador no modifica inmediatamente el destino."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Las zonas de trabajo siguen las reglas de traslado de cada función. Un excavador inicia otra cantera en una dimensión nueva; los orígenes fijos se reubican cuando corresponde. Revisa la zona con un Explorador de slimes antes de empezar."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Recoger al compañero como objeto es otra forma de viajar. Al soltarlo también empieza en Esperar y conserva sus rasgos. Recuerda el portal de vuelta y lleva suministros. Si no puede colocar una salida segura, rechaza el viaje y conserva el origen."
+    }
+  ]
+}

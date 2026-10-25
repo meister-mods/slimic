@@ -1,0 +1,20 @@
+{
+  "name": "スライムチェスト",
+  "icon": "slimic:slime_chest",
+  "category": "slimic:cooperation",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_chest",
+      "text": "スライムボール1個を板材8個で囲みます。木の種類を混ぜても作れます。開くと27枠あります。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "運搬役のために荷物、予備の道具、空のバケツ、丸石、スライムボールを保管します。施錠したスライムチェストは使いません。通常のチェストは材料で、自動保管先ではありません。壊して置き直しても名前を保持し、中身は別に落とします。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_chest": 0
+  }
+}

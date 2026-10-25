@@ -1,0 +1,29 @@
+{
+  "name": "忘れられた命令",
+  "icon": "slimic:ancient_command_seal",
+  "category": "slimic:world",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "古代守護、忘れられた運搬、古代指揮スライムは、The Slimicの新しく生成された遺跡に留まります。守護は巡回してプレイヤーや仲間を攻撃します。クリエイティブ・スペクテイターと同じ残存兵は対象外です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "運搬役は攻撃されると抵抗し、自分の遺跡のスライムチェスト2個の間で物資を運びます。チェストを開くと古代運搬の接続は切れます。指揮スライムは同じ遺跡の守護へ近くの侵入者を知らせます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "追跡は遺跡中心から24ブロックで終わります。境界を越えて逃げると持ち場へ戻ります。自分か仲間で倒すと、通常のモブドロップ規則とイベントの下でコア1個と印章1個を確実に得ます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "基礎の体力／攻撃力／防御力は、守護64／8／8、運搬48／6／6、指揮96／12／12です。クリエイティブには各役割のスポーンエッグがあります。エッグ個体にはプレイヤーの主人がなく、運搬には遺跡の接続済み補給所が必要です。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_guard_slime_spawn_egg": 3,
+    "slimic:forgotten_transport_slime_spawn_egg": 3,
+    "slimic:ancient_commander_slime_spawn_egg": 3
+  }
+}

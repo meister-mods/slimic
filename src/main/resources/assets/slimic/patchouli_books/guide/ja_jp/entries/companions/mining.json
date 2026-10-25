@@ -1,0 +1,28 @@
+{
+  "name": "採掘スライム",
+  "icon": "slimic:mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_pickaxe",
+      "result": "slimic:mining_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと任意のツルハシを組み合わせます。使った道具の耐久消耗・名前・エンチャントを保ちます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。「採掘」で配置先のチャンクを下へ掘り、階段を残します。木材・葉・収納・壊せないブロックは保ちます。ツルハシとシャベルを装備し、補修用ブロックを持たせてください。満杯、道具不足、疲労、保護で停止することがあります。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "通常の速度とドロップは手の道具で決まります。作業速度は有効な道具だけを速め、シャベルのない土をツルハシで速くは掘れません。鉱石の道具等級も必要です。$(l:fieldwork/fluids)液体$()と$(l:cooperation/shared_quarry)共用階段$()も参照してください。修繕は鉱石経験値で作業中の道具を直し、余りだけをオーブにします。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:mining_slime": 0
+  }
+}

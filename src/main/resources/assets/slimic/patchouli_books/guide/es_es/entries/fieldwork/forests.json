@@ -1,0 +1,20 @@
+{
+  "name": "Árboles y brotes",
+  "icon": "minecraft:oak_sapling",
+  "category": "slimic:fieldwork",
+  "sortnum": 28,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Usa árboles naturales de la Superficie con troncos sin pelar, hojas y tocones arraigados en tierra. Admite roble, abeto, abedul, jungla, acacia, roble oscuro, mangle y cerezo. Excluye hojas decorativas y árboles fuera de alcance."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Consulta en gestión el tipo de brote y número de tocones requeridos. Cada tocón necesita un brote correcto; un tronco de 2×2, cuatro. Otro tipo de brote no satisface la solicitud. Reponer la bolsa activa una nueva búsqueda."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Abre un acceso a troncos bajos o mejora Alcance. Árboles enormes, troncos obstruidos o límites descargados pueden requerir trabajo manual. Los mangles se replantan con propágulos maduros y conservan fuentes de agua poco profundas."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "集会の観察記録",
+  "icon": "slimic:last_rally_record",
+  "category": "slimic:world",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "呼び声を聞いて荷物を下ろした。XXXのために道を空けておいた。帰れとは言われなかった。体が触れて、コアが同じ言葉を繰り返した。ぼくは隣の仲間を数えた。そのときは、まだ数えられた。――最後の集合の記録"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "小さな欠片が戻ると、大きな体が治った。壊れた欠片の場所は空いたままだった。別の場所では、二匹が小さな一つの体になった。離れたあとも名前を覚えていた。XXXが去ったわけは、わからなかった。――終わらない集会の記録"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:last_rally_record": 0,
+    "slimic:endless_assembly_record": 1
+  }
+}

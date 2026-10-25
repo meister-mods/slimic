@@ -1,0 +1,16 @@
+{
+  "name": "封印された研究所",
+  "icon": "slimic:gel_crystal_cluster",
+  "category": "slimic:world",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "指揮の回廊の先には、ゲル結晶と壊れた実験跡のある古い研究所があります。朽ちた王室融合台は動きません。そばの記録を読み、中央の下り通路をたどって最後の守護者へ向かってください。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "回収した王室コアを持ち帰り、$(l:world/royal_synthesis)新しい装置を作りましょう$()。チェストの確定物資で金・レッドストーン・印章・レンガと最初の試薬をそろえられます。中庭の採掘個体は$(l:world/mine_recovery)通常のコア復元$()に従います。相手として、別に育てた通常の採掘スライムを用意してください。"
+    }
+  ]
+}

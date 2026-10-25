@@ -1,0 +1,40 @@
+{
+  "name": "Slime de mando",
+  "icon": "slimic:commander_slime",
+  "category": "slimic:companions",
+  "sortnum": 51,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:book",
+      "result": "slimic:commander_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + libro. Empieza esperando, con bigote y batuta. Cada grupo de copropiedad puede desplegar uno."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Clic derecho abre Compañeros o Jugadores. La lista y Reunir abarcan compañeros del dueño original del slime de mando; los copropietarios pueden usarlos. El ajustador abre atributos y un botón a la lista. Las filas muestran salud, orden, estado, lugar y almacenamiento conocidos. Pasa el cursor para ver coordenadas."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Elige un compañero, escribe una etiqueta y pulsa Guardar etiqueta. Reunir usa el texto escrito aunque no haya fila seleccionada. Admite hasta 24 caracteres, sin distinguir mayúsculas. Una etiqueta vacía elige compañeros sin etiqueta."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Iniciar Reunir cuesta 25 de energía. Trae compañeros vivos desplegados uno a uno, incluso de chunks registrados descargados u otras dimensiones, a lugares seguros cargados alrededor y los deja esperando. Excluye guardados, rotos, eliminados, montados y pasajeros. Un slime de mando reunido cancela su propia reunión pendiente."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Mantiene activo un chunk de origen temporal cada vez y omite destinos no disponibles o inseguros. Cada origen espera hasta cinco segundos; la orden tiene cinco segundos de recarga. Recogerlo o reiniciar cancela la reunión pendiente. Conserva los demás rasgos. Los slimes de mando guardados o rotos no ocupan el cupo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Solo el dueño original elige copropietarios y enemigos. Los enlaces de acceso directos o indirectos, incluso unidireccionales, forman un grupo. Cada grupo admite un slime de mando vivo desplegado entre todas las dimensiones, aun descargado. Recoge uno antes de unir dos grupos ocupados. Véase $(l:cooperation/ownership)Copropiedad$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:commander_slime": 0
+  }
+}

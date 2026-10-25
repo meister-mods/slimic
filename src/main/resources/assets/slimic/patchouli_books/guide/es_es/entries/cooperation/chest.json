@@ -1,0 +1,20 @@
+{
+  "name": "Cofres de slimes",
+  "icon": "slimic:slime_chest",
+  "category": "slimic:cooperation",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_chest",
+      "text": "Rodea una bola de slime con ocho tablones. Puedes mezclar maderas. Al abrirlo dispone de 27 huecos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Guarda carga, herramientas de repuesto, cubos vacíos, roca y bolas de slime para transportistas. Se excluyen cofres bloqueados. Los cofres normales son ingredientes, no destinos automáticos. Romper y recolocar un Cofre de slimes conserva su nombre; el contenido cae aparte."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_chest": 0
+  }
+}

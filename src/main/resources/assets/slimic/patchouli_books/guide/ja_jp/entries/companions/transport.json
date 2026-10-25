@@ -1,0 +1,28 @@
+{
+  "name": "運搬スライム",
+  "icon": "slimic:transport_slime",
+  "category": "slimic:companions",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "不定形レシピ",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:chest",
+      "result": "slimic:transport_slime",
+      "label": "組み合わせ → 1個",
+      "text": "なかよしスライムと通常のチェスト1個を組み合わせます。材料はスライムチェストではありません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "待機で始まります。「運搬」で配置地点を中心とする固定範囲の、同じ主人か相互共有した仲間の依頼に応えます。作業者の荷物を引き取り、保管先へ運び、道具や資材を補給します。装備枠はありません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "積載量は同じ能力値の通常バッグの常に2倍です。初期18枠、1強化で6枠増え、通常強化では54枠までです。27枠を超えると2ページ目が開き、矢印で切り替えます。保管先はスライムチェストより$(l:cooperation/network)倉庫$()を優先します。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:transport_slime": 0
+  }
+}

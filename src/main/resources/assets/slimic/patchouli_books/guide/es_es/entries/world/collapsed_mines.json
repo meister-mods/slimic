@@ -1,0 +1,24 @@
+{
+  "name": "Minas derrumbadas",
+  "icon": "slimic:broken_slime",
+  "category": "slimic:world",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Los chunks nuevos de The Slimic pueden contener minas derrumbadas. Marcos de madera, equipo abandonado o un pozo abierto las delatan desde la superficie. Aparecen en terreno seco y bastante llano."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Las minas de túnel tienen una entrada descendente y un $(l:companions/tunnel)paso de 3×3$(). Soportes caídos, escombros, telarañas y un frente sin terminar muestran dónde se detuvo el trabajo. El paso principal sigue accesible."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Las canteras exponen un chunk de 16×16 y bajan 12–18 bloques. Sus escaleras perimetrales de dos bloques de ancho siguen el patrón del $(l:companions/mining)Slime de excavación$(). Una cornisa y trabajadores caídos marcan la última capa inconclusa."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los cadáveres mineralizados contienen núcleos dañados. Rómpelos y sigue la $(l:world/mine_recovery)recuperación minera$() para restaurar trabajadores ancestrales en la Superficie. Las bolas de slime no los reviven directamente. Despeja restos, escombros y telarañas antes de asignar trabajo. Tus compañeros caídos usan la $(l:care/revival)reanimación$() normal."
+    }
+  ]
+}

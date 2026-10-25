@@ -1,0 +1,54 @@
+{
+  "name": "遺跡の装飾",
+  "icon": "slimic:gel_lantern",
+  "category": "slimic:world",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:world/gel_lantern",
+      "text": "輝くスライムブロックを鉄塊4個で囲みます。小さな結晶塊4個を2×2に並べると、大きな結晶塊1個になります。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Slimic 装飾タブには小物と植物が31種あります。板材と棒の家具は別々の形で作り、古いスライムの旗には緑色の羊毛も必要です。放置された木箱1個は壊れた木箱に作り直せます。固体の小物の多くは置いた人を向き、固い床が必要で、水没できます。形状は見た目に合っています。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "木箱・壺・道具掛け・ベンチ・水盤・壊れた作業台は装飾です。荷物にはスライムチェスト、クラフトには作業台を使います。ゲルランタン・古代の火鉢・結晶・光る花は光りますが、休眠した灯標は光りません。根・草むら・キノコ・花は適した湿った土に植えます。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:gel_lantern": 0,
+    "slimic:ancient_brazier": 0,
+    "slimic:dormant_beacon": 0,
+    "slimic:cracked_command_pedestal": 0,
+    "slimic:fallen_pillar": 0,
+    "slimic:broken_pillar": 0,
+    "slimic:royal_waymarker": 0,
+    "slimic:weathered_waymarker": 0,
+    "slimic:royal_crest": 0,
+    "slimic:stone_tablet": 0,
+    "slimic:cracked_stone_tablet": 0,
+    "slimic:abandoned_crate": 0,
+    "slimic:broken_crate": 0,
+    "slimic:supply_urn": 0,
+    "slimic:cracked_supply_urn": 0,
+    "slimic:tool_rack": 0,
+    "slimic:broken_workbench": 0,
+    "slimic:ruined_bench": 0,
+    "slimic:low_stone_table": 0,
+    "slimic:stone_bench": 0,
+    "slimic:gel_basin": 0,
+    "slimic:dried_gel_basin": 0,
+    "slimic:relic_shard_pile": 0,
+    "slimic:fallen_masonry_pile": 0,
+    "slimic:gel_crystal_cluster": 0,
+    "slimic:small_gel_crystal_cluster": 0,
+    "slimic:old_slime_banner": 0,
+    "slimic:slime_roots": 0,
+    "slimic:slime_tuft": 0,
+    "slimic:gel_cap": 0,
+    "slimic:glowing_bloom": 0
+  }
+}

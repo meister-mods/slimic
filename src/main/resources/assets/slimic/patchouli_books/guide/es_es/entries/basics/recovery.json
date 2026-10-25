@@ -1,0 +1,20 @@
+{
+  "name": "Recogida y viajes",
+  "icon": "minecraft:bundle",
+  "category": "slimic:basics",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Pulsa Mayús y clic derecho sobre tu compañero vivo para recogerlo. Necesitas un hueco libre en el inventario principal. Conserva identidad, dueño, salud actual, atributos, desarrollo, tinte, equipo, carga y planes aplicables."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Soltar un compañero recogido consume el objeto, incluso en Creativo. Si el lugar está bloqueado, lo conservas. En forma de objeto, sus efectos y temporizadores quedan pausados. Se sueltan las riendas y los pasajeros."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Todo compañero recogido o revivido vuelve en Esperar. El de excavación conserva su capa en el mismo chunk; otro chunk o dimensión inicia una cantera nueva. Elige una orden para reanudar. Cargar el mundo conserva las órdenes guardadas."
+    }
+  ]
+}

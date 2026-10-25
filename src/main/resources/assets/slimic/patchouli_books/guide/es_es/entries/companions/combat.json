@@ -1,0 +1,32 @@
+{
+  "name": "Slime de combate",
+  "icon": "slimic:combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_sword",
+      "result": "slimic:combat_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + cualquier espada. Al invocarlo equipa esa misma espada."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando; elige Combatir. Equipa espada, escudo y $(l:care/armor)Armadura de slime$(). La bolsa tiene Capacidad normal. Usa las reglas habituales de combate cuerpo a cuerpo y escudo. Cada golpe efectivo cuesta uno de energía."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Objetivos tiene seis filtros. Solo Hostiles empieza activo; Neutrales, Pasivos, Jugadores, Domesticados y Creepers, desactivados. Excluye dueños y aliados. Los jugadores declarados enemigos usan Hostiles y respetan PvP. Un enderman que apunta a un compañero vivo cuenta como hostil hasta dejar de hacerlo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los slimes normales solo atacan a compañeros que los agredan. Los slimes de combate y dragón pueden atacarlos primero con Hostiles activo. Recoge el botín de sus bajas. Una bolsa llena no detiene el combate; los transportistas pueden descargarla mientras siga la orden de combate."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:combat_slime": 0
+  }
+}

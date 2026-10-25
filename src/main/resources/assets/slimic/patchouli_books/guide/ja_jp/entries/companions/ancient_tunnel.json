@@ -1,0 +1,23 @@
+{
+  "name": "古代トンネルスライム",
+  "icon": "slimic:ancient_tunnel_slime",
+  "category": "slimic:companions",
+  "sortnum": 25,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "トンネルの遺骸や忘れられたトンネルスライムのコアを、$(l:world/mine_recovery)鉱山の復元$()で復元します。待機して現れ、クラフトでは作れません。アイテムは金の板に紫縁のコアがあり、本体は兜・トロッコ・白い紋章を着けます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "作業と移動の気力消費は通常の半分です。有効な道具なら、タグ付きの古代Slimic石材を50%速く掘ります。石、丸石、石レンガ、模様入りレンガ、古代の基礎石などが対象です。不適切な道具や等級不足では効果を得られません。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "通常の$(l:companions/tunnel)トンネルスライム$()と同じ方向設定と、消費しない内壁見本を使います。補強にはバッグの実物を使い、共用の採掘階段を守り、資材切れで止まります。通常どおり運搬補給を受けられます。固い瓦礫は通れないため、古いクモの巣や遺骸を先に片付けてください。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:ancient_tunnel_slime": 0
+  }
+}

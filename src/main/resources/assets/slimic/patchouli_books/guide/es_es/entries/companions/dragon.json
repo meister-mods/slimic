@@ -1,0 +1,28 @@
+{
+  "name": "Slime dragón",
+  "icon": "slimic:dragon_slime",
+  "category": "slimic:companions",
+  "sortnum": 43,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:combat_slime",
+      "input2": "minecraft:dragon_head",
+      "result": "slimic:dragon_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime de combate + cabeza de dragón. Conserva datos y equipo, y empieza esperando."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Conserva espada, escudo, armadura, bolsa, filtros y desarrollo. Lo distinguen alas de murciélago y cuernos oscuros. Elige Combatir y equipa una espada. Vuela hacia enemigos permitidos, usa la espada y lanza periódicamente aliento de fuego contra un objetivo visible en Detección. Ritmo de trabajo acorta el intervalo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El aliento cuesta cuatro de energía, usa el daño de Ataque y puede incendiar al objetivo. Respeta los mismos dueños y filtros que el combate cercano. No prende el terreno. Guarda el botín en su bolsa: llenarla no detiene el combate y los transportistas pueden descargarla."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:dragon_slime": 0
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "調整器と探査器",
+  "icon": "slimic:slime_tuner",
+  "category": "slimic:basics",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_tuner",
+      "text": "鉄インゴット1個の真上にスライムボール1個を置く縦のレシピです。持ち物の2×2クラフト枠でも作れます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "仲間を右クリックすると、名前・能力値・命令・装備・荷物を管理できます。8ブロック以内で、どちらかの手に調整器を持ってください。「整理」は装備を動かさず同じ束をまとめ、全バッグページを整えます。調整器や探査器を持っていても、Shift＋右クリックは回収です。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "クリエイティブスライム調整器は、クリエイティブで基礎能力値と現在の値を編集します。サバイバル用レシピはありません。積載量を減らす前に失われる枠を空けてください。数値にゲーム上の上限はなく、黄色の推奨範囲外でも適用できます。バッグが増えるとページが増えます。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_scanner",
+      "text": "作業台の中央にスライム調整器、その上下左右にガラスを置きます。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "スライム探査器で仲間を右クリックすると作業範囲を15秒表示します。その間はどちらかの手に探査器を持ってください。水色は範囲、金色は次の区画か登録農地です。クリエイティブの極端に大きな範囲は表示だけを制限し、能力値は変えません。探査では作業を開始しません。"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_tuner": 0,
+    "slimic:creative_slime_tuner": 2,
+    "slimic:slime_scanner": 3
+  }
+}

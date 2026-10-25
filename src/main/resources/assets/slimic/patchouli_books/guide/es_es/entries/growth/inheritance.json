@@ -1,0 +1,20 @@
+{
+  "name": "Desarrollo heredado",
+  "icon": "slimic:next_generation_mining_slime",
+  "category": "slimic:growth",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "La síntesis devuelve todos los puntos ganados verificables de ambos progenitores: niveles invertidos y puntos sin usar. No suma atributos finales, efectos del equipo ni pasivas ancestrales. El resultado empieza sin niveles invertidos y con todo el saldo disponible."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Ejemplo: 21 invertidos + 4 sin usar del excavador normal, más 16 invertidos + 2 sin usar del ancestral, dan 43 puntos disponibles. El siguiente coste de desarrollo cuenta los 43 heredados. Los límites de mejora no cambian; los puntos sobrantes se guardan sin perderse."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El entrenamiento de restauración ancestral cuenta si su registro es verificable. No se admiten progenitores con atributos base editados en Creativo. Los antiguos solo se admiten si su total invertido y disponible coincide con el historial. Una entrada rechazada queda intacta y la estación indica el motivo."
+    }
+  ]
+}

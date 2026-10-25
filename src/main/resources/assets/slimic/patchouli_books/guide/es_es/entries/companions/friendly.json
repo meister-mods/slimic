@@ -1,0 +1,20 @@
+{
+  "name": "Slime amistoso",
+  "icon": "slimic:friendly_slime",
+  "category": "slimic:companions",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:friendly_slime",
+      "text": "Ocho bolas de slime y una arena de almas o tierra de almas crean tu primer compañero."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza en Esperar. Elige Seguir en la gestión, mejora sus atributos y dale un nombre. Recógelo para especializarlo después: su primera especialización también espera y conserva los rasgos.$(br2)Da una manzana dorada a un slime salvaje diminuto para convertirlo en un slime amistoso tuyo en Esperar. Recógelo con Mayús y clic derecho."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:friendly_slime": 0
+  }
+}

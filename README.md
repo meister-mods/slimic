@@ -14,6 +14,8 @@ Companions grow through activity and stat upgrades. Name and manage them with a 
 
 Explore **The Slimic**, a damp world of gel-covered terrain and abandoned workshops, recover ancient cores from collapsed mines, restore new companions, follow kingdom maps into the Fallen Sanctum, and combine experienced miners into a new generation. Face the remnants of an endless assembly and temporarily bind matching companions into reversible colonies. The dimension's distinctive materials and ruin decorations also support building.
 
+In-game text and the companion guide support English, Korean, Japanese, and Spanish (Spain).
+
 Slimic is in early development within the `0.5.x` series.
 
 ## Platform

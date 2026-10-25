@@ -1,0 +1,20 @@
+{
+  "name": "Recuerdos de reunión",
+  "icon": "slimic:last_rally_record",
+  "category": "slimic:world",
+  "sortnum": 23,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Oímos la llamada y dejamos las bolsas. Dejamos un camino para XXX. Nadie nos dijo que nos fuéramos. Nuestros cuerpos se tocaron y nuestros núcleos dijeron lo mismo. Conté a los slimes a mi lado. Entonces todavía sabía cuántos éramos. — Registro de la última reunión"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Los trocitos volvían y el gran cuerpo sanaba. Los que se rompían dejaban huecos. En otro lugar, dos slimes formaron un cuerpo pequeño. Al separarse, recordaron sus nombres. Yo no sabía por qué XXX se había ido. — Registro de la reunión interminable"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:last_rally_record": 0,
+    "slimic:endless_assembly_record": 1
+  }
+}

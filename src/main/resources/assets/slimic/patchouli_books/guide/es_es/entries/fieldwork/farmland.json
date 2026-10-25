@@ -1,0 +1,20 @@
+{
+  "name": "Parcelas registradas",
+  "icon": "minecraft:wheat_seeds",
+  "category": "slimic:fieldwork",
+  "sortnum": 27,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Prepara tierra de cultivo antes de elegir Cultivar. La orden registra parcelas cargadas alrededor del slime y mantiene fija la lista. Para añadir nuevas, elige Esperar y luego Cultivar. Pon semillas o productos adecuados en su bolsa."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El slime de cultivo cosecha plantas maduras y replanta el mismo cultivo desde su bolsa. Puede volver a labrar suelo registrado que haya vuelto a tierra válida. Aire, piedra u otro bloque no terroso elimina la parcela; Esperar y luego Cultivar permite registrarla de nuevo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Si se detiene, revisa azada, semillas, espacio para plantar, energía y capacidad. Colocarlo lejos del bloque central del campo borra las parcelas anteriores y espera otra orden Cultivar."
+    }
+  ]
+}

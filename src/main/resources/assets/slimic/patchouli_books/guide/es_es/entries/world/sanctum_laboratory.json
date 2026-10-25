@@ -1,0 +1,16 @@
+{
+  "name": "Laboratorio sellado",
+  "icon": "slimic:gel_crystal_cluster",
+  "category": "slimic:world",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Más allá de la galería de mando, cristales de gel y experimentos rotos marcan el laboratorio. Su Estación de síntesis real ya no funciona. Lee el registro cercano y sigue el paso central descendente hasta el último guardián."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Lleva el núcleo real recuperado a casa y $(l:world/royal_synthesis)fabrica un aparato nuevo$(). Los cofres garantizan oro, redstone, sello, ladrillos y primeros reactivos. El excavador del patio sigue la $(l:world/mine_recovery)restauración común$(); prepara otro excavador normal criado aparte como pareja."
+    }
+  ]
+}

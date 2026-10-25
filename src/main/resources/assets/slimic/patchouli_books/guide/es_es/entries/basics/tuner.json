@@ -1,0 +1,35 @@
+{
+  "name": "Ajustar y explorar",
+  "icon": "slimic:slime_tuner",
+  "category": "slimic:basics",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_tuner",
+      "text": "Coloca una bola de slime justo encima de un lingote de hierro. Esta receta vertical también cabe en la cuadrícula de 2×2 del inventario."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Haz clic derecho en tu compañero para gestionar nombre, atributos, órdenes, equipo y carga. Mantén el ajustador en cualquier mano y no te alejes más de ocho bloques. Ordenar combina pilas iguales y organiza toda la bolsa sin mover equipo. Mayús y clic derecho recoge al compañero, incluso con ajustador o explorador."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El Ajustador creativo edita atributos base y recursos actuales solo en Creativo. No tiene receta de Supervivencia. Para reducir Capacidad, vacía los huecos que desaparecerían. No hay límite de juego: las recomendaciones ámbar permiten Aplicar. Las bolsas grandes usan más páginas."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:slime_scanner",
+      "text": "Pon un Ajustador de slimes en el centro de la mesa de trabajo y cristal justo arriba, abajo, a la izquierda y a la derecha."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Usa el Explorador de slimes con clic derecho para ver su zona de trabajo durante 15 segundos. Mantenlo en cualquier mano. El cian marca el alcance; el dorado, la siguiente sección o parcelas registradas. Los alcances creativos enormes se recortan solo al mostrarlos. Explorar no inicia el trabajo."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:slime_tuner": 0,
+    "slimic:creative_slime_tuner": 2,
+    "slimic:slime_scanner": 3
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Slime de tala",
+  "icon": "slimic:lumberjack_slime",
+  "category": "slimic:companions",
+  "sortnum": 16,
+  "pages": [
+    {
+      "type": "slimic:combination",
+      "title": "Sin forma fija",
+      "input1": "slimic:friendly_slime",
+      "input2": "minecraft:iron_axe",
+      "result": "slimic:lumberjack_slime",
+      "label": "Combinar → resultado",
+      "text": "Slime amistoso + cualquier hacha. Esa hacha conserva su desgaste y encantamientos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Empieza esperando; elige Talar. Trabaja alrededor de un origen fijo con el doble de Detección común: 16 bloques al inicio. Pon brotes apropiados en su propia bolsa antes de esperar que tale un árbol."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Reserva un brote por cada tocón, corta un árbol natural conectado y replanta. Un tronco de 2×2 necesita cuatro brotes iguales. No se descargan los brotes reservados. Si no actúa, consulta $(l:fieldwork/forests)Árboles y brotes$()."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:lumberjack_slime": 0
+  }
+}

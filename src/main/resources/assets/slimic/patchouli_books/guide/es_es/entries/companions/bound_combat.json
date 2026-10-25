@@ -1,0 +1,24 @@
+{
+  "name": "Colonia de combate",
+  "icon": "slimic:bound_combat_slime",
+  "category": "slimic:companions",
+  "sortnum": 29,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "Dos $(l:companions/combat)slimes de combate$() normales comparten un cuerpo mediante la $(l:world/colony_bonding)unión de colonia$(). Se suma su salud; el Ataque base es el 60% de la suma de ambos. La primera invocación y toda nueva colocación tras recogerlos empiezan en Esperar.",
+      "title": "Colonia de combate"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "El primero aporta las armas, escudo y armadura activos, con su desgaste. Ambos cuerpos muestran el material, tinte y brillo de esa armadura. El equipo original del segundo se guarda hasta separarlos. Cada cuerpo conserva su color y apariencia de objetos sostenidos."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Daño y curación actualizan ambos registros. Los puntos iniciales son su media redondeada abajo. Un punto mejora a cada miembro sin tope. El desarrollo va a mitad mientras algún atributo de función admita mejorar a ambos; si no, es normal. Separarlos devuelve sus identidades y rasgos y copia el saldo a cada uno. Los objetivos parten de los del primero."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:bound_combat_slime": 0
+  }
+}

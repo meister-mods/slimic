@@ -1,0 +1,24 @@
+{
+  "name": "Slime de excavación avanzado",
+  "icon": "slimic:next_generation_mining_slime",
+  "category": "slimic:companions",
+  "sortnum": 26,
+  "pages": [
+    {
+      "type": "slimic:companion_intro",
+      "text": "La $(l:world/royal_synthesis)síntesis real$() crea este compañero compacto. Empieza en Esperar, hereda el desarrollo parental y gasta la mitad de energía en todos los modos. Normal excava el chunk; Prioridad de minerales favorece los visibles en la capa activa. El emblema lateral deja espacio para linterna y gafas.",
+      "title": "Slime de excavación avanzado"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Elige Prospección precisa y activa las etiquetas Forge de los minerales deseados en el ajustador. Abre un pozo de 2×2, detecta esos minerales tras las paredes y excava ramales de 2×2 con suelo firme hacia ellos. Usa escalones seguros para subir o bajar. Prioriza minerales expuestos elegidos; también recoge la roca de acceso."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Líquidos, huecos sin apoyo, escaleras protegidas y techos inseguros requieren un desvío seguro; si no lo hay, espera. Los fallos de movimiento temporales conservan el siguiente paso. Usa herramientas, recogida y avisos habituales. El explorador muestra su trabajo. Facilita una vuelta para transportistas: no crea una escalera de acceso. Tras recogerlo, vuelve esperando."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "slimic:next_generation_mining_slime": 0
+  }
+}
