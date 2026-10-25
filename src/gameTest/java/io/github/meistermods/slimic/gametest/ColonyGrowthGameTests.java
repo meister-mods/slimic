@@ -297,29 +297,28 @@ public final class ColonyGrowthGameTests {
     f.members.load(legacy);
     h.assertTrue(
         f.root.getStatPoints() == 3
-            && f.root.getActivityProgress() == 12
-            && sharedHalfUnits(f.members) == 25
+            && f.root.getActivityProgress() == 14
+            && sharedHalfUnits(f.members) == 28
             && f.root.getNextPointCost() == 288,
-        "Legacy balances average to three; eleven and fourteen progress average to twelve and a"
-            + " half");
+        "Legacy balances average to three; completion fractions average to fourteen common units");
     for (int i = 0; i < 5; i++) {
       f.members.prepareUnbind();
       f = reload(h, f);
       h.assertTrue(
           f.root.getStatPoints() == 3
-              && sharedHalfUnits(f.members) == 25
+              && sharedHalfUnits(f.members) == 28
               && f.root.getNextPointCost() == 288,
           "Repeated save, unbind and rebind cycles create no zero-work points or progress");
     }
     f.members.activity(1);
     f.members.prepareUnbind();
     h.assertTrue(
-        balance(f.members).equals(BigInteger.valueOf(6)) && sharedHalfUnits(f.members) == 26,
+        balance(f.members).equals(BigInteger.valueOf(6)) && sharedHalfUnits(f.members) == 29,
         "One raw activity unit completes the retained half without duplicating progress");
     for (var member : f.members.records())
       h.assertTrue(
-          member.getNextPointCost() == 288 && member.getActivityProgress() == 13,
-          "Both individuals retain the same credited progress and higher growth cost");
+          member.getNextPointCost() == 288 && member.getActivityProgress() == 14,
+          "Canonical bound records retain the same credited progress and shared growth cost");
     trusted(h, f.members);
     h.succeed();
   }
@@ -627,10 +626,11 @@ public final class ColonyGrowthGameTests {
       result.load(rebound.getTag().getCompound("SlimeData"));
       h.assertTrue(
           result.getStatPoints() == 1
-              && sharedHalfUnits(result.members()) == 2
+              && sharedHalfUnits(result.members()) == 1
               && result.members().records().stream()
                   .allMatch(member -> member.getStatLevel(SlimeStat.REACH) == 2),
-          "Recovery and rebinding preserve the full point balance and two half units of progress");
+          "Recovery and rebinding preserve the balance and round only the sub-half-unit progress"
+              + " down");
     } finally {
       for (var id : identities)
         if (id != null && level.getEntity(id) != null) level.getEntity(id).discard();

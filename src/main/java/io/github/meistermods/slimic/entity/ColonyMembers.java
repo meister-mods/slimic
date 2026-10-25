@@ -11,6 +11,7 @@ public final class ColonyMembers {
   private final List<BagSlime> members = new ArrayList<>(2);
   private boolean projecting;
   private float health, energy, extraLife;
+  private int[] individualGrowthLevels = new int[2];
   private List<Integer> spans = List.of();
 
   public ColonyMembers(FriendlySlime representative) {
@@ -49,12 +50,13 @@ public final class ColonyMembers {
   public void clear() {
     members.clear();
     extraLife = 0;
+    individualGrowthLevels = new int[2];
     spans = List.of();
   }
 
   public void load(CompoundTag tag) {
-    members.clear();
-    if (tag.contains("Schema") && tag.getInt("Schema") != 1 && tag.getInt("Schema") != 2) return;
+    clear();
+    if (tag.contains("Schema") && (tag.getInt("Schema") < 1 || tag.getInt("Schema") > 3)) return;
     ListTag entries = tag.getList("Members", Tag.TAG_COMPOUND);
     if (entries.size() != 2) return;
     var expected =
@@ -92,6 +94,15 @@ public final class ColonyMembers {
       members.clear();
       return;
     }
+    int[] recordedLevels = tag.getIntArray("IndividualGrowthLevels");
+    boolean validLevels =
+        tag.getInt("Schema") == 3
+            && recordedLevels.length == 2
+            && Arrays.stream(recordedLevels).allMatch(value -> value >= 0 && value <= 1_000_000)
+            && Math.max(recordedLevels[0], recordedLevels[1]) == growthCostLevel();
+    for (int i = 0; i < 2; i++)
+      individualGrowthLevels[i] =
+          validLevels ? recordedLevels[i] : members.get(i).growthCostLevel();
     normalizeGrowth();
     extraLife =
         Float.isFinite(tag.getFloat("ExtraLife")) ? Math.max(0, tag.getFloat("ExtraLife")) : 0;
@@ -106,7 +117,8 @@ public final class ColonyMembers {
   public CompoundTag save() {
     syncVitals();
     CompoundTag tag = new CompoundTag();
-    tag.putInt("Schema", 2);
+    tag.putInt("Schema", 3);
+    tag.putIntArray("IndividualGrowthLevels", individualGrowthLevels.clone());
     tag.putFloat("ExtraLife", extraLife);
     if (spans.size() == 2) {
       tag.putInt("FirstSpan", spans.get(0));
@@ -197,7 +209,7 @@ public final class ColonyMembers {
   }
 
   /** New effects belong to the shared body; transfer them once, with their remaining duration. */
-  public void prepareUnbind() {
+  public List<BagSlime> prepareUnbind() {
     syncVitals();
     normalizeGrowth();
     BagSlime first = trainingMember();
@@ -209,6 +221,25 @@ public final class ColonyMembers {
     first.setTicksFrozen(representative.getTicksFrozen());
     first.setAirSupply(representative.getAirSupply());
     extraLife = 0;
+    int sharedCost = nextPointCost();
+    int sharedHalfUnits = Math.min(activityHalfUnits(), sharedCost * 2 - 1);
+    List<BagSlime> released = new ArrayList<>(2);
+    for (int i = 0; i < 2; i++) {
+      CompoundTag data = new CompoundTag();
+      members.get(i).save(data);
+      int costLevel = individualGrowthLevels[i];
+      int halfUnits =
+          (int) ((long) sharedHalfUnits * FriendlySlime.pointCost(costLevel) / sharedCost);
+      data.putInt("EarnedPoints", costLevel);
+      data.putInt("ActivityProgress", halfUnits / 2);
+      data.putInt("ActivityHalf", halfUnits % 2);
+      var restored = EntityType.loadEntityRecursive(data, representative.level(), e -> e);
+      if (!(restored instanceof BagSlime member) || member.getType() != members.get(i).getType())
+        throw new IllegalStateException("Could not restore a colony member");
+      member.setWaiting(true);
+      released.add(member);
+    }
+    return List.copyOf(released);
   }
 
   private void distribute(float delta, boolean life) {
@@ -272,7 +303,20 @@ public final class ColonyMembers {
   }
 
   private void normalizeGrowth() {
-    setGrowth(statPoints(), activityHalfUnits(), growthCostLevel(), trustedGrowth());
+    int firstCost = members.get(0).getNextPointCost();
+    int secondCost = members.get(1).getNextPointCost();
+    int sharedCost = Math.max(firstCost, secondCost);
+    // Average completion fractions before converting to common half units. Integer arithmetic
+    // rounds only once and cannot award a point by binding or unbinding.
+    long numerator =
+        (long) members.get(0).activityHalfUnits() * secondCost * sharedCost
+            + (long) members.get(1).activityHalfUnits() * firstCost * sharedCost;
+    int halfUnits =
+        (int)
+            Math.min(
+                numerator / (2L * firstCost * secondCost),
+                FriendlySlime.pointCost(1_000_000) * 2L - 1);
+    setGrowth(statPoints(), halfUnits, growthCostLevel(), trustedGrowth());
   }
 
   private boolean canTrainTogether() {
@@ -297,13 +341,18 @@ public final class ColonyMembers {
         long invested = Arrays.stream(SlimeStat.values()).mapToLong(member::getStatLevel).sum();
         limit = Math.min(limit, Long.MAX_VALUE - invested);
       }
+    int gainedPoints = 0;
     while (halfUnits / 2 >= FriendlySlime.pointCost(costLevel) && points < limit) {
       halfUnits -= FriendlySlime.pointCost(costLevel) * 2;
       costLevel = Math.min(1_000_000, costLevel + 1);
       points++;
+      gainedPoints++;
     }
-    // Match the native stored progress range when an edited balance cannot accept more points.
-    halfUnits = Math.min(halfUnits, FriendlySlime.pointCost(1_000_000) * 2 - 1);
+    for (int i = 0; i < 2; i++)
+      individualGrowthLevels[i] = Math.min(1_000_000, individualGrowthLevels[i] + gainedPoints);
+    // A common balance blocked by one member's numeric limit must not pay the other member
+    // independently when its native record loads.
+    halfUnits = Math.min(halfUnits, FriendlySlime.pointCost(costLevel) * 2 - 1);
     setGrowth(points, halfUnits, costLevel, trusted);
   }
 
