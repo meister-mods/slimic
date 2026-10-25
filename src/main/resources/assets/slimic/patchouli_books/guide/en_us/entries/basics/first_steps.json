@@ -11,11 +11,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Use the item on a block or water source to summon a companion tamed to you. Survival consumes it. A newly crafted item can be reused in Creative. An anvil name becomes its name. Hover over a summoning item to read its profession summary and release or recovery instructions."
+      "text": "Use the item on a block or water source to summon a companion tamed to you. Survival consumes it. A newly crafted item can be reused in Creative. An anvil name becomes its name. Hover over a summoning item to read its role and summoning or recovery instructions."
     },
     {
       "type": "patchouli:text",
-      "text": "Craft a $(l:basics/tuner)Slime Tuner$() to manage it. Every new companion starts in Wait. Choose Follow or a profession command before expecting movement or work. An Attention Slime can replace the Friendly base in basic specialization recipes; upgrades remain and Attention traits end."
+      "text": "Craft a $(l:basics/tuner)Slime Tuner$() to manage it. Every new companion starts in Wait. Choose Follow or a work command before expecting movement or work. An Attention Slime can replace the Friendly base in basic specialization recipes; upgrades remain and Attention traits end."
     }
   ]
 }

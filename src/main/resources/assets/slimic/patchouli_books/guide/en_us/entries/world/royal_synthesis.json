@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A Royal Synthesis Core, two gold ingots, two redstone, one Ancient Command Seal, and three stone bricks make a reusable station. The sanctum supplies these materials. Its ruined laboratory apparatus cannot synthesize. The separate $(l:world/restoration)Slime Restoration Station$() still restores cores."
+      "text": "A Royal Synthesis Core, two gold ingots, two redstone dust, one Ancient Command Seal, and three stone bricks make a reusable station. The sanctum supplies these materials. Its ruined laboratory apparatus cannot synthesize. The separate $(l:world/restoration)Slime Restoration Station$() still restores cores."
     },
     {
       "type": "patchouli:text",

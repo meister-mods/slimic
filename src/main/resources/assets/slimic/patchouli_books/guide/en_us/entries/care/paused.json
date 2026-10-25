@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Mining, farming, logging, and trail placement honor mobGriefing and Forge protection. Work uses loaded terrain, Reach, and sight. Extra stats or supplies cannot bypass denied edits. A $(l:companions/herald)herald$() can report lasting blockages."
+      "text": "Mining, farming, logging, and trail placement honor mobGriefing and Forge protection. Work uses loaded terrain, Reach, and sight. Extra stats or supplies cannot bypass denied edits. A $(l:companions/herald)Signaling Slime$() can report lasting blockages."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "슬라임 조작기",
+  "name": "조작기와 탐색기",
   "icon": "slimic:slime_tuner",
   "category": "slimic:basics",
   "sortnum": 2,
@@ -7,7 +7,7 @@
     {
       "type": "patchouli:crafting",
       "recipe": "slimic:slime_tuner",
-      "text": "슬라임볼 1개를 위에, 철 주괴 1개를 바로 아래에 놓아 세로로 조합합니다. 2×2 제작 칸에서도 만들 수 있습니다."
+      "text": "슬라임볼 1개를 위에, 철 주괴 1개를 바로 아래에 놓아 세로로 조합합니다. 2×2 조합 칸에서도 만들 수 있습니다."
     },
     {
       "type": "patchouli:text",

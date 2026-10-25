@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "slimic:slime_marble_slab"
+    }
+  },
+  "result": {
+    "item": "slimic:chiseled_slime_marble",
+    "count": 1
+  }
+}

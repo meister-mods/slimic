@@ -11,7 +11,7 @@
       "input2": "minecraft:firework_rocket",
       "result": "slimic:herald_slime",
       "label": "Combine → one result",
-      "text": "Friendly Slime + any firework rocket. Its full design is retained. Creative defaults use a white small-ball firework."
+      "text": "Friendly Slime + any firework rocket. Its full design is retained; the slime starts in Wait. Creative defaults use a white small-ball firework."
     },
     {
       "type": "patchouli:text",

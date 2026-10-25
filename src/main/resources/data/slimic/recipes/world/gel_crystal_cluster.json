@@ -1,13 +1,14 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "slimic:luminous_slime"
-    },
-    {
-      "item": "minecraft:stick"
-    }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CC",
+    "CC"
   ],
+  "key": {
+    "C": {
+      "item": "slimic:small_gel_crystal_cluster"
+    }
+  },
   "result": {
     "item": "slimic:gel_crystal_cluster",
     "count": 1

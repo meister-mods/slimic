@@ -1,13 +1,21 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WW",
+    "WW",
+    "PS"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:green_wool"
+    },
+    "P": {
       "item": "slimic:slime_infused_planks"
     },
-    {
+    "S": {
       "item": "minecraft:stick"
     }
-  ],
+  },
   "result": {
     "item": "slimic:old_slime_banner",
     "count": 1

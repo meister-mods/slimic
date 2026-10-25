@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Shared ownership is configured through a $(l:companions/commander)Command Slime$(). The original owner UUID remains the primary identity in worlds and stored items. Only that player may change shared owners or enemies. Giving someone a stored item does not grant ownership."
+      "text": "Set shared owners through a $(l:companions/commander)Command Slime$(). Sharing and recovery keep the original owner. Only that player can change shared owners or enemies. Giving someone a stored item does not grant ownership."
     },
     {
       "type": "patchouli:text",
@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Shared owners can use guardian protection. Automatic transport, monitoring, healing, and marked-item collection across different primary owners require each primary owner to share with the other. A one-sided invitation never authorizes the inviter to access the other team’s stores."
+      "text": "Shared owners can receive Guardian Angel protection. Automatic transport, monitoring, healing, and marked-item collection across different primary owners require each primary owner to share with the other. A one-sided invitation never authorizes the inviter to access the other team’s stores."
     },
     {
       "type": "patchouli:text",

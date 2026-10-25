@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The colony uses one movement and transport order. Its carrying capacity is exactly the sum of both members' real capacities. The native Transport capacity bonus is already included. It collects cargo and brings tools or work supplies through the ordinary logistics network."
+      "text": "The colony uses one movement and transport order. Its carrying capacity is exactly the sum of both members' real capacities. The ordinary Transport capacity bonus is already included. It collects cargo and brings tools or work supplies through the ordinary logistics network."
     },
     {
       "type": "patchouli:text",

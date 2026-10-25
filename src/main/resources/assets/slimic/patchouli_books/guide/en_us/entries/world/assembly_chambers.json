@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Abandoned Assembly Chambers generate beneath new terrain in The Slimic. Lamps mark the entrance stair. $(l:world/kingdom_maps)Sanctum$() and mine supplies may contain an Assembly Clue. Use it in this dimension to mark a nearby candidate chamber."
+      "text": "Abandoned Assembly Chambers generate beneath new terrain in The Slimic. Lamps mark the entrance stair. $(l:world/fallen_sanctum)Sanctum$() and mine supplies may contain an Assembly Clue. Use it in this dimension to mark a nearby candidate chamber."
     },
     {
       "type": "patchouli:text",
@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "After a victory, the same altar asks for eight slimeballs and two Old Command Fragments, after one day. Server settings can change these costs. Each participant claims a personal reward at a core; full bags keep the reward pending."
+      "text": "After a victory, the same altar asks for eight slimeballs and two Old Command Fragments, after one day. Server settings can change these costs. Each participant claims a personal reward at a core; a full player inventory keeps the reward pending."
     },
     {
       "type": "patchouli:text",

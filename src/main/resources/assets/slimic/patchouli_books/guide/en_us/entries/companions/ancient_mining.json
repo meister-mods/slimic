@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Restore a quarry corpse’s core, or one recovered from a Forgotten Mining Slime, through $(l:world/mine_recovery)mine recovery$(). This profession has no crafting recipe. Its purple-framed mining-core crest and white ancient insignia distinguish it from an ordinary miner."
+      "text": "Restore a quarry corpse’s core or one from a Forgotten Mining Slime through $(l:world/mine_recovery)mine recovery$(). No crafting recipe exists. Its summon item shows a purple-edged core on a gold plate; the companion has a helmet and white ancient crest."
     },
     {
       "type": "patchouli:text",
-      "text": "It prioritizes Forge-tagged ores in its active quarry layer and spends half the normal stamina on movement, mining, draining, and reinforcement. The bonus neither exposes distant deposits nor skips layers. Detection Range still limits reach and travel."
+      "text": "It prioritizes visible Forge-tagged ores in its active quarry layer and spends half the normal stamina on movement, mining, draining, and reinforcement. The bonus neither exposes distant deposits nor skips layers. Detection Range and Reach still limit its work."
     },
     {
       "type": "patchouli:text",

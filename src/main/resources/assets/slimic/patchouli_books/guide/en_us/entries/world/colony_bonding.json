@@ -6,12 +6,12 @@
   "pages": [
     {
       "type": "patchouli:crafting",
-      "text": "A heart, two iron ingots, three slimeballs and three stone bricks make this reusable station. It binds two ordinary Transport Slimes or two ordinary Combat Slimes. Both must have the same primary owner. Other professions and upper variants are unsupported.",
+      "text": "Craft the station with one heart, two iron ingots, three slimeballs and three stone bricks. It binds two ordinary Transport Slimes or two ordinary Combat Slimes. You must be the primary owner of both. Other types and upper variants cannot be bound.",
       "recipe": "slimic:colony_bonding_station"
     },
     {
       "type": "patchouli:text",
-      "text": "Recover two living, healthy companions without temporary effects. Put their items in the slots, inspect both records and confirm Bind. Gear and cargo may stay. Original identities and individual growth remain separate inside one representative."
+      "text": "Before recovery, clear effects, fire, freezing and absorption, and let both companions regain full air. Put their items in the two slots, review their records and choose Bind. Gear and cargo may stay. Their identities and growth remain separate."
     },
     {
       "type": "patchouli:text",

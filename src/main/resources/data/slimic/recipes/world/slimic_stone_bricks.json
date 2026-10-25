@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "key": {
+    "X": {
+      "item": "slimic:slimic_stone"
+    }
+  },
+  "result": {
+    "item": "slimic:slimic_stone_bricks",
+    "count": 4
+  }
+}

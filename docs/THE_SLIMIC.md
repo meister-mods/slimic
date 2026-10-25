@@ -10,7 +10,7 @@ The Slimic is a separate dimension shaped like a weathered Overworld, with gel-c
 
 In the Overworld, build a vertical rectangle of **vanilla slime blocks** with the same geometry as a Nether portal. The interior is 2–21 blocks wide and 3–21 blocks tall; the smallest outer frame is 4×5 and the largest is 23×23. Corners are optional. Keep the interior empty, hold a slimeball, and right-click a frame face that points into the opening. Survival uses one slimeball; Creative preserves it. Both hands work.
 
-Stand inside for about four seconds in Survival; Creative players and unmounted entities cross immediately. Portals connect only the Overworld and The Slimic, using a **1:1 coordinate scale**. Dismount before traveling. Portal cooldown prevents immediate return trips; leave the portal before re-entering. Breaking a required frame block closes the portal. Repair and reactivate it to reopen the route.
+Stand inside for about four seconds in Survival; Creative players and unmounted non-player entities cross immediately. Portals connect only the Overworld and The Slimic, using a **1:1 coordinate scale**. Dismount before traveling. Portal cooldown prevents immediate return trips; leave the portal before re-entering. Breaking a required frame block closes the portal. Repair and reactivate it to reopen the route.
 
 The destination reuses a valid, safe portal within 128 horizontal blocks. Otherwise it searches nearby terrain and creates a slime-block frame with a safe landing platform, including above water where needed. Existing containers and protected placements are preserved. Temporary companion lights do not block activation. If no safe exit can be placed, the entity remains in its original dimension; players receive an explanation. Return portals persist with the world.
 
@@ -24,7 +24,7 @@ Wild Slimes can spawn on the surface. Frogs inhabit the plains, bats inhabit cav
 
 The **Slimic Blocks** Creative tab has **54 entries**: 32 independent base blocks, 8 stairs, 8 slabs, and 6 walls. The general Slimic tab groups companions by role and upgrade line, followed by management tools, armor, functional stations, expedition materials, records, and hostile spawn eggs. Building variants are grouped by material, with each base block followed by its stairs, slab, and wall when available. Stone uses pickaxes, soil uses shovels, and infused wood uses axes. Gel Glass needs Silk Touch to drop itself. Slimic Stone normally drops Slimic Cobblestone; smelt it to recover stone.
 
-A stonecutter processes Slimic Stone into the masonry palette. Stairs, slabs, and walls also have matching crafting recipes. Additional recipes include slime-infused native planks, slime clay, hardened gel, luminous gel, dried gel, and smelted silt glass. JEI shows the exact ingredients and outputs. Slimic Soil, Damp Grass Block, and Slime Mud can be tilled into ordinary farmland when the space above is clear; they also support ordinary plants.
+A stonecutter processes Slimic Stone into the masonry palette, including Pale Slimic Stone, Ancient Foundation, Slime Marble, and Black Slime Stone. Crafting and smelting provide the additional processing routes below. Existing stonecutter recipes remain available, and JEI shows each recipe. Slimic Soil, Damp Grass Block, and Slime Mud can be tilled into ordinary farmland when the space above is clear; they also support ordinary plants.
 
 | Base block | Resource ID |
 | --- | --- |
@@ -62,6 +62,47 @@ A stonecutter processes Slimic Stone into the masonry palette. Stairs, slabs, an
 | Slime-Infused Planks | `slimic:slime_infused_planks` |
 
 Stairs and slabs: Slimic Stone, Slimic Cobblestone, Slimic Stone Bricks, Mossy Slimic Stone Bricks, Slimic Tiles, Slime Marble, Black Slime Stone, and Slime-Infused Planks. Walls: Slimic Cobblestone, Mossy Slimic Cobblestone, Slimic Stone Bricks, Mossy Slimic Stone Bricks, Slimic Slate Bricks, and Slime Marble Bricks.
+
+### Material sources and processing
+
+Slimic Stone, Slimic Slate, Slimic Soil, Slime Silt, Slimic Clay, Slime Mud, and Congealed Slime occur in The Slimic's terrain. The following recipes provide processed stone, infused wood, and gel materials. Each row produces **one block**; ingredients can be placed in any arrangement unless the method is smelting.
+
+| Result | Ingredients | Method |
+| --- | --- | --- |
+| Slimic Stone | Slimic Cobblestone ×1 | Smelting |
+| Slime-Infused Planks | Vanilla planks ×1 + Slimeball ×1 | Shapeless crafting |
+| Slimic Clay | Vanilla Clay block ×1 + Slimeball ×1 | Shapeless crafting |
+| Congealed Slime | Slimic Clay ×1 + Slimeball ×1 | Shapeless crafting |
+| Hardened Slime | Congealed Slime ×1 + Clay Ball ×1 | Shapeless crafting |
+| Luminous Slime | Congealed Slime ×1 + Glowstone Dust ×1 | Shapeless crafting |
+| Dried Slime | Congealed Slime ×1 | Smelting |
+| Gel Glass | Slime Silt ×1 | Smelting |
+| Damp Grass Block | Slimic Soil ×1 + Wheat Seeds ×1 + Slimeball ×1 | Shapeless crafting |
+
+The following masonry recipes use **four matching blocks in a 2×2 square** and produce **four blocks**:
+
+| Ingredient | Result |
+| --- | --- |
+| Slimic Stone | Slimic Stone Bricks |
+| Pale Slimic Stone | Polished Slimic Stone |
+| Slimic Stone Bricks | Slimic Tiles |
+| Ancient Foundation | Ancient Foundation Bricks |
+| Slime Marble | Slime Marble Bricks |
+| Black Slime Stone | Polished Black Slime Stone |
+| Slimic Slate | Slimic Slate Bricks |
+
+Chiseling, moss, and heat provide further finishes. Each row below produces **one block**. The mossy recipes accept either **one Vine or one Moss Block**.
+
+| Result | Ingredients | Method |
+| --- | --- | --- |
+| Chiseled Slimic Stone Bricks | Slimic Stone Brick Slab ×2 | Place the slabs one above the other |
+| Chiseled Slime Marble | Slime Marble Slab ×2 | Place the slabs one above the other |
+| Mossy Slimic Cobblestone | Slimic Cobblestone ×1 + (Vines ×1 or Moss Block ×1) | Shapeless crafting |
+| Mossy Slimic Stone Bricks | Slimic Stone Bricks ×1 + (Vines ×1 or Moss Block ×1) | Shapeless crafting |
+| Cracked Slimic Stone Bricks | Slimic Stone Bricks ×1 | Smelting |
+| Cracked Slimic Tiles | Slimic Tiles ×1 | Smelting |
+
+For the shape variants listed above, the usual crafting patterns use six blocks for four stairs, three blocks for six slabs, or six blocks for six walls. The stonecutter uses one matching masonry block for one stair, two slabs, or one wall. Slime-Infused Planks use crafting for their stairs and slabs.
 
 The **Slime Restoration Station** (`slimic:command_pedestal`) appears with the other functional stations in the main Slimic Creative tab. See [core restoration](FORGOTTEN_ORDERS.md#restore-a-remnant) for its materials and procedure.
 
@@ -105,9 +146,27 @@ Crates, urns, racks, basins, furniture, and broken workbenches are ornamental. U
 | Gel Cap | `slimic:gel_cap` |
 | Glowing Bloom | `slimic:glowing_bloom` |
 
+### Crafting decorations
+
+These recipes each produce **one decoration**. In the patterns, `/` separates rows and `.` marks an empty slot. `P` is Slime-Infused Planks, `S` is a Stick, `W` is Green Wool, `C` is a Small Gel Crystal Cluster, `N` is an Iron Nugget, and `L` is Luminous Slime.
+
+| Decoration | Ingredients | Pattern |
+| --- | --- | --- |
+| Abandoned Crate | Slime-Infused Planks ×1 + Stick ×1 | Shapeless |
+| Broken Crate | Abandoned Crate ×1 | Shapeless |
+| Broken Workbench | Slime-Infused Planks ×2 + Stick ×1 | `PP / S.` |
+| Ruined Bench | Slime-Infused Planks ×3 + Stick ×2 | `PPP / S.S` |
+| Tool Rack | Slime-Infused Planks ×3 + Stick ×4 | `S.S / PPP / S.S` |
+| Old Slime Banner | Green Wool ×4 + Slime-Infused Planks ×1 + Stick ×1 | `WW / WW / PS` |
+| Small Gel Crystal Cluster | Luminous Slime ×1 + Stick ×1 | Shapeless |
+| Gel Crystal Cluster | Small Gel Crystal Cluster ×4 | `CC / CC` |
+| Gel Lantern | Iron Nugget ×4 + Luminous Slime ×1 | `.N. / NLN / .N.` |
+
+Stone ornaments retain their stonecutter recipes. JEI also lists the recipes for the Ancient Brazier and decorative plants.
+
 ## Ruins and records
 
-Scattered workshops, supply depots, road fragments, archives, and royal wards use local masonry, broken furniture, lamps, and weathered markers. Newly generated occupied ruins contain ancient guards, carriers, and sometimes command slimes still obeying the lost kingdom's orders. Their actual Slime Chests move supplies, while ordinary chests contain supplies and translated records, with a chance to find a command seal.
+Scattered workshops, supply depots, road fragments, archives, and royal wards use local masonry, broken furniture, lamps, and weathered markers. Newly generated occupied ruins contain ancient guards, carriers, and sometimes command slimes still obeying the lost kingdom's orders. Ancient carriers move supplies between linked Slime Chests. Ordinary chests contain supplies and translated records, with a chance to find a command seal.
 
 Defeat a remnant and restore its core at an intact Slime Restoration Station, or use a seal to specialize an existing Combat Slime. See [Forgotten Orders](FORGOTTEN_ORDERS.md) for both acquisition paths, occupied depots, archives, and old royal wards. Opening an ancient Slime Chest removes its carrier link. The intact pedestal now restores cores; other ornamental furniture retains its decorative role. Records describe the absent XXX, the kingdom's fading supply routes, and the last watch.
 
@@ -130,4 +189,4 @@ Recovery and item release also work across dimensions. Release starts in Wait an
 
 ## Abandoned assembly chambers
 
-[Assembly Chambers](AIMLESS_COLONY.md) add a visible surface stair and an underground arena to new Damp Plains terrain. Their world-owned encounters, observer records and personal rewards lead to reversible [Colony Bonding](COLONY_BONDING.md). Existing sanctums, mines and old chunks retain their own progress and terrain.
+[Assembly Chambers](AIMLESS_COLONY.md) add a visible surface stair and an underground arena to new Damp Plains terrain. Encounter progress is saved with the world. Observer records describe the chamber’s past, while personal rewards supply materials for reversible [Colony Bonding](COLONY_BONDING.md). Existing sanctums, mines and old chunks retain their own progress and terrain.

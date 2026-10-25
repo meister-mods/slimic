@@ -2,7 +2,7 @@
 
 [한국어](INTERACTIONS.kr.md) · [Gameplay](GAMEPLAY.md) · [Development](DEVELOPMENT.md)
 
-Companions cooperate through ownership, orders and work requests. Follow and Wait withdraw work requests. Transport and Healing use same-primary-owner teams, or teams whose primary owners have both shared access with each other. Transfers check actual requests and capacity. Guardians protect available owners, and combat excludes shared allies. One-sided sharing grants manual management without opening the invited player’s stores.
+Companions cooperate through ownership, orders and work requests. Follow and Wait withdraw work requests. Transport and Healing use same-primary-owner teams, or teams whose primary owners have both shared access with each other. Transfers check actual requests and capacity. Guardian Angel Slimes protect eligible owners, and combat excludes shared allies. One-sided sharing grants manual management without opening the invited player’s stores.
 
 The following scenarios have independent native game regressions. Transfers check exact quantities and original tags, durability, equipment and current health.
 
@@ -28,10 +28,10 @@ The following scenarios have independent native game regressions. Transfers chec
 | I18 | Healing / Warehouse | Revive with tuned capacity and final-slot cargo intact. |
 | I19 | Workers / Transport / Warehouse | Conserve exact cargo and source tags under competition. |
 | I20 | Transport / Healing | Concurrent deliveries cannot exceed the request limit. |
-| I21 | Guardian / owner | Held totems act first; one rescue consumes one reserve. |
+| I21 | Guardian Angel / owner | Held totems act first; one rescue consumes one reserve. |
 | I22 | Healing / Saddle | Heal without changing armor, wings, saddle or Wait. |
 | I23 | Healing / Saddle | Revive at one health with all three exact gear items. |
-| I24 | Guardian / Saddle / owner | Protect a mounted owner without removing rider or gear. |
+| I24 | Guardian Angel / Saddle / owner | Protect a mounted owner without removing rider or gear. |
 | I25 | Combat / all ordinary and colony companions | Same-owner companions remain excluded with all filters enabled. |
 | I26 | Transport / worker | Competing carriers cannot duplicate spare tools. |
 | I27 | Signaling / worker | A signal callback cannot continue a cancelled monitoring order. |
@@ -53,22 +53,22 @@ The following scenarios have independent native game regressions. Transfers chec
 | I43 | Recovery / all ordinary and colony companions | Re-release with saved traits in Wait; revive in Wait at one health while retaining other traits. |
 | I44 | Scanner / workers | Preview bounded current or planned areas without starting work, loading chunks, or recovering the companion; enforce current access and range. |
 | I45 | Signaling / blocked worker / owners | Report type, custom name, and cause to authorized online owners, including other dimensions; respect cooldowns and revoked access. |
-| I46 | Wild Slime / player | Convert one size-one Slime with one Survival golden apple; start owned and waiting, retain its name, and use normal owner-only Shift recovery. Event or spawn vetoes preserve inputs. |
+| I46 | Wild Slime / player | Convert one size-one Slime with one Survival golden apple; start owned and waiting, retain its name, and allow the primary owner or a shared owner to use normal Shift recovery. Event or spawn vetoes preserve inputs. |
 | I47 | Ancient remnant / companions | Remnants recognize companions as intruders; companion combat recognizes the ancient faction as hostile. Home boundaries end pursuit. |
 | I48 | Ancient carrier / depot / player | Move exact physical cargo only between matching ruin depots. Opening a chest claims it; mob griefing can deny transfers. |
-| I49 | Core / pedestal / player | Restore with new ownership and UUID at one health in Wait; consume each material once and reject duplicate or reentrant redemption. |
-| I50 | Combat / Royal Guard | Preserve identity, growth, equipment and cargo through seal specialization; keep safe initial orders. |
+| I49 | Core / restoration station / player | Restore with new ownership and UUID at one health in Wait; consume each material once and reject duplicate or reentrant redemption. |
+| I50 | Combat / Royal Guard | Preserve identity, growth, equipment and cargo through seal specialization; start in Wait. |
 | I51 | Royal Guard / allies / attacker | Redirect one eligible hit, honor ownership, PvP, sight and target filters, spend actual resources, reject canceled damage and prevent guard chains. |
 | I52 | Mine corpse / core / restoration station | Break once for one core; restore once in the Overworld with a fragment and slimeball, separate from owned companion revival. |
 | I53 | Ancient worker / logistics / growth | Shares ordinary tool, stair, bag, and supply contracts; restored ancient roles retain random invested training across recovery, portals, and saves. |
-| I54 | Guardian / Royal Guard / persistence | Apply fourfold common Health once, retain training, clamp legacy excess health without healing, and preserve Creative health. |
+| I54 | Guardian Angel / Royal Guard / persistence | Apply fourfold common Health once, retain training, clamp legacy excess health without healing, and preserve Creative health. |
 | I55 | Creative editor / bags / logistics | Accept values beyond recommendations, synchronize exact values, preserve sparse cargo across pages and recovery, and reject occupied-slot removal. |
 | I56 | Creative attacks / recovery | Keep native damage and victim absorption finite at extreme Attack; retain the exact saved base and clear nonfinite absorption from older payloads without healing. |
-| I57 | Next-generation miner / Transport / Warehouse | Precision excavation requests the appropriate real tool; delivery preserves its identity and wear and resumes physical access-rock and selected-ore mining. |
-| I58 | Parent companions / synthesis station | Refuse occupied bags, equipment, unverified attachments and foreign ownership without consuming anything; legal growth refunds exactly into a new waiting identity. |
-| I59 | Sanctum elite / royal remnants | One persistent reinforcement appears below half health; existing native identities recover missing spawn flags and defeated waves never respawn. |
+| I57 | Next-Generation Mining / Transport / Warehouse | Precision Prospecting requests the appropriate real tool; delivery preserves its identity and wear and resumes physical access-rock and selected-ore mining. |
+| I58 | Parent companions / synthesis station | Refuse occupied bags, equipment, unverified attachments and foreign ownership without consuming anything; verified growth refunds exactly into a new waiting identity. |
+| I59 | Sanctum elite / royal remnants | One persistent reinforcement appears at or below half health; existing native identities recover missing spawn flags and defeated waves never respawn. |
 | I60 | Precision miner / terrain / saves | Supported 2×2 shafts and stepped branches avoid fluid openings and cavities, preserve protected blocks, and retain the front and return trail across saves; legacy selective orders pause safely. |
-| I61 | Next-generation tunnel / transport / synthesis | A matched ordinary/ancient Tunnel pair produces one waiting child. Configurable n×n faces keep real tools, material delivery, cargo, permission checks, saved progress, and inherited growth; size changes wait. |
+| I61 | Next-Generation Tunnel / Transport / synthesis | A matched ordinary/ancient Tunnel pair produces one waiting child. Configurable n×n faces keep real tools, material delivery, cargo, permission checks, saved progress, and inherited growth; size changes wait. |
 | I62 | Tunnel workers / changing terrain / world bounds | Reject out-of-height or border-crossing faces before partial work. Reinspect newly obstructed destinations, report blocked approaches outside the face, and conserve exact combined drops and tool wear when workers share a face. |
 | I63 | Precision survey / transient movement / shared status | Skip ore-free sections while retaining live ore filters and loaded-area limits. Preserve a stalled pending descent; unified Wait, Follow, and stamina-recovery labels do not replace profession-specific blocking causes. |
 
@@ -78,4 +78,4 @@ Historical release results are recorded in [CHANGELOG.md](../CHANGELOG.md). Curr
 
 ## Colony interactions
 
-Transport colonies reuse ordinary cargo collection and tool, bucket, cobblestone and work-material supply. Combat colonies retain allied/shared-owner protection and replacement-tool behavior. Healing changes actual remaining member life; Command rallies move one representative while original roster records remain bound members. Boss contribution is credited to the owner after actual companion effects succeed. The [bonding preservation rules](COLONY_BONDING.md) also apply.
+Transport colonies reuse ordinary cargo collection and tool, bucket, cobblestone and work-material supply. Combat colonies retain allied/shared-owner protection and replacement-tool behavior. Healing changes the members’ actual remaining health; Command rallies move one representative while original roster records remain bound members. Boss contribution is credited to the owner after actual companion effects succeed. The [bonding preservation rules](COLONY_BONDING.md) also apply.

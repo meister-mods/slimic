@@ -1,13 +1,18 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    "PPP",
+    "S S"
+  ],
+  "key": {
+    "P": {
       "item": "slimic:slime_infused_planks"
     },
-    {
+    "S": {
       "item": "minecraft:stick"
     }
-  ],
+  },
   "result": {
     "item": "slimic:tool_rack",
     "count": 1

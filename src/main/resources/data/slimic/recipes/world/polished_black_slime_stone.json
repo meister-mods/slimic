@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "key": {
+    "X": {
+      "item": "slimic:black_slime_stone"
+    }
+  },
+  "result": {
+    "item": "slimic:polished_black_slime_stone",
+    "count": 4
+  }
+}

@@ -4,6 +4,19 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.7] - 2026-10-25
+
+### Changed
+
+- Align English and Korean documentation, guidebook pages, item descriptions, JEI instructions, and status messages with consistent terminology and clear procedures.
+- Group translation keys by function and keep the same key order in both language files for easier comparison and maintenance.
+- Keep companion instructions factual and slime records in a simple, reflective voice. Clarify core restoration, map use, initial Wait mode, and work interruption notices.
+
+### Fixed
+
+- Correct outdated guidebook descriptions, Creative tab ordering in gameplay documentation, synthesis preparation instructions, and development protocol references.
+- Correct Korean particles and distinguish companion recovery, cargo collection, colony bonding, and map destinations.
+
 ## [0.5.6] - 2026-10-24
 
 ### Changed
