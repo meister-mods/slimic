@@ -38,6 +38,37 @@ public final class AimlessColonyRenderer extends MobRenderer<AimlessColony, Aiml
   }
 
   @Override
+  public boolean shouldRender(
+      AimlessColony entity,
+      net.minecraft.client.renderer.culling.Frustum frustum,
+      double cameraX,
+      double cameraY,
+      double cameraZ) {
+    if (super.shouldRender(entity, frustum, cameraX, cameraY, cameraZ)) return true;
+    boolean extended =
+        entity.pattern() == AimlessColony.Pattern.SWEEP
+            || entity.pattern() == AimlessColony.Pattern.SWEEPING
+            || entity.pattern() == AimlessColony.Pattern.RECOVERY
+                && entity.recoveryMotion() == AimlessColony.Pattern.SWEEPING;
+    return extended
+        && entity.shouldRender(cameraX, cameraY, cameraZ)
+        && frustum.isVisible(
+            entity
+                .getBoundingBox()
+                .inflate(AimlessColony.SWEEP_RADIUS, 1, AimlessColony.SWEEP_RADIUS));
+  }
+
+  @Override
+  protected void setupRotations(
+      AimlessColony entity, PoseStack pose, float age, float yaw, float partial) {
+    if (entity.facingAttack()) {
+      var direction = entity.dashDirection();
+      yaw = (float) (Math.atan2(-direction.x, direction.z) * 180 / Math.PI);
+    }
+    super.setupRotations(entity, pose, age, yaw, partial);
+  }
+
+  @Override
   protected void scale(AimlessColony entity, PoseStack pose, float partial) {
     pose.scale(3.6F, 3.6F, 3.6F);
   }

@@ -30,7 +30,8 @@ public final class ColonyTelegraphs {
     for (var boss :
         mc.level.getEntitiesOfClass(AimlessColony.class, mc.player.getBoundingBox().inflate(64))) {
       var pattern = boss.pattern();
-      if (pattern == AimlessColony.Pattern.IDLE) continue;
+      if (pattern == AimlessColony.Pattern.IDLE || pattern == AimlessColony.Pattern.RECOVERY)
+        continue;
       double radius =
           pattern == AimlessColony.Pattern.SLAM
               ? 5.5
@@ -48,16 +49,18 @@ public final class ColonyTelegraphs {
           line(pose, sink, rear.add(side.scale(sign)), front.add(side.scale(sign)), 1, .65F, .15F);
         line(pose, sink, rear.subtract(side), rear.add(side), 1, .65F, .15F);
         line(pose, sink, front.subtract(side), front.add(side), 1, .65F, .15F);
-      } else if (pattern == AimlessColony.Pattern.SWEEP) {
+      } else if (pattern == AimlessColony.Pattern.SWEEP
+          || pattern == AimlessColony.Pattern.SWEEPING) {
         Vec3 center = boss.attackOrigin().add(0, .12, 0);
         Vec3 direction = boss.dashDirection();
         double angle = Math.atan2(direction.z, direction.x);
-        double from = angle - AimlessColony.SWEEP_HALF_ANGLE;
-        double to = angle + AimlessColony.SWEEP_HALF_ANGLE;
+        double progress = boss.sweepProgress(event.getPartialTick());
+        double from = angle - boss.sweepAngle(progress);
+        double to = angle - boss.sweepAngle(1);
         double reach = AimlessColony.SWEEP_RADIUS;
         arc(pose, sink, center, reach, from, to, 40, 1, .5F, .18F);
-        line(pose, sink, center, radial(center, reach, from), 1, .5F, .18F);
         line(pose, sink, center, radial(center, reach, to), 1, .5F, .18F);
+        line(pose, sink, center, radial(center, reach, from), 1, .9F, .5F);
       } else if (pattern == AimlessColony.Pattern.ERUPTION) {
         float progress =
             1

@@ -107,6 +107,10 @@ public final class ColonyExpansionGameTests {
         "A shove and departing target do not rotate or relocate the announced sector");
     step(f.boss, 1);
     h.assertTrue(
+        victims.stream().allMatch(v -> v.getHealth() == v.getMaxHealth()),
+        "The completed warning starts the moving sweep without an instant sector hit");
+    step(f.boss, AimlessColony.Pattern.SWEEPING.warning);
+    h.assertTrue(
         forward.getHealth() < forward.getMaxHealth()
             && insideAngle.getHealth() < insideAngle.getMaxHealth()
             && insideRadius.getHealth() < insideRadius.getMaxHealth(),
@@ -196,7 +200,12 @@ public final class ColonyExpansionGameTests {
       try {
         f.boss.setTarget(aim);
         begin(f.boss, pattern);
-        step(f.boss, pattern.warning);
+        step(
+            f.boss,
+            pattern.warning
+                + (pattern == AimlessColony.Pattern.SWEEP
+                    ? AimlessColony.Pattern.SWEEPING.warning
+                    : 0));
         h.assertTrue(
             blocked.getHealth() == blocked.getMaxHealth()
                 && canceled.getHealth() == canceled.getMaxHealth()
@@ -265,7 +274,12 @@ public final class ColonyExpansionGameTests {
         }
         f.boss.setTarget(target);
         begin(f.boss, pattern);
-        step(f.boss, pattern.warning);
+        step(
+            f.boss,
+            pattern.warning
+                + (pattern == AimlessColony.Pattern.SWEEP
+                    ? AimlessColony.Pattern.SWEEPING.warning
+                    : 0));
         h.assertTrue(
             target.getHealth() < target.getMaxHealth()
                 && players.get(0).getHealth() < players.get(0).getMaxHealth(),
@@ -387,9 +401,10 @@ public final class ColonyExpansionGameTests {
       }
       begin(f.boss, AimlessColony.Pattern.DASH);
       step(f.boss, AimlessColony.Pattern.DASH.warning);
+      var before = f.boss.position();
       step(f.boss, 1);
       h.assertTrue(
-          (f.boss.getDeltaMovement().horizontalDistanceSqr() > .01) == obstacle.equals("clear"),
+          (f.boss.position().distanceToSqr(before) > .01) == obstacle.equals("clear"),
           "The full body may advance only onto supported, dry, unobstructed terrain: " + obstacle);
     }
     h.succeed();
