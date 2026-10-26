@@ -1,7 +1,9 @@
 package io.github.meistermods.slimic.gametest;
 
 import com.google.gson.GsonBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.client.AimlessColonyModel;
+import io.github.meistermods.slimic.client.AimlessColonyRenderer;
 import io.github.meistermods.slimic.entity.AimlessColony;
 import io.github.meistermods.slimic.registry.ModEntities;
 import io.github.meistermods.slimic.world.AssemblySites;
@@ -12,12 +14,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /** Native tracking and renderer checks for the full wind-up, strike and settling poses. */
 public final class ColonyMotionClientSmoke {
@@ -112,6 +119,87 @@ public final class ColonyMotionClientSmoke {
         part.xScale,
         part.yScale,
         part.zScale);
+  }
+
+  /** Use the native renderer's heading and scale, including Minecraft's mirrored model axes. */
+  private static PoseStack worldPose(
+      AimlessColonyRenderer renderer, AimlessColony boss, float partial)
+      throws ReflectiveOperationException {
+    var pose = new PoseStack();
+    var rotation =
+        AimlessColonyRenderer.class.getDeclaredMethod(
+            "setupRotations",
+            AimlessColony.class,
+            PoseStack.class,
+            float.class,
+            float.class,
+            float.class);
+    rotation.setAccessible(true);
+    rotation.invoke(renderer, boss, pose, boss.tickCount + partial, 0F, partial);
+    pose.scale(-1, -1, 1);
+    var scale =
+        AimlessColonyRenderer.class.getDeclaredMethod(
+            "scale", AimlessColony.class, PoseStack.class, float.class);
+    scale.setAccessible(true);
+    scale.invoke(renderer, boss, pose, partial);
+    pose.translate(0, -1.501F, 0);
+    return pose;
+  }
+
+  private static Vec3 point(PoseStack pose, float x, float y, float z) {
+    var result = pose.last().pose().transformPosition(new Vector3f(x / 16, y / 16, z / 16));
+    return new Vec3(result.x, result.y, result.z);
+  }
+
+  private static Map<String, Double> sweepGeometry(
+      Minecraft client, AimlessColony boss, AimlessColonyModel model, ModelPart root)
+      throws ReflectiveOperationException {
+    if (boss.pattern() != AimlessColony.Pattern.SWEEPING) return Map.of();
+    var renderer = (AimlessColonyRenderer) client.getEntityRenderDispatcher().getRenderer(boss);
+    double maxRadius = 0, minReach = Double.MAX_VALUE, maxAngle = 0;
+    for (float partial : new float[] {0, .25F, .5F, .75F, .999F}) {
+      model.setupAnim(boss, 0, 0, boss.tickCount + partial, 0, 0);
+      var arm = root.getChild("shell").getChild("front_sprawl");
+      var cube = arm.getRandomCube(RandomSource.create(0));
+      var pose = worldPose(renderer, boss, partial);
+      arm.translateAndRotate(pose);
+      for (float x : new float[] {cube.minX, cube.maxX})
+        for (float y : new float[] {cube.minY, cube.maxY})
+          for (float z : new float[] {cube.minZ, cube.maxZ})
+            maxRadius = Math.max(maxRadius, point(pose, x, y, z).horizontalDistance());
+      Vec3 tip = point(pose, 0, (cube.minY + cube.maxY) / 2, cube.minZ);
+      Vec3 base = point(pose, 0, (cube.minY + cube.maxY) / 2, cube.maxZ);
+      Vec3 axis = tip.subtract(base).multiply(1, 0, 1).normalize();
+      Vec3 expectedRay =
+          boss.dashDirection().yRot((float) boss.sweepAngle(boss.sweepProgress(partial)));
+      double angle = Math.toDegrees(Math.acos(Math.max(-1, Math.min(1, axis.dot(expectedRay)))));
+      maxAngle = Math.max(maxAngle, angle);
+      minReach = Math.min(minReach, tip.horizontalDistance());
+      require(angle < 2, "Rendered sweep follows the moving damage edge, not its mirror: " + angle);
+      require(
+          maxRadius <= AimlessColony.SWEEP_RADIUS, "Extended gel stays inside the warned radius");
+      require(
+          minReach > 6, "The sweep has a visibly extended silhouette throughout its active phase");
+      Vec3 worldTip = tip.add(boss.position());
+      AABB viewport = new AABB(worldTip, worldTip).inflate(.1);
+      require(
+          !boss.getBoundingBox().inflate(.5).intersects(viewport),
+          "The test viewport sees only the extended arm, outside the ordinary culling bounds");
+      var frustum =
+          new Frustum(new Matrix4f(), new Matrix4f()) {
+            @Override
+            public boolean isVisible(AABB box) {
+              return box.intersects(viewport);
+            }
+          };
+      require(
+          renderer.shouldRender(
+              boss, frustum, client.player.getX(), client.player.getY(), client.player.getZ()),
+          "The extended arm remains rendered when the torso is outside the viewport");
+    }
+    model.setupAnim(boss, 0, 0, boss.tickCount + .5F, 0, 0);
+    return Map.of(
+        "max_radius", maxRadius, "min_reach", minReach, "max_angle_error_degrees", maxAngle);
   }
 
   public static boolean tick(Minecraft client) {
@@ -216,6 +304,7 @@ public final class ColonyMotionClientSmoke {
         require(
             poses.get("head").equals(transform(root.getChild("shell").getChild("head"))),
             "Repeated frames reset their transforms rather than accumulating motion");
+        var geometry = sweepGeometry(client, boss, model, root);
         var directory = client.gameDirectory.toPath().resolve("colony-motion-audit");
         Files.createDirectories(directory);
         try (var image = Screenshot.takeScreenshot(client.getMainRenderTarget())) {
@@ -230,7 +319,9 @@ public final class ColonyMotionClientSmoke {
                 "timer",
                 boss.patternTicks(),
                 "lobes",
-                poses));
+                poses,
+                "sweep_geometry",
+                geometry));
         if (++sample < POSES.size()) {
           stage(client);
           return false;
@@ -242,7 +333,7 @@ public final class ColonyMotionClientSmoke {
         action = client.getSingleplayerServer().submit(() -> serverBoss.discard());
         phase = 4;
         return false;
-      } catch (java.io.IOException failure) {
+      } catch (java.io.IOException | ReflectiveOperationException failure) {
         throw new IllegalStateException(failure);
       }
     }

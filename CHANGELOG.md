@@ -4,6 +4,17 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.15] - 2026-10-26
+
+### Changed
+
+- Extend The Aimless Colony's sweeping gel into a visible arm, with a larger wind-up and elastic return. Strengthen charge compression, launch, braking and rebound.
+- Keep the extended sweep visible when its body leaves the edge of the screen.
+
+### Fixed
+
+- Align the sweeping body with the moving attack edge after Minecraft's model-axis mirroring. Attack timing, reach and damage retain their existing values.
+
 ## [0.5.14] - 2026-10-26
 
 ### Changed
