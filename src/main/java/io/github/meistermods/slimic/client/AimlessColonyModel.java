@@ -133,19 +133,50 @@ public final class AimlessColonyModel extends EntityModel<AimlessColony> {
       shell.zRot += wave * (.008F + moving * .016F);
       if (pattern == AimlessColony.Pattern.DASHING) {
         shell.yScale *= .82F;
-        shell.zScale *= 1.12F;
+        shell.zScale *= 1.28F + Mth.sin(age * .85F - i * .65F) * .035F;
+        shell.xRot += (i < 3 ? .10F : -.06F);
+        shell.z += Mth.sin(age * .65F - i * .8F) * .28F;
       } else if (pattern == AimlessColony.Pattern.SLAM) {
         shell.yScale += warning * (i < 3 ? .22F : -.08F);
         shell.xScale += warning * .04F;
       } else if (pattern == AimlessColony.Pattern.SWEEP) {
-        shell.yRot += warning * .16F * (i % 2 == 0 ? 1 : -1);
-        shell.zRot += warning * .035F;
+        sweepPose(shell, i, (float) slime.sweepAngle(0) * ease(warning), 0);
+        shell.yScale *= 1 - warning * .16F;
+      } else if (pattern == AimlessColony.Pattern.SWEEPING) {
+        float progress = (float) slime.sweepProgress(partial);
+        sweepPose(shell, i, (float) slime.sweepAngle(progress), Mth.sin(progress * Mth.PI));
+        shell.yScale *= .84F + .16F * progress;
+      } else if (pattern == AimlessColony.Pattern.RECOVERY) {
+        float settle = 1 - ease(warning);
+        if (slime.recoveryMotion() == AimlessColony.Pattern.SWEEPING) {
+          sweepPose(shell, i, (float) slime.sweepAngle(1) * settle, 0);
+          shell.yScale += Mth.sin(warning * Mth.PI) * .08F;
+        } else {
+          shell.zScale *= 1 + .28F * settle;
+          shell.yScale *= 1 - .18F * settle + Mth.sin(warning * Mth.PI) * .12F;
+          shell.z += Mth.sin(warning * Mth.PI * 2 - i * .35F) * settle * .28F;
+        }
       } else if (pattern == AimlessColony.Pattern.RING) {
         shell.xScale += warning * .10F;
         shell.zScale += warning * .10F;
       } else if (pattern == AimlessColony.Pattern.CROSS) {
         shell.yScale += warning * .10F;
         shell.x += Mth.sin(age * .24F + i) * warning * .1F;
+      }
+      if (pattern == AimlessColony.Pattern.DASH) {
+        shell.z += ease(warning) * (i < 3 ? .65F : -.25F);
+        shell.xRot -= warning * .06F;
+      } else if (pattern == AimlessColony.Pattern.PULL) {
+        shell.x *= 1 - warning * .12F;
+        shell.z *= 1 - warning * .12F;
+        shell.yRot += Mth.sin(age * .22F - i) * warning * .06F;
+      } else if (pattern == AimlessColony.Pattern.SPLIT) {
+        shell.x *= 1 + warning * .14F;
+        shell.z *= 1 + warning * .14F;
+      } else if (pattern == AimlessColony.Pattern.RALLY) {
+        shell.yScale += (1 + Mth.sin(age * .2F - i * .8F)) * .035F;
+      } else if (pattern == AimlessColony.Pattern.ERUPTION) {
+        shell.xRot += Mth.sin(age * .45F + i) * warning * .045F;
       }
       if (i == 1) shell.yRot += Mth.clamp(yaw * .002F, -.10F, .10F);
       feature.copyFrom(shell);
@@ -158,8 +189,29 @@ public final class AimlessColonyModel extends EntityModel<AimlessColony> {
       }
       for (ModelPart eye : eyes[i]) {
         eye.resetPose();
-        eye.yScale = Math.floorMod(slime.tickCount + i * 17, 113) < 3 ? .18F : 1;
+        eye.yScale =
+            Math.floorMod(slime.tickCount + i * 17, 113) < 3
+                ? .18F
+                : pattern == AimlessColony.Pattern.DASHING ? .65F : 1;
       }
+    }
+  }
+
+  private static float ease(float progress) {
+    return progress * progress * (3 - 2 * progress);
+  }
+
+  /** Rotate pivots as well as geometry so the outer lobes follow one continuous body swing. */
+  private static void sweepPose(ModelPart part, int lobe, float angle, float extension) {
+    float weight = lobe == 0 ? .25F : lobe == 1 || lobe == 6 ? 1 : .65F;
+    float turn = angle * weight, x = part.x, z = part.z;
+    part.x = x * Mth.cos(turn) + z * Mth.sin(turn);
+    part.z = z * Mth.cos(turn) - x * Mth.sin(turn);
+    part.yRot += turn;
+    part.zRot += turn * .08F;
+    if (lobe == 1 || lobe == 3 || lobe == 4 || lobe == 6) {
+      part.xScale += extension * .22F;
+      part.zScale += extension * .32F;
     }
   }
 

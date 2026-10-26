@@ -106,6 +106,10 @@ public final class SlimeClientSmoke {
               + ModList.get().isLoaded("jei"));
       reportedMods = true;
     }
+    if (Boolean.getBoolean("slimic.colonyMotionOnly")) {
+      if (ColonyMotionClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.royalSynthesisOnly")) {
       if (RoyalSynthesisClientSmoke.tick(client)) client.stop();
       return;

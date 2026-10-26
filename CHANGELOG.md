@@ -4,6 +4,21 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.14] - 2026-10-26
+
+### Changed
+
+- Give The Aimless Colony a directional sweep that travels across its announced sector after the full warning. Swings can begin from either side; the moving edge shows the remaining attack area.
+- Add distinct charge compression, stretching, braking and settling, sweeping body twists, and secondary movements for the other attack preparations. Eyes and cores follow the body deformation.
+- Add a brief, harmless recovery after charges and sweeps before any follow-up warning.
+- Require matching protocol 27 clients and servers for the synchronized swing direction and recovery motion. Existing saves remain readable; unfinished attacks reset on reload.
+
+### Fixed
+
+- Check charge damage along actual collision-clipped movement, including the final step and diagonal footprint corners. Prevent extra horizontal travel after the charge and stop it at the encounter boundary.
+- Keep the attack-facing body pose aligned with the frozen warning direction instead of following a changed target.
+
+
 ## [0.5.13] - 2026-10-25
 
 ### Added

@@ -20,7 +20,7 @@ If the altar is broken, replace the Assembly Core at its original position to re
 
 ## Combat
 
-Uneven masses of gel form a large body, with eyes and gold cores showing between them. Its shape shifts as it moves.
+Uneven masses of gel form a large body, with eyes and gold cores showing between them. The body coils, stretches, swings and settles between attacks. Ground warnings remain visible with particles set to Minimal.
 
 Watch the colony's movements and respond to the sights and sounds around you. Companions can help with fighting and support; no particular profession is required. Keep track of your companions and the way back to the entrance.
 

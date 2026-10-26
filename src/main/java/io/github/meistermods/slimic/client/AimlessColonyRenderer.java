@@ -38,6 +38,16 @@ public final class AimlessColonyRenderer extends MobRenderer<AimlessColony, Aiml
   }
 
   @Override
+  protected void setupRotations(
+      AimlessColony entity, PoseStack pose, float age, float yaw, float partial) {
+    if (entity.facingAttack()) {
+      var direction = entity.dashDirection();
+      yaw = (float) (Math.atan2(-direction.x, direction.z) * 180 / Math.PI);
+    }
+    super.setupRotations(entity, pose, age, yaw, partial);
+  }
+
+  @Override
   protected void scale(AimlessColony entity, PoseStack pose, float partial) {
     pose.scale(3.6F, 3.6F, 3.6F);
   }

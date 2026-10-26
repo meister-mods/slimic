@@ -42,7 +42,9 @@ public final class AimlessColony extends Monster {
     RING(30),
     CROSS(32),
     SWEEP(32),
-    ERUPTION(40);
+    ERUPTION(40),
+    SWEEPING(10),
+    RECOVERY(12);
     public final int warning;
 
     Pattern(int warning) {
@@ -70,6 +72,10 @@ public final class AimlessColony extends Monster {
       SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.BLOCK_POS);
   private static final EntityDataAccessor<org.joml.Vector3f> DASH_DIRECTION =
       SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.VECTOR3);
+  private static final EntityDataAccessor<Integer> SWEEP_SIGN =
+      SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.INT);
+  private static final EntityDataAccessor<Integer> RECOVERY_MOTION =
+      SynchedEntityData.defineId(AimlessColony.class, EntityDataSerializers.INT);
   private final ServerBossEvent bossBar =
       new ServerBossEvent(
           getDisplayName(), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.PROGRESS);
@@ -106,6 +112,8 @@ public final class AimlessColony extends Monster {
   @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
+    entityData.define(SWEEP_SIGN, 1);
+    entityData.define(RECOVERY_MOTION, 0);
     entityData.define(PATTERN, 0);
     entityData.define(TIMER, 0);
     entityData.define(COHESION, 100);
@@ -158,11 +166,40 @@ public final class AimlessColony extends Monster {
             : pattern() == Pattern.DASHING ? patternTicks() : 0);
   }
 
-  private boolean inDashFootprint(Vec3 point) {
-    Vec3 offset = point.subtract(position()), direction = dashDirection();
+  public int sweepSign() {
+    return entityData.get(SWEEP_SIGN) < 0 ? -1 : 1;
+  }
+
+  public Pattern recoveryMotion() {
+    return Pattern.values()[
+        Math.floorMod(entityData.get(RECOVERY_MOTION), Pattern.values().length)];
+  }
+
+  public boolean facingAttack() {
+    return switch (pattern()) {
+      case DASH, DASHING, SWEEP, SWEEPING, RECOVERY -> true;
+      default -> false;
+    };
+  }
+
+  public double sweepAngle(double progress) {
+    return sweepSign() * SWEEP_HALF_ANGLE * (2 * Mth.clamp(progress, 0, 1) - 1);
+  }
+
+  public double sweepProgress(float partial) {
+    return pattern() == Pattern.SWEEPING
+        ? Mth.clamp(1 - (patternTicks() - partial) / Pattern.SWEEPING.warning, 0, 1)
+        : 0;
+  }
+
+  private boolean inDashFootprint(Vec3 point, Vec3 start, Vec3 end) {
+    Vec3 offset = point.subtract(start), direction = dashDirection();
     double forward = offset.x * direction.x + offset.z * direction.z;
     double side = offset.x * direction.z - offset.z * direction.x;
-    return Math.abs(forward) <= dashHalfWidth() && Math.abs(side) <= dashHalfWidth();
+    double travel = end.subtract(start).dot(direction);
+    return forward >= -dashHalfWidth()
+        && forward <= travel + dashHalfWidth()
+        && Math.abs(side) <= dashHalfWidth();
   }
 
   /** New attack warnings and damage share a fixed origin throughout the attack. */
@@ -276,7 +313,11 @@ public final class AimlessColony extends Monster {
       direction = direction.lengthSqr() < .01 ? new Vec3(0, 0, 1) : direction.normalize();
       entityData.set(DASH_DIRECTION, direction.toVector3f());
     }
-    if (pattern == Pattern.SWEEP) entityData.set(AIM, blockPosition());
+    if (pattern == Pattern.SWEEP) {
+      entityData.set(AIM, blockPosition());
+      entityData.set(SWEEP_SIGN, random.nextBoolean() ? 1 : -1);
+    }
+    if (facingAttack()) setDeltaMovement(0, getDeltaMovement().y, 0);
     playSound(
         pattern == Pattern.RALLY ? SoundEvents.BEACON_POWER_SELECT : SoundEvents.SLIME_SQUISH,
         1.5F,
@@ -445,16 +486,26 @@ public final class AimlessColony extends Monster {
     entityData.set(TIMER, Math.max(0, ticks - 1));
     navigation.stop();
     if (pattern == Pattern.DASHING) {
-      Vec3 dash = dashDirection();
-      if (safeStep(position().add(dash.scale(DASH_SPEED))))
-        setDeltaMovement(dash.x * DASH_SPEED, getDeltaMovement().y, dash.z * DASH_SPEED);
-      else {
-        entityData.set(TIMER, 0);
-        setDeltaMovement(0, getDeltaMovement().y, 0);
-      }
-      strike(1.2, 1, true);
+      Vec3 start = position(), step = dashDirection().scale(DASH_SPEED);
+      Vec3 next = start.add(step);
+      if (safeStep(next)
+          && (site == null || next.distanceToSqr(Vec3.atBottomCenterOf(site.anchor)) <= 44 * 44)) {
+        move(MoverType.SELF, step);
+      } else entityData.set(TIMER, 0);
+      // Damage follows actual collision-clipped travel, including the final step. Normal travel
+      // still handles gravity, but must not apply the horizontal charge a second time.
+      setDeltaMovement(0, getDeltaMovement().y, 0);
+      dashStrike(start, position());
+    } else if (pattern == Pattern.SWEEPING) {
+      setDeltaMovement(0, getDeltaMovement().y, 0);
+      sweepStrike(
+          server,
+          1 - ticks / (double) Pattern.SWEEPING.warning,
+          1 - patternTicks() / (double) Pattern.SWEEPING.warning);
+    } else if (pattern == Pattern.RECOVERY) {
+      setDeltaMovement(0, getDeltaMovement().y, 0);
     } else {
-      setDeltaMovement(getDeltaMovement().multiply(.25, 1, .25));
+      setDeltaMovement(0, getDeltaMovement().y, 0);
       if (pattern == Pattern.PULL && ticks <= 8) pull();
       if (ticks % 4 == 0)
         server.sendParticles(
@@ -472,15 +523,28 @@ public final class AimlessColony extends Monster {
     switch (pattern) {
       case DASH -> {
         entityData.set(PATTERN, Pattern.DASHING.ordinal());
-        entityData.set(TIMER, 12);
+        entityData.set(TIMER, Pattern.DASHING.warning);
+        playSound(SoundEvents.SLIME_JUMP, 1.5F, .65F);
         return;
       }
-      case SLAM -> strike(5.5, 1, false);
-      case PULL -> strike(4, .8, false);
+      case SLAM -> strike(5.5, 1);
+      case PULL -> strike(4, .8);
       case RING -> shapedStrike(false);
       case CROSS -> shapedStrike(true);
-      case SWEEP -> fixedStrike(server, false);
-      case ERUPTION -> fixedStrike(server, true);
+      case SWEEP -> {
+        entityData.set(PATTERN, Pattern.SWEEPING.ordinal());
+        entityData.set(TIMER, Pattern.SWEEPING.warning);
+        playSound(SoundEvents.SLIME_ATTACK, 1.7F, .8F);
+        return;
+      }
+      case DASHING, SWEEPING -> {
+        entityData.set(RECOVERY_MOTION, pattern.ordinal());
+        entityData.set(PATTERN, Pattern.RECOVERY.ordinal());
+        entityData.set(TIMER, Pattern.RECOVERY.warning);
+        playSound(SoundEvents.SLIME_SQUISH, 1.2F, .65F);
+        return;
+      }
+      case ERUPTION -> fixedStrike(server);
       case SPLIT -> split(server, site);
       case RALLY -> absorb(server, site);
       default -> {}
@@ -572,14 +636,12 @@ public final class AimlessColony extends Monster {
     }
   }
 
-  private void strike(double range, double scale, boolean contact) {
+  private void strike(double range, double scale) {
     for (LivingEntity target :
         level()
             .getEntitiesOfClass(
                 LivingEntity.class, getBoundingBox().inflate(range, 1, range), this::validTarget)) {
-      if ((contact
-              ? !inDashFootprint(target.position())
-              : target.distanceToSqr(this) > range * range)
+      if (target.distanceToSqr(this) > range * range
           || hit.contains(target.getUUID())
           || !hasLineOfSight(target)) continue;
       hit.add(target.getUUID());
@@ -594,36 +656,91 @@ public final class AimlessColony extends Monster {
     }
   }
 
-  private void fixedStrike(ServerLevel server, boolean eruption) {
-    Vec3 origin = attackOrigin();
-    double radius = eruption ? ERUPTION_SPACING + ERUPTION_RADIUS : SWEEP_RADIUS;
-    double vertical = eruption ? ERUPTION_VERTICAL_REACH : SWEEP_VERTICAL_REACH;
+  private void dashStrike(Vec3 start, Vec3 end) {
+    double diagonal = dashHalfWidth() * (Math.sqrt(2) - 1);
+    AABB swept =
+        getBoundingBox()
+            .minmax(getBoundingBox().move(start.subtract(end)))
+            .inflate(diagonal, 0, diagonal);
+    for (LivingEntity target :
+        level().getEntitiesOfClass(LivingEntity.class, swept, this::validTarget)) {
+      if (!inDashFootprint(target.position(), start, end)
+          || hit.contains(target.getUUID())
+          || !hasLineOfSight(target)) continue;
+      hit.add(target.getUUID());
+      if (target.hurt(
+          damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+        Vec3 push = dashDirection().scale(.08);
+        if (safeStep(target, target.position().add(push.scale(4))))
+          target.push(push.x, .03, push.z);
+      }
+    }
+  }
+
+  private void sweepStrike(ServerLevel server, double before, double after) {
+    Vec3 origin = attackOrigin(), direction = dashDirection();
+    double low = SWEEP_HALF_ANGLE * (2 * before - 1), high = SWEEP_HALF_ANGLE * (2 * after - 1);
     for (LivingEntity target :
         server.getEntitiesOfClass(
             LivingEntity.class,
-            new AABB(origin, origin).inflate(radius, vertical, radius),
+            new AABB(origin, origin).inflate(SWEEP_RADIUS, SWEEP_VERTICAL_REACH, SWEEP_RADIUS),
             this::validTarget)) {
-      boolean inside =
-          eruption ? inEruptionFootprint(target.position()) : inSweepFootprint(target.position());
-      if (!inside || hit.contains(target.getUUID()) || !hasLineOfSight(target)) continue;
+      Vec3 offset = target.position().subtract(origin);
+      double angle =
+          sweepSign()
+              * Math.atan2(
+                  offset.x * direction.z - offset.z * direction.x,
+                  offset.x * direction.x + offset.z * direction.z);
+      if (!inSweepFootprint(target.position())
+          || angle < low - 1E-6
+          || angle > high + 1E-6
+          || hit.contains(target.getUUID())
+          || !hasLineOfSight(target)) continue;
       hit.add(target.getUUID());
       target.hurt(
           damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE));
     }
-    for (Vec3 point : eruption ? eruptionCenters() : List.of(origin)) {
+    Vec3 ray = direction.yRot((float) sweepAngle(after));
+    for (double radius = 2; radius <= SWEEP_RADIUS; radius += 1.5) {
+      Vec3 point = origin.add(ray.scale(radius));
+      if (server.hasChunkAt(BlockPos.containing(point)))
+        server.sendParticles(
+            ParticleTypes.ITEM_SLIME, point.x, point.y + .35, point.z, 2, .15, .2, .15, .03);
+    }
+  }
+
+  private void fixedStrike(ServerLevel server) {
+    Vec3 origin = attackOrigin();
+    for (LivingEntity target :
+        server.getEntitiesOfClass(
+            LivingEntity.class,
+            new AABB(origin, origin)
+                .inflate(
+                    ERUPTION_SPACING + ERUPTION_RADIUS,
+                    ERUPTION_VERTICAL_REACH,
+                    ERUPTION_SPACING + ERUPTION_RADIUS),
+            this::validTarget)) {
+      if (!inEruptionFootprint(target.position())
+          || hit.contains(target.getUUID())
+          || !hasLineOfSight(target)) continue;
+      hit.add(target.getUUID());
+      target.hurt(
+          damageSources().mobAttack(this), (float) getAttributeValue(Attributes.ATTACK_DAMAGE));
+    }
+    for (Vec3 point : eruptionCenters()) {
       if (!server.hasChunkAt(BlockPos.containing(point))) continue;
       server.sendParticles(
           ParticleTypes.ITEM_SLIME,
           point.x,
           point.y + .2,
           point.z,
-          eruption ? 18 : 30,
-          eruption ? ERUPTION_RADIUS * .5 : 1.5,
-          eruption ? .8 : .2,
-          eruption ? ERUPTION_RADIUS * .5 : 1.5,
+          18,
+          ERUPTION_RADIUS * .5,
+          .8,
+          ERUPTION_RADIUS * .5,
           .08);
     }
-    playSound(SoundEvents.SLIME_ATTACK, 1.7F, eruption ? .6F : .8F);
+    playSound(SoundEvents.SLIME_ATTACK, 1.7F, .6F);
   }
 
   /** Annular waves leave the center safe; crossed lanes leave all four diagonal sectors open. */
@@ -815,6 +932,8 @@ public final class AimlessColony extends Monster {
     rallyDelay = Math.max(20, tag.getInt("RallyDelay"));
     exposureDelay = Math.max(0, tag.getInt("ExposureDelay"));
     exposedTicks = Math.max(0, Math.min(100, tag.getInt("ExposedTicks")));
+    entityData.set(SWEEP_SIGN, 1);
+    entityData.set(RECOVERY_MOTION, 0);
     entityData.set(PATTERN, 0);
     entityData.set(TIMER, 0);
     entityData.set(AIM, blockPosition());

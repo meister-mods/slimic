@@ -103,8 +103,9 @@ public final class ColonyPatternGameTests {
     f.boss.moveTo(f.area.point(9.5, 101, 7.5));
     f.boss.setTarget(f.target(h, 2.5, 7.5));
     step(f, AimlessColony.Pattern.DASH.warning);
+    var before = f.boss.position();
     step(f, 1);
-    var movement = f.boss.getDeltaMovement().multiply(1, 0, 1);
+    var movement = f.boss.position().subtract(before).multiply(1, 0, 1);
     h.assertTrue(
         f.boss.dashDirection().distanceToSqr(direction) < 1E-12
             && movement.normalize().distanceToSqr(direction) < 1E-12,
@@ -121,7 +122,7 @@ public final class ColonyPatternGameTests {
     var rear = f.target(h, 7.5, 7.5 - halfWidth + .1);
     var beyondRear = f.target(h, 7.5, 7.5 - halfWidth - .1);
     var front = f.target(h, 7.5, 7.5 + halfWidth - .1);
-    var beyondFront = f.target(h, 7.5, 7.5 + halfWidth + .1);
+    var beyondFront = f.target(h, 7.5, 7.5 + halfWidth + AimlessColony.DASH_SPEED + .1);
     begin(f.boss, AimlessColony.Pattern.DASH);
     h.assertTrue(
         Math.abs(f.boss.dashRemainingDistance() - 7.8) < 1E-9,
@@ -283,12 +284,17 @@ public final class ColonyPatternGameTests {
       throws Exception {
     var f = new Fixture(h);
     var target = f.target(h, 12.5, 7.5);
+    f.boss.moveTo(f.area.point(3.5, 101, 7.5));
     f.boss.setTarget(target);
     begin(f.boss, AimlessColony.Pattern.DASHING);
     var followUp = AimlessColony.class.getDeclaredField("followUp");
     followUp.setAccessible(true);
     followUp.set(f.boss, AimlessColony.Pattern.RING);
     step(f, AimlessColony.Pattern.DASHING.warning);
+    h.assertTrue(
+        f.boss.pattern() == AimlessColony.Pattern.RECOVERY,
+        "A charge settles before the next full warning");
+    step(f, AimlessColony.Pattern.RECOVERY.warning);
     h.assertTrue(
         f.boss.pattern() == AimlessColony.Pattern.RING
             && f.boss.patternTicks() == AimlessColony.Pattern.RING.warning,
