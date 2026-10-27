@@ -147,15 +147,15 @@ public final class TransportColonyClientSmoke {
     var combat = (BoundCombatSlime) client.level.getEntity(combatId);
     require(
         combat != null && dispatcher.getRenderer(combat) instanceof BoundColonyRenderer,
-        "The combat colony retains its original double-body renderer");
-    var shared = combat.sharedArmor().copy();
+        "The combat colony uses the common cord renderer");
+    var shared = combat.memberEquipment(0, EquipmentSlot.CHEST).copy();
     var appearance = combat.colonyAppearance().copy();
     combat.setRenderingSecondMember(true);
     try {
       require(
-          ItemStack.matches(shared, combat.sharedArmor())
+          ItemStack.matches(shared, combat.memberEquipment(0, EquipmentSlot.CHEST))
               && !ItemStack.isSameItemSameTags(shared, combat.getItemBySlot(EquipmentSlot.CHEST)),
-          "Both combat bodies share their representative armor while original gear stays distinct");
+          "Both original armor records stay distinct and independently accessible");
     } finally {
       combat.setRenderingSecondMember(false);
     }

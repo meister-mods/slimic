@@ -18,6 +18,7 @@ public final class CompanionChunks {
             if (entry == null
                 || entry.location() != CompanionRegistry.Location.WORLD
                 || !entry.pinned()
+                || !entry.chunkLoading()
                 || !entry.type().equals("slimic:ender_slime")
                 || !entry.dimension().equals(level.dimension().location().toString())) {
               helper.removeAllTickets(ticket.getKey());

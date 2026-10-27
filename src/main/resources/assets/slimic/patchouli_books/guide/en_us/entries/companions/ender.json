@@ -19,19 +19,30 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click in the air with the teleporter to reach a safe spot beside the living pinned companion across dimensions. The destination needs full stamina and spends it all on success. Teleportation consumes no pearls and deals no damage. Unsafe, missing, or unauthorized destinations retain stamina."
+      "text": "Right-click in the air with the teleporter to reach a safe spot beside the living pinned companion. The destination needs full stamina and spends it all on success. Without an equipped Dimensional Attunement Seal, travel stays in the same dimension. Unsafe, missing, or unauthorized destinations retain stamina and pearls."
     },
     {
       "type": "patchouli:text",
-      "text": "A pinned Ender Slime keeps one destination chunk ticking, including across restarts. The default limit is eight pinned companions per primary owner. Follow releases the anchor; recovery and collapse release its chunk. A restored pinned companion anchors at its new release position."
+      "text": "The first equipment slot holds up to 16 ender pearls. A pinned Ender Slime keeps its chunk loaded only while this slot contains pearls. A successful trip spends one pearl only if the destination depends on this slime alone. Nearby loading players, spawn chunks, forced chunks, and other chunk loaders waive that cost. Time alone never consumes pearls."
     },
     {
       "type": "patchouli:text",
-      "text": "Rest restores 2% of maximum stamina each second, so a full recharge takes about 50 seconds at any maximum. Sharing and recovery keep the primary owner. Restoring a stored pinned companion needs a free anchor slot; at the limit, its item or Broken Slime Block stays intact."
+      "text": "The default limit is eight pinned companions per primary owner. Follow releases the anchor; recovery and collapse release its chunk. Redeployment waits and preserves both equipment slots, anchoring a pinned companion at its new position. At the anchor limit, its stored item or Broken Slime Block stays intact. Full stamina recharges in about 50 seconds."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:dimensional_attunement_seal",
+      "title": "Dimensional Attunement Seal",
+      "text": "Four ender pearls around one Ancient Command Seal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Equip the seal in the second slot to enable travel between dimensions. It is not consumed. The first slot controls chunk loading independently: the seal does not replace pearls. With no pearls, the anchor must already be loaded by another source to receive a trip."
     }
   ],
   "extra_recipe_mappings": {
     "slimic:ender_slime": 0,
-    "slimic:slime_teleporter": 1
+    "slimic:slime_teleporter": 1,
+    "slimic:dimensional_attunement_seal": 5
   }
 }

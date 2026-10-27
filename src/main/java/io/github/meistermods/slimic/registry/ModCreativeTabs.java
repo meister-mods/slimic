@@ -195,6 +195,7 @@ public final class ModCreativeTabs {
     accept(
         output,
         ModItems.ANCIENT_COMMAND_SEAL.get(),
+        ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get(),
         ModItems.OLD_COMMAND_FRAGMENT.get(),
         ModItems.ROYAL_COURTYARD_SEAL.get(),
         ModItems.ROYAL_GALLERY_SEAL.get(),

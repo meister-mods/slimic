@@ -465,7 +465,14 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
 
   @Override
   protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-    graphics.drawString(font, menu.slime().getDisplayName(), 10, 7, 0xffe9f6df, false);
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.BoundCombatSlime) {
+      graphics.pose().pushPose();
+      graphics.pose().translate(10, 7, 0);
+      float titleScale = Math.min(1, 234f / Math.max(1, font.width(menu.slime().getDisplayName())));
+      graphics.pose().scale(titleScale, titleScale, 1);
+      graphics.drawString(font, menu.slime().getDisplayName(), 0, 0, 0xffe9f6df, false);
+      graphics.pose().popPose();
+    } else graphics.drawString(font, menu.slime().getDisplayName(), 10, 7, 0xffe9f6df, false);
     var points = Component.translatable("screen.slimic.points", menu.points());
     graphics.pose().pushPose();
     graphics.pose().translate(10, 51, 0);
@@ -498,6 +505,16 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                       : value == Math.rint(value) ? "%.0f" : "%.2f");
       graphics.drawString(font, formatted, 158 - font.width(formatted), y, 0xff9de080, false);
     }
+    if (menu.slime() instanceof io.github.meistermods.slimic.entity.BoundCombatSlime) {
+      for (int member = 0; member < 2; member++)
+        graphics.drawString(
+            font,
+            Component.translatable("screen.slimic.colony_member", member + 1),
+            SlimeMenu.SLOTS_X + member * 72,
+            44,
+            0xffa3b7bc,
+            false);
+    }
     drawVital(
         graphics,
         Component.translatable(
@@ -508,14 +525,14 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
             ? 254
-            : menu.slime() instanceof MiningSlime
+            : menu.slime() instanceof MiningSlime || menu.slime() instanceof EnderSlime
                 ? 236
                 : menu.slime() instanceof FieldSlime
                         || menu.slime() instanceof GuardianAngelSlime
                         || menu.slime() instanceof FishingSlime
                     ? 218
                     : SlimeMenu.SLOTS_X,
-        49);
+        menu.slime() instanceof io.github.meistermods.slimic.entity.BoundCombatSlime ? 7 : 49);
     drawVital(
         graphics,
         Component.translatable(
@@ -526,14 +543,14 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
             ? 254
-            : menu.slime() instanceof MiningSlime
+            : menu.slime() instanceof MiningSlime || menu.slime() instanceof EnderSlime
                 ? 236
                 : menu.slime() instanceof FieldSlime
                         || menu.slime() instanceof GuardianAngelSlime
                         || menu.slime() instanceof FishingSlime
                     ? 218
                     : SlimeMenu.SLOTS_X,
-        62);
+        menu.slime() instanceof io.github.meistermods.slimic.entity.BoundCombatSlime ? 17 : 62);
     if (menu.isPolicyEditor()) {
       if (tunnelSize == null)
         graphics.drawString(
@@ -755,6 +772,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           Component.translatable("screen.slimic.points", menu.points())
               .append("\n")
               .append(Component.translatable("item.slimic.synthesis.unspent")),
+          mouseX,
+          mouseY);
+    else if (hoveredSlot != null && hoveredSlot.index < 2 && menu.slime() instanceof EnderSlime)
+      graphics.renderTooltip(
+          font,
+          font.split(
+              Component.translatable(
+                  hoveredSlot.index == 0
+                      ? "screen.slimic.ender_pearls"
+                      : "screen.slimic.ender_seal"),
+              220),
           mouseX,
           mouseY);
     else if (hoveredSlot != null && hoveredSlot.index == 2 && menu.slime() instanceof TunnelSlime)

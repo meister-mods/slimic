@@ -7,12 +7,12 @@
     {
       "type": "slimic:combination_three",
       "title": "순서 없는 조합",
-      "input1": "slimic:friendly_slime",
+      "input1": "slimic:healing_slime",
       "input2": "minecraft:nether_star",
       "input3": "minecraft:totem_of_undying",
       "result": "slimic:guardian_angel_slime",
       "label": "조합 → 결과 1개",
-      "text": "친근한 슬라임 + 네더의 별 + 불사의 토템. 원본 토템을 초기 보관량으로 사용합니다."
+      "text": "치유 슬라임 + 네더의 별 + 불사의 토템. 원본 토템을 초기 보관량으로 사용합니다. 가디언에는 가방이 없으므로 조합 전에 치유 슬라임의 가방을 비워야 합니다."
     },
     {
       "type": "patchouli:text",

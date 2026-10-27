@@ -299,7 +299,6 @@ public final class JeiClientSmoke implements IModPlugin {
             "lumberjack",
             "soggy",
             "healing",
-            "guardian_angel",
             "fishing",
             "meow",
             "glow",
@@ -309,6 +308,41 @@ public final class JeiClientSmoke implements IModPlugin {
       if (!outputs.contains("slimic:" + name + "_slime"))
         throw new IllegalStateException("JEI is missing Attention as an alternative for " + name);
     return true;
+  }
+
+  public static boolean enderEquipmentRecipesReady() {
+    if (runtime == null) return false;
+    var client = net.minecraft.client.Minecraft.getInstance();
+    var recipes =
+        runtime.getRecipeManager().createRecipeLookup(RecipeTypes.CRAFTING).get().toList();
+    var guardian =
+        recipes.stream()
+            .filter(r -> r.getId().toString().equals("slimic:guardian_angel_slime/totem"))
+            .findFirst();
+    if (guardian.isEmpty()) return false;
+    var healing =
+        new net.minecraft.world.item.ItemStack(
+            io.github.meistermods.slimic.registry.ModItems.HEALING_SLIME.get());
+    var friendly =
+        new net.minecraft.world.item.ItemStack(
+            io.github.meistermods.slimic.registry.ModItems.FRIENDLY_SLIME.get());
+    var attention =
+        new net.minecraft.world.item.ItemStack(
+            io.github.meistermods.slimic.registry.ModItems.ATTENTION_SLIME.get());
+    if (guardian.get().getIngredients().stream().noneMatch(i -> i.test(healing))
+        || guardian.get().getIngredients().stream()
+            .anyMatch(i -> i.test(friendly) || i.test(attention)))
+      throw new IllegalStateException(
+          "Guardian JEI ingredients must require Healing, without Friendly/Attention alternatives");
+    return recipes.stream()
+        .anyMatch(
+            r ->
+                r.getId().toString().equals("slimic:dimensional_attunement_seal")
+                    && r.getResultItem(client.level.registryAccess())
+                        .is(
+                            io.github.meistermods.slimic.registry.ModItems
+                                .DIMENSIONAL_ATTUNEMENT_SEAL
+                                .get()));
   }
 
   private static long recipes(String path) {

@@ -190,7 +190,12 @@ public final class AssemblySites extends SavedData {
     UUID player =
         source instanceof ServerPlayer p
             ? p.getUUID()
-            : source instanceof FriendlySlime slime ? slime.getOwnerUUID() : null;
+            : source instanceof FriendlySlime slime
+                ? slime.getOwnerUUID()
+                : source instanceof io.github.meistermods.slimic.entity.CombatColonyBody body
+                        && body.getColony() != null
+                    ? body.getColony().getOwnerUUID()
+                    : null;
     if (player == null) return;
     var data = get(level);
     for (Site site : data.sites.values())

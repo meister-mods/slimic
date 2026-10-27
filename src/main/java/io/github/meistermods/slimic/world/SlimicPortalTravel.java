@@ -229,6 +229,7 @@ public final class SlimicPortalTravel {
       Direction.Axis axis) {
     if (!net.minecraftforge.common.ForgeHooks.onTravelToDimension(source, target.dimension()))
       return null;
+    if (!source.canChangeDimensions()) return null;
     PortalInfo info = portalInfo(source, origin, target, frame, axis);
     if (info == null) return null;
     var snapshot = source.saveWithoutId(new net.minecraft.nbt.CompoundTag());
@@ -255,6 +256,8 @@ public final class SlimicPortalTravel {
         || !Objects.equals(pet.getOwnerUUID(), source.getOwnerUUID())
         || source.level() != origin
         || !source.isAlive()
+        || !source.canChangeDimensions()
+        || !pet.canChangeDimensions()
         || !frame.sameFrame(origin)
         || !frame.complete(origin)
         || !snapshot.equals(source.saveWithoutId(new net.minecraft.nbt.CompoundTag()))) {

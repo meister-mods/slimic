@@ -13,13 +13,19 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.*;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.common.world.ForgeChunkManager;
 
 public final class EnderSlime extends FriendlySlime {
   private static final EntityDataAccessor<Boolean> PINNED =
       SynchedEntityData.defineId(EnderSlime.class, EntityDataSerializers.BOOLEAN);
+  private static final EntityDataAccessor<ItemStack> PEARLS =
+      SynchedEntityData.defineId(EnderSlime.class, EntityDataSerializers.ITEM_STACK);
+  private static final EntityDataAccessor<ItemStack> SEAL =
+      SynchedEntityData.defineId(EnderSlime.class, EntityDataSerializers.ITEM_STACK);
   private Vec3 anchor;
   private ServerLevel ticketLevel;
   private ChunkPos ticketChunk;
@@ -32,6 +38,78 @@ public final class EnderSlime extends FriendlySlime {
   protected void defineSynchedData() {
     super.defineSynchedData();
     entityData.define(PINNED, false);
+    entityData.define(PEARLS, ItemStack.EMPTY);
+    entityData.define(SEAL, ItemStack.EMPTY);
+  }
+
+  public static boolean matchesEquipment(int slot, ItemStack stack) {
+    return slot == 0
+        ? stack.is(Items.ENDER_PEARL)
+        : slot == 1 && stack.is(ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get());
+  }
+
+  public ItemStack getEquipment(int slot) {
+    return slot == 0 ? entityData.get(PEARLS) : slot == 1 ? entityData.get(SEAL) : ItemStack.EMPTY;
+  }
+
+  public void setEquipment(int slot, ItemStack stack) {
+    if (slot < 0 || slot > 1) return;
+    entityData.set(slot == 0 ? PEARLS : SEAL, normalizedEquipment(slot, stack));
+    equipmentChanged();
+  }
+
+  private static ItemStack normalizedEquipment(int slot, ItemStack stack) {
+    return matchesEquipment(slot, stack)
+        ? stack.copyWithCount(Math.min(slot == 0 ? 16 : 1, stack.getCount()))
+        : ItemStack.EMPTY;
+  }
+
+  public void equipmentChanged() {
+    entityData.set(PEARLS, getEquipment(0).copy());
+    entityData.set(SEAL, getEquipment(1).copy());
+    if (level() instanceof ServerLevel level
+        && isAddedToWorld()
+        && isAlive()
+        && !isRemoved()
+        && !isPendingSpawn()) {
+      refreshTicket();
+      CompanionRegistry.get(level).observe(this);
+    }
+  }
+
+  public boolean isChunkLoading() {
+    return isPinned() && !getEquipment(0).isEmpty();
+  }
+
+  public boolean allowsDimensionalTravel() {
+    return getEquipment(1).is(ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get());
+  }
+
+  @Override
+  public boolean canChangeDimensions() {
+    return allowsDimensionalTravel() && super.canChangeDimensions();
+  }
+
+  @Override
+  public Entity changeDimension(ServerLevel destination, ITeleporter teleporter) {
+    if (destination != level() && !allowsDimensionalTravel()) return null;
+    java.util.function.Consumer<net.minecraftforge.event.entity.EntityTravelToDimensionEvent>
+        guard =
+            event -> {
+              if (event.getEntity() == this
+                  && event.getDimension().equals(destination.dimension())
+                  && !allowsDimensionalTravel()) event.setCanceled(true);
+            };
+    net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(
+        net.minecraftforge.eventbus.api.EventPriority.LOWEST,
+        false,
+        net.minecraftforge.event.entity.EntityTravelToDimensionEvent.class,
+        guard);
+    try {
+      return super.changeDimension(destination, teleporter);
+    } finally {
+      net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(guard);
+    }
   }
 
   public boolean isPinned() {
@@ -124,7 +202,12 @@ public final class EnderSlime extends FriendlySlime {
     return true;
   }
 
-  public void completeTeleport() {
+  public void completeTeleport(boolean consumePearl) {
+    if (consumePearl) {
+      var pearls = getEquipment(0).copy();
+      pearls.shrink(1);
+      setEquipment(0, pearls);
+    }
     spendStamina(getStamina());
     recordCompletedWork();
     if (level() instanceof ServerLevel level)
@@ -132,7 +215,11 @@ public final class EnderSlime extends FriendlySlime {
   }
 
   private void refreshTicket() {
-    if (!(level() instanceof ServerLevel level) || !isPinned() || getOwnerUUID() == null) return;
+    if (!(level() instanceof ServerLevel level)) return;
+    if (!isAlive() || isRemoved() || !isChunkLoading() || getOwnerUUID() == null) {
+      releaseTicket();
+      return;
+    }
     var chunk = chunkPosition();
     if (ticketLevel == level && chunk.equals(ticketChunk)) return;
     releaseTicket();
@@ -205,6 +292,13 @@ public final class EnderSlime extends FriendlySlime {
   }
 
   @Override
+  protected void removeAfterChangingDimensions() {
+    // Native portal travel sets the removal reason directly, bypassing remove().
+    releaseTicket();
+    super.removeAfterChangingDimensions();
+  }
+
+  @Override
   public ItemStack getPickResult() {
     return new ItemStack(ModItems.ENDER_SLIME.get());
   }
@@ -213,6 +307,8 @@ public final class EnderSlime extends FriendlySlime {
   public void addAdditionalSaveData(CompoundTag tag) {
     super.addAdditionalSaveData(tag);
     tag.putBoolean("EnderPinned", isPinned());
+    tag.put("EnderPearls", getEquipment(0).save(new CompoundTag()));
+    tag.put("EnderDimensionalSeal", getEquipment(1).save(new CompoundTag()));
     var point = anchor == null ? position() : anchor;
     tag.putDouble("EnderAnchorX", point.x);
     tag.putDouble("EnderAnchorY", point.y);
@@ -221,7 +317,12 @@ public final class EnderSlime extends FriendlySlime {
 
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
+    boolean wasPinned = isPinned();
     super.readAdditionalSaveData(tag);
+    // Restore before pinning; legacy anchors have no equipment and no implicit loading rights.
+    entityData.set(PEARLS, normalizedEquipment(0, ItemStack.of(tag.getCompound("EnderPearls"))));
+    entityData.set(
+        SEAL, normalizedEquipment(1, ItemStack.of(tag.getCompound("EnderDimensionalSeal"))));
     entityData.set(PINNED, tag.getBoolean("EnderPinned"));
     anchor =
         new Vec3(
@@ -233,7 +334,13 @@ public final class EnderSlime extends FriendlySlime {
     if (isPinned()) {
       super.setWaiting(true);
       setNoGravity(true);
-    }
+    } else if (wasPinned) setNoGravity(false);
     if (!tag.contains("EnderPinned")) setWaiting(true);
+    // Commands can reload NBT on an already admitted entity. Reconcile its old live ticket,
+    // while fresh spawns and transactional destination copies remain free of side effects.
+    if (level() instanceof ServerLevel level && isAddedToWorld() && !isPendingSpawn()) {
+      refreshTicket();
+      if (isAlive() && !isRemoved()) CompanionRegistry.get(level).observe(this);
+    }
   }
 }

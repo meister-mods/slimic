@@ -124,7 +124,7 @@ public class CombatSlime extends BagSlime {
   }
 
   public static CombatTarget targetKind(LivingEntity target) {
-    if (target instanceof TransportColonyBody body && body.getColony() != null)
+    if (target instanceof LinkedColonyBody<?> body && body.getColony() != null)
       return CombatTarget.TAMED;
     if (target instanceof Player) return CombatTarget.PLAYERS;
     if ((target instanceof TamableAnimal tame && tame.isTame())
@@ -132,7 +132,7 @@ public class CombatSlime extends BagSlime {
     if (target instanceof Creeper) return CombatTarget.CREEPERS;
     if (target instanceof EnderMan enderman
         && ((enderman.getTarget() instanceof FriendlySlime companion && companion.isAlive())
-            || (enderman.getTarget() instanceof TransportColonyBody body
+            || (enderman.getTarget() instanceof LinkedColonyBody<?> body
                 && body.getColony() != null))) return CombatTarget.HOSTILE;
     if (target instanceof NeutralMob) return CombatTarget.NEUTRAL;
     return target instanceof Enemy ? CombatTarget.HOSTILE : CombatTarget.PASSIVE;
@@ -237,27 +237,32 @@ public class CombatSlime extends BagSlime {
   }
 
   private boolean collectLoot(boolean move) {
+    return collectLoot(this, move);
+  }
+
+  protected final boolean collectLoot(Mob body, boolean move) {
     double range = SlimeStat.DETECTION_RANGE.value(this);
     ItemEntity nearest = null;
     double distance = range * range;
     for (var item :
-        WorkSearch.entities(level(), ItemEntity.class, getBoundingBox().inflate(range))) {
-      if (!ownLoot(item) || !hasLineOfSight(item)) continue;
-      double next = distanceToSqr(item);
+        WorkSearch.entities(level(), ItemEntity.class, body.getBoundingBox().inflate(range))) {
+      if (!ownLoot(item) || !body.hasLineOfSight(item)) continue;
+      double next = body.distanceToSqr(item);
       if (next <= SlimeStat.REACH.value(this) * SlimeStat.REACH.value(this)) {
         var player =
             net.minecraftforge.common.util.FakePlayerFactory.get(
                 (net.minecraft.server.level.ServerLevel) level(),
                 new com.mojang.authlib.GameProfile(getOwnerUUID(), "SlimeCollector"));
-        player.moveTo(position());
+        player.moveTo(body.position());
         if (net.minecraftforge.event.ForgeEventFactory.onItemPickup(item, player) < 0
             || !canContinueWork(player)
+            || (body instanceof CombatColonyBody linked && linked.getColony() != this)
             || !ownLoot(item)) continue;
         var before = item.getItem().copy();
         var remaining = SlimeBag.insertItemStacked(getBag(), before.copy(), false);
         int moved = before.getCount() - remaining.getCount();
         if (moved > 0) {
-          take(item, moved);
+          body.take(item, moved);
           item.setItem(remaining);
           net.minecraftforge.event.ForgeEventFactory.firePlayerItemPickupEvent(
               player, item, before.copyWithCount(moved));
@@ -269,8 +274,10 @@ public class CombatSlime extends BagSlime {
         nearest = item;
       }
     }
-    if (move && nearest != null && mayNavigate() && tickCount % 10 == 0)
-      getNavigation().moveTo(nearest, 1);
+    if (move
+        && nearest != null
+        && (body == this ? mayNavigate() : body.onGround())
+        && body.tickCount % 10 == 0) body.getNavigation().moveTo(nearest, 1);
     return nearest != null;
   }
 
@@ -341,6 +348,16 @@ public class CombatSlime extends BagSlime {
     }
   }
 
+  protected boolean combatBusy() {
+    return status == Status.FIGHTING;
+  }
+
+  protected boolean hasCombatMotion() {
+    return false;
+  }
+
+  protected void combatTargetAcquired(LivingEntity target) {}
+
   private void equipSpares() {
     for (int equip = 0; equip < 3; equip++) {
       if (!getEquipment(equip).isEmpty()) continue;
@@ -359,9 +376,23 @@ public class CombatSlime extends BagSlime {
       if (isWorking() && isTame() && getTarget() != null && tickCount % 5 == 0) collectLoot(false);
       if (attackCooldown > 0) attackCooldown--;
       if (shieldCooldown > 0) shieldCooldown--;
-      if (isWorking() && tickCount % 20 == 0 && status != Status.FIGHTING)
+      if (isWorking() && tickCount % 20 == 0 && !combatBusy())
         recoverStamina(getStaminaRecoveryPerSecond());
     }
+  }
+
+  public CompoundTag combatTiming() {
+    var tag = new CompoundTag();
+    tag.putInt("CombatAttackCooldown", attackCooldown);
+    tag.putInt("CombatShieldCooldown", shieldCooldown);
+    tag.putBoolean("CombatResting", resting);
+    return tag;
+  }
+
+  public void setCombatTiming(CompoundTag tag) {
+    attackCooldown = Math.max(0, Math.min(200, tag.getInt("CombatAttackCooldown")));
+    shieldCooldown = Math.max(0, Math.min(100, tag.getInt("CombatShieldCooldown")));
+    resting = tag.getBoolean("CombatResting");
   }
 
   @Override
@@ -424,6 +455,11 @@ public class CombatSlime extends BagSlime {
         stop();
         return;
       }
+      if (hasCombatMotion()) {
+        getNavigation().stop();
+        stopUsingItem();
+        return;
+      }
       equipSpares();
       if (!isSword(getMainHandItem())) {
         status = Status.NO_SWORD;
@@ -470,6 +506,7 @@ public class CombatSlime extends BagSlime {
           }
         }
         setTarget(nearest);
+        if (nearest != null) combatTargetAcquired(nearest);
       }
       LivingEntity victim = getTarget();
       if (victim == null) {

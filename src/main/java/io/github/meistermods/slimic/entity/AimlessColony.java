@@ -262,6 +262,10 @@ public final class AimlessColony extends Monster {
     if (!target.isAlive() || target.isSpectator() || isAlliedTo(target) || target.isAlliedTo(this))
       return false;
     if (target instanceof Player player) return !player.isCreative();
+    if (target instanceof CombatColonyBody body) {
+      var colony = body.getColony();
+      return colony != null && colony.isTame() && colony.getOwnerUUID() != null;
+    }
     return target instanceof CombatSlime slime && slime.isTame() && slime.getOwnerUUID() != null;
   }
 

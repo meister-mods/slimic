@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public final class BoundTransportSlime extends TransportSlime implements BoundColony {
+public final class BoundTransportSlime extends TransportSlime implements LinkedColony {
   private static final EntityDataAccessor<Integer> LINKED_BODY =
       SynchedEntityData.defineId(BoundTransportSlime.class, EntityDataSerializers.INT);
   private final ColonyMembers members = new ColonyMembers(this);

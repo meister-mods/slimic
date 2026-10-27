@@ -203,7 +203,7 @@ public class FriendlySlime extends TamableAnimal {
 
   @Override
   public boolean isAlliedTo(Entity other) {
-    if (other instanceof TransportColonyBody body) {
+    if (other instanceof LinkedColonyBody<?> body) {
       other = body.getColony();
       if (other == null) return false;
     }

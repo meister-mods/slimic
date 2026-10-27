@@ -104,6 +104,9 @@ public final class CompanionTeleport {
                 && !pet.isRemoved()
                 && !pet.isVehicle()
                 && !pet.isPassenger()
+                && (pet.level() == level
+                    || !(pet instanceof EnderSlime ender)
+                    || ender.allowsDimensionalTravel())
                 && java.util.Objects.equals(owner, pet.getOwnerUUID())
                 && authorized.test(pet);
     if (!valid.test(slime)) return null;
@@ -162,6 +165,7 @@ public final class CompanionTeleport {
           || !java.util.Objects.equals(copy.getOwnerUUID(), source.getOwnerUUID())
           || copy.isVehicle()
           || copy.isPassenger()
+          || copy instanceof EnderSlime ender && !ender.allowsDimensionalTravel()
           || !authorized.test(copy)
           || copy.position().distanceToSqr(target) > .01
           || !safe(destination, copy, target)
@@ -190,21 +194,25 @@ public final class CompanionTeleport {
 
   public static boolean player(
       ServerPlayer player, ServerLevel level, Vec3 point, BooleanSupplier authorized) {
+    var origin = player.serverLevel();
     if (!authorized.getAsBoolean()) return false;
-    if (!player.isAlive() || player.isSpectator() || player.isSleeping()) return false;
+    if (!player.isAlive()
+        || player.isSpectator()
+        || player.isSleeping()
+        || player.level() != origin) return false;
     var event = new EntityTeleportEvent(player, point.x, point.y, point.z);
     if (MinecraftForge.EVENT_BUS.post(event)
         || !safe(level, player, event.getTarget())
         || !player.isAlive()
         || player.isRemoved()
         || player.isSpectator()
-        || !authorized.getAsBoolean()) return false;
+        || !authorized.getAsBoolean()
+        || player.level() != origin) return false;
     var target = event.getTarget();
     player.stopRiding();
     if (player.level() == level) {
       player.teleportTo(level, target.x, target.y, target.z, player.getYRot(), player.getXRot());
     } else {
-      var origin = player.level();
       java.util.function.Consumer<net.minecraftforge.event.entity.EntityTravelToDimensionEvent>
           guard =
               travel -> {

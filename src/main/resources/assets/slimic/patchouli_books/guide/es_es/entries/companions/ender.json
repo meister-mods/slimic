@@ -19,19 +19,30 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Usa el teletransportador con clic derecho en el aire para llegar a un lugar seguro junto al compañero vivo anclado, incluso entre dimensiones. El destino debe tener toda la energía y la gasta al lograrlo. No consume perlas ni causa daño. Si falta, es inseguro o no tienes permiso, conserva la energía."
+      "text": "Haz clic derecho en el aire con el teletransportador para llegar junto al compañero vivo y anclado. El destino necesita energía completa y la gasta toda al llegar. Sin un sello de sintonía dimensional equipado, solo puedes viajar dentro de la misma dimensión. Un destino inseguro, ausente o sin permiso conserva la energía y las perlas."
     },
     {
       "type": "patchouli:text",
-      "text": "Un slime de Ender anclado mantiene activo un chunk de destino, incluso tras reinicios. El límite predeterminado es ocho por dueño original. Seguir quita el ancla; recogerlo o su caída libera el chunk. Un compañero anclado restaurado se ancla en su nueva posición."
+      "text": "La primera ranura admite hasta 16 perlas de ender. El slime anclado mantiene su chunk cargado solo mientras tenga perlas. Cada viaje completado gasta una únicamente si el destino depende de este slime. Los jugadores cercanos, los chunks de aparición, la carga forzada y otros cargadores evitan ese gasto. Las perlas no se consumen con el tiempo."
     },
     {
       "type": "patchouli:text",
-      "text": "Descansar recupera el 2% de energía máxima por segundo: recargar por completo tarda unos 50 segundos con cualquier máximo. Compartirlo o recogerlo mantiene al dueño original. Restaurar uno anclado guardado requiere un cupo libre; si no lo hay, conserva su objeto o bloque de slime caído."
+      "text": "El límite inicial es de ocho anclajes por dueño principal. Seguir libera el anclaje; recuperar o colapsar libera el chunk. Al recolocarlo espera y conserva ambas ranuras; si estaba anclado, usa la nueva posición. Si se alcanza el límite, se conserva el objeto o bloque de slime roto. La energía tarda unos 50 segundos en recuperarse por completo."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "slimic:dimensional_attunement_seal",
+      "title": "Sello de sintonía dimensional",
+      "text": "Rodea un sello ancestral de mando con cuatro perlas de ender."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Equipa el sello en la segunda ranura para viajar entre dimensiones. No se consume. La primera ranura controla la carga por separado: el sello no sustituye a las perlas. Sin perlas, el destino debe estar ya cargado por otro medio para recibir un viaje."
     }
   ],
   "extra_recipe_mappings": {
     "slimic:ender_slime": 0,
-    "slimic:slime_teleporter": 1
+    "slimic:slime_teleporter": 1,
+    "slimic:dimensional_attunement_seal": 5
   }
 }

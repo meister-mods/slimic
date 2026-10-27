@@ -481,6 +481,7 @@ public final class CoordinationBoundaryGameTests {
                     nether.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
                 }
               var endpoint = ModEntities.ENDER_SLIME.get().create(nether);
+              endpoint.setEquipment(1, new ItemStack(ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get()));
               endpoint.tame(actor);
               endpoint.moveTo(4007.5, 141, 4007.5);
               nether.addFreshEntity(endpoint);

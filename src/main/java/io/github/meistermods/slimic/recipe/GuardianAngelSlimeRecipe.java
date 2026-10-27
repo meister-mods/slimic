@@ -3,6 +3,7 @@ package io.github.meistermods.slimic.recipe;
 import io.github.meistermods.slimic.registry.*;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.*;
@@ -16,21 +17,29 @@ public final class GuardianAngelSlimeRecipe extends CustomRecipe {
 
   @Override
   public boolean matches(CraftingContainer grid, Level level) {
-    int friendly = 0, star = 0, totem = 0;
+    int healing = 0, star = 0, totem = 0;
     for (int i = 0; i < grid.getContainerSize(); i++) {
       var item = grid.getItem(i);
       if (item.isEmpty()) continue;
-      if (CompanionBase.accepts(item)) friendly++;
-      else if (item.is(Items.NETHER_STAR)) star++;
+      if (item.is(ModItems.HEALING_SLIME.get())) {
+        // The guardian has no bag; require unloading instead of discarding stored supplies.
+        if (item.hasTag()
+            && !item.getTag()
+                .getCompound("SlimeData")
+                .getCompound("HealingBag")
+                .getList("Items", Tag.TAG_COMPOUND)
+                .isEmpty()) return false;
+        healing++;
+      } else if (item.is(Items.NETHER_STAR)) star++;
       else if (item.is(Items.TOTEM_OF_UNDYING)) totem++;
       else return false;
     }
-    return friendly == 1 && star == 1 && totem == 1;
+    return healing == 1 && star == 1 && totem == 1;
   }
 
-  public static ItemStack specialize(ItemStack friendly, ItemStack totem) {
+  public static ItemStack specialize(ItemStack healing, ItemStack totem) {
     var result = new ItemStack(ModItems.GUARDIAN_ANGEL_SLIME.get());
-    CompanionBase.copyData(friendly, result);
+    CompanionBase.copyData(healing, result);
     if (result.hasTag() && result.getTag().contains("SlimeData"))
       io.github.meistermods.slimic.entity.ProfessionHealth.addToData(
           result.getTag().getCompound("SlimeData"),
@@ -44,13 +53,13 @@ public final class GuardianAngelSlimeRecipe extends CustomRecipe {
   @Override
   public ItemStack assemble(CraftingContainer grid, RegistryAccess registry) {
     if (!matches(grid, null)) return ItemStack.EMPTY;
-    ItemStack friendly = ItemStack.EMPTY, totem = ItemStack.EMPTY;
+    ItemStack healing = ItemStack.EMPTY, totem = ItemStack.EMPTY;
     for (int i = 0; i < grid.getContainerSize(); i++) {
       var stack = grid.getItem(i);
-      if (CompanionBase.accepts(stack)) friendly = stack;
+      if (stack.is(ModItems.HEALING_SLIME.get())) healing = stack;
       if (stack.is(Items.TOTEM_OF_UNDYING)) totem = stack;
     }
-    return specialize(friendly, totem);
+    return specialize(healing, totem);
   }
 
   @Override

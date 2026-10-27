@@ -35,7 +35,8 @@ public final class CompanionRegistry extends SavedData {
       Location location,
       String tag,
       long seen,
-      boolean pinned) {
+      boolean pinned,
+      boolean chunkLoading) {
     public Entry withTag(String value) {
       return new Entry(
           id,
@@ -52,7 +53,8 @@ public final class CompanionRegistry extends SavedData {
           location,
           value,
           seen,
-          pinned);
+          pinned,
+          chunkLoading);
     }
 
     public Entry withLocation(Location value) {
@@ -71,7 +73,8 @@ public final class CompanionRegistry extends SavedData {
           value,
           tag,
           seen,
-          value == Location.WORLD && pinned);
+          value == Location.WORLD && pinned,
+          value == Location.WORLD && chunkLoading);
     }
   }
 
@@ -274,7 +277,8 @@ public final class CompanionRegistry extends SavedData {
             Location.WORLD,
             tag,
             level.getGameTime(),
-            slime instanceof EnderSlime ender && ender.isPinned());
+            slime instanceof EnderSlime ender && ender.isPinned(),
+            slime instanceof EnderSlime ender && ender.isChunkLoading());
     if (!entry.equals(previous)) {
       companions.put(entry.id, entry);
       setDirty();
@@ -341,6 +345,7 @@ public final class CompanionRegistry extends SavedData {
             health <= 0 ? Location.BROKEN : Location.ITEM,
             group,
             level.getGameTime(),
+            false,
             false);
     if (!entry.equals(previous)) {
       companions.put(entry.id, entry);
@@ -410,7 +415,8 @@ public final class CompanionRegistry extends SavedData {
                 Location.valueOf(e.getString("Location")),
                 normalizeTag(e.getString("Tag")),
                 e.getLong("Seen"),
-                e.getBoolean("Pinned"));
+                e.getBoolean("Pinned"),
+                e.getBoolean("ChunkLoading"));
         result.companions.put(entry.id, entry);
       } catch (IllegalArgumentException ignored) {
       }
@@ -474,6 +480,7 @@ public final class CompanionRegistry extends SavedData {
       t.putString("Tag", e.tag);
       t.putLong("Seen", e.seen);
       t.putBoolean("Pinned", e.pinned);
+      t.putBoolean("ChunkLoading", e.chunkLoading);
       list.add(t);
     }
     tag.put("Companions", list);

@@ -144,9 +144,11 @@ public final class ColonyBonding {
     colony.members().load(records);
     if (!colony.members().ready()) return failed(Problem.INVALID);
     if (representative instanceof CombatSlime combat
-        && colony.members().records().get(0) instanceof CombatSlime original)
+        && colony.members().records().get(0) instanceof CombatSlime original) {
       for (CombatTarget target : CombatTarget.values())
         combat.setAllowed(target, original.allows(target));
+      combat.setCombatTiming(original.combatTiming());
+    }
     representative.setDyeColorId(colony.members().records().get(0).getDyeColorId());
     CompoundTag representativeData = representative.saveWithoutId(new CompoundTag());
     representativeData.putString(
