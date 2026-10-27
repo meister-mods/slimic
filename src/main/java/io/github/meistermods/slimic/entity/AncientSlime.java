@@ -215,7 +215,10 @@ public final class AncientSlime extends Monster {
         && !isAlliedTo(target)
         && target.distanceToSqr(Vec3.atCenterOf(getRuinHome())) <= 24 * 24
         && (target instanceof Player player && !player.getAbilities().instabuild
-            || target instanceof FriendlySlime companion && companion.isTame());
+            || target instanceof FriendlySlime companion && companion.isTame()
+            || target instanceof LinkedColonyBody<?> body
+                && body.getColony() != null
+                && body.getColony().isTame());
   }
 
   @Override
@@ -371,7 +374,10 @@ public final class AncientSlime extends Monster {
     }
     if (coreDropped
         || !(source.getEntity() instanceof Player
-            || source.getEntity() instanceof FriendlySlime companion && companion.isTame())) return;
+            || source.getEntity() instanceof FriendlySlime companion && companion.isTame()
+            || source.getEntity() instanceof CombatColonyBody body
+                && body.getColony() != null
+                && body.getColony().isTame())) return;
     coreDropped = true;
     spawnAtLocation(AncientSlimeCoreItem.fromSlime(this));
     spawnAtLocation(

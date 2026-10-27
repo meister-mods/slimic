@@ -67,6 +67,7 @@ public final class SlimeClientSmoke {
     if (Boolean.getBoolean("slimic.companionTooltipsOnly")) timeout = 9600;
     if (Boolean.getBoolean("slimic.ancientRecordsOnly")
         || Boolean.getBoolean("slimic.inventoryLayoutOnly")
+        || Boolean.getBoolean("slimic.combatColonyOnly")
         || Boolean.getBoolean("slimic.colonyOnly")
         || Boolean.getBoolean("slimic.colonyLanguageOnly")) timeout = 7200;
     if (Boolean.getBoolean("slimic.workAreaOnly")) timeout = WorkAreaClientSmoke.maximumTicks();
@@ -112,6 +113,10 @@ public final class SlimeClientSmoke {
     }
     if (Boolean.getBoolean("slimic.royalSynthesisOnly")) {
       if (RoyalSynthesisClientSmoke.tick(client)) client.stop();
+      return;
+    }
+    if (Boolean.getBoolean("slimic.combatColonyOnly")) {
+      if (CombatColonyClientSmoke.tick(client)) client.stop();
       return;
     }
     if (Boolean.getBoolean("slimic.transportColonyOnly")) {

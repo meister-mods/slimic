@@ -175,7 +175,18 @@ public final class SlimeMenu extends AbstractContainerMenu {
     for (int tool = 0; tool < toolSlots; tool++) {
       final int equipment = tool;
       addSlot(
-          new Slot(new ToolContainer(slime), tool, SLOTS_X + tool * SLOT_SPACING, EQUIPMENT_Y) {
+          new Slot(
+              new ToolContainer(slime),
+              tool,
+              SLOTS_X
+                  + tool * SLOT_SPACING
+                  + (slime instanceof io.github.meistermods.slimic.entity.BoundCombatSlime
+                          && tool >= 3
+                      ? SLOT_SPACING
+                      : 0),
+              slime instanceof io.github.meistermods.slimic.entity.BoundCombatSlime
+                  ? EQUIPMENT_Y + 6
+                  : EQUIPMENT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
               return matchesEquipment(slime, equipment, stack);
@@ -249,6 +260,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private static int equipmentSlots(FriendlySlime slime) {
+    if (slime instanceof io.github.meistermods.slimic.entity.BoundCombatSlime) return 6;
     if (slime instanceof TunnelSlime) return 3;
     if (slime instanceof FishingSlime || slime instanceof GuardianAngelSlime) return 1;
     return slime instanceof MiningSlime
@@ -268,7 +280,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
             ? MiningSlime.matchesToolSlot(slot, stack)
             : slime instanceof SaddleSlime
                 ? SaddleSlime.matchesEquipment(slot, stack)
-                : slime instanceof CombatSlime && CombatSlime.matchesEquipment(slot, stack);
+                : slime instanceof CombatSlime && CombatSlime.matchesEquipment(slot % 3, stack);
   }
 
   public FriendlySlime slime() {

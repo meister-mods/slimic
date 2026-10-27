@@ -6,12 +6,12 @@
   "pages": [
     {
       "type": "slimic:companion_intro",
-      "text": "Two ordinary $(l:companions/combat)Combat Slimes$() share a body through $(l:world/colony_bonding)Colony Bonding$(). Health is combined; base Attack is 60% of their combined Attack values. Initial deployment and redeployment after recovery always start in Wait.",
+      "text": "Two ordinary $(l:companions/combat)Combat Slimes$() become a cord-linked pair through $(l:world/colony_bonding)Colony Bonding$(). Each moves and fights separately, sharing health, stamina, cargo and orders. Base Attack is 60% of their combined values. Deployment starts in Wait.",
       "title": "Combat Slime Colony"
     },
     {
       "type": "patchouli:text",
-      "text": "The first member supplies active weapons, shield and armor, including their wear. Both bodies display that armor's material, dye and glint. Member two's original equipment stays stored for unbinding. Each body keeps its own color and held-item appearance."
+      "text": "The management screen has two groups of sword, shield and armor slots. Each member uses and wears its own equipment. When one finds an enemy, its partner can leap in for a 1.5× critical attack. The leap costs 3 stamina, plus 1 on a hit, and has a five-second cooldown. Obstacles or Wait interrupt it."
     },
     {
       "type": "patchouli:text",

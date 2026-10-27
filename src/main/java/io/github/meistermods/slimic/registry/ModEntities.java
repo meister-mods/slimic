@@ -64,6 +64,19 @@ public final class ModEntities {
                       .noSave()
                       .build("slimic:transport_colony_body"));
   public static final RegistryObject<
+          EntityType<io.github.meistermods.slimic.entity.CombatColonyBody>>
+      COMBAT_COLONY_BODY =
+          ENTITY_TYPES.register(
+              "combat_colony_body",
+              () ->
+                  EntityType.Builder.of(
+                          io.github.meistermods.slimic.entity.CombatColonyBody::new,
+                          MobCategory.MISC)
+                      .sized(1.04F, 1.04F)
+                      .clientTrackingRange(10)
+                      .noSave()
+                      .build("slimic:combat_colony_body"));
+  public static final RegistryObject<
           EntityType<io.github.meistermods.slimic.entity.BoundCombatSlime>>
       BOUND_COMBAT_SLIME =
           ENTITY_TYPES.register(
@@ -72,7 +85,7 @@ public final class ModEntities {
                   EntityType.Builder.of(
                           io.github.meistermods.slimic.entity.BoundCombatSlime::new,
                           MobCategory.CREATURE)
-                      .sized(1.55F, 1.04F)
+                      .sized(1.04F, 1.04F)
                       .clientTrackingRange(10)
                       .build("slimic:bound_combat_slime"));
   public static final RegistryObject<EntityType<io.github.meistermods.slimic.entity.AimlessColony>>
@@ -372,7 +385,8 @@ public final class ModEntities {
         .filter(
             entry ->
                 entry.get().getCategory() != MobCategory.MONSTER
-                    && !entry.getId().equals(TRANSPORT_COLONY_BODY.getId()))
+                    && !entry.getId().equals(TRANSPORT_COLONY_BODY.getId())
+                    && !entry.getId().equals(COMBAT_COLONY_BODY.getId()))
         .toList();
   }
 
@@ -415,6 +429,14 @@ public final class ModEntities {
             .add(Attributes.MAX_HEALTH, 16)
             .add(Attributes.MOVEMENT_SPEED, .3)
             .add(Attributes.FOLLOW_RANGE, 32)
+            .build());
+    event.put(
+        COMBAT_COLONY_BODY.get(),
+        net.minecraft.world.entity.Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 16)
+            .add(Attributes.MOVEMENT_SPEED, .3)
+            .add(Attributes.FOLLOW_RANGE, 32)
+            .add(Attributes.ATTACK_DAMAGE, 2)
             .build());
     event.put(BOUND_COMBAT_SLIME.get(), FriendlySlime.createAttributes().build());
     event.put(

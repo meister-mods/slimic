@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "La colonia comparte orden y bolsa. Los cuerpos de transporte se reparten tareas cercanas; los de combate se mueven juntos. Daño y gasto de energía actualizan ambos registros. El primero aporta equipo de combate y recibe efectos y absorción restantes al separarse. Editar puntos en Creativo cambia el saldo; los atributos mantienen sus reglas."
+      "text": "Ambas colonias tienen cuerpos unidos por una cuerda y comparten órdenes, carga, vida y energía. Los transportistas reparten tareas; los combatientes usan su propio equipo y se unen a la lucha con un salto crítico. Al separar, los efectos restantes pasan al primer miembro. Editar puntos en Creativo solo cambia el saldo común."
     },
     {
       "type": "patchouli:text",

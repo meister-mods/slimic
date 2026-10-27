@@ -43,6 +43,8 @@ public final class SlimicClient {
     event.registerEntityRenderer(
         ModEntities.TRANSPORT_COLONY_BODY.get(), TransportColonyBodyRenderer::new);
     event.registerEntityRenderer(ModEntities.BOUND_COMBAT_SLIME.get(), BoundColonyRenderer::new);
+    event.registerEntityRenderer(
+        ModEntities.COMBAT_COLONY_BODY.get(), CombatColonyBodyRenderer::new);
     event.registerEntityRenderer(ModEntities.AIMLESS_COLONY.get(), AimlessColonyRenderer::new);
     for (var type :
         java.util.List.of(

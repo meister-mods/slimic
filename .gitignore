@@ -37,3 +37,4 @@ forge*changelog.txt
 
 # Agent-related files
 .agent/
+.tmp/

@@ -135,21 +135,21 @@ public final class ColonyClientSmoke {
       ColonyTestFixtures.appearance(model);
       if (model instanceof BoundCombatSlime combat) {
         var before = combat.members().save().copy();
-        var shared = combat.sharedArmor().copy();
+        var shared = combat.memberEquipment(0, EquipmentSlot.CHEST).copy();
         require(!shared.isEmpty(), "Representative armor exists");
         combat.setRenderingSecondMember(true);
         require(
             !ItemStack.isSameItemSameTags(shared, combat.getItemBySlot(EquipmentSlot.CHEST)),
             "Second original armor stays distinct");
         require(
-            ItemStack.matches(shared, combat.sharedArmor()),
-            "Second body shares first armor appearance");
+            ItemStack.matches(shared, combat.memberEquipment(0, EquipmentSlot.CHEST)),
+            "Reading the second appearance preserves first-member armor");
         require(
             combat.getMainHandItem().is(Items.GOLDEN_SWORD),
             "Second hand equipment remains distinct");
         combat.setRenderingSecondMember(false);
         require(
-            ItemStack.matches(shared, combat.sharedArmor())
+            ItemStack.matches(shared, combat.memberEquipment(0, EquipmentSlot.CHEST))
                 && before.equals(combat.members().save()),
             "Rendering does not move or duplicate owned armor");
       }

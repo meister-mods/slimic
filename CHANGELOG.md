@@ -4,6 +4,16 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.16] - 2026-10-27
+
+### Changed
+
+- Give Combat Slime Colonies two independently moving bodies joined by a cord. Each member attacks and defends with its own sword, shield and armor, editable through two equipment groups.
+- Add joining leaps when a member acquires an enemy: visible wind-up, airborne motion, slime trail, one 1.5× critical impact and a shared cooldown.
+- Share body interaction and lifetime checks with transport colonies, retaining one saved life pool, cargo, growth and recoverable identity. Supply workers can replace either missing sword.
+- Preserve ancient-core drops and loot ownership when the second combat body makes the kill; prevent joining leaps across unsupported drops.
+- Update English/Korean documentation and all four in-game languages. Require protocol 28 for the new helper, motion state and menu layout; existing colony saves remain readable.
+
 ## [0.5.15] - 2026-10-26
 
 ### Changed

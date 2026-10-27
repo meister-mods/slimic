@@ -2,7 +2,6 @@ package io.github.meistermods.slimic.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.meistermods.slimic.Slimic;
-import io.github.meistermods.slimic.entity.BoundCombatSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
 import io.github.meistermods.slimic.entity.SaddleSlime;
@@ -73,10 +72,7 @@ public final class CombatSlimeLayer extends RenderLayer<FriendlySlime, SlimeMode
       float headPitch) {
     if (!(slime instanceof CombatSlime || slime instanceof SaddleSlime) || slime.isInvisible())
       return;
-    ItemStack gear =
-        slime instanceof BoundCombatSlime colony
-            ? colony.sharedArmor()
-            : slime.getItemBySlot(EquipmentSlot.CHEST);
+    ItemStack gear = slime.getItemBySlot(EquipmentSlot.CHEST);
     if (gear.getItem() instanceof SlimeArmorItem) {
       ResourceLocation texture = ARMOR_TEXTURES[SlimeArmorItem.materialIndex(gear)];
       ItemStack original = SlimeArmorItem.baseArmor(gear);

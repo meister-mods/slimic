@@ -39,7 +39,12 @@ public final class FriendlySlimeInteractions {
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public static void markCombatLoot(LivingDropsEvent event) {
-    if (event.getSource().getEntity() instanceof CombatSlime slime && slime.isAlive())
+    var attacker = event.getSource().getEntity();
+    CombatSlime slime =
+        attacker instanceof CombatSlime combat
+            ? combat
+            : attacker instanceof CombatColonyBody body ? body.getColony() : null;
+    if (slime != null && slime.isAlive())
       for (var drop : event.getDrops())
         drop.getPersistentData().putUUID(CombatSlime.LOOT_COLLECTOR, slime.getUUID());
   }
@@ -132,12 +137,12 @@ public final class FriendlySlimeInteractions {
           3,
           new NearestAttackableTargetGoal<>(
               mob,
-              TransportColonyBody.class,
+              LinkedColonyBody.class,
               10,
               true,
               false,
               candidate ->
-                  candidate instanceof TransportColonyBody body
+                  candidate instanceof LinkedColonyBody<?> body
                       && body.getColony() != null
                       && (mob.getType() != EntityType.SLIME
                           || mob.getLastHurtByMob() == body
@@ -179,8 +184,8 @@ public final class FriendlySlimeInteractions {
   }
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
-  public static void interactWithTransportBody(PlayerInteractEvent.EntityInteract event) {
-    if (event.getTarget() instanceof TransportColonyBody body) {
+  public static void interactWithLinkedBody(PlayerInteractEvent.EntityInteract event) {
+    if (event.getTarget() instanceof LinkedColonyBody<?> body) {
       event.setCancellationResult(body.interactWithColony(event.getEntity(), event.getHand()));
       event.setCanceled(true);
     }
