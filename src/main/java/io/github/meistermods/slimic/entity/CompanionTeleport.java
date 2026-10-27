@@ -104,6 +104,9 @@ public final class CompanionTeleport {
                 && !pet.isRemoved()
                 && !pet.isVehicle()
                 && !pet.isPassenger()
+                && (pet.level() == level
+                    || !(pet instanceof EnderSlime ender)
+                    || ender.allowsDimensionalTravel())
                 && java.util.Objects.equals(owner, pet.getOwnerUUID())
                 && authorized.test(pet);
     if (!valid.test(slime)) return null;
@@ -162,6 +165,7 @@ public final class CompanionTeleport {
           || !java.util.Objects.equals(copy.getOwnerUUID(), source.getOwnerUUID())
           || copy.isVehicle()
           || copy.isPassenger()
+          || copy instanceof EnderSlime ender && !ender.allowsDimensionalTravel()
           || !authorized.test(copy)
           || copy.position().distanceToSqr(target) > .01
           || !safe(destination, copy, target)

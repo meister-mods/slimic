@@ -148,7 +148,8 @@ public final class OrderEightGameTests {
   @GameTest(template = "empty", batch = "order_eight")
   public static void guardianCraftingKeepsExactTotemAndSavedCompanion(GameTestHelper h) {
     var owner = h.makeMockSurvivalPlayer();
-    var friendly = pet(h, owner);
+    var friendly = ModEntities.HEALING_SLIME.get().create(h.getLevel());
+    friendly.tame(owner);
     friendly.setHealth(7);
     var input = FriendlySlimeItem.fromSlime(friendly);
     var totem = new ItemStack(Items.TOTEM_OF_UNDYING);

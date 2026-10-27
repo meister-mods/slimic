@@ -962,6 +962,8 @@ public final class SlimicWorldGameTests {
     pet.moveTo(Vec3.atBottomCenterOf(source.bottom()));
     pet.tame(p);
     pet.setNoAi(true);
+    pet.setEquipment(0, new ItemStack(Items.ENDER_PEARL));
+    pet.setEquipment(1, new ItemStack(ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get()));
     p.moveTo(pet.position());
     h.getLevel().addFreshEntity(pet);
     int before = anchorTickets(h.getLevel()), targetBefore = anchorTickets(target);

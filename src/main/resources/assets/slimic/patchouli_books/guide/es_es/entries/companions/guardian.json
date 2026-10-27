@@ -7,12 +7,12 @@
     {
       "type": "slimic:combination_three",
       "title": "Sin forma fija",
-      "input1": "slimic:friendly_slime",
+      "input1": "slimic:healing_slime",
       "input2": "minecraft:nether_star",
       "input3": "minecraft:totem_of_undying",
       "result": "slimic:guardian_angel_slime",
       "label": "Combinar → resultado",
-      "text": "Slime amistoso + estrella del Nether + tótem de inmortalidad. Ese mismo tótem pasa a su reserva inicial."
+      "text": "Slime de curación + estrella del Nether + tótem de inmortalidad. Ese mismo tótem pasa a su reserva inicial. Vacía antes la bolsa del slime de curación: el guardián no tiene bolsa."
     },
     {
       "type": "patchouli:text",

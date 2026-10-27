@@ -4,6 +4,7 @@ import io.github.meistermods.slimic.entity.BagSlime;
 import io.github.meistermods.slimic.entity.CleaningSlime;
 import io.github.meistermods.slimic.entity.CombatSlime;
 import io.github.meistermods.slimic.entity.CombatTarget;
+import io.github.meistermods.slimic.entity.EnderSlime;
 import io.github.meistermods.slimic.entity.FieldSlime;
 import io.github.meistermods.slimic.entity.FishingSlime;
 import io.github.meistermods.slimic.entity.FriendlySlime;
@@ -199,12 +200,16 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
             @Override
             public int getMaxStackSize(ItemStack stack) {
-              return slime instanceof GuardianAngelSlime ? 64 : 1;
+              return slime instanceof GuardianAngelSlime
+                  ? 64
+                  : slime instanceof EnderSlime && equipment == 0 ? 16 : 1;
             }
 
             @Override
             public int getMaxStackSize() {
-              return slime instanceof GuardianAngelSlime ? 64 : 1;
+              return slime instanceof GuardianAngelSlime
+                  ? 64
+                  : slime instanceof EnderSlime && equipment == 0 ? 16 : 1;
             }
           });
     }
@@ -260,6 +265,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private static int equipmentSlots(FriendlySlime slime) {
+    if (slime instanceof EnderSlime) return 2;
     if (slime instanceof io.github.meistermods.slimic.entity.BoundCombatSlime) return 6;
     if (slime instanceof TunnelSlime) return 3;
     if (slime instanceof FishingSlime || slime instanceof GuardianAngelSlime) return 1;
@@ -271,6 +277,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
   }
 
   private static boolean matchesEquipment(FriendlySlime slime, int slot, ItemStack stack) {
+    if (slime instanceof EnderSlime) return EnderSlime.matchesEquipment(slot, stack);
     if (slime instanceof TunnelSlime && slot == 2) return false;
     if (slime instanceof FishingSlime) return slot == 0 && FishingSlime.isRod(stack);
     if (slime instanceof GuardianAngelSlime) return slot == 0 && stack.is(Items.TOTEM_OF_UNDYING);
@@ -568,6 +575,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack getItem(int slot) {
+      if (slime instanceof EnderSlime ender) return ender.getEquipment(slot);
       if (slime instanceof TunnelSlime tunnel && slot == 2)
         return tunnel.getLiningTemplate().copy();
       if (slime instanceof FishingSlime fisher) return fisher.getRod();
@@ -600,7 +608,8 @@ public final class SlimeMenu extends AbstractContainerMenu {
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-      if (slime instanceof TunnelSlime tunnel && slot == 2) {
+      if (slime instanceof EnderSlime ender) ender.setEquipment(slot, stack);
+      else if (slime instanceof TunnelSlime tunnel && slot == 2) {
         if (slime.level().isClientSide) tunnel.setLiningTemplate(stack);
       } else if (slime instanceof FishingSlime fisher) fisher.setRod(stack);
       else if (slime instanceof GuardianAngelSlime guardian) guardian.setTotems(stack);
@@ -613,6 +622,7 @@ public final class SlimeMenu extends AbstractContainerMenu {
     @Override
     public void setChanged() {
       if (slime instanceof GuardianAngelSlime guardian) guardian.setTotems(guardian.getTotems());
+      if (slime instanceof EnderSlime ender) ender.equipmentChanged();
     }
 
     @Override

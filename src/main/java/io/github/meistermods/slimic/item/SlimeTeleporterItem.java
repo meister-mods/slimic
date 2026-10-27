@@ -55,26 +55,36 @@ public final class SlimeTeleporterItem extends Item {
     var dimension = ResourceLocation.tryParse(record.dimension());
     if (dimension == null) return false;
     var target = player.server.getLevel(ResourceKey.create(Registries.DIMENSION, dimension));
+    boolean dimensional = target != player.serverLevel();
     if (target == null
         || !(target.getEntity(record.id()) instanceof EnderSlime slime)
         || !slime.isAlive()
         || !slime.isPinned()
         || !slime.canManage(player)
+        || dimensional && !slime.allowsDimensionalTravel()
         || slime.getStamina() < slime.getMaxStamina()) return false;
+    // Capture the decision before arrival: the arriving player must not waive their own cost.
+    var anchor = slime.position();
+    boolean[] consumePearl = {false};
+    java.util.function.BooleanSupplier ready =
+        () -> {
+          if (!slime.isAlive()
+              || slime.isRemoved()
+              || !slime.isPinned()
+              || slime.level() != target
+              || slime.position().distanceToSqr(anchor) > .0001
+              || !slime.canManage(player)
+              || slime.getStamina() < slime.getMaxStamina()
+              || !record.owner().equals(slime.getOwnerUUID())
+              || dimensional && !slime.allowsDimensionalTravel()) return false;
+          consumePearl[0] =
+              !EnderChunkLoading.independentlyLoaded(
+                  target, slime.chunkPosition(), slime.getUUID());
+          return !consumePearl[0] || slime.isChunkLoading();
+        };
     var landing = CompanionTeleport.landing(target, player, slime.blockPosition(), 0, 4);
-    if (landing == null
-        || !CompanionTeleport.player(
-            player,
-            target,
-            landing,
-            () ->
-                slime.isAlive()
-                    && !slime.isRemoved()
-                    && slime.isPinned()
-                    && slime.canManage(player)
-                    && slime.getStamina() >= slime.getMaxStamina()
-                    && record.owner().equals(slime.getOwnerUUID()))) return false;
-    slime.completeTeleport();
+    if (landing == null || !CompanionTeleport.player(player, target, landing, ready)) return false;
+    slime.completeTeleport(consumePearl[0]);
     registry.observe(slime);
     return true;
   }

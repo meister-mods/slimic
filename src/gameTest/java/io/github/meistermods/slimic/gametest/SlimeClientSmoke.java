@@ -188,6 +188,10 @@ public final class SlimeClientSmoke {
       if (GuidebookClientSmoke.tick(client)) client.stop();
       return;
     }
+    if (Boolean.getBoolean("slimic.enderEquipmentOnly")) {
+      if (EnderEquipmentClientSmoke.tick(client)) client.stop();
+      return;
+    }
     if (Boolean.getBoolean("slimic.orderElevenOnly")) {
       if (OrderElevenClientSmoke.tick(client)) client.stop();
       return;

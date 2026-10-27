@@ -525,7 +525,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
             ? 254
-            : menu.slime() instanceof MiningSlime
+            : menu.slime() instanceof MiningSlime || menu.slime() instanceof EnderSlime
                 ? 236
                 : menu.slime() instanceof FieldSlime
                         || menu.slime() instanceof GuardianAngelSlime
@@ -543,7 +543,7 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
                 || menu.slime() instanceof SaddleSlime
                 || menu.slime() instanceof TunnelSlime)
             ? 254
-            : menu.slime() instanceof MiningSlime
+            : menu.slime() instanceof MiningSlime || menu.slime() instanceof EnderSlime
                 ? 236
                 : menu.slime() instanceof FieldSlime
                         || menu.slime() instanceof GuardianAngelSlime
@@ -772,6 +772,17 @@ public final class SlimeScreen extends AbstractContainerScreen<SlimeMenu> {
           Component.translatable("screen.slimic.points", menu.points())
               .append("\n")
               .append(Component.translatable("item.slimic.synthesis.unspent")),
+          mouseX,
+          mouseY);
+    else if (hoveredSlot != null && hoveredSlot.index < 2 && menu.slime() instanceof EnderSlime)
+      graphics.renderTooltip(
+          font,
+          font.split(
+              Component.translatable(
+                  hoveredSlot.index == 0
+                      ? "screen.slimic.ender_pearls"
+                      : "screen.slimic.ender_seal"),
+              220),
           mouseX,
           mouseY);
     else if (hoveredSlot != null && hoveredSlot.index == 2 && menu.slime() instanceof TunnelSlime)

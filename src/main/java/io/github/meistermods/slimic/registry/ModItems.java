@@ -206,6 +206,14 @@ public final class ModItems {
                   new Item.Properties()
                       .rarity(net.minecraft.world.item.Rarity.UNCOMMON)
                       .fireResistant()));
+  public static final RegistryObject<Item> DIMENSIONAL_ATTUNEMENT_SEAL =
+      ITEMS.register(
+          "dimensional_attunement_seal",
+          () ->
+              new Item(
+                  new Item.Properties()
+                      .stacksTo(1)
+                      .rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
   public static final RegistryObject<Item> DAMAGED_ANCIENT_SLIME_CORE =
       ITEMS.register(
           "damaged_ancient_slime_core",

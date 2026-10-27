@@ -287,11 +287,10 @@ public final class SlimicJeiPlugin implements IModPlugin {
             "slimic:guardian_angel_slime",
             CraftingBookCategory.MISC,
             GuardianAngelSlimeRecipe.specialize(
-                new ItemStack(ModItems.FRIENDLY_SLIME.get()),
-                new ItemStack(Items.TOTEM_OF_UNDYING)),
+                new ItemStack(ModItems.HEALING_SLIME.get()), new ItemStack(Items.TOTEM_OF_UNDYING)),
             NonNullList.of(
                 Ingredient.EMPTY,
-                CompanionBase.ingredient(),
+                Ingredient.of(ModItems.HEALING_SLIME.get()),
                 Ingredient.of(Items.NETHER_STAR),
                 Ingredient.of(Items.TOTEM_OF_UNDYING))));
     LocalizedIngredientInformation.add(
@@ -369,6 +368,7 @@ public final class SlimicJeiPlugin implements IModPlugin {
     for (var relic :
         new Item[] {
           ModItems.ANCIENT_COMMAND_SEAL.get(),
+          ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get(),
           ModItems.OLD_COMMAND_FRAGMENT.get(),
           ModItems.ANCIENT_MINING_SLIME.get(),
           ModItems.ANCIENT_TUNNEL_SLIME.get()

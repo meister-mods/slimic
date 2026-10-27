@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_seal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "slimic:ancient_command_seal"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_seal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "slimic:dimensional_attunement_seal"
+    ]
+  }
+}

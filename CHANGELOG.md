@@ -4,6 +4,14 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.17] - 2026-10-27
+
+- Guardian Angel Slimes now require a Healing Slime, a nether star, and a totem of undying. Their abilities remain unchanged; crafting requires an empty Healing Slime bag to preserve stored supplies.
+- Ender Slimes have separate ender-pearl and Dimensional Attunement Seal equipment slots. Only pinned companions with pearls maintain their destination chunk.
+- Teleportation spends one equipped pearl only when the destination depends on that Ender Slime’s loader; independent players and chunk loaders waive the cost. Failed travel preserves pearls and stamina.
+- Cross-dimension travel requires the reusable attunement seal, crafted from an Ancient Command Seal and four ender pearls. Equipment survives recovery and redeployment; native portal travel releases the old dimension’s anchor ticket.
+- Updated English and Korean documentation, four-language in-game guidance, and JEI recipe displays. Protocol 29 requires matching client and server builds; existing companion identities and links remain readable.
+
 ## [0.5.16] - 2026-10-27
 
 ### Changed
