@@ -361,6 +361,13 @@ public final class SlimicWorldGameTests {
       }
       h.getLevel().addFreshEntity(slime);
       UUID id = slime.getUUID(), owner = slime.getOwnerUUID();
+      if (slime instanceof EnderSlime ender) {
+        SlimicPortalTravel.inside(slime, source.bottom(), source.axis());
+        h.assertTrue(
+            slime.isAlive() && slime.level() == h.getLevel() && target.getEntity(id) == null,
+            "An Ender Slime without an attunement seal stays in the source dimension");
+        ender.setEquipment(1, new ItemStack(ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get()));
+      }
       SlimicPortalTravel.inside(slime, source.bottom(), source.axis());
       var moved = target.getEntity(id);
       h.assertTrue(
@@ -390,6 +397,8 @@ public final class SlimicWorldGameTests {
         h.assertTrue(
             !worker.isWorking() && worker.getBag().getStackInSlot(0).getCount() == 7,
             "Worker cargo survives while work stays paused");
+      if (pet instanceof EnderSlime ender)
+        h.assertTrue(ender.allowsDimensionalTravel(), "The reusable seal survives portal transfer");
       pet.discard();
     }
     h.assertTrue(count[0] == 27, "All 27 companion professions are covered");

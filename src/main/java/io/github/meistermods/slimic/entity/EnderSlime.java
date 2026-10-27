@@ -317,6 +317,7 @@ public final class EnderSlime extends FriendlySlime {
 
   @Override
   public void readAdditionalSaveData(CompoundTag tag) {
+    boolean wasPinned = isPinned();
     super.readAdditionalSaveData(tag);
     // Restore before pinning; legacy anchors have no equipment and no implicit loading rights.
     entityData.set(PEARLS, normalizedEquipment(0, ItemStack.of(tag.getCompound("EnderPearls"))));
@@ -333,7 +334,13 @@ public final class EnderSlime extends FriendlySlime {
     if (isPinned()) {
       super.setWaiting(true);
       setNoGravity(true);
-    }
+    } else if (wasPinned) setNoGravity(false);
     if (!tag.contains("EnderPinned")) setWaiting(true);
+    // Commands can reload NBT on an already admitted entity. Reconcile its old live ticket,
+    // while fresh spawns and transactional destination copies remain free of side effects.
+    if (level() instanceof ServerLevel level && isAddedToWorld() && !isPendingSpawn()) {
+      refreshTicket();
+      if (isAlive() && !isRemoved()) CompanionRegistry.get(level).observe(this);
+    }
   }
 }

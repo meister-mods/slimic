@@ -58,6 +58,7 @@ public final class EnderEquipmentClientSmoke {
                                 new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
                         }
                       p.setGameMode(GameType.CREATIVE);
+                      p.getInventory().clearContent();
                       p.teleportTo(level, 700016.5, 101, 700018.5, 180, 0);
                       p.setItemInHand(
                           InteractionHand.MAIN_HAND, new ItemStack(ModItems.SLIME_TUNER.get()));
@@ -68,6 +69,8 @@ public final class EnderEquipmentClientSmoke {
                       s.setEquipment(0, new ItemStack(Items.ENDER_PEARL, 16));
                       s.setEquipment(1, new ItemStack(ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get()));
                       level.addFreshEntity(s);
+                      require(s.bind(p), "The native client fixture has a real pinned anchor");
+                      s.setTunedVitals(s.getHealth(), s.getMaxStamina(), 0);
                       entity = s.getId();
                     });
         phase = 1;
@@ -135,6 +138,49 @@ public final class EnderEquipmentClientSmoke {
           ticks = 0;
           return false;
         }
+        action =
+            mc.getSingleplayerServer()
+                .submit(
+                    () -> {
+                      var p =
+                          mc.getSingleplayerServer().getPlayerList().getPlayer(mc.player.getUUID());
+                      var s = (EnderSlime) p.serverLevel().getEntity(entity);
+                      var data = s.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+                      data.putBoolean("EnderPinned", false);
+                      data.put("EnderPearls", new net.minecraft.nbt.CompoundTag());
+                      s.load(data);
+                      require(
+                          !s.isPinned()
+                              && !s.isNoGravity()
+                              && !io.github.meistermods.slimic.entity.CompanionRegistry.get(
+                                      p.serverLevel())
+                                  .find(s.getUUID())
+                                  .chunkLoading(),
+                          "A live NBT reload reconciles server anchor state");
+                    });
+        phase = 3;
+        ticks = 0;
+        return false;
+      }
+      if (phase == 3) {
+        if (++ticks < 15) return false;
+        var s = (EnderSlime) mc.level.getEntity(entity);
+        require(
+            mc.screen instanceof SlimeScreen && mc.player.containerMenu instanceof SlimeMenu,
+            "The management menu remains valid across live reload");
+        var menu = (SlimeMenu) mc.player.containerMenu;
+        require(
+            !s.isPinned()
+                && !s.isNoGravity()
+                && s.getEquipment(0).isEmpty()
+                && s.allowsDimensionalTravel()
+                && menu.slots.get(0).getItem().isEmpty()
+                && menu.slots.get(1).getItem().is(ModItems.DIMENSIONAL_ATTUNEMENT_SEAL.get()),
+            "Pin, gravity and both equipment slots synchronize after live reload");
+        var out = mc.gameDirectory.toPath().resolve("ender-equipment-audit");
+        try (var shot = Screenshot.takeScreenshot(mc.getMainRenderTarget())) {
+          shot.writeToFile(out.resolve("live-reload.png"));
+        }
         mc.player.closeContainer();
         action =
             mc.getSingleplayerServer()
@@ -142,10 +188,10 @@ public final class EnderEquipmentClientSmoke {
                     () -> {
                       var p =
                           mc.getSingleplayerServer().getPlayerList().getPlayer(mc.player.getUUID());
-                      var s = p.serverLevel().getEntity(entity);
-                      if (s != null) s.discard();
+                      var server = p.serverLevel().getEntity(entity);
+                      if (server != null) server.discard();
                     });
-        phase = 3;
+        phase = 4;
         return false;
       }
       System.out.println(
