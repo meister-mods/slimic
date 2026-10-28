@@ -509,6 +509,11 @@ public class CombatSlime extends BagSlime {
         if (nearest != null) combatTargetAcquired(nearest);
       }
       LivingEntity victim = getTarget();
+      if (hasCombatMotion()) {
+        getNavigation().stop();
+        stopUsingItem();
+        return;
+      }
       if (victim == null) {
         resetTravel();
         status = Status.IDLE;

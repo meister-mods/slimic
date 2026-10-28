@@ -19,6 +19,10 @@
     },
     {
       "type": "patchouli:text",
+      "text": "Una cuerda gruesa de baba verde une los dos cuerpos. La salud y la energía forman una reserva común, gestionada desde cualquiera de ellos. Los combatientes se reagrupan antes de alejarse demasiado. Si el salto de apoyo queda bloqueado, vuelven a intentarlo durante el combate cuando la ruta y la recarga lo permiten."
+    },
+    {
+      "type": "patchouli:text",
       "text": "Los puntos sin usar parten de la media redondeada abajo. Un punto mejora el atributo elegido de cada miembro sin tope; el que llegó al tope no cambia. Si ambos llegaron, no cobra. El desarrollo va a mitad mientras algún atributo útil admita mejorar a ambos; si no, es normal. La fórmula de coste por punto no cambia."
     },
     {

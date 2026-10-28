@@ -218,7 +218,15 @@ public final class ColonyBondingData extends SavedData {
     UUID receipt = UUID.randomUUID();
     if (!store(player.serverLevel(), slime, player.getUUID(), receipt))
       return net.minecraft.world.InteractionResult.FAIL;
-    ItemStack item = FriendlySlimeItem.fromSlime(slime);
+    // store has just serialized and durably committed this exact epoch, including both bags.
+    // Reuse a detached copy instead of serializing the complete colony a second time.
+    ItemStack committed = recovery.get(slime.getUUID());
+    ItemStack item = committed == null ? FriendlySlimeItem.fromSlime(slime) : committed.copy();
+    if (committed != null && item.hasTag()) {
+      item.getTag().remove("ColonyRecoveryDimension");
+      item.getTag().remove("ColonyRecipient");
+      item.getTag().remove("ColonyRecoveryReceipt");
+    }
     player.getInventory().setItem(slot, item);
     player.getInventory().setChanged();
     String received = "ColonyRecovery_" + receipt;

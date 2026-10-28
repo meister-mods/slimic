@@ -129,7 +129,7 @@
   "item.slimic.attention_slime": "Slime curioso",
   "item.slimic.attention_slime.tooltip": "Vaga jugando y se mueve un 50% más rápido con los mismos atributos base. Sirve para especializaciones básicas: conserva las mejoras, pero pierde su conducta curiosa y su bonificación de velocidad.",
   "item.slimic.bound_combat_slime": "Colonia de combate",
-  "item.slimic.bound_combat_slime.tooltip": "Suma la salud de ambos miembros; el ataque base equivale al 60% de sus ataques combinados.",
+  "item.slimic.bound_combat_slime.tooltip": "Dos combatientes comparten salud y energía. Cada uno usa su propia espada, escudo y armadura.",
   "item.slimic.bound_transport_slime": "Colonia de transporte",
   "item.slimic.bound_transport_slime.tooltip": "Dos slimes unidos por una cuerda se mueven por separado y comparten una bolsa y una orden.",
   "item.slimic.cleaning_slime": "Slime de limpieza",

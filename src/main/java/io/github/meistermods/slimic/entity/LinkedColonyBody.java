@@ -88,6 +88,37 @@ public abstract class LinkedColonyBody<C extends FriendlySlime & LinkedColony>
   }
 
   @Override
+  public float getHealth() {
+    C colony = getColony();
+    return colony == null ? super.getHealth() : colony.getHealth();
+  }
+
+  @Override
+  public void setHealth(float health) {
+    C colony = getColony();
+    if (colony == null) super.setHealth(health);
+    else colony.setHealth(health);
+  }
+
+  @Override
+  public double getAttributeValue(net.minecraft.world.entity.ai.attributes.Attribute attribute) {
+    C colony = getColony();
+    return attribute == Attributes.MAX_HEALTH && colony != null
+        ? colony.getMaxHealth()
+        : super.getAttributeValue(attribute);
+  }
+
+  public float getStamina() {
+    C colony = getColony();
+    return colony == null ? 0 : colony.getStamina();
+  }
+
+  public float getMaxStamina() {
+    C colony = getColony();
+    return colony == null ? 0 : colony.getMaxStamina();
+  }
+
+  @Override
   protected PathNavigation createNavigation(Level level) {
     return new WorkNavigation(this, level, () -> true);
   }
@@ -105,6 +136,11 @@ public abstract class LinkedColonyBody<C extends FriendlySlime & LinkedColony>
       return;
     }
     if (colony != null) {
+      // Keep vanilla attribute/data packets consistent for HUDs that inspect the second body.
+      if (!level().isClientSide) {
+        getAttribute(Attributes.MAX_HEALTH).setBaseValue(colony.getMaxHealth());
+        super.setHealth(colony.getHealth());
+      }
       getAttribute(Attributes.MOVEMENT_SPEED)
           .setBaseValue(colony.getAttributeValue(Attributes.MOVEMENT_SPEED));
       if ((colony.isOrderedToSit() && !colony.isFleeing()) || colony.isBodyInMotion(this)) {
@@ -270,7 +306,9 @@ public abstract class LinkedColonyBody<C extends FriendlySlime & LinkedColony>
 
     @Override
     public void setWantedPosition(double x, double y, double z, double speed) {
-      if (isInWater() && operation == Operation.JUMPING) operation = Operation.WAIT;
+      // A hop can pass several path nodes. Accept the next heading while airborne instead of
+      // continuing toward a node already behind the body until the next landing.
+      if (operation == Operation.JUMPING) operation = Operation.WAIT;
       super.setWantedPosition(x, y, z, speed);
     }
 

@@ -577,4 +577,148 @@ public final class CombatColonyGameTests {
             })
         .thenSucceed();
   }
+
+  @GameTest(template = "empty", batch = "combat_colony", timeoutTicks = 500)
+  public static void linkedHealthHealingAndStaminaReadOnePool(GameTestHelper h) {
+    var f = fixture(h);
+    h.startSequence()
+        .thenWaitUntil(() -> body(h, f))
+        .thenExecute(
+            () -> {
+              try {
+                var body = body(h, f);
+                f.root.setTunedVitals(13, 37, 0);
+                h.assertTrue(
+                    body.getHealth() == 13
+                        && body.getMaxHealth() == f.root.getMaxHealth()
+                        && body.getStamina() == 37
+                        && body.getMaxStamina() == f.root.getMaxStamina(),
+                    "Both physical bodies expose the same health, energy and maxima");
+                body.heal(3);
+                h.assertTrue(
+                    f.root.getHealth() == 16 && body.getHealth() == 16,
+                    "Native healing on the helper changes the shared pool once");
+                body.hurt(h.getLevel().damageSources().generic(), 4);
+                h.assertTrue(
+                    f.root.getHealth() < 16 && body.getHealth() == f.root.getHealth(),
+                    "Damage to the helper immediately agrees with the representative");
+                f.root.setWorking(true);
+                normalHit(f.root, body, target(h, f.area.point(4, 101, 10)));
+                h.assertTrue(
+                    body.getStamina() == 36 && f.root.getStamina() == 36,
+                    "Energy expenditure has no second independent reserve");
+                var copy = ModEntities.BOUND_COMBAT_SLIME.get().create(h.getLevel());
+                copy.load(f.root.saveWithoutId(new CompoundTag()));
+                h.assertTrue(
+                    copy.getHealth() == body.getHealth() && copy.getStamina() == 36,
+                    "Stored colony traits preserve that same remaining pool");
+              } finally {
+                f.root.discard();
+                f.area.close();
+              }
+            })
+        .thenSucceed();
+  }
+
+  @GameTest(template = "empty", batch = "combat_colony", timeoutTicks = 500)
+  public static void existingEncounterRetriesJoiningAfterAnObstructionClears(GameTestHelper h) {
+    var f = fixture(h);
+    LivingEntity[] victim = {null};
+    h.startSequence()
+        .thenWaitUntil(() -> body(h, f))
+        .thenExecute(
+            () -> {
+              var body = body(h, f);
+              body.moveTo(f.area.point(11, 101, 8));
+              victim[0] = target(h, f.area.point(4, 101, 10));
+              for (int z = 7; z <= 11; z++)
+                for (int y = 101; y <= 104; y++)
+                  h.getLevel()
+                      .setBlock(
+                          net.minecraft.core.BlockPos.containing(f.area.point(8, y, z)),
+                          Blocks.STONE.defaultBlockState(),
+                          3);
+              f.root.setWorking(true);
+              f.root.setTarget(victim[0]);
+            })
+        .thenExecuteAfter(
+            20,
+            () -> {
+              h.assertTrue(
+                  f.root.assistMember() == 0 && victim[0].getHealth() == 200,
+                  "The blocked initial encounter cannot start a joining attack");
+              for (int z = 7; z <= 11; z++)
+                for (int y = 101; y <= 104; y++)
+                  h.getLevel()
+                      .setBlock(
+                          net.minecraft.core.BlockPos.containing(f.area.point(8, y, z)),
+                          Blocks.AIR.defaultBlockState(),
+                          3);
+            })
+        .thenWaitUntil(
+            () ->
+                h.assertTrue(
+                    f.root.assistMember() == 2,
+                    "The ongoing encounter retries without acquiring a new target"))
+        .thenExecuteAfter(
+            30,
+            () -> {
+              try {
+                h.assertTrue(
+                    victim[0].getHealth() < 200,
+                    "The retried physical joining leap reaches and damages the same enemy");
+              } finally {
+                f.root.discard();
+                f.area.close();
+              }
+            })
+        .thenSucceed();
+  }
+
+  @GameTest(template = "empty", batch = "combat_colony", timeoutTicks = 500)
+  public static void separatedFightersRejoinWithoutCompetingPursuits(GameTestHelper h) {
+    var f = fixture(h);
+    CombatColonyBody[] original = {null};
+    h.startSequence()
+        .thenWaitUntil(() -> body(h, f))
+        .thenExecute(
+            () -> {
+              var body = body(h, f);
+              original[0] = body;
+              f.root.moveTo(f.area.point(1, 101, 8));
+              body.moveTo(f.area.point(14, 101, 14));
+              f.root.setWorking(true);
+              f.root.setNoAi(false);
+              body.setNoAi(false);
+              f.root.setTarget(target(h, f.area.point(1, 101, 3)));
+              body.setTarget(target(h, f.area.point(14, 101, 13)));
+            })
+        .thenWaitUntil(
+            () -> {
+              h.assertTrue(
+                  f.root.distanceToSqr(original[0]) < 25,
+                  "The second body walks back while the representative holds position: root="
+                      + f.root.position()
+                      + " body="
+                      + original[0].position()
+                      + " removed="
+                      + original[0].isRemoved()
+                      + " nav="
+                      + original[0].getNavigation().isDone()
+                      + " ground="
+                      + original[0].onGround());
+            })
+        .thenExecute(
+            () -> {
+              try {
+                h.assertTrue(
+                    f.root.getLinkedBody() == original[0] && !original[0].isRemoved(),
+                    "Normal regrouping keeps the same physical body instead of respawning it");
+              } finally {
+                f.root.discard();
+                f.area.close();
+              }
+            })
+        .thenSucceed();
+  }
 }

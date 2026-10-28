@@ -100,7 +100,8 @@ public final class CombatColonyClientSmoke {
                     () -> {
                       try {
                         var player = player(mc);
-                        var level = player.serverLevel();
+                        var level = player.server.overworld();
+                        player.server.setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
                         System.out.println(
                             "SLIMIC COMBAT FIXTURE BORDER: " + level.getWorldBorder().getSize());
                         level.getWorldBorder().setCenter(0, 0);
@@ -166,7 +167,8 @@ public final class CombatColonyClientSmoke {
         return false;
       }
       if (phase == 1) {
-        if (++ticks > 400) throw new IllegalStateException("No tracked linked combat pair");
+        if (++ticks > 400)
+          throw new IllegalStateException("No tracked linked combat pair: client root=" + root(mc));
         var root = root(mc);
         if (root == null || root.getLinkedBody() == null) return false;
         action =
@@ -215,6 +217,16 @@ public final class CombatColonyClientSmoke {
                 && visual.getMainHandItem().is(Items.GOLDEN_SWORD)
                 && visual.getItemBySlot(EquipmentSlot.CHEST).is(ModItems.GOLDEN_SLIME_ARMOR.get()),
             "Second body renders its actual gold equipment through one unspawned visual proxy");
+        require(
+            body.getHealth() == root.getHealth() && body.getMaxHealth() == root.getMaxHealth(),
+            "Client health queries use the representative's shared pool");
+        require(
+            mc.getResourceManager()
+                .getResource(
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                        "slimic", "textures/entity/slime_cord.png"))
+                .isPresent(),
+            "The dedicated cord material is loaded from the resource pack");
         shot(mc, "linked-pair");
         action =
             mc.getSingleplayerServer()
@@ -236,6 +248,13 @@ public final class CombatColonyClientSmoke {
       }
       if (phase == 3) {
         if (mc.getOverlay() != null) return false;
+        if (!mc.options.languageCode.equals(LANGUAGES[language])) {
+          mc.options.languageCode = LANGUAGES[language];
+          mc.getLanguageManager().setSelected(mc.options.languageCode);
+          action = mc.reloadResourcePacks();
+          ticks = 0;
+          return false;
+        }
         if (++ticks < 12) return false;
         require(
             mc.screen instanceof SlimeScreen && mc.player.containerMenu instanceof SlimeMenu,

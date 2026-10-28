@@ -129,7 +129,7 @@
   "item.slimic.attention_slime": "관심 슬라임",
   "item.slimic.attention_slime.tooltip": "같은 기본 능력치에서 이동 속도가 50% 높고 자유 이동 중 장난스럽게 돌아다닙니다. 기본 특화 조합에 사용하면 강화 능력치를 유지하고 관심 행동과 전용 속도 배율을 잃습니다.",
   "item.slimic.bound_combat_slime": "전투 슬라임 군체",
-  "item.slimic.bound_combat_slime.tooltip": "전투 슬라임 둘이 결속되어 생명력을 합칩니다. 군체의 기본 공격력은 두 구성원의 공격력 합계의 60%입니다.",
+  "item.slimic.bound_combat_slime.tooltip": "전투 슬라임 둘이 생명력과 기력을 공유하며, 각자의 검·방패·갑옷을 사용합니다.",
   "item.slimic.bound_transport_slime": "운반 슬라임 군체",
   "item.slimic.bound_transport_slime.tooltip": "줄로 연결된 운반 슬라임 두 마리가 따로 움직이며 가방과 명령을 공유합니다.",
   "item.slimic.cleaning_slime": "청소 슬라임",

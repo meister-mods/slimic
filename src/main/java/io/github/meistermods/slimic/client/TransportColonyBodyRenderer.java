@@ -25,6 +25,16 @@ public final class TransportColonyBodyRenderer extends EntityRenderer<TransportC
           protected boolean shouldShowName(FriendlySlime slime) {
             return false;
           }
+
+          @Override
+          protected void renderNameTag(
+              FriendlySlime slime,
+              net.minecraft.network.chat.Component name,
+              PoseStack pose,
+              MultiBufferSource buffers,
+              int light) {
+            // The representative alone displays the colony's name and shared status.
+          }
         };
     shadowRadius = .5F;
   }

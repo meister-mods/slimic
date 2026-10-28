@@ -129,7 +129,7 @@
   "item.slimic.attention_slime": "Attention Slime",
   "item.slimic.attention_slime.tooltip": "Roams playfully with 50% higher Movement Speed at identical base stats. Can be used for basic specializations, retaining invested stats while losing Attention behavior and its speed bonus.",
   "item.slimic.bound_combat_slime": "Combat Slime Colony",
-  "item.slimic.bound_combat_slime.tooltip": "Combines both members' health; base Attack is 60% of their combined Attack values.",
+  "item.slimic.bound_combat_slime.tooltip": "Two fighters share health and stamina. Each uses its own sword, shield and armor.",
   "item.slimic.bound_transport_slime": "Transport Slime Colony",
   "item.slimic.bound_transport_slime.tooltip": "Two cord-linked Transport Slimes move separately and share one bag and order.",
   "item.slimic.cleaning_slime": "Cleaning Slime",

@@ -19,6 +19,10 @@
     },
     {
       "type": "patchouli:text",
+      "text": "A thick green slime cord joins the two bodies. Health and stamina form one shared pool, managed through either body. Combat members regroup before straying too far apart. If a joining leap was blocked, they try again during the same fight when the route clears and the cooldown allows it."
+    },
+    {
+      "type": "patchouli:text",
       "text": "Unused points start at the mean rounded down. One point raises the chosen stat for each uncapped member; capped members stay unchanged. Both capped means no cost. Growth is half rate while any stat used by the role can still upgrade both members; otherwise normal rate. The point-cost formula is unchanged."
     },
     {
