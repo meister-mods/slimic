@@ -20,6 +20,7 @@ final class ColonyAssistCharge {
   private UUID owner;
   private Vec3 start, end;
   private int ticks, flightTicks, cooldown;
+  private int retryAt;
 
   ColonyAssistCharge(BoundCombatSlime colony) {
     this.colony = colony;
@@ -33,6 +34,9 @@ final class ColonyAssistCharge {
   void begin(int initiatingMember, LivingEntity victim) {
     if (actor != null
         || cooldown > 0
+        || colony.tickCount < retryAt
+        || colony.isRegrouping()
+        || colony.isFleeing()
         || !colony.isWorking()
         || !colony.isAlive()
         || !colony.mayAttack(victim)
@@ -44,6 +48,7 @@ final class ColonyAssistCharge {
         || distance > 12 * 12
         || !CombatSlime.isSword(joining.getMainHandItem())
         || !joining.hasLineOfSight(victim)) return;
+    retryAt = colony.tickCount + 10;
     var level = (ServerLevel) colony.level();
     Vec3 landing = victim.position();
     if (!CompanionTeleport.safe(level, joining, landing)) return;
@@ -56,7 +61,8 @@ final class ColonyAssistCharge {
     flightTicks = Math.max(6, Math.min(16, (int) Math.ceil(Math.sqrt(distance) / .8)));
     // Check the complete announced arc before leaving the floor; never cross unloaded terrain.
     for (int i = 1; i <= flightTicks; i++)
-      if (!safeStep(level, point(i / (double) flightTicks))) {
+      if (!safeStep(
+          level, point((i - 1) / (double) flightTicks), point(i / (double) flightTicks))) {
         actor = null;
         target = null;
         return;
@@ -79,6 +85,7 @@ final class ColonyAssistCharge {
         && actor.isAlive()
         && actor.level() == colony.level()
         && colony.isWorking()
+        && !colony.isFleeing()
         && colony.isAlive()
         && !colony.isRemoved()
         && !colony.isPendingSpawn()
@@ -112,9 +119,9 @@ final class ColonyAssistCharge {
     colony.setAssistState(0, 0);
   }
 
-  private boolean safeStep(ServerLevel level, Vec3 next) {
+  private boolean safeStep(ServerLevel level, Vec3 from, Vec3 next) {
     AABB box = actor.getBoundingBox().move(next.subtract(actor.position()));
-    AABB swept = box.minmax(actor.getBoundingBox());
+    AABB swept = box.minmax(actor.getBoundingBox().move(from.subtract(actor.position())));
     if (box.minY < level.getMinBuildHeight() + 1
         || box.maxY >= level.getMaxBuildHeight()
         || !level.getWorldBorder().isWithinBounds(swept)) return false;
@@ -159,7 +166,7 @@ final class ColonyAssistCharge {
       return;
     }
     Vec3 next = point(Math.min(1, flight / (double) flightTicks));
-    if (!safeStep(level, next)) {
+    if (!safeStep(level, actor.position(), next)) {
       cancel();
       return;
     }

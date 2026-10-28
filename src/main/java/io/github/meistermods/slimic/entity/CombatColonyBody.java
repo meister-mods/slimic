@@ -173,7 +173,12 @@ public final class CombatColonyBody extends LinkedColonyBody<BoundCombatSlime> {
     if (attackCooldown > 0) attackCooldown--;
     if (shieldCooldown > 0) shieldCooldown--;
     if (defenseCooldown > 0) defenseCooldown--;
-    if (!colony.isWorking() || !colony.isTame() || !colony.activeBody(this)) {
+    if (colony.isRegrouping() && !colony.isOrderedToSit()) {
+      setTarget(null);
+      stopUsingItem();
+      return;
+    }
+    if (!colony.isWorking() || colony.isFleeing() || !colony.isTame() || !colony.activeBody(this)) {
       stopCombat();
       return;
     }
@@ -224,18 +229,19 @@ public final class CombatColonyBody extends LinkedColonyBody<BoundCombatSlime> {
       if (nearest != null) colony.linkedTargetAcquired(nearest);
     }
     var target = getTarget();
+    if (colony.isBodyInMotion(this)) return;
     if (target == null) {
       stopUsingItem();
       colony.collectLoot(this, true);
       return;
     }
-    float yaw =
-        (float) (Math.toDegrees(Math.atan2(target.getZ() - getZ(), target.getX() - getX())) - 90);
-    setYRot(yaw);
-    yBodyRot = yHeadRot = yaw;
     getLookControl().setLookAt(target, 30, 30);
     double reach = SlimeStat.REACH.value(colony);
     if (distanceToSqr(target) <= reach * reach && hasLineOfSight(target)) {
+      float yaw =
+          (float) (Math.toDegrees(Math.atan2(target.getZ() - getZ(), target.getX() - getX())) - 90);
+      setYRot(yaw);
+      yBodyRot = yHeadRot = yaw;
       getNavigation().stop();
       if (attackCooldown == 0) {
         colony.strikeFromBody(this, target, false);
@@ -245,7 +251,12 @@ public final class CombatColonyBody extends LinkedColonyBody<BoundCombatSlime> {
                 CombatSlime.matchesEquipment(1, getOffhandItem()) ? 10 : 4,
                 (int) Math.ceil(20 / SlimeStat.WORK_SPEED.value(colony)));
       }
-    } else if (onGround() && tickCount % 10 == 0) getNavigation().moveTo(target, 1);
+    } else if (onGround()
+        && tickCount % 10 == 0
+        && (getNavigation().isDone()
+            || getNavigation().getTargetPos() == null
+            || getNavigation().getTargetPos().distSqr(target.blockPosition()) > 4))
+      getNavigation().moveTo(target, 1);
     if (shieldCooldown == 0
         && CombatSlime.matchesEquipment(1, getOffhandItem())
         && attackCooldown > 0) {

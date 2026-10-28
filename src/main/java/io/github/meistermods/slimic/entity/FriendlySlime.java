@@ -1046,15 +1046,23 @@ public class FriendlySlime extends TamableAnimal {
 
     @Override
     public void setWantedPosition(double x, double y, double z, double speed) {
-      // Ground jumps end on entering water. Otherwise native control retains the
-      // old heading until ground contact and ignores new swimming destinations.
-      if (slime.isInWater() && operation == Operation.JUMPING) operation = Operation.WAIT;
+      // Swimming and linked combat movement need to accept new path headings during a hop;
+      // native jumping control otherwise retains the old heading until ground contact.
+      if ((slime.isInWater() || slime instanceof BoundCombatSlime)
+          && operation == Operation.JUMPING) operation = Operation.WAIT;
       super.setWantedPosition(x, y, z, speed);
     }
 
     @Override
     public void tick() {
       if (slime.getControllingPassenger() instanceof Player) return;
+      if (slime instanceof BoundCombatSlime colony && colony.hasCombatMotion()) {
+        operation = Operation.WAIT;
+        slime.setSpeed(0);
+        slime.setZza(0);
+        slime.setXxa(0);
+        return;
+      }
       if (slime.isInWater() && operation == Operation.JUMPING) operation = Operation.WAIT;
       boolean moving = hasWanted() || operation == Operation.JUMPING;
       super.tick();

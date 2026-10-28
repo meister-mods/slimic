@@ -87,7 +87,61 @@ public final class BoundCombatSlime extends CombatSlime implements LinkedColony 
 
   @Override
   protected boolean hasCombatMotion() {
-    return assistMember() == 1;
+    return assistMember() == 1 || (regrouping && !isFleeing());
+  }
+
+  private boolean regrouping;
+  private double rejoinDistance = Double.POSITIVE_INFINITY;
+
+  boolean isRegrouping() {
+    return regrouping;
+  }
+
+  private double cohesionRange() {
+    return Math.min(24, getLinkRange() * .85);
+  }
+
+  private void coordinateCombat() {
+    var body = getLinkedBody();
+    if (body == null || isOrderedToSit() || isFleeing()) {
+      regrouping = false;
+      if (isFleeing()) stopLinkedCombat();
+      return;
+    }
+    double distance = distanceToSqr(body);
+    if (!regrouping && distance > cohesionRange() * cohesionRange()) {
+      regrouping = true;
+      rejoinDistance = distance;
+      returnTicks = 0;
+      stopLinkedCombat();
+      setTarget(null);
+      getNavigation().stop();
+      setDeltaMovement(getDeltaMovement().multiply(0, 1, 0));
+      setSpeed(0);
+      setZza(0);
+      setXxa(0);
+    } else if (regrouping && distance <= 16) {
+      regrouping = false;
+      returnTicks = 0;
+      body.getNavigation().stop();
+    }
+    if (regrouping || !isWorking() || assistMember() != 0) return;
+    var first = getTarget();
+    var second = body.getTarget();
+    // Fight independently nearby; a distant second pursuit must not pull the pair apart.
+    if (first != null
+        && mayAttack(first)
+        && second != null
+        && first != second
+        && first.distanceToSqr(second) > cohesionRange() * cohesionRange())
+      body.setTarget(
+          body.distanceToSqr(first) <= Math.pow(SlimeStat.DETECTION_RANGE.value(this), 2)
+              ? first
+              : null);
+    if (tickCount % 10 == 0) {
+      if (first != null) assist.begin(0, first);
+      if (assistMember() == 0 && body.getTarget() != null) assist.begin(1, body.getTarget());
+    }
   }
 
   @Override
@@ -483,24 +537,29 @@ public final class BoundCombatSlime extends CombatSlime implements LinkedColony 
     if (body == null) return;
     double distance = distanceToSqr(body);
     boolean stretched = distance > getLinkRange() * getLinkRange();
-    if (stretched) {
-      stopLinkedCombat();
-      getNavigation().stop();
-    }
-    if (!isOrderedToSit()
-        && !body.hasCombatTarget()
+    if ((!isOrderedToSit() || isFleeing())
+        && (regrouping || !body.hasCombatTarget())
         && assistMember() != 2
         && distance > 9
         && body.tickCount % 10 == 0
-        && body.onGround()) body.getNavigation().moveTo(this, 1.1);
-    if (stretched && ++returnTicks >= 100) {
+        && body.onGround()
+        && (body.getNavigation().isDone()
+            || body.getNavigation().getTargetPos() == null
+            || body.getNavigation().getTargetPos().distSqr(blockPosition()) > 4))
+      body.getNavigation().moveTo(this, 1.1);
+    if (regrouping && distance < rejoinDistance - .25) {
+      rejoinDistance = distance;
+      returnTicks = 0;
+    }
+    if ((stretched || regrouping) && ++returnTicks >= 100) {
       removeLinkedBody();
       nextBodyAttempt = tickCount + 1;
-    } else if (!stretched) returnTicks = 0;
+    } else if (!stretched && !regrouping) returnTicks = 0;
   }
 
   @Override
   public void tick() {
+    if (!level().isClientSide) coordinateCombat();
     super.tick();
     if (level() instanceof ServerLevel server && isAlive() && !isRemoved()) {
       ensureLinkedBody(server);

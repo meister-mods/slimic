@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.AABB;
@@ -19,6 +21,8 @@ import net.minecraft.world.phys.Vec3;
 /** Each body is rendered by its own entity; only the representative draws their connecting cord. */
 public class LinkedColonyRenderer extends FriendlySlimeRenderer {
   private static final int SEGMENTS = 24;
+  private static final ResourceLocation CORD =
+      ResourceLocation.fromNamespaceAndPath("slimic", "textures/entity/slime_cord.png");
 
   public LinkedColonyRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -68,39 +72,66 @@ public class LinkedColonyRenderer extends FriendlySlimeRenderer {
             .subtract(slime.getPosition(partial))
             .add(0, body.getBbHeight() * .65, 0);
     Vec3 offset = end.subtract(start);
-    double sag = Math.min(.35, offset.length() * .06);
+    double sag =
+        Math.min(
+            Math.min(.65, offset.length() * .14),
+            Math.min(slime.getBbHeight(), body.getBbHeight()) * .48);
     Vec3 side = new Vec3(-offset.z, 0, offset.x);
-    side = side.lengthSqr() < .0001 ? new Vec3(.025, 0, 0) : side.normalize().scale(.025);
+    side = side.lengthSqr() < .0001 ? new Vec3(1, 0, 0) : side.normalize();
+    Vec3 up = offset.normalize().cross(side).normalize();
+    if (up.lengthSqr() < .0001) up = new Vec3(0, 0, 1);
     var level = slime.level();
     int startBlock = level.getBrightness(LightLayer.BLOCK, slime.blockPosition());
     int endBlock = level.getBrightness(LightLayer.BLOCK, body.blockPosition());
     int startSky = level.getBrightness(LightLayer.SKY, slime.blockPosition());
     int endSky = level.getBrightness(LightLayer.SKY, body.blockPosition());
-    var vertices = buffers.getBuffer(RenderType.leash());
-    for (int plane = 0; plane < 2; plane++) {
-      Vec3 thickness = plane == 0 ? side : new Vec3(0, .025, 0);
-      for (int step = 0; step <= SEGMENTS; step++) {
-        int segment = plane == 0 ? step : SEGMENTS - step;
-        float fraction = segment / (float) SEGMENTS;
-        Vec3 point =
-            start.add(offset.scale(fraction)).add(0, -4 * sag * fraction * (1 - fraction), 0);
-        int packed =
-            LightTexture.pack(
-                (int) Mth.lerp(fraction, startBlock, endBlock),
-                (int) Mth.lerp(fraction, startSky, endSky));
-        float shade = segment % 2 == 0 ? .75F : 1;
-        vertex(pose, vertices, point.subtract(thickness), packed, shade);
-        vertex(pose, vertices, point.add(thickness), packed, shade);
+    var vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(CORD));
+    Vec3[] rim = {side, up, side.scale(-1), up.scale(-1)};
+    for (int segment = 0; segment < SEGMENTS; segment++) {
+      for (int face = 0; face < 4; face++) {
+        // Four faces make a soft, substantial strand visible from every viewing angle.
+        for (int corner = 0; corner < 4; corner++) {
+          float fraction = (segment + (corner == 1 || corner == 2 ? 1 : 0)) / (float) SEGMENTS;
+          int edge = (face + (corner >= 2 ? 1 : 0)) % 4;
+          double radius = .1 * (1 + .12 * Math.sin(fraction * Math.PI * 6));
+          Vec3 point =
+              start
+                  .add(offset.scale(fraction))
+                  .add(0, -4 * sag * fraction * (1 - fraction), 0)
+                  .add(rim[edge].scale(radius));
+          int packed =
+              LightTexture.pack(
+                  (int) Mth.lerp(fraction, startBlock, endBlock),
+                  (int) Mth.lerp(fraction, startSky, endSky));
+          Vec3 normal = rim[face].add(rim[(face + 1) % 4]).normalize();
+          vertex(
+              pose,
+              vertices,
+              point,
+              packed,
+              fraction * (float) offset.length(),
+              corner >= 2 ? 1 : 0,
+              normal);
+        }
       }
     }
   }
 
   private static void vertex(
-      PoseStack pose, VertexConsumer vertices, Vec3 point, int light, float shade) {
+      PoseStack pose,
+      VertexConsumer vertices,
+      Vec3 point,
+      int light,
+      float u,
+      float v,
+      Vec3 normal) {
     vertices
         .vertex(pose.last().pose(), (float) point.x, (float) point.y, (float) point.z)
-        .color(.5F * shade, .375F * shade, .22F * shade, 1)
+        .color(1F, 1F, 1F, 1F)
+        .uv(u, v)
+        .overlayCoords(OverlayTexture.NO_OVERLAY)
         .uv2(light)
+        .normal(pose.last().normal(), (float) normal.x, (float) normal.y, (float) normal.z)
         .endVertex();
   }
 }

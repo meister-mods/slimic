@@ -129,7 +129,7 @@
   "item.slimic.attention_slime": "注目スライム",
   "item.slimic.attention_slime.tooltip": "同じ基礎能力値なら移動速度が50%高く、遊びながら歩き回ります。基本の特化種の素材にもなり、強化済み能力値を引き継ぎますが、注目行動と速度補正は失われます。",
   "item.slimic.bound_combat_slime": "戦闘スライム群体",
-  "item.slimic.bound_combat_slime.tooltip": "両構成員の体力を合計します。基礎攻撃力は両者の攻撃力の合計の60%です。",
+  "item.slimic.bound_combat_slime.tooltip": "二つの戦闘個体が体力と気力を共有し、それぞれの剣・盾・防具を使います。",
   "item.slimic.bound_transport_slime": "運搬スライム群体",
   "item.slimic.bound_transport_slime.tooltip": "ひもでつながった2体の運搬スライムが別々に動き、1つのバッグと命令を共有します。",
   "item.slimic.cleaning_slime": "清掃スライム",

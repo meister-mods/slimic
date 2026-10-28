@@ -20,7 +20,9 @@ The screen shows both names, current health and stamina, unused individual point
 
 The colony is managed as **one companion** and retains both original members. They cannot be deployed separately while bound. New deployment and recovered deployment select **Wait**; ordinary world reloads preserve an existing explicit order.
 
-A **Transport Slime Colony** has two moving bodies joined by a visible cord. They share one bag and order, but can collect cargo, unload and deliver supplies separately within the cord’s reach. They coordinate their jobs so they do not reserve the same worker or supply item twice. Interacting with either body manages the whole colony; Wait stops both. A **Combat Slime Colony** also has two cord-linked bodies. Each selects targets, attacks and blocks independently using its own equipment. The management screen provides two labelled groups of sword, shield and slime-armor slots. Both bodies share orders and target filters; Wait stops both.
+A **Transport Slime Colony** has two moving bodies joined by a thick, drooping green slime cord. They share one bag and order, but can collect cargo, unload and deliver supplies separately within the cord’s reach. They coordinate their jobs so they do not reserve the same worker or supply item twice. Interacting with either body manages the whole colony; Wait stops both. A **Combat Slime Colony** also has two cord-linked bodies. Each selects targets, attacks and blocks independently using its own equipment. The management screen provides two labelled groups of sword, shield and slime-armor slots. Both bodies share orders and target filters; Wait stops both.
+
+Both bodies use one health and stamina pool. Damage or healing on either body changes the same remaining total. The second body has no separate name or status label. Combat members regroup before moving too far apart, and coordinate distant pursuits so they can rejoin.
 
 The shared unused-point balance starts at the **arithmetic mean of both members’ balances, rounded down**. For example, 2 and 5 unused points become a shared balance of 3. Their existing stat investments remain separate.
 
@@ -50,6 +52,8 @@ Each member retains its own body color, held items and armor, including material
 Recovering or separating a colony does not restore its members’ health or stamina. Rename the representative independently if desired; original member names are preserved for unbinding. Dyeing or washing the colony updates member one. When unbound, status effects, absorption health, fire, freezing and the colony’s air supply transfer once to member one, retaining their remaining amount and duration. Temporary bonus health survives recovery and unbinding.
 
 When one combat member acquires a target, the other can **join with a leaping charge**. It needs a sword, at least four shared stamina and a clear, supported route within twelve blocks. After a brief wind-up it follows a low arc, with a visible trail; a successful joining hit applies **1.5× native attack damage**, critical particles and a distinct impact sound. Taking off costs three stamina, and a hit costs one more. The colony can start one such leap every **five seconds**. A changed order, invalid target, insufficient stamina, obstacles or an unsafe landing interrupt the leap. It never passes through walls or loads distant chunks.
+
+If an initial joining leap cannot start, the colony retries during the ongoing encounter when the path and cooldown allow it. It does not need to lose and reacquire the enemy.
 
 ## Unbind safely
 

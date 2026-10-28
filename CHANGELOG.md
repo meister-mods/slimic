@@ -4,6 +4,14 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.18] - 2026-10-27
+
+- Connect transport and combat colony bodies with a thicker, sagging green slime cord using a dedicated 16×16 texture.
+- Retry joining attacks during ongoing encounters and check the leap route segment by segment. Coordinate distant pursuits and regroup before the bodies move too far apart.
+- Expose the same health and stamina pool through either body, forward healing consistently, and reserve the colony label for its representative.
+- Reuse the durable recovery snapshot when issuing a captured colony item, avoiding a second full serialization of both members and their bags. World and player checkpoints remain synchronous.
+- Update English/Korean documentation and the guidebook in all four supported languages.
+
 ## [0.5.17] - 2026-10-27
 
 - Guardian Angel Slimes now require a Healing Slime, a nether star, and a totem of undying. Their abilities remain unchanged; crafting requires an empty Healing Slime bag to preserve stored supplies.
